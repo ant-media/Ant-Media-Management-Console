@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="antMediaServer" datatype="html">
+        <source>
+		Ant Media Server
+	</source>
+        <target>Ant Medya Sunucusu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/sidebar/sidebar.component.ts</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="dashboardMenuItem" datatype="html">
+        <source>Dashboard</source>
+        <target>Kontrol Paneli</target>
+      </trans-unit>
+      <trans-unit id="applicationsMenuItem" datatype="html">
+        <source>Applications</source>
+        <target>Uygulamalar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/sidebar/sidebar.component.ts</context>
+          <context context-type="linenumber">111</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="logoutLabel" datatype="html">
+        <source>Logout</source>
+        <target>Çıkış</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/navbar/navbar.component.ts</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="liveStreamTabHeader" datatype="html">
+        <source>Live Streams</source>
+        <target>Canlı Yayınlar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <note priority="1" from="description">Live Streams tab header that lists live stream</note>
+        <note priority="1" from="meaning">live stream</note>
+      </trans-unit>
+      <trans-unit id="vodTabHeader" datatype="html">
+        <source>VoD</source>
+        <target>Kayıtlı Video</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+        <note priority="1" from="description">Vod tab header that lists vod</note>
+        <note priority="1" from="meaning">VoD</note>
+      </trans-unit>
+      <trans-unit id="logTabHeader" datatype="html">
+        <source>Log</source>
+        <target>Log</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="settingsTabHeader" datatype="html">
+        <source>Settings</source>
+        <target>Ayarlar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="newLiveStreamButton" datatype="html">
+        <source>New Live Stream</source>
+        <target>Yeni Canlı Yayın</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="newLiveStreamCardTitle" datatype="html">
+        <source>
+                                                New Live Stream
+                                            </source>
+        <target>Yeni Canlı Yayın</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="newLiveStreamName" datatype="html">
+        <source>Name</source>
+        <target>İsim</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="newLiveStreamSocialShare" datatype="html">
+        <source>Share</source>
+        <target>Paylaş</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="newLiveStreamCreateButton" datatype="html">
+        <source>Create</source>
+        <target>Oluştur</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="newLiveStreamCancelButton" datatype="html">
+        <source>Cancel</source>
+        <target>İptal</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="streamName" datatype="html">
+        <source>Name</source>
+        <target>İsim</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">118</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="streamWatcherCount" datatype="html">
+        <source>Watcher Count</source>
+        <target>İzleyici Sayısı</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">119</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="streamStatus" datatype="html">
+        <source>Status</source>
+        <target>Durum</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="streamSocialShare" datatype="html">
+        <source>Social Share</source>
+        <target>Sosyal Ağ Paylaşımı</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="tableActionField" datatype="html">
+        <source>Action</source>
+        <target>İşlemler</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">120</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="tablePlayButton" datatype="html">
+        <source>Play</source>
+        <target>Oynat</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">88</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">132</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="tableDeleteButton" datatype="html">
+        <source>Delete</source>
+        <target>Sil</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">95</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">138</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noLiveStreamExistsMessage" datatype="html">
+        <source>
+                                    There is no live stream at this time.
+                                </source>
+         <target>Şu anda canlı yayın bulunmamaktadır.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">103</context>
+        </context-group>
+        <note priority="1" from="description"> text messages appears when no live streams</note>
+        <note priority="1" from="meaning">no live stream info </note>
+      </trans-unit>
+      <trans-unit id="noVoDStreamExistsMessage" datatype="html">
+        <source>There is no VoD stream in this app.</source>
+        <target>Kayıtlı video bulunmamaktadır.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">145</context>
+        </context-group>
+        <note priority="1" from="description"> text messages appears when no vod streams</note>
+        <note priority="1" from="meaning">no vod stream info </note>
+      </trans-unit>
+      <trans-unit id="enableMP4Recording" datatype="html">
+        <source>Enable MP4 Recording</source>
+        <target>MP4 Kayıt Etkin</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">162</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="addDateTimeToMP4Recordings" datatype="html">
+        <source>
+                                                                                Add Datetime to MP4 Filenames
+                                                                            </source>
+        <target>MP4 Dosya İsimlerine Tarih-Zaman Ekle</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">170</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="enableHLSLiveStreaming" datatype="html">
+        <source>
+                                                                                    Enable HLS Live Streaming
+                                                                                </source>
+        <target>HLS Canlı Yayın Etkin</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">184</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="HLSSegmentListSize" datatype="html">
+        <source>Segment List Size</source>
+        <target>Segment Sayısı</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">191</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="HLSSegmentDuration" datatype="html">
+        <source>Segment Duration</source>
+        <target>Segment Süresi</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">199</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="HLSListType" datatype="html">
+        <source>List Type</source>
+        <target>Liste Tipi</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">206</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="clientId" datatype="html">
+        <source>Client Id</source>
+        <target>İstemci Id</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">221</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">245</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">273</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="clientSecret" datatype="html">
+        <source>Client Secret</source>
+        <target>İstemci Kodu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">227</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">251</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">279</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="authenticationStatus" datatype="html">
+        <source>Authentication Status</source>
+        <target>Yetkinlendirme Durumu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">236</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">261</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">288</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="authenticate" datatype="html">
+        <source>Authenticate</source>
+        <target>Yetkilendir</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">238</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">263</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">291</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="saveForm" datatype="html">
+        <source>Save</source>
+        <target>Kaydet</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">295</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="cpuLoadLabel" datatype="html">
+        <source>CPU Load</source>
+        <target>CPU Kullanımı</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.ts</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="liveStreamCountLabel" datatype="html">
+        <source>Live Streams</source>
+        <target>Canlı Yayınlar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.ts</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.ts</context>
+          <context context-type="linenumber">134</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="liveWatchersCountLabel" datatype="html">
+        <source>Live Watchers</source>
+        <target>Canlı İzleyiciler</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.ts</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="diskUsageLabel" datatype="html">
+        <source>Disk Usage</source>
+        <target>Disk Kullanımı</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.ts</context>
+          <context context-type="linenumber">90</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="serverMemoryUsageLabel" datatype="html">
+        <source>Memory Usage</source>
+        <target>Hafıza Kullanımı</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.ts</context>
+          <context context-type="linenumber">101</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="systemMemoryUsageLabel" datatype="html">
+        <source>System Memory Usage</source>
+        <target>Sistem Hafıza Kullanımı</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.ts</context>
+          <context context-type="linenumber">112</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="applicationsTitle" datatype="html">
+        <source>Applications</source>
+        <target>Uygulamalar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.ts</context>
+          <context context-type="linenumber">126</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="appName" datatype="html">
+        <source>Name</source>
+        <target>Ad</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.ts</context>
+          <context context-type="linenumber">133</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="vodCountLabel" datatype="html">
+        <source>VoD Count</source>
+        <target>Video Sayısı</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.ts</context>
+          <context context-type="linenumber">135</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="appStorageSizeLabel" datatype="html">
+        <source>Storage</source>
+        <target>Disk Alanı</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/overview/overview.component.ts</context>
+          <context context-type="linenumber">136</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="loginPageHeader" datatype="html">
+        <source>Management of Ant Media Server</source>
+        <target>Ant Medya Sunucu Yönetimi</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/login/login.component.ts</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="loginTitle" datatype="html">
+        <source>Login</source>
+        <target>Giriş</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/login/login.component.ts</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="loginFormUsername" datatype="html">
+        <source>Username</source>
+        <target>Kullanıcı Adı</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/login/login.component.ts</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="loginFormPassword" datatype="html">
+        <source>Password</source>
+        <target>Şifre</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/login/login.component.ts</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="loginFormSubmit" datatype="html">
+        <source>Let&apos;s go</source>
+        <target>Giriş</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/login/login.component.ts</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="loginFormForgotPassword" datatype="html">
+        <source>Forgot your password?</source>
+        <target>Şifremi Unuttum?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/login/login.component.ts</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

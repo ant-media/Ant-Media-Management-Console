@@ -1,0 +1,71 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row ">
+
+            <div class="col-lg-offset-3 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Change Password</h4>
+                    </div>
+                    <div class="card-content">
+                        <form method="post" #f="ngForm" novalidate (ngSubmit)="updatePassword(f.valid)">
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Current Password
+                                            <span class="star">*</span>
+                                        </label>
+
+                                        <input required name="currentPassword" type="password" class="form-control border-input" [(ngModel)]="currentPassword" #currentPass="ngModel"
+                                        />
+
+                                        <small [hidden]="currentPass.valid || (currentPass.pristine && !f.submitted)" class="text-danger">
+                                            Current password is required.
+                                        </small>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>New Password
+                                            <span class="star">*</span>
+                                        </label>
+                                        <input required name="newPassword" type="password" class="form-control border-input"
+                                             [(ngModel)]="newPassword"  reverse="true" #newPass="ngModel"
+                                            validateEqual="newPasswordAgain">
+                                        <small [hidden]="newPass.valid || (newPass.pristine && !f.submitted)" class="text-danger">
+                                            Password is required
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">New Password (again)
+                                            <span class="star">*</span>
+                                        </label>
+                                        <input required name="newPasswordAgain" type="password" class="form-control border-input"
+                                             [(ngModel)]="newPasswordAgain" reverse="false" #newPassAgain="ngModel"
+                                            validateEqual="newPassword">
+                                        <small [hidden]="newPassAgain.valid || (newPassAgain.pristine && !f.submitted)" class="text-danger">
+                                            Password mismatch
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 form-group text-center text-danger" [hidden]="!showPasswordNotChangedError">
+                                    Make sure you that current password is entered correctly.
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-info btn-fill btn-wd">Update</button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

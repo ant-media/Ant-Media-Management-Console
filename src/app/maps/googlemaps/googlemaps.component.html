@@ -1,0 +1,30 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-map">
+                    <div class="card-header">
+                        <h4 class="card-title">Satellite Map</h4>
+                    </div>
+                    <div class="card-content">
+                        <ngui-map zoom="3" center="40.748817,-73.985428"  mapTypeId="satellite" >
+                            <marker [position]="[40.748817,-73.985428]"></marker>
+                        </ngui-map>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card card-map">
+                    <div class="card-header">
+                        <h4 class="card-title">Regular Map</h4>
+                    </div>
+                    <div class="card-content">
+                        <ngui-map zoom="13" center="40.748817,-73.985428" >
+                            <marker [position]="[40.748817,-73.985428]"></marker>
+                        </ngui-map>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

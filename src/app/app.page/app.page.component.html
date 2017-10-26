@@ -1,0 +1,423 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-sm-12">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="nav-tabs-navigation">
+                            <div class="nav-tabs-wrapper">
+                                <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                                    <li class="active">
+                                        <a href="#livestreams" data-toggle="tab" i18n="live stream|Live Streams tab header that lists live stream@@liveStreamTabHeader">Live Streams</a>
+                                    </li>
+                                    <li>
+                                        <a href="#vod" data-toggle="tab" i18n="VoD|Vod tab header that lists vod@@vodTabHeader">VoD</a>
+                                    </li>
+                                    <!--
+                                    <li>
+                                        <a href="#logs" data-toggle="tab" i18n="@@logTabHeader">Log</a>
+                                    </li>
+                                -->
+                                    <li>
+                                        <a href="#settings" data-toggle="tab" i18n="@@settingsTabHeader">Settings</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="my-tab-content" class="tab-content text-center">
+                            <div class="tab-pane active" id="livestreams">
+                                <div class="text-right">
+                                    <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" (click)="newLiveStream()">New Live Stream</button>
+                                </div>
+                                <div class="card" *ngIf="newLiveStreamActive">
+
+                                    <form method="post" #f="ngForm" validate (ngSubmit)="createLiveStream(f.valid)">
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left" i18n="@@newLiveStreamCardTitle">
+                                                New Live Stream
+                                            </h4>
+                                        </div>
+
+                                        <div class="card-content">
+                                            <div class="form-group text-left">
+                                                <label i18n="@@newLiveStreamName">Name</label>
+                                                <input type="text" required minlength="4" name="broadcastName" placeholder="Stream name" class="form-control" [(ngModel)]="liveBroadcast.name"
+                                                    #broadcastName="ngModel">
+                                                <small [hidden]="broadcastName.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
+                                                    Stream name should be at least 4 characters.
+                                                </small>
+                                            </div>
+                                            <div class="form-group text-left">
+                                                <label class="control-label" i18n="@@newLiveStreamSocialShare">Share</label>
+                                                <div class="col-sm-12 text-left">
+                                                    <div class="row">
+                                                        <div class="col-sm-12 checkbox text-left vcenter">
+                                                            <input id="shareOnFacebook" name="shareOnFacebook" [disabled]="!socialMediaAuthStatus.isFacebookAuthenticated" type="checkbox"
+                                                                [(ngModel)]="liveBroadcastShareFacebook">
+                                                            <label for="shareOnFacebook">
+                                                                <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>Facebook</label>
+                                                            <span class="help-block" *ngIf="!socialMediaAuthStatus.isFacebookAuthenticated">
+                                                                <small>Disabled. Authenticate For Facebook on Settings Tab</small>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-sm-12 checkbox">
+                                                            <input id="shareOnYoutube" name="shareOnYoutube" [disabled]="!socialMediaAuthStatus.isYoutubeAuthenticated" type="checkbox"
+                                                                [(ngModel)]="liveBroadcastShareYoutube">
+                                                            <label for="shareOnYoutube">
+                                                                <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>Youtube</label>
+                                                            <span class="help-block" *ngIf="!socialMediaAuthStatus.isYoutubeAuthenticated">
+                                                                <small>Disabled. Authenticate For Youtube on Settings Tab</small>
+                                                            </span>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-12 checkbox">
+                                                            <input id="shareOnPeriscope" name="shareOnPeriscope" [disabled]="!socialMediaAuthStatus.isPeriscopeAuthenticated" type="checkbox"
+                                                                [(ngModel)]="liveBroadcastSharePeriscope">
+                                                            <label for="shareOnshareOnPeriscopeYoutube">
+                                                                <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>Periscope</label>
+                                                            <span class="help-block" *ngIf="!socialMediaAuthStatus.isPeriscopeAuthenticated">
+                                                                <small>Disabled. Authenticate For Periscope(Twitter) on Settings
+                                                                    Tab
+                                                                </small>
+                                                            </span>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="form-group text-center">
+
+                                                <button type="submit" [disabled]='newLiveStreamCreating' class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
+                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newLiveStreamCreating" aria-hidden="true"></i>Create</button>
+
+                                                <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelNewLiveStream()">Cancel</button>
+                                            </div>
+
+                                        </div>
+
+                                    </form>
+                                </div>
+
+
+                                <div class="table-responsive" *ngIf="broadcastTableData.dataRows.length>0">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th i18n="@@streamName">Name</th>
+                                                <!--
+                                                <th class="text-center" i18n="@@streamWatcherCount">Watcher Count</th>
+                                                -->
+                                                <th class="text-center" i18n="@@streamStatus">Status</th>
+                                                <th class="text-center" i18n="@@streamSocialShare">Social Share</th>
+                                                <th class="text-center" i18n="@@tableActionField">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let row of broadcastTableData.dataRows">
+                                                <td class="text-left">{{row.name}}</td>
+                                                <!--
+                                                <td class="text-center">{{row.watcherCount}}</td>
+                                                -->
+                                                <td class="text-center"><ng-container [ngSwitch]="row.status">
+                                                        <ng-container *ngSwitchCase="'created'"><i class="fa fa-circle text-muted" >&nbsp;</i>Offline</ng-container>
+                                                        <ng-container *ngSwitchCase="'broadcasting'"><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
+                                                        <ng-container *ngSwitchCase="'finished'"><i class="fa fa-circle text-muted" *ngSwitchCase="'finished'">&nbsp;</i>Offline</ng-container>
+                                                    </ng-container></td>
+                                                <td class="text-center center-block ">
+                                                    <div class="col-sm-6 col-sm-offset-3">
+                                                        <ng-container *ngFor="let endpoint of row.endPointList" class="text-center">
+                                                            <ng-container [ngSwitch]="endpoint.type">
+                                                                <i class="ti-facebook col-sm-4" style="color:#3b5998;" *ngSwitchCase="'facebook'"> </i>
+                                                                <i class="ti-youtube col-sm-4" style="color:#e52d27;" *ngSwitchCase="'youtube'"> </i>
+                                                                <i class="ti-twitter-alt col-sm-4" style="color:#55acee;" *ngSwitchCase="'periscope'"></i>
+                                                            </ng-container>
+                                                        </ng-container>
+                                                    </div>
+                                                </td>
+
+                                                <td class="td-actions text-center">
+                                                    <button *ngIf="row.status=='broadcasting'" (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs"
+                                                        type="button">
+                                                        <span class="btn-label">
+                                                            <i class="ti-control-play"></i>
+                                                        </span>
+                                                        <ng-container i18n="@@tablePlayButton">Play</ng-container>
+
+                                                    </button>
+
+                                                    <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs" type="button">
+                                                        <span class="btn-label">
+                                                            <i class="ti-clipboard"></i>
+                                                        </span>
+                                                        <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
+                                                    </button>
+
+                                                    <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
+                                                        [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs"
+                                                        type="button">
+                                                        <span class="btn-label">
+                                                            <i class="ti-clipboard"></i>
+                                                        </span>
+                                                        <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
+                                                    </button>
+                                                    <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs" type="button">
+                                                        <span class="btn-label">
+                                                            <i class="ti-close"></i>
+                                                        </span>
+                                                        <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
+                                                    </button>
+
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+                                    There is no live stream at this time.
+                                </p>
+                            </div>
+                            <div class="tab-pane" id="vod">
+                                <!--
+                                    <div class="card-header">
+                                        <h4 class="title">Apps</h4>                    
+                                        <p class="category"></p>                   
+                                    </div>
+                                     -->
+                                <div class="table-responsive" *ngIf="vodTableData.dataRows.length>0">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th i18n="@@streamName">Name</th>
+                                                <!--
+                                                <th class="text-center" i18n="@@streamWatcherCount">Watcher Count</th>
+                                                -->
+                                                <th class="text-center" i18n="@@tableActionField">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let row of vodTableData.dataRows">
+                                                <td class="text-left">{{row.name}}</td>
+                                                <!--
+                                                <td class="text-center">{{row.watcherCount}}</td>
+                                                -->
+                                                <td class="text-center">
+                                                    <button (click)="playVoD(row.name)" class="btn btn-success btn-simple btn-magnify" type="button">
+                                                        <span class="btn-label">
+                                                            <i class="ti-control-play"></i>
+                                                        </span>
+                                                        <ng-container i18n="@@tablePlayButton">Play</ng-container>
+                                                    </button>
+                                                    <button (click)="deleteVoD(row.name)" class="btn btn-simple btn-magnify btn-danger" type="button">
+                                                        <span class="btn-label">
+                                                            <i class="ti-close"></i>
+                                                        </span>
+                                                        <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
+                                                    </button>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <p *ngIf="vodTableData.dataRows.length == 0" i18n="no vod stream info | text messages appears when no vod streams@@noVoDStreamExistsMessage">
+                                    There is no VoD stream in this app.
+                                </p>
+                            </div>
+                            <div class="tab-pane" id="logs">
+                                <p>Here are your messages.</p>
+                            </div>
+                            <div class="tab-pane" id="settings" *ngIf="appSettings">
+                                <form method="post" (ngSubmit)="changeSettings()" class="form-horizontal">
+
+                                    <fieldset>
+                                        <legend class="text-left">Muxing</legend>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">MP4</label>
+                                            <div class="col-sm-4 text-left">
+
+                                                <div class="checkbox">
+                                                    <input id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox" [(ngModel)]="appSettings.mp4MuxingEnabled">
+                                                    <label for="mp4MuxingEnabled" i18n="@@enableMP4Recording">
+                                                        Enable MP4 Recording
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 text-left">
+                                                <div class="checkbox">
+                                                    <input id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox" [(ngModel)]="appSettings.addDateTimeToMp4FileName">
+                                                    <label for="addDateTimeToMp4FileName" i18n="@@addDateTimeToMP4Recordings">
+                                                        Add Datetime to MP4 Filenames
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">HLS</label>
+                                            <div class="col-sm-10 text-left">
+                                                <div class="checkbox">
+                                                    <input id="hlsMuxingEnabled" name="hlsMuxingEnabled" type="checkbox" [(ngModel)]="appSettings.hlsMuxingEnabled">
+                                                    <label for="hlsMuxingEnabled" i18n="@@enableHLSLiveStreaming">
+                                                        Enable HLS Live Streaming
+                                                    </label>
+                                                </div>
+                                                <div>
+                                                    <input type="text" name="hlsListSize" class="form-control" [(ngModel)]="appSettings.hlsListSize">
+                                                    <span class="help-block" i18n="@@HLSSegmentListSize">Segment List Size</span>
+                                                </div>
+                                                <div>
+                                                    <input type="text" name="hlsTime" class="form-control" [(ngModel)]="appSettings.hlsTime">
+                                                    <span class="help-block" i18n="@@HLSSegmentDuration">Segment Duration</span>
+                                                </div>
+                                                <!-- 
+                                                <div>
+                                                    <select class="selectpicker" id="hlsPlayListType" name="hlsPlayListType" data-style="btn btn-block" title="Type" data-size="7"
+                                                            [(ngModel)]="appSettings.hlsPlayListType">
+    
+                                                        <option *ngFor="let type of listTypes" [value]="type.value" [selected]="type.value == appSettings.hlsPlayListType">{{type.name}}</option>
+                                                    </select>
+                                                    <span class="help-block" i18n="@@HLSListType">List Type</span>
+                                                    
+                                                </div>
+                                                 -->
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <legend class="text-left">Adaptive Streaming</legend>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Streams</label>
+                                            <div class="col-sm-10">
+                                                <ng-container *ngIf="appSettings.encoderSettings">
+                                                    <div class="row" *ngFor="let encoderSetting of appSettings.encoderSettings; let i = index">
+                                                        <div class="col-sm-3 text-left">
+
+                                                            <input type="text" [name]="'resolutionHeight'+i" class="form-control" [(ngModel)]="encoderSetting.height">
+                                                            <span class="help-block" i18n="@@ResolutionHeight">Video Resolution Height</span>
+                                                        </div>
+                                                        <div class="col-sm-3 text-left">
+                                                            <input type="text" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate">
+                                                            <span class="help-block" i18n="@@VideoBitrate">Video Bitrate(bps)</span>
+                                                        </div>
+                                                        <div class="col-sm-3 text-left">
+                                                            <input type="text" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate">
+                                                            <span class="help-block" i18n="@@AudioBitrate">Audio Bitrate(bps)</span>
+                                                        </div>
+
+                                                        <button type="button" class="col-sm-1 btn btn-icon btn-simple btn-danger btn-minus" (click)="deleteStream(i)">
+                                                            <i class="ti-minus"></i>
+                                                        </button>
+                                                    </div>
+                                                </ng-container>
+                                                <button class="col-sm-3 form-control-static btn btn-default" i18n="@@addNewStream" type="button" (click)="addNewStream()">
+                                                    Add New Stream
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    </fieldset>
+
+
+                                    <fieldset>
+                                        <legend class="text-left" i18n="@@SocialSharing">Social Network Sharing</legend>
+                                        <div class="form-group">
+
+                                            <label class="col-sm-2 control-label">
+                                                <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>Facebook</label>
+
+                                            <p class="col-sm-2 form-control-static" style="text-align:left !important" *ngIf="socialMediaAuthStatus.isFacebookAuthenticated">
+                                                Authenticated</p>
+                                            <p class="col-sm-2 form-control-static" style="text-align:left !important" *ngIf="!socialMediaAuthStatus.isFacebookAuthenticated">
+                                                Not Authenticated</p>
+
+                                            <button class="col-sm-2 form-control-static btn-simple btn btn-danger" *ngIf="socialMediaAuthStatus.isFacebookAuthenticated"
+                                                i18n="@@YoutubeAuthenticated" type="button" (click)="revokeSocialMediaAuth('facebook')">
+                                                Revoke
+                                            </button>
+                                            <button class="col-sm-2 form-control-static btn btn-simple btn-success" *ngIf="!socialMediaAuthStatus.isFacebookAuthenticated control-label"
+                                                i18n="@@authenticate" type="button" (click)="getSocialMediaAuthParameters('facebook')">
+                                                Authenticate
+                                            </button>
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label class="col-sm-2 control-label">
+                                                <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>Youtube</label>
+
+                                            <p class="col-sm-2 form-control-static" style="text-align:left !important" *ngIf="socialMediaAuthStatus.isYoutubeAuthenticated">
+                                                Authenticated</p>
+
+                                            <p class="col-sm-2 form-control-static" style="text-align:left !important" *ngIf="!socialMediaAuthStatus.isYoutubeAuthenticated">
+                                                Not Authenticated</p>
+
+                                            <button class="col-sm-2 form-control-static btn-simple btn btn-danger" *ngIf="socialMediaAuthStatus.isYoutubeAuthenticated"
+                                                i18n="@@YoutubeAuthenticated" type="button" (click)="revokeSocialMediaAuth('youtube')">
+                                                Revoke
+                                            </button>
+                                            <button class="col-sm-2 form-control-static btn btn-simple btn-success" *ngIf="!socialMediaAuthStatus.isYoutubeAuthenticated control-label"
+                                                i18n="@@authenticateYoutube" type="button" (click)="getSocialMediaAuthParameters('youtube')">
+                                                Authenticate
+                                            </button>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">
+                                                <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>Periscope</label>
+
+                                            <p class="col-sm-2 form-control-static" style="text-align:left !important" *ngIf="socialMediaAuthStatus.isPeriscopeAuthenticated">
+                                                Authenticated</p>
+                                            <p class="col-sm-2 form-control-static" style="text-align:left !important" *ngIf="!socialMediaAuthStatus.isPeriscopeAuthenticated">
+                                                Not Authenticated</p>
+
+                                            <button class="col-sm-2 form-control-static btn-simple btn btn-danger" *ngIf="socialMediaAuthStatus.isPeriscopeAuthenticated"
+                                                i18n="@@YoutubeAuthenticated" type="button" (click)="revokeSocialMediaAuth('periscope')">
+                                                Revoke
+                                            </button>
+                                            <button class="col-sm-2 form-control-static btn btn-simple btn-success" *ngIf="!socialMediaAuthStatus.isPeriscopeAuthenticated control-label"
+                                                i18n="@@authenticate" type="button" (click)="getSocialMediaAuthParameters('periscope')">
+                                                Authenticate
+                                            </button>
+
+
+
+                                        </div>
+                                    </fieldset>
+
+
+                                    <button type="submit" class="btn btn-fill btn-info" i18n="@@saveForm">Save</button>
+                                </form>
+
+
+
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <!--
+                        <hr />
+                        
+                        <div class="stats">
+                               <button class="btn btn-primary btn-simple btn-sm" (click)="updateCPULoad()">
+                                   <i class="ti-reload"></i>Update now</button>
+                        </div>
+                    -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>

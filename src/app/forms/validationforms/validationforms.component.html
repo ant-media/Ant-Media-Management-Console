@@ -1,0 +1,276 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <form #f="ngForm" novalidate (ngSubmit)="save(f.value, f.valid)">
+
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                Register Form
+                            </h4>
+                        </div>
+                        <div class="card-content">
+                            <div class="form-group">
+                                <label class="control-label" for="">Email Address:
+                                    <span class="star">*</span>
+                                </label>
+                                <input type="email" class="form-control" name="email" [ngModel]="register.email"
+                                  required  #email="ngModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$">
+                                <small [hidden]="email.valid || (email.pristine && !f.submitted)" class="text-danger">
+                                  Email is required and format should be <i>john@doe.com</i>.
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label  for="" class="control-label">Password
+                                    <span class="star">*</span>
+                                </label>
+                                <input type="password" class="form-control" name="password" [ngModel]="register.password"
+                                  required validateEqual="confirmPassword" reverse="true" #password="ngModel">
+                                <small [hidden]="password.valid || (password.pristine && !f.submitted)" class="text-danger">
+                                  Password is required
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="control-label">Confirm Password
+                                    <span class="star">*</span>
+                                </label>
+
+                                <input type="password" class="form-control" name="confirmPassword" [ngModel]="register.confirmPassword"
+                                  required validateEqual="password" reverse="false" #confirmPass="ngModel">
+                                <small [hidden]="confirmPass.valid || (confirmPass.pristine && !f.submitted)" class="text-danger">
+                                  Password mismatch
+                                </small>
+                            </div>
+                            <div class="category">    <span class="star">*</span> Required fields</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="checkbox pull-left">
+                                <input id="checkbox1" name="optionsCheckboxes" type="checkbox" [ngModel]>
+                                <label for="checkbox1">
+                                    Subscribe to newsletter
+                                </label>
+                            </div>
+
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn btn-info btn-fill btn-wd" >Register</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <form #f1="ngForm" novalidate (ngSubmit)="save1(f1.value, f1.valid)">
+                        <div class="card-header text-center">
+                            <h4 class="card-title">
+                                Login Form
+                            </h4>
+                        </div>
+                        <div class="card-content">
+                            <div class="form-group">
+                                <label class="control-label" for="">Email Address:
+                                    <span class="star">*</span>
+                                </label>
+                                <input type="email" class="form-control" name="email" [ngModel]="login.email"
+                                  required  #email="ngModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$">
+                                <small [hidden]="email.valid || (email.pristine && !f1.submitted)" class="text-danger">
+                                  Email is required and format should be <i>john@doe.com</i>.
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label  for="" class="control-label">Password
+                                    <span class="star">*</span>
+                                </label>
+                                <input type="password" class="form-control" name="password" [ngModel]="login.password"
+                                  required validateEqual="confirmPassword" reverse="true" #password="ngModel">
+                                <small [hidden]="password.valid || (password.pristine && !f1.submitted)" class="text-danger">
+                                  Password is required
+                                </small>
+                            </div>
+                            <div class="category">    <span class="star">*</span> Required fields</div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="submit" class="btn btn-info btn-fill btn-wd">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card">
+                    <form #f2="ngForm" class="form-horizontal" novalidate (ngSubmit)="save2(f2.value, f2.valid)">
+                        <div class="card-content">
+                            <h4 class="card-title">Type Validation</h4>
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        Required Text
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" type="text" name="text"  [ngModel]="typeValidation.text"
+                                          required  #text="ngModel">
+                                          <small [hidden]="text.valid || (text.pristine && !f2.submitted)" class="text-danger">
+                                          Text is required.
+                                          </small>
+                                    </div>
+                                    <div class="col-sm-4"><code>required</code></div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        Email
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input type="email" class="form-control" name="email" [ngModel]="typeValidation.email"
+                                          required  #email="ngModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$">
+                                        <small [hidden]="email.valid || (email.pristine && !f2.submitted)" class="text-danger">
+                                          Email is required and format should be <i>john@doe.com</i>.
+                                        </small>
+                                    </div>
+                                    <div class="col-sm-4"><code>email="true"</code></div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        Number
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" type="number" name="number" number="true" [ngModel]="typeValidation.number"
+                                          required  #number="ngModel">
+                                    </div>
+                                    <div class="col-sm-4"><code>number="true"</code></div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        Url
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" type="text" id="url" required pattern="https?://.+" [(ngModel)]="typeValidation.url" name="url" #url="ngModel">
+                                          <small [hidden]="url.valid || (url.pristine && !f2.submitted)" class="text-danger">
+                                            Must be a valid URL!
+                                          </small>
+                                    </div>
+                                    <div class="col-sm-4"><code>url="true"</code></div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="form-group column-sizing">
+                                    <label class="col-sm-2 control-label">
+                                        Equal to
+                                    </label>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control" name="idSource" [ngModel]="typeValidation.idSource" placeholder="#idSource"
+                                          required validateEqual="idDestination" reverse="true" #idSource="ngModel">
+                                        <small [hidden]="idSource.valid || (idSource.pristine && !f2.submitted)" class="text-danger">
+                                          IdSource is required
+                                        </small>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control" name="idDestination" [ngModel]="typeValidation.idDestination" placeholder="#idDestination"
+                                          required validateEqual="idSource" reverse="false" #idDestination="ngModel">
+                                        <small [hidden]="idDestination.valid || (idDestination.pristine && !f2.submitted)" class="text-danger">
+                                          IdSource mismatch!
+                                        </small>
+                                    </div>
+                                    <div class="col-sm-4"><code>equalTo="#idSource"</code>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- <h4 class="card-title">Range validation</h4>
+
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        Min Length
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control"
+                                               type="text"
+                                               name="min_length"
+                                               minLength="5"
+                                        />
+                                    </div>
+                                    <div class="col-sm-4"><code>minLength="5"</code></div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        Max Length
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control"
+                                               type="text"
+                                               name="max_length"
+                                               maxLength="5"
+                                        />
+                                    </div>
+                                    <div class="col-sm-4"><code>maxLength="5"</code></div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Range</label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control"
+                                               type="text"
+                                               name="range"
+                                               range="[6,10]"
+                                        />
+                                    </div>
+                                    <div class="col-sm-4"><code>range="[6,10]"</code></div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        Min Value
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control"
+                                               type="text"
+                                               name="min"
+                                               min="6"
+                                        />
+                                    </div>
+                                    <div class="col-sm-4"><code>min="6"</code></div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        Max Value
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control"
+                                               type="text"
+                                               name="max"
+                                               max="6"
+                                        />
+                                    </div>
+                                    <div class="col-sm-4"><code>max="6"</code></div>
+                                </div>
+                            </fieldset> -->
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="submit" class="btn btn-info btn-fill">Validate Inputs</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

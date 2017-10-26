@@ -1,0 +1,155 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6 col-sm-6">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <div class="icon-big icon-warning text-center">
+                                    <i class="ti-server"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-7">
+                                <div class="numbers">
+                                    <p i18n="@@cpuLoadLabel">CPU Load</p>
+                                    {{cpuLoad}}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <hr />
+                        <!--
+                        <div class="stats">
+                            <i class="ti-reload"></i> Updated now
+                        </div>
+                    -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <div class="icon-big icon-success text-center">
+                                    <i class="ti-wallet"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-7">
+                                <div class="numbers">
+                                    <p i18n="@@liveStreamCountLabel">Active Live Streams</p>
+                                    {{liveStreamSize}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <hr />
+                        <!--
+                        <div class="stats">
+                            <i class="ti-calendar"></i> Last day
+                        </div>
+                    -->
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div class="col-lg-4 col-sm-6">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <div class="icon-big icon-danger text-center">
+                                    <i class="ti-pulse"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-7">
+                                <div class="numbers">
+                                    <p i18n="@@liveWatchersCountLabel">Live Watchers</p>
+                                    {{watcherSize}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <hr />
+                  
+                    </div>
+                </div>
+            </div>
+        -->
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-sm-6">
+                <div class="card card-circle-chart">
+                    <div class="card-header text-center">
+                        <h5 class="card-title" i18n="@@diskUsageLabel">Disk Usage</h5>
+                        <p class="description">{{niceBytes(diskInUseSpace)}} / {{niceBytes(diskTotalSpace)}}</p>
+                    </div>
+                    <div class="card-content">
+                        <div id="chartDiskUsage" class="chart-circle">{{diskUsagePercent}}%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-6">
+                <div class="card card-circle-chart">
+                    <div class="card-header text-center">
+                        <h5 class="card-title" i18n="@@serverMemoryUsageLabel">Memory Usage</h5>
+                        <p class="description">{{niceBytes(memoryInUseSpace)}} / {{niceBytes(memoryTotalSpace)}}</p>
+                    </div>
+                    <div class="card-content">
+                        <div id="chartMemoryUsage" class="chart-circle">{{memoryUsagePercent}}%</div>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div class="col-lg-4 col-sm-6">
+                <div class="card card-circle-chart">
+                    <div class="card-header text-center">
+                        <h5 class="card-title" i18n="@@systemMemoryUsageLabel">System Memory Usage</h5>
+                        <p class="description">{{niceBytes(systemMemoryInUse)}} / {{niceBytes(systemMemoryTotal)}}</p>
+                    </div>
+                    <div class="card-content">
+                        <div id="chartSystemMemory" class="chart-circle">{{systemMemoryUsagePercent}}%</div>
+                    </div>
+                </div>
+            </div>
+        -->
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title" i18n="@@applicationsTitle">Applications</h4>
+                    </div>
+                    <div class="card-content table-full-width">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th i18n="@@appName">Name</th>
+                                    <th class="text-center" i18n="@@liveStreamCountLabel">Live Stream</th>
+                                    <th class="text-center" i18n="@@vodCountLabel">VoD Count</th>
+                                    <th class="text-center" i18n="@@appStorageSizeLabel">Storage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!---->
+                                <tr *ngFor="let row of appTableData.dataRows; let i=index">
+                                    <td class="text-center">{{i+1}}</td>
+                                    <td>{{row.name}}</td>
+                                    <td class="text-center">{{row.liveStreamCount}}</td>
+                                    <td class="text-center">{{row.vodCount}}</td>
+                                    <td class="text-center">{{niceBytes(row.storage)}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

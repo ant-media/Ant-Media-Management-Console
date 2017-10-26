@@ -1,0 +1,130 @@
+<div class="logo">
+    <a href="/" class="simple-text logo-mini">
+        <div class="logo-img">
+            <img src="/assets/img/ant-media-min-logo.png" />
+        </div>
+    </a>
+
+    <a href="/" class="simple-text logo-normal" style="text-transform:none" i18n="@@antMediaServer">
+		Ant Media Server
+	</a>
+</div>
+
+
+<div class="sidebar-wrapper">
+    <!--
+	<div class="user">
+        <div class="photo">
+            <img src="../assets/img/faces/face-2.jpg" />
+        </div>
+        <div class="info">
+            <a data-toggle="collapse" href="#collapseExample" class="collapsed">
+                <span>
+                    Chet Faker
+                    <b class="caret"></b>
+                </span>
+            </a>
+            <div class="clearfix"></div>
+
+            <div class="collapse" id="collapseExample">
+                <ul class="nav">
+                    <li>
+                        <a href="#profile">
+                            <span class="sidebar-mini">Mp</span>
+                            <span class="sidebar-normal">My Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#edit">
+                            <span class="sidebar-mini">Ep</span>
+                            <span class="sidebar-normal">Edit Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#settings">
+                            <span class="sidebar-mini">S</span>
+                            <span class="sidebar-normal">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+-->
+    <div *ngIf="isNotMobileMenu()">
+        <form class="navbar-form navbar-left navbar-search-form" role="search">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input type="text" value="" class="form-control" placeholder="Search...">
+            </div>
+        </form>
+        <ul class="nav nav-mobile-menu">
+            <li>
+                <a href="#stats" class="dropdown-toggle btn-magnify" data-toggle="dropdown">
+                    <i class="ti-panel"></i>
+                    <p>Stats</p>
+                </a>
+            </li>
+            <li class="dropdown">
+                <a href="#notifications" class="dropdown-toggle btn-rotate" data-toggle="dropdown">
+                    <i class="ti-bell"></i>
+                    <span class="notification">5</span>
+                    <p class="hidden-md hidden-lg">
+                        Notifications
+                        <b class="caret"></b>
+                    </p>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#not1">Notification 1</a></li>
+                    <li><a href="#not2">Notification 2</a></li>
+                    <li><a href="#not3">Notification 3</a></li>
+                    <li><a href="#not4">Notification 4</a></li>
+                    <li><a href="#another">Another notification</a></li>
+                </ul>
+            </li>
+            <li>
+                <a class="btn-rotate">
+                    <i class="ti-settings"></i>
+                    <p class="hidden-md hidden-lg">
+                        Settings
+                    </p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <ul class="nav">
+        
+        <li routerLinkActive="active">
+            <!--If is a single link-->
+            <a routerLink="/dashboard" routerLinkActive="active">
+                        <i class="ti-panel" i18n="@@dashboardMenuItem"></i>
+                        <p i18n="@@dashboardMenuItem">Dashboard</p>
+            </a>
+
+        </li>
+
+        <li routerLinkActive="active">
+               
+                <!--If it have a submenu-->
+                <a data-toggle="collapse" href="#Applications">
+                        <i class="ti-package"></i>
+                        <p><ng-container i18n="@@applicationsMenuItem">Applications</ng-container><b class="caret"></b></p>
+                    </a>
+
+                <!--Display the submenu items-->
+                <div id="Applications" class="collapse">
+                    <ul class="nav">
+                        <li routerLinkActive="active" *ngFor="let app of apps" >
+                            
+                            <a [routerLink]="['/applications/' +  app]" routerLinkActive="active">
+                                    <i class="ti-file"></i>
+                                    <span class="sidebar-mini"></span>
+                                    <span class="sidebar-normal">{{app}}</span>
+                                </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+    </ul>
+
+</div>

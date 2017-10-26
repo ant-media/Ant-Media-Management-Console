@@ -1,0 +1,79 @@
+<nav #navbar class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-minimize">
+            <button id="minimizeSidebar" class="btn btn-fill btn-icon">
+                <i class="ti-more-alt"></i>
+            </button>
+        </div>
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" (click)="sidebarToggle()">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar bar1"></span>
+                <span class="icon-bar bar2"></span>
+                <span class="icon-bar bar3"></span>
+            </button>
+            <a class="navbar-brand">{{getTitle()}}</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <div class="" *ngIf="isMobileMenu()">
+
+                <ul class="nav navbar-nav navbar-right">
+
+                    <li class="dropdown">
+                        <a href="#notifications" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="ti-user"></i>
+                            <span class="notification"></span>
+                            <b class="caret"></b>
+                            <p class="hidden-md hidden-lg">
+
+
+                            </p>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a routerLink="/pages/changepass" routerLinkActive="active">
+                                    <i class="ti-angle-double-right"></i>
+                                    <ng-container i18n="@@changePassword">Change Password</ng-container>
+                                </a>
+
+                            </li>
+                            <li class="text-left">
+                                <a routerLink="/pages/login" routerLinkActive="active">
+
+                                    <i class="ti-angle-double-right"></i>
+                                    <ng-container i18n="@@logout">Logout</ng-container>
+
+                                </a>
+
+                            </li>
+                            <!--
+                            <li>
+                                <a >
+                                    <button (click)="logout()" class="btn btn-primary btn-simple btn-small">
+                                        <i class="ti-angle-double-right"></i>
+                                        Logout
+                                    </button>
+                                </a>
+
+                            </li>
+                        -->
+                        </ul>
+                    </li>
+
+                    <!--
+                    <li>
+                        <a class="btn-rotate">
+                            <i class="ti-settings"></i>
+                            <p class="hidden-md hidden-lg">
+                                Settings
+                            </p>
+                        </a>
+                    </li>
+                -->
+                </ul>
+
+            </div>
+
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,75 @@
+<nav class="navbar navbar-transparent navbar-absolute">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2" (click)="sidebarToggle()">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" i18n="@@loginPageHeader" ruterLinkActive = "active" [routerLink]="['/dashboard/overview']">Management of Ant Media Server</a>
+        </div>
+        <!--
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a ruterLinkActive = "active" [routerLink]="['/pages/register']">
+                        Register
+                    </a>
+                </li>
+              
+            </ul>
+        </div>
+    -->
+    </div>
+</nav>
+
+<div class="wrapper wrapper-full-page">
+    <div class="full-page login-page" data-color="" data-image="../../assets/img/background/background-2.jpg">
+    <!--   you can change the color of the filter page using: data-color="blue | azure | green | orange | red | purple" -->
+        <div class="content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 col-sm-6 col-md-offset-4 col-sm-offset-3">
+                        <form (ngSubmit)="loginUser()">
+                            <div class="card" data-background="color" data-color="blue">
+                                <div class="card-header">
+                                    <h3 class="card-title" i18n="@@loginTitle">Login</h3>
+                                </div>
+                                <div class="card-content">
+                                   
+                                    <div class="form-group">
+                                        <label i18n="@@loginFormUsername">Username</label>
+                                        <input (keydown)="credentialsChanged()" type="email" name="email" class="form-control input-no-border" [(ngModel)]="email">
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label i18n="@@loginFormPassword">Password</label>
+                                        <input (keydown)="credentialsChanged()" type="password" name="password" class="form-control input-no-border" [(ngModel)]="password">
+                                    </div>
+                                    <div class="form-group text-danger text-center" [hidden]="!showIncorrectCredentials">
+                                            Username or password is incorrect
+                                        </div>
+                                </div>
+                                <div class="card-footer text-center">
+                                    <button type="submit"  i18n="@@loginFormSubmit" class="btn btn-fill btn-wd ">Let's go</button>
+                                    <div class="forgot">
+                                        <a href="#pablo" i18n="@@loginFormForgotPassword">Forgot your password?</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer footer-transparent">
+            <div class="container">
+                <div class="copyright">
+                    &copy; {{test | date: 'yyyy'}}  <i class="fa fa-heart heart"></i> by <a href="http://antmedia.io">AntMedia</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
