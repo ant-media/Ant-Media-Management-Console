@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import { environment } from '../../environments/environment';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 
-export const SERVER_ADDR = "127.0.0.1"; //"193.140.239.100";
-export const HTTP_SERVER_ROOT = "http://" + SERVER_ADDR + ":5080/";
+export const SERVER_ADDR = location.hostname;
+export const HTTP_SERVER_ROOT = "http://" + location.hostname + ":5080/"; 
+
 export const REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "Console/rest";
 
 export class LiveBroadcast {
