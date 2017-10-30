@@ -7,13 +7,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" i18n="@@loginPageHeader" ruterLinkActive = "active" [routerLink]="['/dashboard/overview']">Management of Ant Media Server</a>
+            <a class="navbar-brand" i18n="@@loginPageHeader" routerLinkActive = "active" [routerLink]="['/dashboard/overview']">Manager of Ant Media Server</a>
         </div>
         <!--
         <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-left">
                 <li>
-                    <a ruterLinkActive = "active" [routerLink]="['/pages/register']">
+                    <a routerLinkActive = "active" [routerLink]="['/pages/register']">
                         Register
                     </a>
                 </li>
@@ -21,6 +21,7 @@
             </ul>
         </div>
     -->
+    
     </div>
 </nav>
 
@@ -30,7 +31,7 @@
         <div class="content">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-4 col-sm-6 col-md-offset-4 col-sm-offset-3">
+                    <div class="col-md-4 col-sm-6 col-md-offset-4 col-sm-offset-3" *ngIf="!firstLogin">
                         <form (ngSubmit)="loginUser()">
                             <div class="card" data-background="color" data-color="blue">
                                 <div class="card-header">
@@ -39,7 +40,7 @@
                                 <div class="card-content">
                                    
                                     <div class="form-group">
-                                        <label i18n="@@loginFormUsername">Username</label>
+                                        <label i18n="@@loginFormEmail">E-mail</label>
                                         <input (keydown)="credentialsChanged()" type="email" name="email" class="form-control input-no-border" [(ngModel)]="email">
 
                                     </div>
@@ -53,13 +54,69 @@
                                 </div>
                                 <div class="card-footer text-center">
                                     <button type="submit"  i18n="@@loginFormSubmit" class="btn btn-fill btn-wd ">Let's go</button>
+                                    <!--
                                     <div class="forgot">
                                         <a href="#pablo" i18n="@@loginFormForgotPassword">Forgot your password?</a>
                                     </div>
+                                -->
                                 </div>
                             </div>
                         </form>
                     </div>
+                    
+                    <div class="col-md-4 col-sm-6 col-md-offset-4 col-sm-offset-3" *ngIf="firstLogin">
+                            <form #registerForm="ngForm" novalidate (ngSubmit)="createFirstAccount(registerForm.valid)">
+                                    <div class="card" data-background="color" data-color="blue">
+                                        <div class="card-header">
+                                            <h3 class="card-title" i18n="@@loginRegisterFirtUser">Create First Account</h3>
+                                        </div>
+                                        <div class="card-content">
+
+                                            <div class="form-group">
+                                                <label i18n="@@loginFormName">Full Name<span class="star">*</span></label>
+                                                <input type="text" name="fullname" class="form-control input-no-border"
+                                                   [(ngModel)]="firstUser.fullName" #fullName="ngModel" required minlength="6">
+                                                <small i18n="@@fullNameIsRequired" [hidden]="fullName.valid || (fullName.pristine && !registerForm.submitted)" class="text-danger">
+                                                Full name is required and it should be at least 6 characters
+                                                </small>
+                                             </div>
+                                           
+                                            <div class="form-group">
+                                                <label i18n="@@loginFormEmail">E-mail<span class="star">*</span></label>
+                                                <input  type="email" name="firstEmail" class="form-control input-no-border" 
+                                                    [(ngModel)]="firstUser.email" required #firstAccountEmail="ngModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$">
+                                                    <small i18n="@@fistAccountEmailRequired" [hidden]="firstAccountEmail.valid || (firstAccountEmail.pristine && !registerForm.submitted)" class="text-danger">
+                                                    Email is not valid
+                                                    </small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label i18n="@@loginFormPassword">Password<span class="star">*</span></label>
+                                                <input type="password" name="first_password" 
+                                                    class="form-control input-no-border" [(ngModel)]="firstUser.password"
+                                                    required #firstPassword="ngModel" minlength="7" reverse="true" validateEqual="first_password_again">
+                                                    <small i18n="@@passwordRequired" [hidden]="firstPassword.valid || (firstPassword.pristine && !registerForm.submitted)" class="text-danger">
+                                                    Password should be at least 7 characters
+                                                    </small>
+                                            </div>
+                                            <div class="form-group">
+                                                    <label i18n="@@loginFormPasswordAgain">Confirm Password<span class="star">*</span></label>
+                                                    <input type="password" name="first_password_again" class="form-control input-no-border" 
+                                                        [(ngModel)]="temp_model_password" #firstPasswordAgain="ngModel" required reverse="false" validateEqual="first_password">
+                                                        <small i18n="@@password_mismatch" [hidden]="firstPasswordAgain.valid || (firstPasswordAgain.pristine && !registerForm.submitted)" class="text-danger">
+                                                        Password mismatch
+                                                        </small>
+                                                </div>
+                                        </div>
+                                        <div class="card-footer text-center">
+                                            <button type="submit" [disabled]='firstUserIsCreating' 
+                                                 i18n="@@createAccount" class="btn btn-fill btn-wd ">
+                                                 <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="firstUserIsCreating" aria-hidden="true"></i>Create Account</button>
+                                           
+                                        </div>
+                                    </div>
+                                </form>
+                    </div>
+
                 </div>
             </div>
         </div>

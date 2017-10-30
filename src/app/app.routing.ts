@@ -39,11 +39,13 @@ export const AppRoutes: Routes = [{
             path: 'calendar',
             loadChildren: './calendar/calendar.module#CalendarModule',
             canActivate: [AuthService]
-        },{
+        },
+        {
             path: '',
             loadChildren: './userpage/user.module#UserModule',
             canActivate: [AuthService]
-        },{
+        },
+        {
             path: '',
             loadChildren: './timeline/timeline.module#TimelineModule',
             canActivate: [AuthService]

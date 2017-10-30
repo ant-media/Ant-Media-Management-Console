@@ -7,10 +7,9 @@ import { CanActivate, Router } from '@angular/router';
 export class User {
 
   public newPassword:string;
+  public fullName:string;
 
   constructor(public email:string,public password:string) {}
-
-
 }
 
 @Injectable()
@@ -35,6 +34,14 @@ export class AuthService implements CanActivate{
     let user = new User (email, password);
     user.newPassword = newPassword;
     return this.http.post(REST_SERVICE_ROOT + "/changeUserPassword", user);
+  }
+
+  isFirstLogin(): Observable<Object> {
+    return this.http.get(REST_SERVICE_ROOT + "/isFirstLogin");
+  }
+
+  createFirstAccount(user:User): Observable<Object> {
+    return this.http.post(REST_SERVICE_ROOT + "/addInitialUser", user);
   }
 
   canActivate(): boolean {

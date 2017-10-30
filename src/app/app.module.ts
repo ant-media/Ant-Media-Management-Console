@@ -21,6 +21,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ClipboardModule } from 'ngx-clipboard';
 
 
+
 @NgModule({
     imports:      [
         BrowserModule,
@@ -36,6 +37,7 @@ import { ClipboardModule } from 'ngx-clipboard';
         AppComponent,
         AdminLayoutComponent,
         AuthLayoutComponent
+
     ],
     providers: [
         AuthService,

@@ -8,7 +8,7 @@
                         <h4 class="card-title">Change Password</h4>
                     </div>
                     <div class="card-content">
-                        <form method="post" #f="ngForm" novalidate (ngSubmit)="updatePassword(f.valid)">
+                        <form method="post" #f="ngForm" novalidate (ngSubmit)="updatePassword(f.valid, f)">
                             <div class="row">
 
                                 <div class="col-md-12">
@@ -34,21 +34,21 @@
                                         </label>
                                         <input required name="newPassword" type="password" class="form-control border-input"
                                              [(ngModel)]="newPassword"  reverse="true" #newPass="ngModel"
-                                            validateEqual="newPasswordAgain">
-                                        <small [hidden]="newPass.valid || (newPass.pristine && !f.submitted)" class="text-danger">
-                                            Password is required
+                                            validateEqual="newPasswordAgain" minlength="7">
+                                        <small i18n="@@passwordRequired" [hidden]="newPass.valid || (newPass.pristine && !f.submitted)" class="text-danger">
+                                                Password should be at least 7 characters
                                         </small>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">New Password (again)
+                                        <label for="exampleInputEmail1">Confirm New Password
                                             <span class="star">*</span>
                                         </label>
                                         <input required name="newPasswordAgain" type="password" class="form-control border-input"
                                              [(ngModel)]="newPasswordAgain" reverse="false" #newPassAgain="ngModel"
                                             validateEqual="newPassword">
-                                        <small [hidden]="newPassAgain.valid || (newPassAgain.pristine && !f.submitted)" class="text-danger">
+                                        <small  [hidden]="newPassAgain.valid || (newPassAgain.pristine && !f.submitted)" class="text-danger">
                                             Password mismatch
                                         </small>
                                     </div>

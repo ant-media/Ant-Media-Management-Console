@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { AuthService } from '../../rest/auth.service';
+import { AuthService , User} from '../../rest/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { REST_SERVICE_ROOT } from '../../rest/rest.service';
 
@@ -21,6 +21,10 @@ export class LoginComponent implements OnInit{
     public email = "";
     public password = "";
     public showIncorrectCredentials = false;
+    public firstLogin = false;
+    public firstUser: User;
+    public temp_model_password:string;
+    public firstUserIsCreating:boolean;
 
     constructor(private element : ElementRef, private auth: AuthService, private http:HttpClient, private router: Router) {
         this.nativeElement = element.nativeElement;
@@ -39,6 +43,13 @@ export class LoginComponent implements OnInit{
     };
 
     ngOnInit(){
+        this.auth.isFirstLogin().subscribe(data => {
+            this.firstLogin = data["success"];
+            if (this.firstLogin) {
+                this.firstUser = new User("", "");
+            }
+        });
+
         this.checkFullPageBackgroundImage();
 
         this.logout();
@@ -53,7 +64,6 @@ export class LoginComponent implements OnInit{
     }
 
     logout() {
-        console.log("log out---");
        // localStorage.setItem("authenticated", null);
         localStorage.clear();
         //this.router.navigateByUrl("/pages/login");
@@ -77,9 +87,9 @@ export class LoginComponent implements OnInit{
     }
 
     loginUser() {
-        console.log("e-mail:" + this.email + " pass:"+ this.password);
+      
         this.auth.login(this.email, this.password).subscribe(data =>{
-            console.log(data);
+          
             if (data["success"] == true) {
                 localStorage.setItem("authenticated", "true");
                 this.router.navigateByUrl("/dashboard");
@@ -90,6 +100,45 @@ export class LoginComponent implements OnInit{
 
         });
 
+    }
+
+    createFirstAccount(isValid:boolean) {
+        console.log("is first account");
+        if (!isValid) {
+            return;
+        }
+
+        this.firstUserIsCreating = true;
+        this.auth.createFirstAccount(this.firstUser).subscribe(data => {
+            this.firstUserIsCreating = false;
+            if (data["success"] == true) {
+                this.firstLogin = false;
+                $.notify({
+                    icon: "ti-save",
+                    message: "Login with your e-mail and password"
+                  }, {
+                      type: "info",
+                      delay: 3000,
+                      placement: {
+                        from: 'top',
+                        align: 'center'
+                      }
+                    });
+            }
+            else {
+                $.notify({
+                    icon: "",
+                    message: "Failed to create user account. There can be already an user"
+                  }, {
+                      type: "danger",
+                      delay: 2000,
+                      placement: {
+                        from: 'top',
+                        align: 'center'
+                      }
+                    });
+            }
+        });
     }
 
     credentialsChanged():void {

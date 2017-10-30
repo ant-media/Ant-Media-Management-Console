@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../rest/auth.service';
+import {NgForm} from '@angular/forms';
+
+declare var $: any;
 
 @Component({
     moduleId: module.id,
@@ -19,17 +22,31 @@ export class UserComponent{
     }
 
 
-    updatePassword(isValid: boolean):void {
+    updatePassword(isValid: boolean, form: NgForm):void {
         if (!isValid) {
             return;
         }
-        console.log("current pass: " + this.currentPassword);
+        
         this.auth.changeUserPassword("nope", this.currentPassword, this.newPasswordAgain)
                 .subscribe(data => {
+                  
                     console.log(data);
                     if (data["success"]) {
-
+                        form.resetForm();
                         this.showPasswordNotChangedError = false;
+
+                        $.notify({
+                            icon: "ti-save",
+                            message: "Your password has been changed"
+                          }, {
+                              type: "info",
+                              delay: 3000,
+                              placement: {
+                                from: 'top',
+                                align: 'center'
+                              }
+                            });
+
                     }
                     else {
                         this.showPasswordNotChangedError = true;

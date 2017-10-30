@@ -15,6 +15,6 @@ export const PagesRoutes: Routes = [{
     },{
         path: 'register',
         component: RegisterComponent
-    },
+    }
     ]
 }];
