@@ -1,7 +1,7 @@
 {
     "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
     "project": {
-        "name": "pd-pro-angularcli"
+        "name": "ant-media-server-management-console"
     },
     "apps": [{
         "root": "src",
