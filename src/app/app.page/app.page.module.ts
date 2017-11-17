@@ -10,8 +10,14 @@ import { ClipboardModule } from 'ngx-clipboard';
 
 export const AppPageRoutes: Routes = [
     {
+        path: '',
+        component:AppPageComponent, //redirects to first app
+        pathMatch: 'full',
+    },
+    {
         path: ':appname',
         component:AppPageComponent,
+       
     }];
 
 @NgModule({

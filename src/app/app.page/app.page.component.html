@@ -26,9 +26,11 @@
                         </div>
                         <div id="my-tab-content" class="tab-content text-center">
                             <div class="tab-pane active" id="livestreams">
-                                <div class="text-right">
-                                    <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" (click)="newLiveStream()">New Live Stream</button>
-                                </div>
+                                            
+                                    <div class="text-right">
+                                        <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" (click)="newLiveStream()">New Live Stream</button>
+                                    </div>
+                                
                                 <div class="card" *ngIf="newLiveStreamActive">
 
                                     <form method="post" #f="ngForm" validate (ngSubmit)="createLiveStream(f.valid)">
@@ -41,7 +43,7 @@
                                         <div class="card-content">
                                             <div class="form-group text-left">
                                                 <label i18n="@@newLiveStreamName">Name</label>
-                                                <input type="text" required minlength="4" name="broadcastName" placeholder="Stream name" class="form-control" [(ngModel)]="liveBroadcast.name"
+                                                <input type="text" required minlength="4" name="broadcastName" i18n-placeholder="@@stream_name_place_holder" placeholder="Stream name" class="form-control" [(ngModel)]="liveBroadcast.name"
                                                     #broadcastName="ngModel">
                                                 <small [hidden]="broadcastName.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                                                     Stream name should be at least 4 characters.
@@ -56,8 +58,8 @@
                                                                 [(ngModel)]="liveBroadcastShareFacebook">
                                                             <label for="shareOnFacebook">
                                                                 <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>Facebook</label>
-                                                            <span class="help-block" *ngIf="!socialMediaAuthStatus.isFacebookAuthenticated">
-                                                                <small>Disabled. Authenticate For Facebook on Settings Tab</small>
+                                                            <span class="help-block" *ngIf="!socialMediaAuthStatus.isFacebookAuthenticated" >
+                                                                <small i18n="@@facebook_disabled_message">Disabled. Authenticate For Facebook on Settings Tab</small>
                                                             </span>
                                                         </div>
                                                     </div>
@@ -69,7 +71,7 @@
                                                             <label for="shareOnYoutube">
                                                                 <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>Youtube</label>
                                                             <span class="help-block" *ngIf="!socialMediaAuthStatus.isYoutubeAuthenticated">
-                                                                <small>Disabled. Authenticate For Youtube on Settings Tab</small>
+                                                                <small i18n="@@youtube_disabled_message">Disabled. Authenticate For Youtube on Settings Tab</small>
                                                             </span>
 
                                                         </div>
@@ -81,9 +83,7 @@
                                                             <label for="shareOnshareOnPeriscopeYoutube">
                                                                 <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>Periscope</label>
                                                             <span class="help-block" *ngIf="!socialMediaAuthStatus.isPeriscopeAuthenticated">
-                                                                <small>Disabled. Authenticate For Periscope(Twitter) on Settings
-                                                                    Tab
-                                                                </small>
+                                                                <small i18n="@@periscope_disabled_message">Disabled. Authenticate For Periscope(Twitter) on Settings Tab</small>
                                                             </span>
 
                                                         </div>
@@ -152,7 +152,7 @@
 
                                                     </button>
 
-                                                    <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs" type="button">
+                                                    <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs" type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-clipboard"></i>
                                                         </span>

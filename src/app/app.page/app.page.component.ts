@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy, Renderer } from '@angular/core';
 //import * as Chartist from 'chartist';
 //import * as ChartistPlugins from 'chartist-plugin-fill-donut';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { SERVER_ADDR, REST_SERVICE_ROOT, HTTP_SERVER_ROOT } from '../rest/rest.service';
 import { RestService, LiveBroadcast } from '../rest/rest.service';
 import { ClipboardService } from 'ngx-clipboard';
+import { Locale } from "../locale/locale";
 
 
 declare var $: any;
@@ -109,10 +110,13 @@ export class AppPageComponent implements OnInit, OnDestroy {
     new HLSListType('Event', 'event'),
   ];
 
-  constructor(private http: HttpClient, private route: ActivatedRoute, private restService: RestService,
-    private clipBoardService: ClipboardService, private renderer: Renderer) { }
+  constructor(private http: HttpClient, private route: ActivatedRoute, 
+        private restService: RestService,
+        private clipBoardService: ClipboardService, private renderer: Renderer,
+        public router:Router) { }
 
   ngOnInit() {
+    
     this.broadcastTableData = {
       dataRows: [
       ],
@@ -136,9 +140,26 @@ export class AppPageComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+   
     this.sub = this.route.params.subscribe(params => {
       this.appName = params['appname']; // (+) converts string 'id' to a number
+     
+      if (typeof this.appName == "undefined") {
+        this.restService.getApplications().subscribe(data => {
 
+          //second element is the Applications. It is not safe to make static binding.
+         
+          for (var i in data['applications']) {
+              //console.log(data['applications'][i]);
+              this.router.navigateByUrl("/applications/" + data['applications'][i]);
+              break;
+          }
+      });
+       
+        
+        return;
+      }
+      
       this.getAppLiveStreams();
       this.getVoDStreams();
       this.getSettings();
@@ -289,8 +310,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     let VoDName = fileName.substring(0, fileName.lastIndexOf("."));
     swal({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: Locale.getLocaleInterface().are_you_sure,
+      text: Locale.getLocaleInterface().wont_be_able_to_revert,
       type: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -303,17 +324,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
         }
         else {
-          $.notify({
-            icon: "ti-save",
-            message: "VoD file is not deleted"
-          }, {
-              type: "warning",
-              delay: 900,
-              placement: {
-                from: 'top',
-                align: 'right'
-              }
-            });
+            this.showVoDFileNotDeleted();
         };
         this.getVoDStreams();
       });
@@ -323,10 +334,24 @@ export class AppPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  showVoDFileNotDeleted() {
+    $.notify({
+      icon: "ti-save",
+      message: Locale.getLocaleInterface().vodFileNotDeleted
+    }, {
+        type: "warning",
+        delay: 900,
+        placement: {
+          from: 'top',
+          align: 'right'
+        }
+      });
+  }
+
   deleteLiveBroadcast(streamId: string): void {
     swal({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: Locale.getLocaleInterface().are_you_sure,
+      text: Locale.getLocaleInterface().wont_be_able_to_revert,
       type: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -341,7 +366,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
           else {
             $.notify({
               icon: "ti-save",
-              message: "Broadcast is not deleted"
+              message: Locale.getLocaleInterface().broadcast_not_deleted
             }, {
                 type: "warning",
                 delay: 900,
@@ -403,7 +428,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
       if (data["success"] == true) {
         $.notify({
           icon: "ti-save",
-          message: "Settings saved"
+          message: Locale.getLocaleInterface().settings_saved
         }, {
             type: "success",
             delay: 900,
@@ -416,7 +441,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
       else {
         $.notify({
           icon: "ti-alert",
-          message: "Settings could not be saved."
+          message: Locale.getLocaleInterface().settings_not_saved
         }, {
             type: 'warning',
             delay: 1900,
@@ -473,9 +498,10 @@ export class AppPageComponent implements OnInit, OnDestroy {
         if (data["streamId"] != null) {
 
           this.newLiveStreamActive = false;
+
           $.notify({
             icon: "ti-save",
-            message: "New broadcast is created"
+            message: Locale.getLocaleInterface().new_broadcast_created
           }, {
               type: "success",
               delay: 900,
@@ -504,10 +530,10 @@ export class AppPageComponent implements OnInit, OnDestroy {
           data['verification_url'] = "http://" + data['verification_url'];
         }
         // user_code verification_url
+        var message = Locale.getLocaleInterface().copy_this_code_and_enter_the_url.replace("CODE_KEY", data['user_code']);
+        message = message.replace("URL_KEY", data['verification_url']);
         swal({
-          html: 'Copy this code <b>' + data['user_code'] + '</b>'
-          + ' and enter it to '
-          + ' <a href="' + data['verification_url'] + '" target="_blank"><b>' + data['verification_url'] + '</b></a> address',
+          html:  message,
           type: 'info',
           // showConfirmButton: false,
           showCancelButton: true,
@@ -539,7 +565,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
   copyPublishUrl(streamUrl: string): void {
     this.clipBoardService.copyFromContent(this.getRtmpUrl(streamUrl), this.renderer);
     $.notify({
-      message: "Publish URL is copied to clipboard"
+      message: Locale.getLocaleInterface().publish_url_copied_to_clipboard
     }, {
         type: "success",
         delay: 400,
@@ -565,7 +591,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     this.clipBoardService.copyFromContent(embedCode, this.renderer);
     $.notify({
-      message: "Embed Code is copied to clipboard"
+      message: Locale.getLocaleInterface().embed_code_copied_to_clipboard
     }, {
         type: "success",
         delay: 400,
@@ -625,8 +651,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
         swal({
           type: "success",
-          title: "Congratulations",
-          text: "Authentication is done",
+          title: Locale.getLocaleInterface().congrats,
+          text: Locale.getLocaleInterface().authentication_is_done,
         });
       }
     });

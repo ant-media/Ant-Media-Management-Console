@@ -6,7 +6,8 @@ import { AuthService } from  './rest/auth.service';
 
 export const AppRoutes: Routes = [{
         path: '',
-        redirectTo: 'dashboard/overview',
+     //   redirectTo: 'dashboard/overview',
+        redirectTo: 'applications',
         pathMatch: 'full',
     },{
         path: '',

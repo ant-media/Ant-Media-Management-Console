@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Locale } from './locale/locale';
 
 
 @Component({
@@ -7,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {}
+export class AppComponent {
+  constructor(private localeService:Locale) {
+
+  }
+}
 
