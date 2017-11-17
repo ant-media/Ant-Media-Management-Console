@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../rest/auth.service';
-import {NgForm} from '@angular/forms';
+import { NgForm } from '@angular/forms';
 
 declare var $: any;
 
@@ -16,9 +16,11 @@ export class UserComponent{
     public newPassword: string;
     public newPasswordAgain: string;
     public showPasswordNotChangedError: boolean;
+    public showYourPasswordChanged: boolean;
 
     constructor(private auth: AuthService) {
         this.showPasswordNotChangedError = false;
+        this.showYourPasswordChanged = false;
     }
 
 
@@ -33,19 +35,9 @@ export class UserComponent{
                     console.log(data);
                     if (data["success"]) {
                         form.resetForm();
+                        this.showYourPasswordChanged = true;
                         this.showPasswordNotChangedError = false;
 
-                        $.notify({
-                            icon: "ti-save",
-                            message: "Your password has been changed"
-                          }, {
-                              type: "info",
-                              delay: 3000,
-                              placement: {
-                                from: 'top',
-                                align: 'center'
-                              }
-                            });
 
                     }
                     else {

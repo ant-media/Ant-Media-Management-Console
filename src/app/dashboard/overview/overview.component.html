@@ -138,12 +138,14 @@
                             </thead>
                             <tbody>
                                 <!---->
-                                <tr *ngFor="let row of appTableData.dataRows; let i=index">
-                                    <td class="text-center">{{i+1}}</td>
-                                    <td>{{row.name}}</td>
-                                    <td class="text-center">{{row.liveStreamCount}}</td>
-                                    <td class="text-center">{{row.vodCount}}</td>
-                                    <td class="text-center">{{niceBytes(row.storage)}}</td>
+                                <tr *ngFor="let row of appTableData.dataRows; let i=index" >
+                                   
+                                      <td class="text-center">{{i+1}}</td>
+                                      <td>{{row.name}}</td>
+                                      <td class="text-center">{{row.liveStreamCount}}</td>
+                                      <td class="text-center">{{row.vodCount}}</td>
+                                      <td class="text-center">{{niceBytes(row.storage)}}</td>
+                               
                                 </tr>
                             </tbody>
                         </table>

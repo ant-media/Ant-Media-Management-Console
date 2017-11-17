@@ -5,7 +5,7 @@
             <div class="col-lg-offset-3 col-lg-6">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Change Password</h4>
+                        <h4 class="card-title" i18n="@@change_password_title">Change Password</h4>
                     </div>
                     <div class="card-content">
                         <form method="post" #f="ngForm" novalidate (ngSubmit)="updatePassword(f.valid, f)">
@@ -13,7 +13,7 @@
 
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Current Password
+                                        <label><ng-container i18n="@@current_password">Current Password</ng-container>
                                             <span class="star">*</span>
                                         </label>
 
@@ -29,7 +29,7 @@
 
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>New Password
+                                        <label><ng-container i18n="@@new_password">New Password</ng-container>
                                             <span class="star">*</span>
                                         </label>
                                         <input required name="newPassword" type="password" class="form-control border-input"
@@ -42,26 +42,30 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Confirm New Password
+                                        <label for="exampleInputEmail1" i18n="@@confirmNewPassword">Confirm New Password
                                             <span class="star">*</span>
                                         </label>
                                         <input required name="newPasswordAgain" type="password" class="form-control border-input"
                                              [(ngModel)]="newPasswordAgain" reverse="false" #newPassAgain="ngModel"
                                             validateEqual="newPassword">
-                                        <small  [hidden]="newPassAgain.valid || (newPassAgain.pristine && !f.submitted)" class="text-danger">
+                                        <small i18n="@@password_mismatch" [hidden]="newPassAgain.valid || (newPassAgain.pristine && !f.submitted)" class="text-danger">
                                             Password mismatch
                                         </small>
                                     </div>
                                 </div>
 
-                                <div class="col-md-12 form-group text-center text-danger" [hidden]="!showPasswordNotChangedError">
+                                <div class="col-md-12 form-group text-center text-danger" i18n="@@makeSureCurrentPasswordIsCorrect" [hidden]="!showPasswordNotChangedError">
                                     Make sure you that current password is entered correctly.
                                 </div>
+                                <div class="col-md-12 form-group text-center text-success" [hidden]="!showYourPasswordChanged" i18n="@@yourPasswordChanged" [hidden]="!showPasswordNotChangedError">
+                                    Your password has beed changed
+                                 </div>
                             </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-info btn-fill btn-wd">Update</button>
+                                <button type="submit" class="btn btn-info btn-fill btn-wd" i18n="@@update_button_label">Update</button>
                             </div>
                             <div class="clearfix"></div>
+                            
                         </form>
                     </div>
                 </div>

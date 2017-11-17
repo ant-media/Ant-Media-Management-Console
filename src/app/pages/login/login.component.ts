@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, LOCALE_ID, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { AuthService , User} from '../../rest/auth.service';
@@ -25,12 +25,15 @@ export class LoginComponent implements OnInit{
     public firstUser: User;
     public temp_model_password:string;
     public firstUserIsCreating:boolean;
+    public showYouCanLogin:boolean;
+    public showFailedToCreateUserAccount:boolean;
 
     constructor(private element : ElementRef, private auth: AuthService, private http:HttpClient, private router: Router) {
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
+        this.showYouCanLogin = false;
+        this.showFailedToCreateUserAccount = false;
         
-        console.log("---- " + this.auth.test());
     }
     checkFullPageBackgroundImage(){
         var $page = $('.full-page');
@@ -60,6 +63,7 @@ export class LoginComponent implements OnInit{
         setTimeout(function(){
             // after 1000 ms we add the class animated to the login/register card
             $('.card').removeClass('card-hidden');
+           
         }, 700)
     }
 
@@ -102,6 +106,7 @@ export class LoginComponent implements OnInit{
 
     }
 
+
     createFirstAccount(isValid:boolean) {
         console.log("is first account");
         if (!isValid) {
@@ -113,30 +118,11 @@ export class LoginComponent implements OnInit{
             this.firstUserIsCreating = false;
             if (data["success"] == true) {
                 this.firstLogin = false;
-                $.notify({
-                    icon: "ti-save",
-                    message: "Login with your e-mail and password"
-                  }, {
-                      type: "info",
-                      delay: 3000,
-                      placement: {
-                        from: 'top',
-                        align: 'center'
-                      }
-                    });
+                this.showYouCanLogin = true;
+                
             }
             else {
-                $.notify({
-                    icon: "",
-                    message: "Failed to create user account. There can be already an user"
-                  }, {
-                      type: "danger",
-                      delay: 2000,
-                      placement: {
-                        from: 'top',
-                        align: 'center'
-                      }
-                    });
+                this.showFailedToCreateUserAccount = true;
             }
         });
     }
