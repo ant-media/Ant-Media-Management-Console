@@ -93,15 +93,6 @@
         </ul>
     </div>
     <ul class="nav">
-        
-        <li routerLinkActive="active">
-            <!--If is a single link-->
-            <a routerLink="/dashboard" routerLinkActive="active">
-                        <i class="ti-panel" i18n="@@dashboardMenuItem"></i>
-                        <p i18n="@@dashboardMenuItem">Dashboard</p>
-            </a>
-
-        </li>
 
         <li routerLinkActive="active">
                
@@ -114,7 +105,7 @@
                 <!--Display the submenu items-->
                 <div id="Applications" class="collapse">
                     <ul class="nav">
-                        <li routerLinkActive="active" *ngFor="let app of apps" >
+                        <li routerLinkActive="active" *ngFor="let app of getApps" >
                             
                             <a [routerLink]="['/applications/' +  app]" routerLinkActive="active">
                                     <i class="ti-file"></i>
@@ -126,5 +117,7 @@
                 </div>
             </li>
     </ul>
+
+    
 
 </div>

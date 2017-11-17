@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, AfterViewChecked, AfterContentInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { REST_SERVICE_ROOT, HTTP_SERVER_ROOT } from '../rest/rest.service';
+import { REST_SERVICE_ROOT, HTTP_SERVER_ROOT, RestService } from '../rest/rest.service';
 
 
 declare var $: any;
@@ -52,11 +52,11 @@ export const ROUTES: RouteInfo[] = [{
     templateUrl: 'sidebar.component.html',
 })
 
-export class SidebarComponent {
+export class SidebarComponent implements AfterViewInit {
     public menuItems: any[];
-    public apps: string[];
+    public static apps: string[];
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private restService: RestService) { }
 
 
     isNotMobileMenu() {
@@ -81,30 +81,27 @@ export class SidebarComponent {
         }
 
 
-        this.http.get(REST_SERVICE_ROOT + '/getApplications').subscribe(data => {
-
-            this.apps = [];
+        this.restService.getApplications().subscribe(data => {
+            SidebarComponent.apps = [];
 
             //second element is the Applications. It is not safe to make static binding.
             this.menuItems[1].children = [];
             for (var i in data['applications']) {
-                if (data['applications'][i] != "Console") {
-                    //do not edit console app
-                    console.log(data['applications'][i]);
-                    this.menuItems[1].children.push({ path: data['applications'][i], title: data['applications'][i], icontype: 'ti-file' });
-                    this.apps.push(data['applications'][i]);
-                }
-            }
+                //console.log(data['applications'][i]);
+                this.menuItems[1].children.push({ path: data['applications'][i], title: data['applications'][i], icontype: 'ti-file' });
+                SidebarComponent.apps.push(data['applications'][i]);
 
+            }
         });
+
 
     }
     ngAfterViewInit() {
-        var $sidebarParent = $('.sidebar .nav > li.active .collapse li.active > a').parent().parent().parent();
+        $("#Applications").collapse("show");
+    }
 
-        var collapseId = $sidebarParent.siblings('a').attr("href");
-
-        $(collapseId).collapse("show");
+    get getApps() {
+        return SidebarComponent.apps;
     }
 
 }

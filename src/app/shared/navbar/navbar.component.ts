@@ -2,6 +2,7 @@ import { Component, OnInit, Renderer, ViewChild, ElementRef, Directive } from '@
 import { ROUTES } from '../.././sidebar/sidebar.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { Locale } from 'app/locale/locale';
 
 var misc:any ={
     navbar_menu_visible: 0,
@@ -100,22 +101,36 @@ export class NavbarComponent implements OnInit{
 
     getTitle(){
         var titlee = this.location.prepareExternalUrl(this.location.path());
+      
         if(titlee.charAt(0) === '#'){
             titlee = titlee.slice( 2 );
         }
+
         for(var item = 0; item < this.listTitles.length; item++){
             var parent = this.listTitles[item];
+            
             if(parent.path === titlee){
                 return parent.title;
             }else if(parent.children){
-                var children_from_url = titlee.split("/")[2];
+                var first_child = titlee.split("/")[0];
+                if (first_child == "dashboard") {
+                    return Locale.getLocaleInterface().dashboard;
+                }
+                if (first_child == "applications") {
+                    return titlee.split("/")[1];
+                }
+                /*
+                var children_from_url = titlee.split("/")[1];
+                
                 for(var current = 0; current < parent.children.length; current++){
                     if(parent.children[current].path === children_from_url ){
                         return parent.children[current].title;
                     }
                 }
+                */
             }
         }
+        
         return 'Dashboard';
     }
 
