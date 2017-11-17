@@ -77,4 +77,9 @@ export class RestService {
         }
         return Observable.throw(error || 'Server error');
     }
+
+    public getApplications(): Observable<Response> {
+       return this.http.get(REST_SERVICE_ROOT + '/getApplications')
+        .map((res: Response) => res.json());;
+    }
 }
