@@ -2,8 +2,6 @@
     <div class="container-fluid">
         <nav class="pull-left">
             <ul>
-
-                
                 <li>
                     <a href="http://antmedia.io/blog">
                        Blog
@@ -12,8 +10,27 @@
                 
             </ul>
         </nav>
+
         <div class="copyright pull-right">
-            &copy; {{test | date: 'yyyy'}} <i class="fa fa-heart heart"></i> by <a href="https://antmedia.io">Ant Media</a>
-        </div>
+                &copy; {{test | date: 'yyyy'}} <i class="fa fa-heart heart"></i> by <a href="https://antmedia.io">Ant Media</a>
+            </div>
+
+            <!--
+        <nav class="pull-right">
+               
+                <ul>
+                <li>
+                    <a href="./tr" *ngIf="target_language=='Türkçe'" >
+                       {{target_language}}
+                    </a>
+                    <a href="/" *ngIf="target_language=='English'" >
+                        {{target_language}}
+                     </a>
+                </li>
+                
+            </ul>
+        </nav>
+    -->
+        
     </div>
 </footer>
