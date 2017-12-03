@@ -586,7 +586,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     let embedCode = '<iframe width="560" height="315" src="'
-      + HTTP_SERVER_ROOT + this.appName + "/play.jsp?name=" + streamUrl + ".m3u8"
+      + HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamUrl 
       + '" frameborder="0" allowfullscreen></iframe>';
 
     this.clipBoardService.copyFromContent(embedCode, this.renderer);
