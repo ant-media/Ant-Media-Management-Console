@@ -10,7 +10,7 @@ import 'rxjs/add/operator/catch';
 export const SERVER_ADDR = location.hostname;
 export const HTTP_SERVER_ROOT = "http://" + location.hostname + ":5080/"; 
 
-export const REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "Console/rest";
+export const REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
 
 export class LiveBroadcast {
     public name

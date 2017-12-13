@@ -581,9 +581,9 @@ export class AppPageComponent implements OnInit, OnDestroy {
   copyLiveEmbedCode(streamUrl: string): void {
 
 
-    if (this.isEnterpriseEdition) {
-      streamUrl += "_adaptive";
-    }
+    //if (this.isEnterpriseEdition) {
+    //  streamUrl += "_adaptive";
+    //}
 
     let embedCode = '<iframe width="560" height="315" src="'
       + HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamUrl 
