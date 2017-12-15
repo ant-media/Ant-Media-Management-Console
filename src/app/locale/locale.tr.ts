@@ -2,6 +2,12 @@ import { LocaleInterface } from './locale.interface';
 
 export let Locale_Turkish: LocaleInterface = 
 {
+    
+    notEnterprise : 'Bu özellik bir enterprise özelliktir.'
+    + 'Detaylı bilgi için lütfen web sitemizi <a href="https://antmedia.io/enterprise/" target="_blank"><b>ziyaret</b></a> ediniz',
+    enterpriseNotActivated : 'Bu sosyal medya entegrasyonu aktif değil! '
+    + 'Aktifleştirmek için ilgili xml dosyasını düzenleyiniz ya da destek talep ediniz.',
+    ketNotdefined:"Lütfen servisle ilgili parametreleri tanımlayınız.",
     vodFileNotDeleted : "Video maalesef silinemedi.",
     broadcast_not_deleted : "Yayın maalesef silinemedi.",
     settings_saved : "Ayarlar kaydedildi.",

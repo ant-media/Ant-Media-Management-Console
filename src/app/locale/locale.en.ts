@@ -2,6 +2,11 @@ import { LocaleInterface } from './locale.interface';
 
 export let Locale_English: LocaleInterface = 
 {
+    notEnterprise : 'This is enterprise function.'
+    + 'Please  <a href="https://antmedia.io/enterprise/" target="_blank"><b>visit</b></a> our web site for detailed information',
+    enterpriseNotActivated : 'This function is not activated! '
+    + 'Make sure that, related xml file is configured correctly .',
+     ketNotdefined:"Please enter service client id and client secret in app configuration.",
     vodFileNotDeleted : "VoD file is not deleted",
     broadcast_not_deleted : "Broadcast is not deleted",
     settings_saved : "Settings saved",

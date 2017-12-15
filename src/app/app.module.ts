@@ -38,7 +38,6 @@ import { Locale } from './locale/locale';
         AppComponent,
         AdminLayoutComponent,
         AuthLayoutComponent
-
     ],
     providers: [
         AuthService,

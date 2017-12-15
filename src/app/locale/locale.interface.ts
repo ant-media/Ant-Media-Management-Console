@@ -1,6 +1,11 @@
 
 
 export interface LocaleInterface {
+    
+    
+    notEnterprise:string;
+    enterpriseNotActivated:string;
+    ketNotdefined:string;
     vodFileNotDeleted:string;
     broadcast_not_deleted:string;
     settings_saved:string;

@@ -9,9 +9,11 @@ import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
 
 
+
 declare var $: any;
 declare var Chartist: any;
 declare var swal: any;
+
 
 //declare var flowplayer: any;
 
@@ -100,6 +102,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
   public liveBroadcastSharePeriscope: boolean;
   public newLiveStreamCreating = false;
   public isEnterpriseEdition = false;
+  public gettingParameters=false;
 
 
 
@@ -519,31 +522,77 @@ export class AppPageComponent implements OnInit, OnDestroy {
       });
 
   }
+  
+  
+  getParam():void{
+  
+  
+
+  
+  }
+  
 
   getSocialMediaAuthParameters(networkName: string): void {
+    
+    this.gettingParameters=true;
+ 
 
     this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getDeviceAuthParameters/" + networkName,
       {}).subscribe(data => {
         console.log("************  " + JSON.stringify(data));
 
-        if (!data['verification_url'].startsWith("http")) {
+        console.log("isEnterprise:  "+this.isEnterpriseEdition);
+        
+        
+        if (data['verification_url'] && !data['verification_url'].startsWith("http")) {
           data['verification_url'] = "http://" + data['verification_url'];
-        }
-        // user_code verification_url
-        var message = Locale.getLocaleInterface().copy_this_code_and_enter_the_url.replace("CODE_KEY", data['user_code']);
-        message = message.replace("URL_KEY", data['verification_url']);
-        swal({
+          
+         var message = Locale.getLocaleInterface().copy_this_code_and_enter_the_url.replace("CODE_KEY", data['user_code']);
+          
+         message = message.replace("URL_KEY", data['verification_url']); //this is for url
+         message = message.replace("URL_KEY", data['verification_url']); //this is for string
+              var typem ='info';
+
+          
+          this.gettingParameters=false;
+          swal({
           html:  message,
-          type: 'info',
+          type: typem,
           // showConfirmButton: false,
           showCancelButton: true,
           // width: '800px',
           onOpen: function () {
-
+            console.log("onopen");
 
           },
           onClose: function () {
+           console.log("onclose");
+          }
+        }).then(() => {
+          this.checkAuthStatus(networkName);
+ 
+        })
+          
+          
+          
+        }else if(this.isEnterpriseEdition==false && data['message']=="Service with the name specified is not found in this app"){
+        
+         message=Locale.getLocaleInterface().notEnterprise;
+          
+          typem='error';
+          this.gettingParameters=false;
+                  swal({
+          html:  message,
+          type: typem,
+          // showConfirmButton: false,
+          showCancelButton: true,
+          // width: '800px',
+          onOpen: function () {
+            console.log("onopen");
 
+          },
+          onClose: function () {
+           console.log("onclose");
           }
         }).then(() => {
           this.checkAuthStatus(networkName);
@@ -554,9 +603,86 @@ export class AppPageComponent implements OnInit, OnDestroy {
              showCancelButton: true,
            });*/
         });
+          
+          
+        
+        }else if(this.isEnterpriseEdition==true && data['message']=="Service with the name specified is not found in this app"){
+        
+         message=Locale.getLocaleInterface().enterpriseNotActivated;;
+          
+          
+          typem='error';
+           this.gettingParameters=false;
+         swal({
+          html:  message,
+          type: typem,
+          // showConfirmButton: false,
+          showCancelButton: true,
+          // width: '800px',
+          onOpen: function () {
+            console.log("onopen");
+
+          },
+          onClose: function () {
+           console.log("onclose");
+          }
+        }).then(() => {
+          this.checkAuthStatus(networkName);
+          /*
+           swal({
+             html: 'This window will be closed after you enter the code(<b>'+data['user_code']+'</b>) ' 
+                   + '<a href="'+data['verification_url']+'"><b>to this link</b></a> ',
+             showCancelButton: true,
+           });*/
+        });
+          
+          
+        
+        }
+        
+        
+        else if(this.isEnterpriseEdition==true && data['message']=="Please enter service client id and client secret in app configuration"){
+        
+        message=Locale.getLocaleInterface().ketNotdefined;;
+          
+          
+          typem='error';
+           this.gettingParameters=false;
+         swal({
+          html:  message,
+          type: typem,
+          // showConfirmButton: false,
+          showCancelButton: true,
+          // width: '800px',
+          onOpen: function () {
+            console.log("onopen");
+
+          },
+          onClose: function () {
+           console.log("onclose");
+          }
+        }).then(() => {
+          this.checkAuthStatus(networkName);
+          /*
+           swal({
+             html: 'This window will be closed after you enter the code(<b>'+data['user_code']+'</b>) ' 
+                   + '<a href="'+data['verification_url']+'"><b>to this link</b></a> ',
+             showCancelButton: true,
+           });*/
+        });
+          
+          
+        
+        }
+        
 
       });
   }
+  
+  
+  
+  
+  
 
   cancelNewLiveStream(): void {
     this.newLiveStreamActive = false;
@@ -657,6 +783,10 @@ export class AppPageComponent implements OnInit, OnDestroy {
       }
     });
   }
+  
+
+  
+  
 
 
 

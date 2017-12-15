@@ -49,6 +49,7 @@
     "jquery": "^1.12.4",
     "ngx-clipboard": "^8.1.0",
     "nouislider": "^9.2.0",
+
     "rxjs": "^5.1.0",
     "twitter-bootstrap-wizard": "^1.2.0",
     "web-animations-js": "^2.2.2",

@@ -39,7 +39,6 @@
                                                 New Live Stream
                                             </h4>
                                         </div>
-
                                         <div class="card-content">
                                             <div class="form-group text-left">
                                                 <label i18n="@@newLiveStreamName">Name</label>
@@ -180,9 +179,9 @@
                                     </table>
                                 </div>
 
-                                <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
-                                    There is no live stream at this time.
-                                </p>
+	                                <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+	                                    There is no live stream at this time.
+	                                </p>
                             </div>
                             <div class="tab-pane" id="vod">
                                 <!--
@@ -293,7 +292,7 @@
                                     </fieldset>
                                     <fieldset>
                                         <legend class="text-left">Adaptive Streaming</legend>
-                                        <div class="form-group">
+                                        <div class="form-group" *ngIf=isEnterpriseEdition>
                                             <label class="col-sm-2 control-label">Streams</label>
                                             <div class="col-sm-10">
                                                 <ng-container *ngIf="appSettings.encoderSettings">
@@ -316,6 +315,11 @@
                                                             <i class="ti-minus"></i>
                                                         </button>
                                                     </div>
+                                                    
+                                             
+                                                    
+                                                    
+                                                    
                                                 </ng-container>
                                                 <button class="col-sm-3 form-control-static btn btn-default" i18n="@@addNewStream" type="button" (click)="addNewStream()">
                                                     Add New Stream
@@ -324,6 +328,16 @@
                                             </div>
 
                                         </div>
+                                        
+                                        
+                                               <div class="form-group" *ngIf=!isEnterpriseEdition>
+                                                    
+                            <p  i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                    This features are enabled in Ant Media Server Enterprise Edition. </p>
+                                                    
+                                                    
+                                                    </div>
+                                        
 
                                     </fieldset>
 
@@ -387,11 +401,11 @@
                                             </button>
                                             <button class="col-sm-2 form-control-static btn btn-simple btn-success" *ngIf="!socialMediaAuthStatus.isPeriscopeAuthenticated control-label"
                                                 i18n="@@authenticate" type="button" (click)="getSocialMediaAuthParameters('periscope')">
-                                                Authenticate
-                                            </button>
+                                                Authenticate <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="gettingParameters" aria-hidden="true"></i>
+                                            </button>  
 
 
-
+   
                                         </div>
                                     </fieldset>
 
