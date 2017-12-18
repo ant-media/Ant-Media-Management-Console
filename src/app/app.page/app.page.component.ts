@@ -71,10 +71,18 @@ export class AppSettings {
   }
 }
 
+export class SocialNetworkChannel {
+  public type: string;
+  public name: string;
+  public id: string;
+}
+
 export class SocialMediAuthStatus {
   public isFacebookAuthenticated: boolean;
   public isPeriscopeAuthenticated: boolean;
   public isYoutubeAuthenticated: boolean;
+
+  public facebookPublishChannel: SocialNetworkChannel;
 }
 
 @Component({
@@ -102,7 +110,9 @@ export class AppPageComponent implements OnInit, OnDestroy {
   public liveBroadcastSharePeriscope: boolean;
   public newLiveStreamCreating = false;
   public isEnterpriseEdition = false;
-  public gettingParameters=false;
+  public gettingPeriscopeParameters = false;
+  public gettingYoutubeParameters = false;
+  public gettingFacebookParameters = false;
 
 
 
@@ -113,13 +123,13 @@ export class AppPageComponent implements OnInit, OnDestroy {
     new HLSListType('Event', 'event'),
   ];
 
-  constructor(private http: HttpClient, private route: ActivatedRoute, 
-        private restService: RestService,
-        private clipBoardService: ClipboardService, private renderer: Renderer,
-        public router:Router) { }
+  constructor(private http: HttpClient, private route: ActivatedRoute,
+    private restService: RestService,
+    private clipBoardService: ClipboardService, private renderer: Renderer,
+    public router: Router) { }
 
   ngOnInit() {
-    
+
     this.broadcastTableData = {
       dataRows: [
       ],
@@ -143,26 +153,26 @@ export class AppPageComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-   
+
     this.sub = this.route.params.subscribe(params => {
       this.appName = params['appname']; // (+) converts string 'id' to a number
-     
+
       if (typeof this.appName == "undefined") {
         this.restService.getApplications().subscribe(data => {
 
           //second element is the Applications. It is not safe to make static binding.
-         
+
           for (var i in data['applications']) {
-              //console.log(data['applications'][i]);
-              this.router.navigateByUrl("/applications/" + data['applications'][i]);
-              break;
+            //console.log(data['applications'][i]);
+            this.router.navigateByUrl("/applications/" + data['applications'][i]);
+            break;
           }
-      });
-       
-        
+        });
+
+
         return;
       }
-      
+
       this.getAppLiveStreams();
       this.getVoDStreams();
       this.getSettings();
@@ -227,7 +237,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
   }
 
   checkAndPlayLive(videoUrl: string): void {
-    this.http.get(videoUrl, {responseType: 'text'}).subscribe(data => {
+    this.http.get(videoUrl, { responseType: 'text' }).subscribe(data => {
       console.log("loaded...");
       $("#playerLoading").hide();
       flowplayer('#player', {
@@ -239,14 +249,14 @@ export class AppPageComponent implements OnInit, OnDestroy {
           }]
         }
       });
-      
+
     },
-    error => {
-      console.log("error...");
+      error => {
+        console.log("error...");
         setTimeout(() => {
-            this.checkAndPlayLive(videoUrl);
+          this.checkAndPlayLive(videoUrl);
         }, 5000);
-    });
+      });
   }
 
   playLive(streamId: string): void {
@@ -327,7 +337,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
         }
         else {
-            this.showVoDFileNotDeleted();
+          this.showVoDFileNotDeleted();
         };
         this.getVoDStreams();
       });
@@ -400,6 +410,63 @@ export class AppPageComponent implements OnInit, OnDestroy {
     this.appSettings.encoderSettings.splice(index, 1);
   }
 
+  async showChannelChooserDialog(options:any, serviceName:string, type:string): Promise<boolean> {
+    const {value: id} = await swal({
+      title: 'Select The Page',
+      input: 'select',
+      inputOptions: options,
+      inputPlaceholder: 'Select the Page',
+      showCancelButton: true,
+      inputValidator: (value) => {
+        
+        return new Promise((resolve) => {
+          if (value) {
+            console.log("selected id: " + value);
+
+            this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/setSocialNetworkChannel/"
+                +serviceName+"/"+type+"/"+value, {})
+            .subscribe(data => {
+              console.log("set social network channel: " + data["success"]);
+
+            });
+
+            resolve();
+          }
+          else {
+            console.log("not item selected");
+            resolve()
+          } 
+          
+        });
+        
+      },
+
+    });
+
+    return null;
+
+
+  }
+  showNetworkChannelList(serviceName:string, type:string):void {
+    this.http.get(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getSocialNetworkChannelList/"+serviceName +"/" + type, {})
+    .subscribe(data => {
+      console.log(data);
+      var options = {
+       };
+
+      for (var i in data) {
+        options[data[i]["id"]]=data[i]["name"];
+      }
+      
+      this.showChannelChooserDialog(options, serviceName, type);
+
+           
+      
+      
+    });
+    
+  }
+
   getSettings(): void {
     this.http.get(REST_SERVICE_ROOT + "/getSettings/" + this.appName).subscribe(data => {
       this.appSettings = <AppSettings>data;
@@ -408,6 +475,17 @@ export class AppPageComponent implements OnInit, OnDestroy {
     this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/checkDeviceAuthStatus/facebook", {})
       .subscribe(data => {
         this.socialMediaAuthStatus.isFacebookAuthenticated = data["success"];
+        
+        if (this.socialMediaAuthStatus.isFacebookAuthenticated) {
+          this.http.get(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getSocialNetworkChannel/facebook", {})
+            .subscribe(data => {
+              console.log(data);
+              this.socialMediaAuthStatus.facebookPublishChannel = new SocialNetworkChannel();
+              this.socialMediaAuthStatus.facebookPublishChannel.id = data["id"];
+              this.socialMediaAuthStatus.facebookPublishChannel.name = data["name"];
+              this.socialMediaAuthStatus.facebookPublishChannel.type = data["type"];
+            });
+        }
       });
 
     this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/checkDeviceAuthStatus/youtube", {})
@@ -522,167 +600,165 @@ export class AppPageComponent implements OnInit, OnDestroy {
       });
 
   }
-  
-  
-  getParam():void{
-  
-  
 
-  
+
+  getParam(): void {
+
+
+
+
   }
-  
+
+
+  setGettingParametersFalse(networkName: string): void {
+    switch (networkName) {
+      case "facebook":
+          this.gettingFacebookParameters = false;
+      break;
+      case "youtube":
+        this.gettingYoutubeParameters = false;
+      break;
+      case "periscope":
+        this.gettingPeriscopeParameters = false;
+      break;
+    }
+  }
 
   getSocialMediaAuthParameters(networkName: string): void {
-    
-    this.gettingParameters=true;
- 
+
+    switch (networkName) {
+      case "facebook":
+          this.gettingFacebookParameters = true;
+      break;
+      case "youtube":
+        this.gettingYoutubeParameters = true;
+      break;
+      case "periscope":
+        this.gettingPeriscopeParameters = true;
+      break;
+    }
+  
+
 
     this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getDeviceAuthParameters/" + networkName,
       {}).subscribe(data => {
         console.log("************  " + JSON.stringify(data));
 
-        console.log("isEnterprise:  "+this.isEnterpriseEdition);
-        
-        
-        if (data['verification_url'] && !data['verification_url'].startsWith("http")) {
-          data['verification_url'] = "http://" + data['verification_url'];
-          
-         var message = Locale.getLocaleInterface().copy_this_code_and_enter_the_url.replace("CODE_KEY", data['user_code']);
-          
-         message = message.replace("URL_KEY", data['verification_url']); //this is for url
-         message = message.replace("URL_KEY", data['verification_url']); //this is for string
-              var typem ='info';
+        console.log("isEnterprise:  " + this.isEnterpriseEdition);
 
-          
-          this.gettingParameters=false;
+
+        if (data['verification_url']) {
+          if (!data['verification_url'].startsWith("http")) {
+            data['verification_url'] = "http://" + data['verification_url'];
+          }
+
+          var message = Locale.getLocaleInterface().copy_this_code_and_enter_the_url.replace("CODE_KEY", data['user_code']);
+
+          message = message.replace("URL_KEY", data['verification_url']); //this is for url
+          message = message.replace("URL_KEY", data['verification_url']); //this is for string
+          var typem = 'info';
+
+
+          this.setGettingParametersFalse(networkName);
           swal({
-          html:  message,
-          type: typem,
-          // showConfirmButton: false,
-          showCancelButton: true,
-          // width: '800px',
-          onOpen: function () {
-            console.log("onopen");
+            html: message,
+            type: typem,
+            // showConfirmButton: false,
+            showCancelButton: true,
+            // width: '800px',
+            onOpen: function () {
+              console.log("onopen");
 
-          },
-          onClose: function () {
-           console.log("onclose");
-          }
-        }).then(() => {
-          this.checkAuthStatus(networkName);
- 
-        })
-          
-          
-          
-        }else if(this.isEnterpriseEdition==false && data['message']=="Service with the name specified is not found in this app"){
-        
-         message=Locale.getLocaleInterface().notEnterprise;
-          
-          typem='error';
-          this.gettingParameters=false;
-                  swal({
-          html:  message,
-          type: typem,
-          // showConfirmButton: false,
-          showCancelButton: true,
-          // width: '800px',
-          onOpen: function () {
-            console.log("onopen");
+            },
+            onClose: function () {
+              console.log("onclose");
+            }
+          }).then(() => {
+            this.checkAuthStatus(networkName);
 
-          },
-          onClose: function () {
-           console.log("onclose");
-          }
-        }).then(() => {
-          this.checkAuthStatus(networkName);
-          /*
-           swal({
-             html: 'This window will be closed after you enter the code(<b>'+data['user_code']+'</b>) ' 
-                   + '<a href="'+data['verification_url']+'"><b>to this link</b></a> ',
-             showCancelButton: true,
-           });*/
-        });
-          
-          
-        
-        }else if(this.isEnterpriseEdition==true && data['message']=="Service with the name specified is not found in this app"){
-        
-         message=Locale.getLocaleInterface().enterpriseNotActivated;;
-          
-          
-          typem='error';
-           this.gettingParameters=false;
-         swal({
-          html:  message,
-          type: typem,
-          // showConfirmButton: false,
-          showCancelButton: true,
-          // width: '800px',
-          onOpen: function () {
-            console.log("onopen");
+          })
 
-          },
-          onClose: function () {
-           console.log("onclose");
-          }
-        }).then(() => {
-          this.checkAuthStatus(networkName);
-          /*
-           swal({
-             html: 'This window will be closed after you enter the code(<b>'+data['user_code']+'</b>) ' 
-                   + '<a href="'+data['verification_url']+'"><b>to this link</b></a> ',
-             showCancelButton: true,
-           });*/
-        });
-          
-          
-        
+
+
+        } else if (this.isEnterpriseEdition == false
+          && data['message'] == "Service with the name specified is not found in this app") {
+
+          message = Locale.getLocaleInterface().notEnterprise;
+
+          typem = 'error';
+          this.setGettingParametersFalse(networkName);
+          swal({
+            html: message,
+            type: typem,
+            // showConfirmButton: false,
+            showCancelButton: true,
+            // width: '800px',
+            onOpen: function () {
+              console.log("onopen");
+
+            },
+            onClose: function () {
+              console.log("onclose");
+            }
+          }).then(() => {
+            this.checkAuthStatus(networkName);
+          });
+
+
+
+        } else if (this.isEnterpriseEdition == true && data['message'] == "Service with the name specified is not found in this app") {
+
+          message = Locale.getLocaleInterface().enterpriseNotActivated;;
+
+
+          typem = 'error';
+          this.setGettingParametersFalse(networkName);
+          swal({
+            html: message,
+            type: typem,
+            // showConfirmButton: false,
+            showCancelButton: true,
+            // width: '800px',
+            onOpen: function () {
+              console.log("onopen");
+
+            },
+            onClose: function () {
+              console.log("onclose");
+            }
+          }).then(() => {
+            this.checkAuthStatus(networkName);
+
+          });
+
         }
-        
-        
-        else if(this.isEnterpriseEdition==true && data['message']=="Please enter service client id and client secret in app configuration"){
-        
-        message=Locale.getLocaleInterface().ketNotdefined;;
-          
-          
-          typem='error';
-           this.gettingParameters=false;
-         swal({
-          html:  message,
-          type: typem,
-          // showConfirmButton: false,
-          showCancelButton: true,
-          // width: '800px',
-          onOpen: function () {
-            console.log("onopen");
+        else if (this.isEnterpriseEdition == true && data['message'] == "Please enter service client id and client secret in app configuration") {
 
-          },
-          onClose: function () {
-           console.log("onclose");
-          }
-        }).then(() => {
-          this.checkAuthStatus(networkName);
-          /*
-           swal({
-             html: 'This window will be closed after you enter the code(<b>'+data['user_code']+'</b>) ' 
-                   + '<a href="'+data['verification_url']+'"><b>to this link</b></a> ',
-             showCancelButton: true,
-           });*/
-        });
-          
-          
-        
+          message = Locale.getLocaleInterface().ketNotdefined;;
+
+
+          typem = 'error';
+          this.setGettingParametersFalse(networkName);
+          swal({
+            html: message,
+            type: typem,
+            // showConfirmButton: false,
+            showCancelButton: true,
+            // width: '800px',
+            onOpen: function () {
+              console.log("onopen");
+
+            },
+            onClose: function () {
+              console.log("onclose");
+            }
+          }).then(() => {
+            this.checkAuthStatus(networkName);
+
+          });
         }
-        
-
       });
   }
-  
-  
-  
-  
-  
 
   cancelNewLiveStream(): void {
     this.newLiveStreamActive = false;
@@ -712,7 +788,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     //}
 
     let embedCode = '<iframe width="560" height="315" src="'
-      + HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamUrl 
+      + HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamUrl
       + '" frameborder="0" allowfullscreen></iframe>';
 
     this.clipBoardService.copyFromContent(embedCode, this.renderer);
@@ -783,10 +859,10 @@ export class AppPageComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
 
-  
-  
+
+
+
 
 
 
