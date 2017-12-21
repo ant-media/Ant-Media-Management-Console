@@ -73,7 +73,7 @@ export class OverviewComponent implements OnInit {
         this.appTableData = {
             dataRows: [
             ]
-          };
+        };
     }
     ngAfterViewInit() {
         this.initCirclePercentage();
@@ -94,38 +94,38 @@ export class OverviewComponent implements OnInit {
     }
 
     ngOnDestroy() {
-       
+
         if (this.timerId) {
-          clearInterval(this.timerId);
+            clearInterval(this.timerId);
         }
-      }
+    }
 
     updateCPULoad(): void {
         this.restService.getCPULoad().subscribe(data => {
-            this.cpuLoad = Number(data["systemCPULoad"]);
+                this.cpuLoad = Number(data["systemCPULoad"]);
 
-            //["systemCPULoad"]
+                //["systemCPULoad"]
             },
             this.handleError);
     }
 
     handleError(error:Response) {
-    
-            console.log("error status: " + error.status);
-            if (error.status == 401) {
-                console.log(this.router);
-                //this.router.navigateByUrl("/pages/login");
-            }
-        
+
+        console.log("error status: " + error.status);
+        if (error.status == 401) {
+            console.log(this.router);
+            //this.router.navigateByUrl("/pages/login");
+        }
+
     }
-    
+
     getLiveClientsSize(): void {
         this.http.get(REST_SERVICE_ROOT + '/getLiveClientsSize').subscribe(data => {
             this.liveStreamSize = Number(data["totalLiveStreamSize"]);
             this.watcherSize = Number(data["totalConnectionSize"]) - this.liveStreamSize;
         });
     }
-    
+
     getSystemMemoryInfo(): void {
         this.http.get(REST_SERVICE_ROOT + '/getSystemMemoryInfo').subscribe(data => {
             var freeSpace = Number(data["freeMemory"]);
@@ -135,9 +135,9 @@ export class OverviewComponent implements OnInit {
             //TODO: open it if this chart will be used
             //$('#chartSystemMemory').data('easyPieChart').update(this.systemMemoryUsagePercent);
         });
-    
+
     }
-    
+
     getFileSystemInfo(): void {
         this.http.get(REST_SERVICE_ROOT + '/getFileSystemInfo').subscribe(data => {
             // Read the result field from the JSON response.
@@ -145,22 +145,22 @@ export class OverviewComponent implements OnInit {
             this.diskInUseSpace = Number(data["inUseSpace"]);
             this.diskTotalSpace = Number(data["totalSpace"]);
             this.diskUsagePercent = Math.round(this.diskInUseSpace * 100 / this.diskTotalSpace);
-    
+
             $("#chartDiskUsage").data('easyPieChart').update(this.diskUsagePercent);
         });
     }
-    
+
     getJVMMemoryInfo(): void {
         this.http.get(REST_SERVICE_ROOT + '/getJVMMemoryInfo').subscribe(data => {
             this.memoryInUseSpace = Number(data["inUseMemory"]);
             this.memoryTotalSpace = Number(data["maxMemory"]);
             this.memoryUsagePercent = Math.round(Number(this.memoryInUseSpace * 100 / this.memoryTotalSpace));
-    
+
             $("#chartMemoryUsage").data('easyPieChart').update(this.memoryUsagePercent);
         });
     }
-    
-    
+
+
     getApplicationsInfo(): void {
         this.http.get(REST_SERVICE_ROOT + '/getApplicationsInfo').subscribe(data => {
             this.appTableData.dataRows = [];
@@ -168,5 +168,12 @@ export class OverviewComponent implements OnInit {
                 this.appTableData.dataRows.push(data[i]);
             }
         });
-    } 
+    }
+
+    isMobileMenu() {
+        if ($(window).width() > 991) {
+            return true;
+        }
+        return false;
+    }
 }

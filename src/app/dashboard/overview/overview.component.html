@@ -131,8 +131,8 @@
                                 <tr>
                                     <th class="text-center">#</th>
                                     <th i18n="@@appName">Name</th>
-                                    <th class="text-center" i18n="@@liveStreamCountLabel">Live Stream</th>
-                                    <th class="text-center" i18n="@@vodCountLabel">VoD Count</th>
+                                    <th class="text-center" i18n="@@liveStreamCountLabel" >Live Stream</th>
+                                    <th class="text-center" i18n="@@vodCountLabel"*ngIf="isMobileMenu()">VoD Count</th>
                                     <th class="text-center" i18n="@@appStorageSizeLabel">Storage</th>
                                 </tr>
                             </thead>
@@ -143,7 +143,7 @@
                                       <td class="text-center">{{i+1}}</td>
                                       <td>{{row.name}}</td>
                                       <td class="text-center">{{row.liveStreamCount}}</td>
-                                      <td class="text-center">{{row.vodCount}}</td>
+                                      <td class="text-center"*ngIf="isMobileMenu()">{{row.vodCount}}</td>
                                       <td class="text-center">{{niceBytes(row.storage)}}</td>
                                
                                 </tr>
