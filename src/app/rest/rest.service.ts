@@ -8,7 +8,15 @@ import 'rxjs/add/operator/catch';
 
 
 export const SERVER_ADDR = location.hostname;
-export const HTTP_SERVER_ROOT = "http://" + location.hostname + ":5080/"; 
+export var HTTP_SERVER_ROOT;
+
+if (environment.production) {
+    HTTP_SERVER_ROOT = "//" + location.hostname + ":" + location.port + "/"; 
+}
+else {
+    HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/"; 
+}
+
 
 export const REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
 
