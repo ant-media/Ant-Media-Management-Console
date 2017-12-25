@@ -104,6 +104,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public checkAuthStatusTimerId: any;
     public socialMediaAuthStatus: SocialMediAuthStatus;
     public newLiveStreamActive: boolean;
+    public newIPCameraActive:boolean;
+    public newStreamSourceActive:boolean;
     public liveBroadcast: LiveBroadcast;
     public liveBroadcastShareFacebook: boolean;
     public liveBroadcastShareYoutube: boolean;
@@ -131,12 +133,10 @@ export class AppPageComponent implements OnInit, OnDestroy {
     ngOnInit() {
 
         this.broadcastTableData = {
-            dataRows: [
-            ],
+            dataRows: [],
         };
         this.vodTableData = {
-            dataRows: [
-            ]
+            dataRows: []
         };
 
         this.socialMediaAuthStatus = new SocialMediAuthStatus();
@@ -548,7 +548,23 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     newLiveStream(): void {
         this.newLiveStreamActive = true;
+        this.newIPCameraActive=false;
+        this.newStreamSourceActive=false;
     }
+
+    newIPCamera(): void {
+        this.newLiveStreamActive = false;
+        this.newIPCameraActive=true;
+        this.newStreamSourceActive=false;
+    }
+
+    newStreamSource(): void {
+        this.newLiveStreamActive = false;
+        this.newIPCameraActive=false;
+        this.newStreamSourceActive=true;
+    }
+
+
 
     createLiveStream(isValid: boolean): void {
 
@@ -772,6 +788,14 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     cancelNewLiveStream(): void {
         this.newLiveStreamActive = false;
+    }
+
+    cancelNewIPCamera(): void {
+        this.newIPCameraActive = false;
+    }
+
+    cancelStreamSource(): void {
+        this.newStreamSourceActive = false;
     }
 
     copyPublishUrl(streamUrl: string): void {
