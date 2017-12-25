@@ -207,7 +207,6 @@ export class AppPageComponent implements OnInit, OnDestroy {
                     endpoint.push(data[i].endPointList[j]);
                 }
 
-                // data[i].endPointList = endpoint;
 
 
                 this.broadcastTableData.dataRows.push(data[i]);
