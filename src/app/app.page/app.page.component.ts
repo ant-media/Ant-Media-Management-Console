@@ -7,6 +7,9 @@ import { SERVER_ADDR, REST_SERVICE_ROOT, HTTP_SERVER_ROOT } from '../rest/rest.s
 import { RestService, LiveBroadcast } from '../rest/rest.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
+import {Response} from "@angular/http";
+import {promise} from "selenium-webdriver";
+
 
 
 
@@ -47,6 +50,15 @@ engine(flowplayer);
 export class HLSListType {
     constructor(public name: string, public value: string) {
     }
+}
+
+export class Camera {
+    constructor(
+        public name: string,
+        public ipAddr: string,
+        public username: string,
+        public password: string,
+        public rtspUrl: string) { }
 }
 
 export class AppSettings {
@@ -111,10 +123,15 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public liveBroadcastShareYoutube: boolean;
     public liveBroadcastSharePeriscope: boolean;
     public newLiveStreamCreating = false;
+    public newIPCameraAdding = false;
+    public discoverStarted = false;
+    public newSourceAdding= false;
     public isEnterpriseEdition = false;
     public gettingPeriscopeParameters = false;
     public gettingYoutubeParameters = false;
     public gettingFacebookParameters = false;
+    public camera:Camera;
+    public onvifURLs:String[];
 
 
 
@@ -131,6 +148,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 public router: Router) { }
 
     ngOnInit() {
+
+
 
         this.broadcastTableData = {
             dataRows: [],
@@ -149,6 +168,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
         this.appSettings = null;
         this.newLiveStreamActive = false;
+        this.camera=new Camera("","","","","");
 
     }
 
@@ -194,7 +214,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     getAppLiveStreams(): void {
-        this.restService.getAppLiveStreams(this.appName, 0, 10).subscribe(data => {
+        this.restService.getAppLiveStreams(this.appName, 0, 10).then(data => {
             //console.log(data);
             this.broadcastTableData.dataRows = [];
             console.log("type of data -> " + typeof data);
@@ -565,6 +585,144 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
 
+    addIPCamera(isValid: boolean): void{
+
+        if (!isValid) {
+            //not valid form return directly
+            return;
+        }
+        this.newIPCameraAdding = true;
+
+
+        this.restService.addIPCamera(this.appName,this.camera)
+            .then(data => {
+                //console.log("data :" + JSON.stringify(data));
+                if (data["success"] != null) {
+
+                    this.newIPCameraAdding = false;
+
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().new_broadcast_created
+                    }, {
+                        type: "success",
+                        delay: 1000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                    this.getAppLiveStreams();
+                    this.liveBroadcast.name = "";
+                }
+                //swal.close();
+                this.newLiveStreamCreating = false;
+
+            });
+
+    }
+
+
+
+
+
+    startDiscover(val:string[]) {
+        this.discoverStarted=true;
+        this.getDiscoveryList();
+        setTimeout(() =>
+            {
+
+
+
+
+
+
+
+        var val1 = [];
+
+        val1.push("192.168.1.1:8088");
+        val1.push("192.168.1.2:8088");
+
+
+        console.log("::::::::::::::"+ val1);
+
+        swal({
+
+            input: 'select',
+
+            inputOptions: val1,
+
+            showCancelButton: true,
+            inputValidator: function (value) {
+                return new Promise(function (resolve, reject) {
+                    if (value !== '') {
+                        resolve();
+                    } else {
+                        reject('Select Cam');
+                    }
+                });
+
+            },
+
+
+        }).then((result)=> {
+
+
+            swal({
+                type:'info',
+                text:'Selected Cam:' +val1[result],
+
+
+            });
+
+            this.assignURL(val1[result].toString());
+
+            {}
+        })
+
+
+        this.discoverStarted=false;
+
+            }, 3000);
+    }
+
+
+
+    public assignURL(onvifURL:string):void {
+
+        console.log("........."+onvifURL);
+
+
+        this.camera.ipAddr=onvifURL;
+
+
+    }
+
+
+    getDiscoveryList():String[] {
+
+        this.restService.autoDiscover(this.appName).subscribe(
+            streams => {
+                this.onvifURLs = streams;
+
+                if (streams.length != 0){
+                    console.log('result: ' + this.onvifURLs[0]);
+                }
+            },
+            error => {
+                console.log('!!!Error!!! ' + error);
+            },
+        );
+
+        return this.onvifURLs;
+    }
+
+
+    toConsole(val:string): void {
+
+        console.log(val)
+
+    }
 
     createLiveStream(isValid: boolean): void {
 
@@ -575,6 +733,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
         var socialNetworks = [];
+
         if (this.liveBroadcastShareFacebook == true) {
             socialNetworks.push("facebook");
         }
@@ -600,7 +759,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
         this.newLiveStreamCreating = true;
         this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
-            .subscribe(data => {
+            .then(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["streamId"] != null) {
 

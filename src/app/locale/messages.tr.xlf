@@ -12,6 +12,7 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
+
       <trans-unit id="dashboardMenuItem" datatype="html">
         <source>Dashboard</source>
         <target>Kontrol Paneli</target>
@@ -20,6 +21,10 @@
           <context context-type="linenumber">101</context>
         </context-group>
       </trans-unit>
+
+
+
+
       <trans-unit id="applicationsMenuItem" datatype="html">
         <source>Applications</source>
         <target>Uygulamalar</target>
@@ -88,7 +93,10 @@
           <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="newLiveStreamCardTitle" datatype="html">
+
+
+
+      <trans-unit id="newLiveStrmCardTitle" datatype="html">
         <source>
           New Live Stream
         </source>
@@ -98,6 +106,46 @@
           <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
+
+            <trans-unit id="newIPCameraTitle" datatype="html">
+              <source>
+                New IP Camera
+              </source>
+              <target>Yeni IP Kamera</target>
+              <context-group purpose="location">
+                <context context-type="sourcefile">app/app.page/app.page.component.ts</context>
+                <context context-type="linenumber">38</context>
+              </context-group>
+            </trans-unit>
+
+
+      <trans-unit id="newOnvifIPUrl" datatype="html">
+        <source>Onvif IP URL</source>
+         <target>Onvif IP URL</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/app.page/app.page.component.ts</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+
+       <trans-unit id="username_place_holder" datatype="html">
+              <source>User Name</source>
+               <target>Kullanıcı Adı</target>
+              <context-group purpose="location">
+                <context context-type="sourcefile">app/app.page/app.page.component.ts</context>
+                <context context-type="linenumber">45</context>
+              </context-group>
+        </trans-unit>
+
+        <trans-unit id="password_place_holder" datatype="html">
+               <source>Password</source>
+               <target>Şifre</target>
+               <context-group purpose="location">
+                  <context context-type="sourcefile">app/app.page/app.page.component.ts</context>
+                  <context context-type="linenumber">45</context>
+              </context-group>
+        </trans-unit>
+
       <trans-unit id="newLiveStreamName" datatype="html">
         <source>Name</source>
          <target>İsim</target>
@@ -106,6 +154,7 @@
           <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
+
       <trans-unit id="broadcastNameIsRequired" datatype="html">
         <source>
               Stream name should be at least 4 characters.
@@ -534,7 +583,7 @@
       <trans-unit id="registerUserFullName" datatype="html">
         <source>Full Name<x id="START_TAG_SPAN" ctype="x-span"/>*<x id="CLOSE_TAG_SPAN" ctype="x-span"/></source>
         <target>Ad Soyad<x id="START_TAG_SPAN" ctype="x-span"/>*<x id="CLOSE_TAG_SPAN" ctype="x-span"/></target>
-       
+
         <context-group purpose="location">
           <context context-type="sourcefile">app/pages/login/login.component.ts</context>
           <context context-type="linenumber">86</context>
@@ -705,6 +754,16 @@
           <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
+
+            <trans-unit id="onvifUrl_place_holder" datatype="html">
+              <source>Onvif URL</source>
+              <target>Onvif URL</target>
+              <context-group purpose="location">
+                <context context-type="sourcefile">app/app.page/app.page.component.ts</context>
+                <context context-type="linenumber">46</context>
+              </context-group>
+            </trans-unit>
+
     </body>
   </file>
 </xliff>

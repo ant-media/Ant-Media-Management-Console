@@ -5,10 +5,15 @@ import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import {Camera} from "../app.page/app.page.component";
+import {promise} from "selenium-webdriver";
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/toPromise';
 
 
 export const SERVER_ADDR = location.hostname;
-export const HTTP_SERVER_ROOT = "http://" + location.hostname + ":5080/"; 
+export const HTTP_SERVER_ROOT = "http://" + location.hostname + ":5080/";
 
 export const REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
 
@@ -35,33 +40,58 @@ export class RestService {
     }
 
 
-    public getAppLiveStreams(appName:string, offset:Number, size:Number): Observable<Response>  {
-        return this.http.get(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/getList/'+offset+"/"+size)
-                .map((res: Response) => res.json());
+    public getAppLiveStreams(appName:string, offset:Number, size:Number): Promise<Response>  {
+        return this.http.get(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/getList/'+offset+"/"+size).toPromise()
+            .then((res: Response) => res.json());
     }
 
-    public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Observable<Response> {
-
+    public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Promise<Response> {
 
         return this.http.post(HTTP_SERVER_ROOT + appName + "/rest/broadcast/createWithSocial?socialNetworks="+socialNetworks,
-            liveBroadcast)
-            .map((res: Response) => res.json());
+            liveBroadcast).toPromise()
+            .then((res: Response) => res.json());
     }
 
     public deleteBroadcast(appName: string, streamId:string): Observable<Response> {
         return this.http.post(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/delete/'+streamId, {})
-        .map((res: Response) => res.json());
+            .map((res: Response) => res.json());
     }
 
     public deleteVoDFile(appName: string, streamId:string) {
         return this.http.post(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/deleteVoDFile/'+streamId, {})
-        .map((res: Response) => res.json());
+            .map((res: Response) => res.json());
 
     }
 
+    public addIPCamera(appName: string, camera:Camera): Promise<Response> {
+
+
+        //TODO: Önceki versiyonda bu rest servisi get olarak yazılmış post a çevirmek gerekebilir.
+
+        return this.http.get(HTTP_SERVER_ROOT + appName + '/rest/broadcast/add?name='+camera.name+'&ipAddr='+camera.ipAddr+'&username='+camera.username+'&password='+camera.password
+        ).toPromise()
+            .then((res: Response) => res.json());
+    }
+
+
+    public  autoDiscover(appName: string): Observable<String[]> {
+
+        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/broadcast/searchOnvifDevices';
+        console.log('URL ' + streamInfoUrl);
+
+        return this.http.get(streamInfoUrl)
+            .map(this.extractData)
+            .catch(this.handleError);
+
+    }
+
+
+
+
+
     public revokeSocialNetwork(appName: string, serviceName:string): Observable<Response> {
         return this.http.post(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/revokeSocialNetwork/'+serviceName, {})
-        .map((res: Response) => res.json());
+            .map((res: Response) => res.json());
     }
 
     public isEnterpriseEdition(): Observable<Response> {
@@ -79,7 +109,14 @@ export class RestService {
     }
 
     public getApplications(): Observable<Response> {
-       return this.http.get(REST_SERVICE_ROOT + '/getApplications')
-        .map((res: Response) => res.json());;
+        return this.http.get(REST_SERVICE_ROOT + '/getApplications')
+            .map((res: Response) => res.json());;
     }
+
+
+    private extractData(res: Response) {
+        let body = res.json();
+        return body || { };
+    }
+
 }
