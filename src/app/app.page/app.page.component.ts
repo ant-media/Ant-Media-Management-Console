@@ -124,7 +124,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public liveBroadcastSharePeriscope: boolean;
     public newLiveStreamCreating = false;
     public newIPCameraAdding = false;
-    public discoverStarted = false;
+    public discoveryStarted = false;
     public newSourceAdding= false;
     public isEnterpriseEdition = false;
     public gettingPeriscopeParameters = false;
@@ -132,6 +132,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public gettingFacebookParameters = false;
     public camera:Camera;
     public onvifURLs:String[];
+    public noCamWarning=false;
 
 
 
@@ -626,86 +627,70 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 
-    startDiscover(val:string[]) {
-        this.discoverStarted=true;
+    startDiscover() {
+        this.discoveryStarted=true;
         this.getDiscoveryList();
+        this.noCamWarning=false;
+
+
         setTimeout(() =>
-            {
+        {
+
+            if(this.onvifURLs!=null) {
+                this.discoveryStarted = false;
+                swal({
+
+                    input: 'radio',
+
+                    inputOptions: this.onvifURLs,
+
+                    inputValidator: function (value) {
+                        return new Promise(function (resolve, reject) {
+                            if (value !== '') {
+                                resolve();
+                            } else {
+                                reject('Select Camera');
+                            }
+                        });
+
+                    },
+
+
+                }).then((result) => {
+
+
+                    this.camera.ipAddr = this.onvifURLs[result].toString();
+
+                })
 
 
 
+            }else{
 
+                this.discoveryStarted = false;
+                this.noCamWarning=true;
+                this.camera.ipAddr="";
 
+            }
 
-
-        var val1 = [];
-
-        val1.push("192.168.1.1:8088");
-        val1.push("192.168.1.2:8088");
-
-
-        console.log("::::::::::::::"+ val1);
-
-        swal({
-
-            input: 'select',
-
-            inputOptions: val1,
-
-            showCancelButton: true,
-            inputValidator: function (value) {
-                return new Promise(function (resolve, reject) {
-                    if (value !== '') {
-                        resolve();
-                    } else {
-                        reject('Select Cam');
-                    }
-                });
-
-            },
-
-
-        }).then((result)=> {
-
-
-            swal({
-                type:'info',
-                text:'Selected Cam:' +val1[result],
-
-
-            });
-
-            this.assignURL(val1[result].toString());
-
-            {}
-        })
-
-
-        this.discoverStarted=false;
-
-            }, 3000);
-    }
-
-
-
-    public assignURL(onvifURL:string):void {
-
-        console.log("........."+onvifURL);
-
-
-        this.camera.ipAddr=onvifURL;
+        }, 6000);
 
 
     }
+
+
+
+
 
 
     getDiscoveryList():String[] {
 
-        this.restService.autoDiscover(this.appName).subscribe(
+        this.restService.autoDiscover(this.appName).then(
             streams => {
-                this.onvifURLs = streams;
+
 
                 if (streams.length != 0){
+                    this.onvifURLs = streams;
                     console.log('result: ' + this.onvifURLs[0]);
                 }
             },

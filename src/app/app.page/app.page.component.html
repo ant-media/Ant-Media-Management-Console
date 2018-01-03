@@ -141,13 +141,16 @@
                                                 <input type="text" required minlength="4" name="broadcastName"  placeholder="Camera Name" class="form-control" [(ngModel)]="camera.name"
                                                        #broadcastName="ngModel">
                                                 <small [hidden]="broadcastName.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
-                                                    Stream name should be at least 4 characters.
+                                                    Camera name should be at least 4 characters.
                                                 </small>
                                             </div>
 
                                             <div class="form-group text-left">
                                                 <label i18n="@@newOnvifIPUrl">Onvif IP URL</label>    <button  (click)="startDiscover()" class="btn btn-success btn-simple btn-magnify btn-xs "
-                                                                                                               type="button"> discover </button> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="discoverStarted" aria-hidden="true"></i>
+                                                                                                               type="button"> discover </button> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="discoveryStarted" aria-hidden="true"></i>
+                                                <small  class="text-danger" *ngIf="noCamWarning" >
+                                                    No camera found, write camera URL manually!
+                                                </small>
                                                 <input type="text"  name="onvifURL" i18n-placeholder="@@onvifUrl_place_holder" placeholder="Onvif Url" class="form-control" [(ngModel)]="camera.ipAddr"
                                                        #onvifURL="ngModel">
 

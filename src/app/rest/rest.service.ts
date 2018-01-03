@@ -68,19 +68,21 @@ export class RestService {
 
         //TODO: Önceki versiyonda bu rest servisi get olarak yazılmış post a çevirmek gerekebilir.
 
-        return this.http.get(HTTP_SERVER_ROOT + appName + '/rest/broadcast/add?name='+camera.name+'&ipAddr='+camera.ipAddr+'&username='+camera.username+'&password='+camera.password
-        ).toPromise()
-            .then((res: Response) => res.json());
+        let url=HTTP_SERVER_ROOT + appName + '/rest/camera/add?name='+camera.name+'&ipAddr='+camera.ipAddr+'&username='+camera.username+'&password='+camera.password;
+
+        console.log('URL ' + url);
+
+        return this.http.get(url).toPromise().then((res: Response) => res.json());
     }
 
 
-    public  autoDiscover(appName: string): Observable<String[]> {
+    public  autoDiscover(appName: string): Promise<String[]> {
 
-        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/broadcast/searchOnvifDevices';
+        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/searchOnvifDevices';
         console.log('URL ' + streamInfoUrl);
 
-        return this.http.get(streamInfoUrl)
-            .map(this.extractData)
+        return this.http.get(streamInfoUrl).toPromise()
+            .then(this.extractData)
             .catch(this.handleError);
 
     }
