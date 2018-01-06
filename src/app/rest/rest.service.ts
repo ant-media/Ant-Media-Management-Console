@@ -63,6 +63,12 @@ export class RestService {
 
     }
 
+    public deleteIPCamera(appName: string, streamId:string) {
+        return this.http.get(HTTP_SERVER_ROOT +  appName + '/rest/camera/deleteCamera?ipAddr='+streamId, {})
+            .map((res: Response) => res.json());
+
+    }
+
     public addIPCamera(appName: string, camera:Camera): Promise<Response> {
 
 
@@ -84,6 +90,16 @@ export class RestService {
         return this.http.get(streamInfoUrl).toPromise()
             .then(this.extractData)
             .catch(this.handleError);
+
+    }
+
+    public  getCamList(appName: string): Promise<Response> {
+
+        let url = HTTP_SERVER_ROOT + appName +'/rest/camera/getList';
+        console.log('URL ' + url);
+
+        return this.http.get(url).toPromise()
+            .then((res: Response) => res.json());
 
     }
 

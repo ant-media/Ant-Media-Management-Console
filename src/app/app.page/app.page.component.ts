@@ -32,6 +32,13 @@ declare interface BroadcastInfo {
     endPointList: Endpoint[];
 }
 
+declare interface CamStreamInfo{
+    name: string;
+    viewerCount: number;
+    status: string;
+
+}
+
 declare interface EncoderSettings {
     height: Number;
     videoBitrate: Number;
@@ -40,6 +47,11 @@ declare interface EncoderSettings {
 
 declare interface BroadcastInfoTable {
     dataRows: BroadcastInfo[];
+}
+
+declare interface CameraInfoTable{
+
+    dataRows:CamStreamInfo[];
 }
 
 declare function require(name: string);
@@ -111,6 +123,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public appName: string;
     public sub: any;
     public broadcastTableData: BroadcastInfoTable;
+    public cameraTableData:CameraInfoTable;
     public vodTableData: BroadcastInfoTable;
     public timerId: any;
     public checkAuthStatusTimerId: any;
@@ -155,6 +168,13 @@ export class AppPageComponent implements OnInit, OnDestroy {
         this.broadcastTableData = {
             dataRows: [],
         };
+
+        this.cameraTableData={
+            dataRows:[]
+        };
+
+
+
         this.vodTableData = {
             dataRows: []
         };
@@ -201,6 +221,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
             this.getAppLiveStreams();
             this.getVoDStreams();
             this.getSettings();
+            this.getCameraList();
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
             })
@@ -208,6 +229,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
             this.timerId = window.setInterval(() => {
                 this.getAppLiveStreams();
                 this.getVoDStreams();
+                this.getCameraList();
             }, 10000);
 
         });
@@ -231,6 +253,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
                 this.broadcastTableData.dataRows.push(data[i]);
+                this.cameraTableData.dataRows.push(data[i]);
 
             }
             setTimeout(function () {
@@ -291,6 +314,36 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     playLive(streamId: string): void {
+        if (this.isEnterpriseEdition) {
+            streamId += "_adaptive";
+        }
+        var srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamId + '.m3u8';
+        swal({
+            html: '<div id="player"></div>',
+            showConfirmButton: false,
+            width: '600px',
+            padding: 10,
+            animation: false,
+            showCloseButton: true,
+            onOpen: () => {
+                flowplayer('#player', {
+                    autoplay: true,
+                    clip: {
+                        sources: [{
+                            type: 'application/x-mpegurl',
+                            src: srcFile
+                        }]
+                    }
+                });
+            },
+            onClose: function () {
+                flowplayer("#player").shutdown();
+            }
+        }).then(function () { }, function () { });
+    }
+
+
+    playLiveCame(streamId: string): void {
         if (this.isEnterpriseEdition) {
             streamId += "_adaptive";
         }
@@ -392,6 +445,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
         });
     }
 
+
+
     deleteLiveBroadcast(streamId: string): void {
         swal({
             title: Locale.getLocaleInterface().are_you_sure,
@@ -421,6 +476,41 @@ export class AppPageComponent implements OnInit, OnDestroy {
                         });
                     };
                     this.getAppLiveStreams();
+                });
+        });
+
+    }
+
+    deleteIPCamera(streamId: string): void {
+        swal({
+            title: Locale.getLocaleInterface().are_you_sure,
+            text: Locale.getLocaleInterface().wont_be_able_to_revert,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(data => {
+            this.restService.deleteIPCamera(this.appName, streamId)
+                .subscribe(data => {
+                    if (data["success"] == true) {
+
+                    }
+                    else {
+                        $.notify({
+                            icon: "ti-save",
+                            message: Locale.getLocaleInterface().broadcast_not_deleted
+                        }, {
+                            type: "warning",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                    };
+                    this.getAppLiveStreams();
+                    this.getCameraList();
                 });
         });
 
@@ -598,7 +688,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
         this.restService.addIPCamera(this.appName,this.camera)
             .then(data => {
                 //console.log("data :" + JSON.stringify(data));
-                if (data["success"] != null) {
+                if (data["success"] == true) {
 
                     this.newIPCameraAdding = false;
 
@@ -614,10 +704,11 @@ export class AppPageComponent implements OnInit, OnDestroy {
                         }
                     });
                     this.getAppLiveStreams();
-                    this.liveBroadcast.name = "";
+
                 }
                 //swal.close();
-                this.newLiveStreamCreating = false;
+                this.newIPCameraAdding = false;
+                this.newIPCameraActive=false;
 
             });
 
@@ -762,6 +853,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
                         }
                     });
                     this.getAppLiveStreams();
+                    this.getCameraList();
                     this.liveBroadcast.name = "";
                 }
                 //swal.close();
@@ -1039,9 +1131,44 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
 
+    getCameraList() {
+
+        this.restService.getCamList(this.appName)
+            .then(data => {
+                //console.log("data :" + JSON.stringify(data));
+                console.log( data["name"]);
+
+
+                    this.cameraTableData.dataRows = [];
+
+                    console.log("type of data -> " + typeof data);
+
+                    for (var i in data) {
+
+                        this.cameraTableData.dataRows.push(data[i]);
+
+                    }
+                    setTimeout(function () {
+                        $('[data-toggle="tooltip"]').tooltip();
+                    }, 500);
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+            });
+
+    }
 }
