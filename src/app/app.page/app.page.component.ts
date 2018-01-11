@@ -26,6 +26,7 @@ declare interface Endpoint {
 
 declare interface BroadcastInfo {
     name: string;
+    type:string;
     streamId: string;
     viewerCount: number;
     status: string;
@@ -70,7 +71,9 @@ export class Camera {
         public ipAddr: string,
         public username: string,
         public password: string,
-        public rtspUrl: string) { }
+        public rtspUrl: string,
+        public type:string)
+    { }
 }
 
 export class AppSettings {
@@ -181,15 +184,15 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
         this.socialMediaAuthStatus = new SocialMediAuthStatus();
         this.liveBroadcast = new LiveBroadcast();
-
         this.liveBroadcast.name = "";
+        this.liveBroadcast.type= "";
         this.liveBroadcastShareFacebook = false;
         this.liveBroadcastShareYoutube = false;
         this.liveBroadcastSharePeriscope = false;
 
         this.appSettings = null;
         this.newLiveStreamActive = false;
-        this.camera=new Camera("","","","","");
+        this.camera=new Camera("","","","","","");
 
     }
 
@@ -221,7 +224,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
             this.getAppLiveStreams();
             this.getVoDStreams();
             this.getSettings();
-            this.getCameraList();
+
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
             })
@@ -229,7 +232,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
             this.timerId = window.setInterval(() => {
                 this.getAppLiveStreams();
                 this.getVoDStreams();
-                this.getCameraList();
+
             }, 10000);
 
         });
@@ -253,7 +256,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
                 this.broadcastTableData.dataRows.push(data[i]);
-                this.cameraTableData.dataRows.push(data[i]);
+
 
             }
             setTimeout(function () {
@@ -683,9 +686,10 @@ export class AppPageComponent implements OnInit, OnDestroy {
             return;
         }
         this.newIPCameraAdding = true;
+        this.liveBroadcast.type="ipCamera";
 
 
-        this.restService.addIPCamera(this.appName,this.camera)
+        this.restService.createLiveStream(this.appName,this.liveBroadcast)
             .then(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
@@ -750,7 +754,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 }).then((result) => {
 
 
-                    this.camera.ipAddr = this.onvifURLs[result].toString();
+                    this.liveBroadcast.ipAddr = this.onvifURLs[result].toString();
 
                 })
 
@@ -800,13 +804,14 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     }
 
-    createLiveStream(isValid: boolean): void {
+    createLiveStreamSocialNetworks(isValid: boolean): void {
 
         if (!isValid) {
             //not valid form return directly
             return;
         }
 
+        this.liveBroadcast.type="liveStream"
 
         var socialNetworks = [];
 
@@ -822,19 +827,9 @@ export class AppPageComponent implements OnInit, OnDestroy {
             socialNetworks.push("periscope");
         }
 
-        /*
-        swal({
-          html:
-          '<div><button type="button" class="btn btn-simple btn-success" ><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></button>'
-          +
-          '</div>',
-          showCancelButton:false,
-          showConfirmButton:false,
-        });
-        */
 
         this.newLiveStreamCreating = true;
-        this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
+        this.restService.createLiveStreamSocialNetworks(this.appName, this.liveBroadcast, socialNetworks.join(","))
             .then(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["streamId"] != null) {
@@ -856,7 +851,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
                     this.getCameraList();
                     this.liveBroadcast.name = "";
                 }
-                //swal.close();
+
                 this.newLiveStreamCreating = false;
 
             });
@@ -864,12 +859,47 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
 
-    getParam(): void {
+
+    createLiveStream(isValid: boolean): void {
+
+        if (!isValid) {
+            //not valid form return directly
+            return;
+        }
+
+        this.liveBroadcast.type="ipCamera"
 
 
+        this.newIPCameraAdding = true;
+        this.restService.createLiveStream(this.appName, this.liveBroadcast)
+            .then(data => {
+                //console.log("data :" + JSON.stringify(data));
+                if (data["streamId"] != null) {
 
+                    this.newLiveStreamActive = false;
+
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().new_broadcast_created
+                    }, {
+                        type: "success",
+                        delay: 900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                    this.getAppLiveStreams();
+                    this.getCameraList();
+                    this.liveBroadcast.name = "";
+                }
+
+                this.newIPCameraAdding = false;
+
+            });
 
     }
+
 
 
     setGettingParametersFalse(networkName: string): void {

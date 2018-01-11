@@ -52,7 +52,7 @@
 
                                 <div class="card" *ngIf="newLiveStreamActive">
 
-                                    <form method="post" #f="ngForm" validate (ngSubmit)="createLiveStream(f.valid)">
+                                    <form method="post" #f="ngForm" validate (ngSubmit)="createLiveStreamSocialNetworks(f.valid)">
                                         <div class="card-header">
                                             <h4 class="card-title text-left" i18n="@@newLiveStreamCardTitle">
                                                 New Live Stream
@@ -138,7 +138,7 @@
                                         <div class="card-content">
                                             <div class="form-group text-left">
                                                 <label i18n="@@newLiveStreamName">Name</label>
-                                                <input type="text" required minlength="4" name="broadcastName"  placeholder="Camera Name" class="form-control" [(ngModel)]="camera.name"
+                                                <input type="text" required minlength="4" name="broadcastName"  placeholder="Camera Name" class="form-control" [(ngModel)]="liveBroadcast.name"
                                                        #broadcastName="ngModel">
                                                 <small [hidden]="broadcastName.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                                                     Camera name should be at least 4 characters.
@@ -151,21 +151,21 @@
                                                 <small  class="text-danger" *ngIf="noCamWarning" >
                                                     No camera found, write camera URL manually!
                                                 </small>
-                                                <input type="text"  name="onvifURL" i18n-placeholder="@@onvifUrl_place_holder" placeholder="Onvif Url" class="form-control" [(ngModel)]="camera.ipAddr"
+                                                <input type="text"  name="onvifURL" i18n-placeholder="@@onvifUrl_place_holder" placeholder="Onvif Url" class="form-control" [(ngModel)]="liveBroadcast.ipAddr"
                                                        #onvifURL="ngModel">
 
                                             </div>
 
                                             <div class="form-group text-left">
                                                 <label i18n="@@newLiveStreamName">User Name</label>
-                                                <input type="text"  name="username" i18n-placeholder="@@username_place_holder" placeholder="User Name" class="form-control" [(ngModel)]="camera.username"
+                                                <input type="text"  name="username" i18n-placeholder="@@username_place_holder" placeholder="User Name" class="form-control" [(ngModel)]="liveBroadcast.username"
                                                        #username="ngModel">
 
                                             </div>
 
                                             <div class="form-group text-left">
                                                 <label i18n="@@newLiveStreamName">Password</label>
-                                                <input type="text" name="password" i18n-placeholder="@@password_place_holder" placeholder="Password" class="form-control" [(ngModel)]="camera.password"
+                                                <input type="text" name="password" i18n-placeholder="@@password_place_holder" placeholder="Password" class="form-control" [(ngModel)]="liveBroadcast.password"
                                                        #password="ngModel">
 
                                             </div>
@@ -189,7 +189,7 @@
 
                                 <div class="card" *ngIf="newStreamSourceActive">
 
-                                    <form method="post" #f="ngForm" validate (ngSubmit)="createLiveStream(f.valid)">
+                                    <form method="post" #f="ngForm" validate (ngSubmit)="createLiveStreamSocialNetworks(f.valid)">
                                         <div class="card-header">
                                             <h4 class="card-title text-left" i18n="@@newLiveStreamCardTitle">
                                                 New Stream Source
@@ -279,13 +279,16 @@
                                                     <th class="text-center" i18n="@@tableActionField">Action</th>
                                                     -->
 
-                                                    <div align="left" i18n="@@streamName" class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                                                    <div align="left" i18n="@@streamName" class="col-lg-1 col-md-6 col-sm-12 col-xs-12">
                                                         Name</div>
+
+                                                    <div align="left" i18n="@@streamName" class="col-lg-1 col-md-6 col-sm-12 col-xs-12">
+                                                        Type</div>
 
                                                     <div align="left" i18n="@@streamStatus" class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
                                                         Status</div>
 
-                                                    <div align="left" i18n="@@streamSocialShare" class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                    <div align="left" i18n="@@streamSocialShare" class="col-lg-1 col-md-6 col-sm-12 col-xs-12">
                                                         Social Share</div>
 
                                                     <div align="left" i18n="@@tableActionField" class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
@@ -301,9 +304,14 @@
                                             <tr *ngFor="let row of broadcastTableData.dataRows">
                                                 <div class="row">
 
-                                                    <div align="left" class="col-lg-2 col-md-6  col-sm-12 col-xs-12" >
+                                                    <div align="left" class="col-lg-1 col-md-6  col-sm-12 col-xs-12" >
                                                         {{row.name}}
                                                     </div>
+
+                                                    <div align="left" class="col-lg-1 col-md-6  col-sm-12 col-xs-12" >
+                                                        {{row.type}}
+                                                    </div>
+
 
 
                                                     <!--
@@ -319,7 +327,7 @@
 
                                                     </div>
 
-                                                    <div align="left" class="col-lg-3 col-md-6 col-sm-12 col-xs-12" >
+                                                    <div align="left" class="col-lg-1 col-md-6 col-sm-12 col-xs-12" >
 
 
                                                         <ng-container *ngFor="let endpoint of row.endPointList" class="text-center">
@@ -332,10 +340,19 @@
 
                                                     </div>
 
-                                                    <div align="left" class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                    <div align="left" class="col-lg-5 col-md-6 col-sm-12 col-xs-12">
                                                         <div class="row">
 
-                                                            <button *ngIf="row.status=='broadcasting'" (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
+                                                            <button *ngIf="row.status=='broadcasting'"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
+                                                                    type="button">
+                                                        <span class="btn-label">
+                                                            <i class="ti-control-play"></i>
+                                                        </span>
+                                                                <ng-container i18n="@@tablePlayButton">Play</ng-container>
+
+                                                            </button>
+
+                                                            <button  *ngIf="row.type=='ipCamera'" (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
                                                                     type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-control-play"></i>
@@ -383,118 +400,6 @@
 
 
 
-                                <div class="container">
-
-                                    <div class="table-responsive" *ngIf="cameraTableData.dataRows.length>0">
-                                        <table class="table table-striped">
-
-                                            <thead  *ngIf="isMobileMenu()">
-
-                                            <tr>
-                                                <div class="row">
-                                                    <!--
-                                                    <th i18n="@@streamName">Name</th>
-                                                    <!--
-                                                    <th class="text-center" i18n="@@streamWatcherCount">Watcher Count</th>
-
-                                                    <th class="text-center" i18n="@@streamStatus">Status</th>
-                                                    <th class="text-center" i18n="@@streamSocialShare">Social Share</th>
-                                                    <th class="text-center" i18n="@@tableActionField">Action</th>
-                                                    -->
-
-                                                    <div align="left" i18n="@@streamName" class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
-                                                        Name</div>
-
-                                                    <div align="left" i18n="@@streamStatus" class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
-                                                        Status</div>
-
-
-                                                    <div align="left" i18n="@@tableActionField" class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                                                        Action</div>
-                                                </div>
-                                            </tr>
-                                            </thead>
-
-
-
-                                            <tbody>
-
-                                            <tr *ngFor="let row of cameraTableData.dataRows">
-                                                <div class="row">
-
-                                                    <div align="left" class="col-lg-2 col-md-6  col-sm-12 col-xs-12" >
-                                                        {{row.name}}
-                                                    </div>
-
-
-                                                    <!--
-                                                    <td class="text-center">{{row.watcherCount}}</td>
-                                                    -->
-                                                    <div  align="left" class="col-lg-2 col-md-6 col-sm-12 col-xs-12" >
-
-
-
-                                                            <ng-container ><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
-
-
-
-                                                    </div>
-
-
-
-                                                    <div align="left" class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                                        <div class="row">
-
-                                                            <button (click)="playLive(row.name)" class="btn btn-success btn-simple btn-magnify btn-xs "
-                                                                    type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-control-play"></i>
-                                                        </span>
-                                                                <ng-container i18n="@@tablePlayButton">Play</ng-container>
-
-                                                            </button>
-
-                                                            <button (click)="copyLiveEmbedCode(row.name)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-clipboard"></i>
-                                                        </span>
-                                                                <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
-                                                            </button>
-
-
-
-                                                            <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
-                                                                    [title]="'Copy to Clipboard ' + getRtmpUrl(row.name)" class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                    type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-clipboard"></i>
-                                                        </span>
-                                                                <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
-                                                            </button>
-
-
-
-                                                            <button (click)="deleteIPCamera(row.ipAddr)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-close"></i>
-                                                        </span>
-                                                                <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </tr>
-
-                                            </tbody>
-
-                                        </table>
-
-                                    </div>
-                                </div>
-
-                                <p *ngIf="cameraTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
-                                    There is no live stream at this time.
-                                </p>
 
 
 

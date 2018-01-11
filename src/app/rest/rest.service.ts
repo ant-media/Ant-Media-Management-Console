@@ -18,7 +18,13 @@ export const HTTP_SERVER_ROOT = "http://" + location.hostname + ":5080/";
 export const REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
 
 export class LiveBroadcast {
-    public name
+    public name:string;
+    public type:string;
+    public ipAddr: string;
+    public username: string;
+    public password: string;
+    public rtspUrl: string;
+
 
 }
 
@@ -45,9 +51,16 @@ export class RestService {
             .then((res: Response) => res.json());
     }
 
-    public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Promise<Response> {
+    public createLiveStreamSocialNetworks(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Promise<Response> {
 
         return this.http.post(HTTP_SERVER_ROOT + appName + "/rest/broadcast/createWithSocial?socialNetworks="+socialNetworks,
+            liveBroadcast).toPromise()
+            .then((res: Response) => res.json());
+    }
+
+    public createLiveStream(appName: string, liveBroadcast: LiveBroadcast): Promise<Response> {
+
+        return this.http.post(HTTP_SERVER_ROOT + appName + "/rest/broadcast/create",
             liveBroadcast).toPromise()
             .then((res: Response) => res.json());
     }
