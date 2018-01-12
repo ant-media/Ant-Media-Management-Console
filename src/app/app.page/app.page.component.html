@@ -352,14 +352,6 @@
 
                                                             </button>
 
-                                                            <button  *ngIf="row.type=='ipCamera'" (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
-                                                                    type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-control-play"></i>
-                                                        </span>
-                                                                <ng-container i18n="@@tablePlayButton">Play</ng-container>
-
-                                                            </button>
 
                                                             <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
                                                         <span class="btn-label">

@@ -87,11 +87,11 @@ export class RestService {
 
         //TODO: Önceki versiyonda bu rest servisi get olarak yazılmış post a çevirmek gerekebilir.
 
-        let url=HTTP_SERVER_ROOT + appName + '/rest/camera/add?name='+camera.name+'&ipAddr='+camera.ipAddr+'&username='+camera.username+'&password='+camera.password;
+        let url=HTTP_SERVER_ROOT + appName + '/rest/camera/add';
 
         console.log('URL ' + url);
 
-        return this.http.get(url).toPromise().then((res: Response) => res.json());
+        return this.http.post(url,camera).toPromise().then((res: Response) => res.json());
     }
 
 

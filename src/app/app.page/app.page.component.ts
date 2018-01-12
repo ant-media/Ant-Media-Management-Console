@@ -689,7 +689,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
         this.liveBroadcast.type="ipCamera";
 
 
-        this.restService.createLiveStream(this.appName,this.liveBroadcast)
+        this.restService.addIPCamera(this.appName,this.liveBroadcast)
             .then(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
@@ -858,47 +858,6 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     }
 
-
-
-    createLiveStream(isValid: boolean): void {
-
-        if (!isValid) {
-            //not valid form return directly
-            return;
-        }
-
-        this.liveBroadcast.type="ipCamera"
-
-
-        this.newIPCameraAdding = true;
-        this.restService.createLiveStream(this.appName, this.liveBroadcast)
-            .then(data => {
-                //console.log("data :" + JSON.stringify(data));
-                if (data["streamId"] != null) {
-
-                    this.newLiveStreamActive = false;
-
-                    $.notify({
-                        icon: "ti-save",
-                        message: Locale.getLocaleInterface().new_broadcast_created
-                    }, {
-                        type: "success",
-                        delay: 900,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
-                    this.getAppLiveStreams();
-                    this.getCameraList();
-                    this.liveBroadcast.name = "";
-                }
-
-                this.newIPCameraAdding = false;
-
-            });
-
-    }
 
 
 
