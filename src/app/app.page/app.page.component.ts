@@ -16,6 +16,7 @@ import {promise} from "selenium-webdriver";
 declare var $: any;
 declare var Chartist: any;
 declare var swal: any;
+declare var classie:any;
 
 
 //declare var flowplayer: any;
@@ -35,8 +36,11 @@ declare interface BroadcastInfo {
 
 declare interface CamStreamInfo{
     name: string;
+    type:string;
+    streamId: string;
     viewerCount: number;
     status: string;
+    endPointList: Endpoint[];
 
 }
 
@@ -52,7 +56,7 @@ declare interface BroadcastInfoTable {
 
 declare interface CameraInfoTable{
 
-    dataRows:CamStreamInfo[];
+    list:CamStreamInfo[];
 }
 
 declare function require(name: string);
@@ -126,7 +130,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public appName: string;
     public sub: any;
     public broadcastTableData: BroadcastInfoTable;
-    public cameraTableData:CameraInfoTable;
+    public gridTableData:CameraInfoTable;
     public vodTableData: BroadcastInfoTable;
     public timerId: any;
     public checkAuthStatusTimerId: any;
@@ -148,6 +152,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public gettingFacebookParameters = false;
     public camera:Camera;
     public onvifURLs:String[];
+    public broadcastList:CameraInfoTable;
     public noCamWarning=false;
 
 
@@ -168,14 +173,16 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 
+
+
+
         this.broadcastTableData = {
             dataRows: [],
         };
 
-        this.cameraTableData={
-            dataRows:[]
+        this.gridTableData={
+            list:[]
         };
-
 
 
         this.vodTableData = {
@@ -224,10 +231,12 @@ export class AppPageComponent implements OnInit, OnDestroy {
             this.getAppLiveStreams();
             this.getVoDStreams();
             this.getSettings();
+            this.getAppLiveStreamsOnce()
 
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
             })
+
 
             this.timerId = window.setInterval(() => {
                 this.getAppLiveStreams();
@@ -265,6 +274,27 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
         });
     }
+
+
+    getAppLiveStreamsOnce(): void {
+        this.restService.getAppLiveStreams(this.appName, 0, 10).then(data => {
+            //console.log(data);
+            this.gridTableData.list = [];
+            console.log("type of data -> " + typeof data);
+
+            for (var i in data) {
+
+                this.gridTableData.list.push(data[i]);
+
+            }
+            setTimeout(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            }, 500);
+
+        });
+    }
+
+
 
     getVoDStreams(): void {
         this.http.get(REST_SERVICE_ROOT + '/getAppVoDStreams/' + this.appName).subscribe(data => {
@@ -344,6 +374,54 @@ export class AppPageComponent implements OnInit, OnDestroy {
             }
         }).then(function () { }, function () { });
     }
+
+
+    openMultiplePlayer():void{
+
+
+
+
+        for (var i in this.gridTableData.list) {
+
+
+
+            var id=this.gridTableData.list[i]['name'];
+
+            var srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + this.gridTableData.list[i]['streamId'] + '.m3u8';
+
+            console.log(id+":::::::::"+srcFile);
+
+            var container = document.getElementById(id);
+
+            // install flowplayer into selected container
+            flowplayer(container, {
+                clip: {
+                    autoplay: true,
+                    sources: [
+                        { type: "application/x-mpegurl",
+                            src:  srcFile }
+                    ]
+                }
+            });
+
+
+
+        }
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
 
 
     playLiveCame(streamId: string): void {
@@ -479,6 +557,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
                         });
                     };
                     this.getAppLiveStreams();
+                    this.getAppLiveStreamsOnce();
+                    this.openMultiplePlayer();
                 });
         });
 
@@ -859,6 +939,36 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
 
+    switcher():void {
+
+
+        var container = document.getElementById('cbp-vm'),
+            optionSwitch = Array.prototype.slice.call(container.querySelectorAll('div.cbp-vm-options > a'));
+
+        optionSwitch.forEach(function (el, i) {
+            el.addEventListener('click', function () {
+
+                change(this);
+
+            }, );
+        });
+
+
+        function change(opt) {
+            // remove other view classes and any selected option
+
+            optionSwitch.forEach(function (el) {
+                classie.remove(container, el.getAttribute('data-view'));
+                classie.remove(el, 'cbp-vm-selected');
+            });
+            // add the view class for this option
+            classie.add(container, opt.getAttribute('data-view'));
+            // this option stays selected
+            classie.add(opt, 'cbp-vm-selected');
+        }
+
+    }
+
 
 
     setGettingParametersFalse(networkName: string): void {
@@ -1128,18 +1238,18 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 console.log( data["name"]);
 
 
-                    this.cameraTableData.dataRows = [];
+                this.gridTableData.list = [];
 
-                    console.log("type of data -> " + typeof data);
+                console.log("type of data -> " + typeof data);
 
-                    for (var i in data) {
+                for (var i in data) {
 
-                        this.cameraTableData.dataRows.push(data[i]);
+                    this.gridTableData.list.push(data[i]);
 
-                    }
-                    setTimeout(function () {
-                        $('[data-toggle="tooltip"]').tooltip();
-                    }, 500);
+                }
+                setTimeout(function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                }, 500);
 
 
 

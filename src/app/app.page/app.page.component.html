@@ -260,130 +260,202 @@
                                     </form>
                                 </div>
 
-                                <div class="container">
+                                <br><br>
+                                <!--
 
-                                    <div class="table-responsive" *ngIf="broadcastTableData.dataRows.length>0">
-                                        <table class="table table-striped">
+                                                                <div class="container">
 
-                                            <thead  *ngIf="isMobileMenu()">
+                                                                    <div class="table-responsive" *ngIf="broadcastTableData.dataRows.length>0">
+                                                                        <table class="table table-striped">
 
-                                            <tr>
-                                                <div class="row">
-                                                    <!--
-                                                    <th i18n="@@streamName">Name</th>
-                                                    <!--
-                                                    <th class="text-center" i18n="@@streamWatcherCount">Watcher Count</th>
+                                                                            <thead  *ngIf="isMobileMenu()">
 
-                                                    <th class="text-center" i18n="@@streamStatus">Status</th>
-                                                    <th class="text-center" i18n="@@streamSocialShare">Social Share</th>
-                                                    <th class="text-center" i18n="@@tableActionField">Action</th>
-                                                    -->
+                                                                            <tr>
+                                                                                <div class="row">
 
-                                                    <div align="left" i18n="@@streamName" class="col-lg-1 col-md-6 col-sm-12 col-xs-12">
-                                                        Name</div>
 
-                                                    <div align="left" i18n="@@streamName" class="col-lg-1 col-md-6 col-sm-12 col-xs-12">
-                                                        Type</div>
+                                                                                    <div align="left" i18n="@@streamName" class="col-lg-1 col-md-6 col-sm-12 col-xs-12">
+                                                                                        Name</div>
 
-                                                    <div align="left" i18n="@@streamStatus" class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
-                                                        Status</div>
+                                                                                    <div align="left" i18n="@@streamName" class="col-lg-1 col-md-6 col-sm-12 col-xs-12">
+                                                                                        Type</div>
 
-                                                    <div align="left" i18n="@@streamSocialShare" class="col-lg-1 col-md-6 col-sm-12 col-xs-12">
-                                                        Social Share</div>
+                                                                                    <div align="left" i18n="@@streamStatus" class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                                                                                        Status</div>
 
-                                                    <div align="left" i18n="@@tableActionField" class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                                                        Action</div>
-                                                </div>
-                                            </tr>
-                                            </thead>
+                                                                                    <div align="left" i18n="@@streamSocialShare" class="col-lg-1 col-md-6 col-sm-12 col-xs-12">
+                                                                                        Social Share</div>
+
+                                                                                    <div align="left" i18n="@@tableActionField" class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                                        Action</div>
+                                                                                </div>
+                                                                            </tr>
+                                                                            </thead>
 
 
 
-                                            <tbody>
+                                                                            <tbody>
 
-                                            <tr *ngFor="let row of broadcastTableData.dataRows">
-                                                <div class="row">
+                                                                            <tr *ngFor="let row of broadcastTableData.dataRows">
+                                                                                <div class="row">
 
-                                                    <div align="left" class="col-lg-1 col-md-6  col-sm-12 col-xs-12" >
-                                                        {{row.name}}
+                                                                                    <div align="left" class="col-lg-1 col-md-6  col-sm-12 col-xs-12" >
+                                                                                        {{row.name}}
+                                                                                    </div>
+
+                                                                                    <div align="left" class="col-lg-1 col-md-6  col-sm-12 col-xs-12" >
+                                                                                        {{row.type}}
+                                                                                    </div>
+
+
+
+
+                                                                                    <div  align="left" class="col-lg-2 col-md-6 col-sm-12 col-xs-12" >
+
+                                                                                        <ng-container [ngSwitch]="row.status">
+                                                                                            <ng-container *ngSwitchCase="'created'"><i class="fa fa-circle text-muted" >&nbsp;</i>Offline</ng-container>
+                                                                                            <ng-container *ngSwitchCase="'broadcasting'"><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
+                                                                                            <ng-container *ngSwitchCase="'finished'"><i class="fa fa-circle text-muted" *ngSwitchCase="'finished'">&nbsp;</i>Offline</ng-container>
+                                                                                        </ng-container>
+
+                                                                                    </div>
+
+                                                                                    <div align="left" class="col-lg-1 col-md-6 col-sm-12 col-xs-12" >
+
+
+                                                                                        <ng-container *ngFor="let endpoint of row.endPointList" class="text-center">
+                                                                                            <ng-container [ngSwitch]="endpoint.type">
+                                                                                                <i class="ti-facebook " style="color:#3b5998;" *ngSwitchCase="'facebook'"> </i>
+                                                                                                <i class="ti-youtube " style="color:#e52d27;" *ngSwitchCase="'youtube'"> </i>
+                                                                                                <i class="ti-twitter-alt " style="color:#55acee;" *ngSwitchCase="'periscope'"></i>
+                                                                                            </ng-container>
+                                                                                        </ng-container>
+
+                                                                                    </div>
+
+                                                                                    <div align="left" class="col-lg-5 col-md-6 col-sm-12 col-xs-12">
+                                                                                        <div class="row">
+
+                                                                                            <button *ngIf="row.status=='broadcasting'"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
+                                                                                                    type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-control-play"></i>
+                                                                                        </span>
+                                                                                                <ng-container i18n="@@tablePlayButton">Play</ng-container>
+
+                                                                                            </button>
+
+
+                                                                                            <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-clipboard"></i>
+                                                                                        </span>
+                                                                                                <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
+                                                                                            </button>
+                                                                                            <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
+                                                                                                    [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                                                    type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-clipboard"></i>
+                                                                                        </span>
+                                                                                                <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
+                                                                                            </button>
+                                                                                            <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-close"></i>
+                                                                                        </span>
+                                                                                                <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </tr>
+
+                                                                            </tbody>
+
+                                                                        </table>
+
+                                                                    </div>
+                                                                </div>
+
+                                                                <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+                                                                    There is no live stream at this time.
+                                                                </p>
+
+
+-->
+                                <div class="container" *ngIf="broadcastTableData.dataRows.length>0">
+
+                                    <div class="main" >
+
+                                        <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list" >
+                                            <div class="cbp-vm-options">
+
+                                                <a (click)="switcher()" class="cbp-vm-icon cbp-vm-grid " data-view="cbp-vm-view-grid"></a>
+                                                <a (click)="switcher()" class="cbp-vm-icon cbp-vm-list cbp-vm-selected" data-view="cbp-vm-view-list"></a>
+                                            </div>
+                                            <ul >
+                                                <li *ngFor="let row of broadcastTableData.dataRows">
+                                                    <p class="cbp-vm-image" *ngIf="row.type=='liveStream'" ><img src="/assets/img/live_streaming.gif"></p>
+                                                    <p class="cbp-vm-image" *ngIf="row.type=='ipCamera'" ><img src="/assets/img/ipcam.jpg"></p>
+
+                                                    <h3 class="cbp-vm-title" >{{row.name}}</h3>
+
+
+                                                    <ng-container [ngSwitch]="row.status">
+                                                        <ng-container *ngSwitchCase="'created'"><i class="fa fa-circle text-muted" >&nbsp;</i>Offline</ng-container>
+                                                        <ng-container *ngSwitchCase="'broadcasting'"><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
+                                                        <ng-container *ngSwitchCase="'finished'"><i class="fa fa-circle text-muted" *ngSwitchCase="'finished'">&nbsp;</i>Offline</ng-container>
+                                                    </ng-container>
+
+
+                                                    <div class="cbp-vm-details">
+
+
+
+                                                        <button *ngIf="row.status=='broadcasting'"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
+                                                                type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-control-play"></i>
+                                                                                        </span>
+                                                            <ng-container i18n="@@tablePlayButton">Play</ng-container>
+
+                                                        </button>
+
+
+                                                        <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-clipboard"></i>
+                                                                                        </span>
+                                                            <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
+                                                        </button>
+                                                        <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
+                                                                [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-clipboard"></i>
+                                                                                        </span>
+                                                            <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
+                                                        </button>
+                                                        <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-close"></i>
+                                                                                        </span>
+                                                            <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
+                                                        </button>
+
+
                                                     </div>
 
-                                                    <div align="left" class="col-lg-1 col-md-6  col-sm-12 col-xs-12" >
-                                                        {{row.type}}
-                                                    </div>
 
 
-
-                                                    <!--
-                                                    <td class="text-center">{{row.watcherCount}}</td>
-                                                    -->
-                                                    <div  align="left" class="col-lg-2 col-md-6 col-sm-12 col-xs-12" >
-
-                                                        <ng-container [ngSwitch]="row.status">
-                                                            <ng-container *ngSwitchCase="'created'"><i class="fa fa-circle text-muted" >&nbsp;</i>Offline</ng-container>
-                                                            <ng-container *ngSwitchCase="'broadcasting'"><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
-                                                            <ng-container *ngSwitchCase="'finished'"><i class="fa fa-circle text-muted" *ngSwitchCase="'finished'">&nbsp;</i>Offline</ng-container>
-                                                        </ng-container>
-
-                                                    </div>
-
-                                                    <div align="left" class="col-lg-1 col-md-6 col-sm-12 col-xs-12" >
+                                            </ul>
+                                        </div>
 
 
-                                                        <ng-container *ngFor="let endpoint of row.endPointList" class="text-center">
-                                                            <ng-container [ngSwitch]="endpoint.type">
-                                                                <i class="ti-facebook " style="color:#3b5998;" *ngSwitchCase="'facebook'"> </i>
-                                                                <i class="ti-youtube " style="color:#e52d27;" *ngSwitchCase="'youtube'"> </i>
-                                                                <i class="ti-twitter-alt " style="color:#55acee;" *ngSwitchCase="'periscope'"></i>
-                                                            </ng-container>
-                                                        </ng-container>
+                                    </div><!-- /main -->
+                                </div><!-- /container -->
 
-                                                    </div>
-
-                                                    <div align="left" class="col-lg-5 col-md-6 col-sm-12 col-xs-12">
-                                                        <div class="row">
-
-                                                            <button *ngIf="row.status=='broadcasting'"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
-                                                                    type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-control-play"></i>
-                                                        </span>
-                                                                <ng-container i18n="@@tablePlayButton">Play</ng-container>
-
-                                                            </button>
-
-
-                                                            <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-clipboard"></i>
-                                                        </span>
-                                                                <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
-                                                            </button>
-                                                            <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
-                                                                    [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                    type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-clipboard"></i>
-                                                        </span>
-                                                                <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
-                                                            </button>
-                                                            <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-close"></i>
-                                                        </span>
-                                                                <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </tr>
-
-                                            </tbody>
-
-                                        </table>
-
-                                    </div>
-                                </div>
 
                                 <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
                                     There is no live stream at this time.
@@ -393,14 +465,24 @@
 
 
 
+                            </div>
 
 
+                            <div *ngFor="let row of gridTableData.list" >
+
+                                <div id="{{row.name}}"> </div>
 
 
 
 
 
                             </div>
+                            <button (click)="openMultiplePlayer()">
+
+                                davut
+                            </button>
+
+
                             <div class="tab-pane" id="vod">
 
                                 <!--
@@ -672,6 +754,41 @@
                             </div>
                         </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <div class="footer">
                             <!--
                         <hr />
@@ -690,3 +807,4 @@
         </div>
     </div>
 </div>
+

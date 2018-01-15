@@ -19,7 +19,9 @@
         "prefix": "app",
         "styles": [
             "styles.css",      
-            "../node_modules/flowplayer/dist/skin/skin.css"
+            "../node_modules/flowplayer/dist/skin/skin.css",
+            "assets/css/ViewModeSwitch/component.css",
+            "assets/css/ViewModeSwitch/default.css"
         ],
         "scripts": [
             "../node_modules/jquery/dist/jquery.js",
@@ -36,11 +38,15 @@
             "../node_modules/nouislider/distribute/nouislider.min.js",
             "../node_modules/datatables.net/js/jquery.dataTables.js",
             "../node_modules/datatables.net-bs/js/dataTables.bootstrap.js",
-            "../node_modules/datatables.net-responsive/js/dataTables.responsive.js",           "../node_modules/bootstrap-select/dist/js/bootstrap-select.js",
+            "../node_modules/datatables.net-responsive/js/dataTables.responsive.js",
+            "../node_modules/bootstrap-select/dist/js/bootstrap-select.js",
             "../node_modules/bootstrap-switch/dist/js/bootstrap-switch.js",
             "../node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.js",
             "../node_modules/jasny-bootstrap/dist/js/jasny-bootstrap.min.js",
-            "../src/assets/js/sweetalert2.js"
+            "assets/js/sweetalert2.js",
+            "assets/js/ViewModeSwitch/cbpViewModeSwitch.js",
+            "assets/js/ViewModeSwitch/classie.js",
+            "assets/js/ViewModeSwitch/modernizrcustom.js"
         ],
         "environmentSource": "environments/environment.ts",
         "environments": {

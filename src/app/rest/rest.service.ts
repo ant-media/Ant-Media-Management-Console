@@ -85,7 +85,7 @@ export class RestService {
     public addIPCamera(appName: string, camera:Camera): Promise<Response> {
 
 
-        //TODO: Önceki versiyonda bu rest servisi get olarak yazılmış post a çevirmek gerekebilir.
+
 
         let url=HTTP_SERVER_ROOT + appName + '/rest/camera/add';
 
