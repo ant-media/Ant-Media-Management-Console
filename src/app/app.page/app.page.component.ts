@@ -154,7 +154,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public onvifURLs:String[];
     public broadcastList:CameraInfoTable;
     public noCamWarning=false;
-
+    public isGridView=false;
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
@@ -231,15 +231,22 @@ export class AppPageComponent implements OnInit, OnDestroy {
             this.getAppLiveStreams();
             this.getVoDStreams();
             this.getSettings();
-            this.getAppLiveStreamsOnce()
+            this.getAppLiveStreamsOnce();
+
+
 
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
             })
 
 
+            setTimeout(() => {
+                this.switchToListView();
+            }, 500);
+
+
             this.timerId = window.setInterval(() => {
-                this.getAppLiveStreams();
+                // this.getAppLiveStreams();
                 this.getVoDStreams();
 
             }, 10000);
@@ -376,27 +383,31 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
 
-    openMultiplePlayer():void{
+    openGridPlayers():void{
 
-
+        var id,srcFile;
 
 
         for (var i in this.gridTableData.list) {
 
 
+            id=this.gridTableData.list[i]['name'];
 
-            var id=this.gridTableData.list[i]['name'];
-
-            var srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + this.gridTableData.list[i]['streamId'] + '.m3u8';
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + this.gridTableData.list[i]['streamId'] + '.m3u8';
 
             console.log(id+":::::::::"+srcFile);
 
             var container = document.getElementById(id);
 
+
+
+
             // install flowplayer into selected container
             flowplayer(container, {
+
                 clip: {
                     autoplay: true,
+
                     sources: [
                         { type: "application/x-mpegurl",
                             src:  srcFile }
@@ -406,21 +417,44 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 
+
+
+
+
+            container.setAttribute("style","width:350px");
+
+
+
+
+
         }
-
-
-
-
-
     }
+    closeGridPlayers():void{
+
+        var id,srcFile;
+
+
+        for (var i in this.gridTableData.list) {
+
+            id=this.gridTableData.list[i]['name'];
+
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + this.gridTableData.list[i]['streamId'] + '.m3u8';
+
+            console.log(id+":::::::::"+srcFile);
+
+            var container = document.getElementById(id);
+
+            flowplayer(container).shutdown();
+
+
+            $("#" + id).html("").attr('class', + '');
 
 
 
 
 
-
-
-
+        }
+    }
 
 
 
@@ -558,7 +592,16 @@ export class AppPageComponent implements OnInit, OnDestroy {
                     };
                     this.getAppLiveStreams();
                     this.getAppLiveStreamsOnce();
-                    this.openMultiplePlayer();
+                    this.openGridPlayers();
+
+                    if(this.isGridView){
+                        setTimeout(() => {
+                            this.switchToGridView();
+                        }, 500);
+                    }
+
+
+
                 });
         });
 
@@ -788,11 +831,24 @@ export class AppPageComponent implements OnInit, OnDestroy {
                         }
                     });
                     this.getAppLiveStreams();
+                    this.getAppLiveStreamsOnce();
 
                 }
                 //swal.close();
                 this.newIPCameraAdding = false;
                 this.newIPCameraActive=false;
+                this.liveBroadcast.name="";
+                this.liveBroadcast.ipAddr="";
+                this.liveBroadcast.username="";
+                this.liveBroadcast.password="";
+
+
+                if(this.isGridView){
+                    setTimeout(() => {
+                        this.switchToGridView();
+                    }, 500);
+                }
+
 
             });
 
@@ -928,27 +984,41 @@ export class AppPageComponent implements OnInit, OnDestroy {
                         }
                     });
                     this.getAppLiveStreams();
-                    this.getCameraList();
                     this.liveBroadcast.name = "";
                 }
 
                 this.newLiveStreamCreating = false;
+                this.getAppLiveStreamsOnce();
+
+
+                if(this.isGridView){
+                    setTimeout(() => {
+                        this.switchToGridView();
+                    }, 500);
+                }
+
 
             });
 
     }
 
 
-    switcher():void {
+    switchToListView():void {
 
+
+        this.isGridView=false;
 
         var container = document.getElementById('cbp-vm'),
             optionSwitch = Array.prototype.slice.call(container.querySelectorAll('div.cbp-vm-options > a'));
+
+
 
         optionSwitch.forEach(function (el, i) {
             el.addEventListener('click', function () {
 
                 change(this);
+
+
 
             }, );
         });
@@ -956,6 +1026,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
         function change(opt) {
             // remove other view classes and any selected option
+
+
 
             optionSwitch.forEach(function (el) {
                 classie.remove(container, el.getAttribute('data-view'));
@@ -966,6 +1038,52 @@ export class AppPageComponent implements OnInit, OnDestroy {
             // this option stays selected
             classie.add(opt, 'cbp-vm-selected');
         }
+
+        this.closeGridPlayers();
+
+    }
+
+    switchToGridView():void {
+
+        this.isGridView=true;
+
+        var container = document.getElementById('cbp-vm'),
+            optionSwitch = Array.prototype.slice.call(container.querySelectorAll('div.cbp-vm-options > a'));
+
+
+
+
+
+        optionSwitch.forEach(function (el, i) {
+            el.addEventListener('click', function () {
+
+                change(this);
+
+
+
+            }, );
+        });
+
+
+        function change(opt) {
+            // remove other view classes and any selected option
+
+
+            optionSwitch.forEach(function (el) {
+                classie.remove(container, el.getAttribute('data-view'));
+                classie.remove(el, 'cbp-vm-selected');
+            });
+            // add the view class for this option
+            classie.add(container, opt.getAttribute('data-view'));
+            // this option stays selected
+            classie.add(opt, 'cbp-vm-selected');
+        }
+
+
+        setTimeout(() => {
+            this.openGridPlayers();
+        }, 500);
+
 
     }
 

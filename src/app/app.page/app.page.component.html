@@ -391,29 +391,39 @@
                                         <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list" >
                                             <div class="cbp-vm-options">
 
-                                                <a (click)="switcher()" class="cbp-vm-icon cbp-vm-grid " data-view="cbp-vm-view-grid"></a>
-                                                <a (click)="switcher()" class="cbp-vm-icon cbp-vm-list cbp-vm-selected" data-view="cbp-vm-view-list"></a>
+                                                <a (click)="switchToGridView()" class="cbp-vm-icon cbp-vm-grid  " data-view="cbp-vm-view-grid"></a>
+                                                <a (click)="switchToListView()" class="cbp-vm-icon cbp-vm-list cbp-vm-selected " data-view="cbp-vm-view-list"></a>
+
                                             </div>
                                             <ul >
                                                 <li *ngFor="let row of broadcastTableData.dataRows">
-                                                    <p class="cbp-vm-image" *ngIf="row.type=='liveStream'" ><img src="/assets/img/live_streaming.gif"></p>
-                                                    <p class="cbp-vm-image" *ngIf="row.type=='ipCamera'" ><img src="/assets/img/ipcam.jpg"></p>
+
+
+                                                    <p class="cbp-vm-image" *ngIf="row.type=='liveStream'&& !isGridView" ><img src="/assets/img/live_streaming.gif"></p>
+                                                    <p class="cbp-vm-image" *ngIf="row.type=='ipCamera'&& !isGridView" ><img src="/assets/img/ipcam.jpg"></p>
+
 
                                                     <h3 class="cbp-vm-title" >{{row.name}}</h3>
 
 
-                                                    <ng-container [ngSwitch]="row.status">
-                                                        <ng-container *ngSwitchCase="'created'"><i class="fa fa-circle text-muted" >&nbsp;</i>Offline</ng-container>
-                                                        <ng-container *ngSwitchCase="'broadcasting'"><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
-                                                        <ng-container *ngSwitchCase="'finished'"><i class="fa fa-circle text-muted" *ngSwitchCase="'finished'">&nbsp;</i>Offline</ng-container>
-                                                    </ng-container>
-
 
                                                     <div class="cbp-vm-details">
 
+                                                        <a id="{{row.name}}"></a>
 
 
-                                                        <button *ngIf="row.status=='broadcasting'"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
+                                                        <ng-container [ngSwitch]="row.status" *ngIf="!isGridView">
+                                                            <ng-container *ngSwitchCase="'created'"><i class="fa fa-circle text-muted" >&nbsp;</i>Offline</ng-container>
+                                                            <ng-container *ngSwitchCase="'broadcasting'"><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
+                                                            <ng-container *ngSwitchCase="'finished'"><i class="fa fa-circle text-muted" *ngSwitchCase="'finished'">&nbsp;</i>Offline</ng-container>
+                                                        </ng-container>
+
+
+
+
+
+
+                                                        <button *ngIf="row.status=='broadcasting' && !isGridView"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
                                                                 type="button">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-control-play"></i>
@@ -447,8 +457,7 @@
 
                                                     </div>
 
-
-
+                                                </li>
                                             </ul>
                                         </div>
 
@@ -465,22 +474,11 @@
 
 
 
-                            </div>
-
-
-                            <div *ngFor="let row of gridTableData.list" >
-
-                                <div id="{{row.name}}"> </div>
-
-
-
-
 
                             </div>
-                            <button (click)="openMultiplePlayer()">
 
-                                davut
-                            </button>
+
+
 
 
                             <div class="tab-pane" id="vod">
@@ -614,7 +612,7 @@
                                             <label class="col-sm-2 control-label">Streams</label>
                                             <div class="col-sm-10">
                                                 <ng-container *ngIf="appSettings.encoderSettings">
-                                                    <div class="row" *ngFor="let encoderSetting of appSettings.encoderSettings; let i = index">x
+                                                    <div class="row" *ngFor="let encoderSetting of appSettings.encoderSettings; let i = index">
                                                         <div class="col-sm-3 text-left">
 
                                                             <input type="text" [name]="'resolutionHeight'+i" class="form-control" [(ngModel)]="encoderSetting.height">
