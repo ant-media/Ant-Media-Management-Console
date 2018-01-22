@@ -384,86 +384,164 @@
 
 
 -->
-                                <div class="container" *ngIf="broadcastTableData.dataRows.length>0">
 
-                                    <div class="main" >
+                                <div class="main" >
 
-                                        <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list" >
-                                            <div class="cbp-vm-options">
+                                    <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list" *ngIf="broadcastTableData.dataRows.length>0" >
+                                        <div class="cbp-vm-options">
 
-                                                <a (click)="switchToGridView()" class="cbp-vm-icon cbp-vm-grid  " data-view="cbp-vm-view-grid"></a>
-                                                <a (click)="switchToListView()" class="cbp-vm-icon cbp-vm-list cbp-vm-selected " data-view="cbp-vm-view-list"></a>
+                                            <a (click)="switchToGridView()" class="cbp-vm-icon cbp-vm-grid  " data-view="cbp-vm-view-grid"></a>
+                                            <a (click)="switchToListView()" class="cbp-vm-icon cbp-vm-list cbp-vm-selected " data-view="cbp-vm-view-list"></a>
 
-                                            </div>
-                                            <ul >
-                                                <li *ngFor="let row of broadcastTableData.dataRows">
-
-
-                                                    <p class="cbp-vm-image" *ngIf="row.type=='liveStream'&& !isGridView" ><img src="/assets/img/live_streaming.gif"></p>
-                                                    <p class="cbp-vm-image" *ngIf="row.type=='ipCamera'&& !isGridView" ><img src="/assets/img/ipcam.jpg"></p>
+                                        </div>
+                                        <ul *ngIf="!isGridView">
+                                            <li *ngFor="let row of broadcastTableData.dataRows">
 
 
-                                                    <h3 class="cbp-vm-title" >{{row.name}}</h3>
+                                                <p class="cbp-vm-image" *ngIf="row.type=='liveStream'&& !isGridView" ><img src="/assets/img/live_streaming.gif"></p>
+                                                <p class="cbp-vm-image" *ngIf="row.type=='ipCamera'&& !isGridView" ><img src="/assets/img/ipcam.jpg"></p>
+
+
+                                                <h3 class="cbp-vm-title" >{{row.name}}</h3>
 
 
 
-                                                    <div class="cbp-vm-details">
+                                                <div class="cbp-vm-details">
 
-                                                        <a id="{{row.name}}"></a>
+                                                    <a id="{{row.name}}"></a>
 
 
-                                                        <ng-container [ngSwitch]="row.status" *ngIf="!isGridView">
-                                                            <ng-container *ngSwitchCase="'created'"><i class="fa fa-circle text-muted" >&nbsp;</i>Offline</ng-container>
-                                                            <ng-container *ngSwitchCase="'broadcasting'"><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
-                                                            <ng-container *ngSwitchCase="'finished'"><i class="fa fa-circle text-muted" *ngSwitchCase="'finished'">&nbsp;</i>Offline</ng-container>
-                                                        </ng-container>
-
+                                                    <ng-container [ngSwitch]="row.status" *ngIf="!isGridView">
+                                                        <ng-container *ngSwitchCase="'created'"><i class="fa fa-circle text-muted" >&nbsp;</i>Offline</ng-container>
+                                                        <ng-container *ngSwitchCase="'broadcasting'"><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
+                                                        <ng-container *ngSwitchCase="'finished'"><i class="fa fa-circle text-muted" *ngSwitchCase="'finished'">&nbsp;</i>Offline</ng-container>
+                                                    </ng-container>
 
 
 
 
 
-                                                        <button *ngIf="row.status=='broadcasting' && !isGridView"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
-                                                                type="button">
+
+                                                    <button *ngIf="row.status=='broadcasting' && !isGridView"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
+                                                            type="button">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-control-play"></i>
                                                                                         </span>
-                                                            <ng-container i18n="@@tablePlayButton">Play</ng-container>
+                                                        <ng-container i18n="@@tablePlayButton">Play</ng-container>
 
-                                                        </button>
+                                                    </button>
 
 
-                                                        <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
+                                                    <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-clipboard"></i>
                                                                                         </span>
-                                                            <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
-                                                        </button>
-                                                        <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
-                                                                [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                type="button">
+                                                        <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
+                                                    </button>
+                                                    <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
+                                                            [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                            type="button">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-clipboard"></i>
                                                                                         </span>
-                                                            <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
-                                                        </button>
-                                                        <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
+                                                        <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
+                                                    </button>
+                                                    <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-close"></i>
                                                                                         </span>
-                                                            <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
-                                                        </button>
+                                                        <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
+                                                    </button>
 
+                                                    <h6 *ngIf="isGridView">{{row.ipAddr}}</h6>
+
+
+                                                </div>
+
+
+                                            </li>
+                                        </ul>
+
+
+                                        <ul>
+                                        <div *ngIf="isGridView" >
+
+                                            <div class="card col-md-6" *ngFor="let row of broadcastTableData.dataRows" >
+
+
+                                                <div class="card-content" >
+
+                                                    <div id="{{row.name}}"></div>
+
+
+
+
+                                                    <div >{{row.name}}
+                                                    <button *ngIf="row.status=='broadcasting' && !isGridView"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
+                                                            type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-control-play"></i>
+                                                                                        </span>
+                                                        <ng-container i18n="@@tablePlayButton">Play</ng-container>
+
+                                                    </button>
+
+
+                                                    <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-clipboard"></i>
+                                                                                        </span>
+                                                        <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
+                                                    </button>
+                                                    <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
+                                                            [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                            type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-clipboard"></i>
+                                                                                        </span>
+                                                        <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
+                                                    </button>
+                                                    <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-close"></i>
+                                                                                        </span>
+                                                        <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
+                                                    </button>
+
+                                                    <h6 >{{row.ipAddr}}</h6>
 
                                                     </div>
 
-                                                </li>
-                                            </ul>
+
+                                                </div>
+
+                                            </div>
                                         </div>
 
 
-                                    </div><!-- /main -->
-                                </div><!-- /container -->
+
+                                        </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </div>
+
+
+                                </div><!-- /main -->
+
 
 
                                 <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">

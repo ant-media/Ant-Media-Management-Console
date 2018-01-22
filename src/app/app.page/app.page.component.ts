@@ -32,6 +32,7 @@ declare interface BroadcastInfo {
     viewerCount: number;
     status: string;
     endPointList: Endpoint[];
+    ipAddr:string;
 }
 
 declare interface CamStreamInfo{
@@ -41,6 +42,7 @@ declare interface CamStreamInfo{
     viewerCount: number;
     status: string;
     endPointList: Endpoint[];
+    ipAddr:string
 
 }
 
@@ -421,7 +423,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 
-            container.setAttribute("style","width:350px");
+            container.setAttribute("style","width:500px");
 
 
 
@@ -834,6 +836,32 @@ export class AppPageComponent implements OnInit, OnDestroy {
                     this.getAppLiveStreamsOnce();
 
                 }
+                else{
+
+                    this.newIPCameraAdding = false;
+
+                    $.notify({
+                        icon: "ti-save",
+                        message: "Error: Not added"
+                    }, {
+                        type: "error",
+                        delay: 2000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                    this.getAppLiveStreams();
+                    this.getAppLiveStreamsOnce();
+
+
+
+
+
+                }
+
+
+
                 //swal.close();
                 this.newIPCameraAdding = false;
                 this.newIPCameraActive=false;
@@ -841,6 +869,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 this.liveBroadcast.ipAddr="";
                 this.liveBroadcast.username="";
                 this.liveBroadcast.password="";
+
+
 
 
                 if(this.isGridView){

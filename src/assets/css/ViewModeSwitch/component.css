@@ -141,12 +141,13 @@
 }
 
 .cbp-vm-view-grid ul li {
-	width: 40%;
+
 	text-align: center;
-	padding: 2px;
-	margin: 20px 0 0;
+
+	padding: 5px;
+
 	display: inline-block;
-	min-height: 420px;
+
 	vertical-align: top;
 }
 
@@ -155,7 +156,7 @@
 }
 
 .cbp-vm-view-grid .cbp-vm-details {
-	max-width: 300px;
+	max-width: 550px;
 	min-height: 70px;
 	margin: 0 auto;
 } 
