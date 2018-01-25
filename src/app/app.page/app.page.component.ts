@@ -54,6 +54,7 @@ declare interface EncoderSettings {
 
 declare interface BroadcastInfoTable {
     dataRows: BroadcastInfo[];
+
 }
 
 declare interface CameraInfoTable{
@@ -277,12 +278,53 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
             }
+
+
+            if(this.isGridView){
+                setTimeout(() => {
+                    this.openGridPlayers();
+                }, 300);}
+
+
+
+        });
+    }
+
+    filterAppLiveStreams(type:String): void {
+
+
+        this.restService.filterAppLiveStreams(this.appName, 0, 10,type).then(data => {
+            //console.log(data);
+            this.broadcastTableData.dataRows = [];
+            console.log("type of data -> " + typeof data);
+
+            for (var i in data) {
+
+
+                this.broadcastTableData.dataRows.push(data[i]);
+
+
+            }
+
+
+
+            if(this.isGridView){
+                setTimeout(() => {
+                    this.openGridPlayers();
+                }, 500);
+
+            }
+
+
             setTimeout(function () {
                 $('[data-toggle="tooltip"]').tooltip();
             }, 500);
 
+
+
         });
     }
+
 
 
     getAppLiveStreamsOnce(): void {
@@ -294,6 +336,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
             for (var i in data) {
 
                 this.gridTableData.list.push(data[i]);
+
+
 
             }
             setTimeout(function () {
@@ -387,17 +431,21 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     openGridPlayers():void{
 
-        var id,srcFile;
+
+
+        var id,name,srcFile;
 
 
         for (var i in this.gridTableData.list) {
 
 
-            id=this.gridTableData.list[i]['name'];
+            id=this.broadcastTableData.dataRows[i]['streamId'];
 
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + this.gridTableData.list[i]['streamId'] + '.m3u8';
+            name=this.broadcastTableData.dataRows[i]['name'];
 
-            console.log(id+":::::::::"+srcFile);
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + this.broadcastTableData.dataRows[i]['streamId'] + '.m3u8';
+
+            console.log(id+"::::"+name+":::::::::"+srcFile);
 
             var container = document.getElementById(id);
 
@@ -433,16 +481,14 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
     closeGridPlayers():void{
 
-        var id,srcFile;
+        var id;
 
 
-        for (var i in this.gridTableData.list) {
+        for (var i in this.broadcastTableData.dataRows) {
 
-            id=this.gridTableData.list[i]['name'];
+            id=this.broadcastTableData.dataRows[i]['streamId'];
 
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + this.gridTableData.list[i]['streamId'] + '.m3u8';
 
-            console.log(id+":::::::::"+srcFile);
 
             var container = document.getElementById(id);
 
@@ -594,7 +640,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
                     };
                     this.getAppLiveStreams();
                     this.getAppLiveStreamsOnce();
-                    this.openGridPlayers();
+
 
                     if(this.isGridView){
                         setTimeout(() => {
@@ -609,40 +655,6 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     }
 
-    deleteIPCamera(streamId: string): void {
-        swal({
-            title: Locale.getLocaleInterface().are_you_sure,
-            text: Locale.getLocaleInterface().wont_be_able_to_revert,
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then(data => {
-            this.restService.deleteIPCamera(this.appName, streamId)
-                .subscribe(data => {
-                    if (data["success"] == true) {
-
-                    }
-                    else {
-                        $.notify({
-                            icon: "ti-save",
-                            message: Locale.getLocaleInterface().broadcast_not_deleted
-                        }, {
-                            type: "warning",
-                            delay: 900,
-                            placement: {
-                                from: 'top',
-                                align: 'right'
-                            }
-                        });
-                    };
-                    this.getAppLiveStreams();
-                    this.getCameraList();
-                });
-        });
-
-    }
 
     addNewStream(): void {
         if (!this.appSettings.encoderSettings) {
@@ -1378,44 +1390,5 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
 
-    getCameraList() {
 
-        this.restService.getCamList(this.appName)
-            .then(data => {
-                //console.log("data :" + JSON.stringify(data));
-                console.log( data["name"]);
-
-
-                this.gridTableData.list = [];
-
-                console.log("type of data -> " + typeof data);
-
-                for (var i in data) {
-
-                    this.gridTableData.list.push(data[i]);
-
-                }
-                setTimeout(function () {
-                    $('[data-toggle="tooltip"]').tooltip();
-                }, 500);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            });
-
-    }
 }

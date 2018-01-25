@@ -35,14 +35,14 @@
 
 
                                 <div class="dropdown text-right">
-                                    <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" data-toggle="dropdown">New Live Stream
+                                    <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" data-toggle="dropdown" role="button">New Live Stream
                                         <span class="caret"></span></button>
 
                                     <ul class="dropdown-menu dropdown-menu-right">
 
-                                        <li><a (click)="newLiveStream()">Live Stream</a></li>
-                                        <li><a (click)="newIPCamera()">IP Camera</a></li>
-                                        <li><a (click)="newStreamSource()">Stream Source</a></li>
+                                        <li><a (click)="newLiveStream()" role="button">Live Stream</a></li>
+                                        <li><a (click)="newIPCamera()" role="button">IP Camera</a></li>
+                                        <li><a (click)="newStreamSource()" role="button">Stream Source</a></li>
                                     </ul>
                                 </div>
 
@@ -387,14 +387,41 @@
 
                                 <div class="main" >
 
-                                    <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list" *ngIf="broadcastTableData.dataRows.length>0" >
+                                    <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list"  >
                                         <div class="cbp-vm-options">
+
+
+                                            <div class="dropdown text-left" style="float: left;margin: 4px">
+                                                <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" data-toggle="dropdown" role="button">Filter
+                                                    <span class="caret"></span></button>
+
+                                                <ul class="dropdown-menu dropdown-menu-left">
+
+                                                    <li><a (click)="filterAppLiveStreams('liveStream')" role="button">Live Stream</a></li>
+                                                    <li><a (click)="filterAppLiveStreams('ipCamera')" role="button">IP Camera</a></li>
+                                                    <li><a (click)="filterAppLiveStreams('source')" role="button">Stream Source</a></li>
+                                                </ul>
+                                            </div>
+
+                                            <div class=" text-left" style="float: left;margin: 4px">
+                                                <button (click)="getAppLiveStreams()" class="btn btn-fill btn-success"  role="button">Filter Reset
+                                                </button>
+
+
+                                            </div>
+
+
+
+
+
+
+
 
                                             <a (click)="switchToGridView()" class="cbp-vm-icon cbp-vm-grid  " data-view="cbp-vm-view-grid"></a>
                                             <a (click)="switchToListView()" class="cbp-vm-icon cbp-vm-list cbp-vm-selected " data-view="cbp-vm-view-list"></a>
 
                                         </div>
-                                        <ul *ngIf="!isGridView">
+                                        <ul *ngIf="!isGridView && broadcastTableData.dataRows.length>0">
                                             <li *ngFor="let row of broadcastTableData.dataRows">
 
 
@@ -408,7 +435,7 @@
 
                                                 <div class="cbp-vm-details">
 
-                                                    <a id="{{row.name}}"></a>
+
 
 
                                                     <ng-container [ngSwitch]="row.status" *ngIf="!isGridView">
@@ -464,59 +491,59 @@
 
 
                                         <ul>
-                                        <div *ngIf="isGridView" >
+                                            <div *ngIf="isGridView && broadcastTableData.dataRows.length>0" >
 
-                                            <div class="card col-md-6" *ngFor="let row of broadcastTableData.dataRows" >
-
-
-                                                <div class="card-content" >
-
-                                                    <div id="{{row.name}}"></div>
+                                                <div class="card col-md-6" *ngFor="let row of broadcastTableData.dataRows" >
 
 
+                                                    <div class="card-content" >
+
+                                                        <div id="{{row.streamId}}"></div>
 
 
-                                                    <div >{{row.name}}
-                                                    <button *ngIf="row.status=='broadcasting' && !isGridView"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
-                                                            type="button">
+
+
+                                                        <div >{{row.name}}
+                                                            <button *ngIf="row.status=='broadcasting' && !isGridView"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
+                                                                    type="button">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-control-play"></i>
                                                                                         </span>
-                                                        <ng-container i18n="@@tablePlayButton">Play</ng-container>
+                                                                <ng-container i18n="@@tablePlayButton">Play</ng-container>
 
-                                                    </button>
+                                                            </button>
 
 
-                                                    <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
+                                                            <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-clipboard"></i>
                                                                                         </span>
-                                                        <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
-                                                    </button>
-                                                    <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
-                                                            [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                            type="button">
+                                                                <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
+                                                            </button>
+                                                            <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
+                                                                    [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                    type="button">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-clipboard"></i>
                                                                                         </span>
-                                                        <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
-                                                    </button>
-                                                    <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
+                                                                <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
+                                                            </button>
+                                                            <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-close"></i>
                                                                                         </span>
-                                                        <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
-                                                    </button>
+                                                                <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
+                                                            </button>
 
-                                                    <h6 >{{row.ipAddr}}</h6>
+                                                            <h6 >{{row.ipAddr}}</h6>
+
+                                                        </div>
+
 
                                                     </div>
 
-
                                                 </div>
-
                                             </div>
-                                        </div>
 
 
 
@@ -534,19 +561,19 @@
 
 
 
-
+                                        <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+                                            There is no stream at this time.
+                                        </p>
 
 
                                     </div>
+
 
 
                                 </div><!-- /main -->
 
 
 
-                                <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
-                                    There is no live stream at this time.
-                                </p>
 
 
 

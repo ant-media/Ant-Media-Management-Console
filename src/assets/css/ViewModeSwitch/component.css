@@ -12,24 +12,26 @@
 /* Main container */
 .cbp-vm-switcher {
 	padding: 2px;
-	border: 2px solid #47a3da;
+	border: 2px solid #ccdad2;
 }
 
 /* options/select wrapper with switch anchors */
 .cbp-vm-options {
+
 	text-align: right;
 	padding-bottom: 5px;
-	border-bottom: 2px solid #47a3da;
+	border-bottom: 2px solid #ccdad2;
 }
 
 .cbp-vm-options a {
 	display: inline-block;
-	width: 40px;
+
 	height: 40px;
 	overflow: hidden;
 	white-space: nowrap;
 	color: #d0d0d0;
 	margin: 2px;
+
 }
 
 .cbp-vm-options a:hover,
@@ -169,7 +171,7 @@
 
 /* List view */
 .cbp-vm-view-list li {
-	padding: 20px 0;
+
 	white-space: nowrap;
 }
 

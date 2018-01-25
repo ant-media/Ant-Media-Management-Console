@@ -51,6 +51,12 @@ export class RestService {
             .then((res: Response) => res.json());
     }
 
+    public filterAppLiveStreams(appName:string, offset:Number, size:Number,type:String): Promise<Response>  {
+        return this.http.get(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/filterList/'+offset+"/"+size+"/"+type).toPromise()
+            .then((res: Response) => res.json());
+    }
+
+
     public createLiveStreamSocialNetworks(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Promise<Response> {
 
         return this.http.post(HTTP_SERVER_ROOT + appName + "/rest/broadcast/createWithSocial?socialNetworks="+socialNetworks,
