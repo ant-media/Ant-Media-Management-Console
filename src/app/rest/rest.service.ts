@@ -51,6 +51,12 @@ export class RestService {
             .then((res: Response) => res.json());
     }
 
+    public getVodList(appName:string, offset:Number, size:Number): Promise<Response>  {
+        return this.http.get(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/getVodList/'+offset+"/"+size).toPromise()
+            .then((res: Response) => res.json());
+    }
+
+
     public filterAppLiveStreams(appName:string, offset:Number, size:Number,type:String): Promise<Response>  {
         return this.http.get(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/filterList/'+offset+"/"+size+"/"+type).toPromise()
             .then((res: Response) => res.json());

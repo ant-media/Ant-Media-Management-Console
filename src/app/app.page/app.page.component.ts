@@ -25,6 +25,15 @@ declare interface Endpoint {
     type: string;
 }
 
+declare interface VOD {
+    type: string;
+    streamName:string;
+    streamId:string;
+    vodName:string;
+    creationDate:string;
+    duration:string;
+}
+
 declare interface BroadcastInfo {
     name: string;
     type:string;
@@ -32,9 +41,22 @@ declare interface BroadcastInfo {
     viewerCount: number;
     status: string;
     endPointList: Endpoint[];
+    vodList:VOD[];
     ipAddr:string;
 }
 
+declare interface VodInfo{
+    streamName: string;
+    streamId:string;
+    filePath: string;
+    viewerCount: number;
+    vodName: string;
+    creationDate:number;
+    duration:number;
+    fileSize:number;
+    vodId:string;
+
+}
 declare interface CamStreamInfo{
     name: string;
     type:string;
@@ -42,9 +64,12 @@ declare interface CamStreamInfo{
     viewerCount: number;
     status: string;
     endPointList: Endpoint[];
+    vodList:VOD[];
     ipAddr:string
 
 }
+
+
 
 declare interface EncoderSettings {
     height: Number;
@@ -54,6 +79,11 @@ declare interface EncoderSettings {
 
 declare interface BroadcastInfoTable {
     dataRows: BroadcastInfo[];
+
+}
+
+declare interface VodInfoTable {
+    dataRows: VodInfo[];
 
 }
 
@@ -134,7 +164,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public sub: any;
     public broadcastTableData: BroadcastInfoTable;
     public gridTableData:CameraInfoTable;
-    public vodTableData: BroadcastInfoTable;
+    public vodTableData: VodInfoTable;
     public timerId: any;
     public checkAuthStatusTimerId: any;
     public socialMediaAuthStatus: SocialMediAuthStatus;
@@ -350,7 +380,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
     getVoDStreams(): void {
-        this.http.get(REST_SERVICE_ROOT + '/getAppVoDStreams/' + this.appName).subscribe(data => {
+        this.restService.getVodList(this.appName, 0, 10).then(data  => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
@@ -1387,6 +1417,42 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 });
             }
         });
+    }
+
+
+    convert(unixtimestamp){
+
+
+
+        // Months array
+        var months_arr = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+        // Convert timestamp to milliseconds
+        var date = new Date(unixtimestamp*1000);
+
+        // Year
+        var year = date.getFullYear();
+
+        // Month
+        var month = months_arr[date.getMonth()];
+
+        // Day
+        var day = date.getDate();
+
+        // Hours
+        var hours = date.getHours();
+
+        // Minutes
+        var minutes = "0" + date.getMinutes();
+
+        // Seconds
+        var seconds = "0" + date.getSeconds();
+
+        // Display date time in MM-dd-yyyy h:m:s format
+        var convdataTime = month+'-'+day+'-'+year+' '+hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+
+        return convdataTime;
+
     }
 
 
