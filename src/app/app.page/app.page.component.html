@@ -588,24 +588,42 @@
 
                             <div class="tab-pane" id="vod">
 
-                                <!--
-                                         <div class="card-header">
-                                        <h4 class="title">Apps</h4>
-                                        <p class="category"></p>
-                                    </div>
-                                     -->
+
 
                                 <div class="container">
+                                    <div class="col-md-2">
+
+                                        <div class="form-group">
+                                            <input  type="text" id="keyword" class="form-control " placeholder="Keyword" [(ngModel)]="keyword"/>
+                                        </div>
+                                    </div>
+
+                                    <form id="dates">
+                                    <div class="col-md-2">
+
+                                        <div class="form-group">
+
+                                            <input id="start" type="text" class="form-control datepicker" placeholder="Start Date" [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+
+                                        <div class="form-group">
+                                            <input id="end" type="text" class="form-control datepicker" placeholder="End Date"[(ngModel)]="endDate" [ngModelOptions]="{standalone: true}"/>
+                                        </div>
+                                    </div>
+                                    </form>
+                                    <button class="btn btn-fill btn-success" (click)="filterVod()"  style="float: left" role="button">Search</button>
+                                    <button class="btn btn-fill btn-success" (click)="getVoDStreams()"  style="float: left" role="button">Reset</button>
+                                    <small  class="text-danger" style="float: left" *ngIf="searchWarning" >
+                                       End date is before start date!
+                                    </small>
 
                                     <div class="table-responsive " *ngIf="vodTableData.dataRows.length>0">
                                         <table class="table table-striped">
                                             <thead *ngIf="isMobileMenu()">
                                             <tr>
-                                                <!--
-                                               <th i18n="@@streamName">Name</th>
 
-                                               <th class="text-center" i18n="@@streamWatcherCount">Watcher Count</th>
-                                               -->
                                                 <div class="row">
                                                     <div align="left" i18n="@@streamName" class="col-lg-4 col-sm-12 col-xs-12">
                                                         Name
@@ -630,8 +648,8 @@
                                                     <div align="left" class="col-lg-4 col-sm-12 col-xs-12">
 
 
-
-                                                        {{convert(row.creationDate)}}  </div>
+                                                        {{convertJavaTime(row.creationDate)}}
+                                                    </div>
                                                     <!--
                                                     <td class="text-center">{{row.watcherCount}}</td>
                                                     -->
@@ -643,7 +661,7 @@
                                                         </span>
                                                             <ng-container i18n="@@tablePlayButton">Play</ng-container>
                                                         </button>
-                                                        <button (click)="deleteVoD(row.vodName)" class="btn btn-simple btn-magnify btn-danger" type="button">
+                                                        <button (click)="deleteVoD(row.vodName,row.vodId)" class="btn btn-simple btn-magnify btn-danger" type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-close"></i>
                                                         </span>

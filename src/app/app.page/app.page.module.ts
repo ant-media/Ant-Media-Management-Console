@@ -26,7 +26,7 @@ export const AppPageRoutes: Routes = [
         RouterModule.forChild(AppPageRoutes),
         FormsModule,
         HttpClientModule,
-        ClipboardModule,
+        ClipboardModule
     ],
     declarations: [AppPageComponent]
 })

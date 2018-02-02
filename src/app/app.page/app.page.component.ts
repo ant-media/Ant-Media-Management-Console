@@ -7,8 +7,7 @@ import { SERVER_ADDR, REST_SERVICE_ROOT, HTTP_SERVER_ROOT } from '../rest/rest.s
 import { RestService, LiveBroadcast } from '../rest/rest.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
-import {Response} from "@angular/http";
-import {promise} from "selenium-webdriver";
+
 
 
 
@@ -17,6 +16,7 @@ declare var $: any;
 declare var Chartist: any;
 declare var swal: any;
 declare var classie:any;
+
 
 
 //declare var flowplayer: any;
@@ -141,6 +141,13 @@ export class SocialNetworkChannel {
     public id: string;
 }
 
+export class SearchParam {
+    public keyword: string;
+    public startDate: number;
+    public endDate: number;
+}
+
+
 export class SocialMediAuthStatus {
     public isFacebookAuthenticated: boolean;
     public isPeriscopeAuthenticated: boolean;
@@ -188,6 +195,13 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public broadcastList:CameraInfoTable;
     public noCamWarning=false;
     public isGridView=false;
+    public keyword:string;
+    public startDate:string;
+    public endDate:string;
+    public requestedStartDate:number;
+    public requestedEndDate:number;
+    public searchWarning=false;
+    public searchParam:SearchParam;
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
@@ -206,7 +220,30 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 
+        //  Init Bootstrap Select Picker
+        if($(".selectpicker").length != 0){
+            $(".selectpicker").selectpicker({
+                iconBase: "ti",
+                tickIcon: "ti-check"
+            });
+        }
 
+
+
+        $('.datepicker').datetimepicker({
+            format: 'YYYY-MM-DD', //use this format if you want the 12hours timpiecker with AM/PM toggle
+            icons: {
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+                up: "fa fa-chevron-up",
+                down: "fa fa-chevron-down",
+                previous: 'fa fa-chevron-left',
+                next: 'fa fa-chevron-right',
+                today: 'fa fa-screenshot',
+                clear: 'fa fa-trash',
+                close: 'fa fa-remove'
+            }
+        });
 
 
         this.broadcastTableData = {
@@ -229,6 +266,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
         this.liveBroadcastShareFacebook = false;
         this.liveBroadcastShareYoutube = false;
         this.liveBroadcastSharePeriscope = false;
+        this.searchParam=new SearchParam();
 
         this.appSettings = null;
         this.newLiveStreamActive = false;
@@ -237,6 +275,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     ngAfterViewInit() {
+
+
 
         this.sub = this.route.params.subscribe(params => {
             this.appName = params['appname']; // (+) converts string 'id' to a number
@@ -280,9 +320,11 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
             this.timerId = window.setInterval(() => {
                 // this.getAppLiveStreams();
-                this.getVoDStreams();
+                // this.getVoDStreams();
 
             }, 10000);
+
+
 
         });
 
@@ -330,9 +372,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
             for (var i in data) {
 
-
                 this.broadcastTableData.dataRows.push(data[i]);
-
 
             }
 
@@ -380,6 +420,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
     getVoDStreams(): void {
+        this.searchWarning=false;
         this.restService.getVodList(this.appName, 0, 10).then(data  => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
@@ -596,7 +637,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     //file with extension
-    deleteVoD(fileName: string): void {
+    deleteVoD(fileName: string,vodId:number): void {
 
         let VoDName = fileName.substring(0, fileName.lastIndexOf("."));
         swal({
@@ -609,7 +650,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
             confirmButtonText: 'Yes, delete it!'
         }).then(() => {
 
-            this.restService.deleteVoDFile(this.appName, VoDName).subscribe(data => {
+            this.restService.deleteVoDFile(this.appName, VoDName,vodId).subscribe(data => {
                 if (data["success"] == true) {
 
                 }
@@ -1419,16 +1460,97 @@ export class AppPageComponent implements OnInit, OnDestroy {
         });
     }
 
+    filterVod(){
+        this.searchWarning=false;
 
-    convert(unixtimestamp){
 
+
+        if($("#start").val()){
+            this.requestedStartDate= this.convertStartUnixTime($("#start").val());
+
+        }else{
+            this.requestedStartDate=0;
+
+        }
+        if($("#end").val()){
+            this.requestedEndDate= this.convertEndUnixTime($("#end").val());
+
+        }else{
+            this.requestedEndDate=9999999999999;
+
+        }
+
+        this.searchParam.keyword=this.keyword;
+        this.searchParam.endDate=this.requestedEndDate;
+        this.searchParam.startDate=this.requestedStartDate;
+
+
+        if(this.searchParam.endDate>this.searchParam.startDate){
+            this.restService.filterVod(this.appName, 0, 10,this.searchParam).then(data  => {
+                this.vodTableData.dataRows = [];
+                for (var i in data) {
+                    this.vodTableData.dataRows.push(data[i]);
+                }
+
+                console.log(this.vodTableData.dataRows.length.toString());
+            });
+        }else{
+
+            this.searchWarning=true;
+        }
+        console.log("search param start:  "+this.searchParam.startDate);
+        console.log("search param end:  "+this.searchParam.endDate);
+        console.log("search param keyword:  "+this.searchParam.keyword);
+
+        console.log("start: "+ this.requestedStartDate);
+        console.log("end: "+this.requestedEndDate);
+        console.log("keyword: "+this.keyword);
+
+        if(!$("#keyword").val()){
+
+            this.keyword=null;
+        }
+
+
+
+
+
+    }
+
+
+
+    convertStartUnixTime(date:string){
+
+        var d = date+'T00:00:00.000Z';
+
+        var convertedTime=new Date(d).valueOf();
+        console.log(new Date(d).valueOf());
+
+        return convertedTime;
+
+    }
+
+    convertEndUnixTime(date:string){
+
+        var d = date+'T23:59:59.000Z';
+
+        var convertedTime=new Date(d).valueOf();
+        console.log(new Date(d).valueOf());
+
+        return convertedTime;
+
+    }
+
+
+
+    convertJavaTime(unixtimestamp:number){
 
 
         // Months array
         var months_arr = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
         // Convert timestamp to milliseconds
-        var date = new Date(unixtimestamp*1000);
+        var date = new Date(unixtimestamp);
 
         // Year
         var year = date.getFullYear();
@@ -1454,6 +1576,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
         return convdataTime;
 
     }
+
+
 
 
 

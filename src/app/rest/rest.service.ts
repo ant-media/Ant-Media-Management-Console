@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {Camera} from "../app.page/app.page.component";
+import {SearchParam} from "../app.page/app.page.component";
 import {promise} from "selenium-webdriver";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -62,6 +63,13 @@ export class RestService {
             .then((res: Response) => res.json());
     }
 
+    public filterVod(appName:string, offset:Number, size:Number,searchParam:SearchParam): Promise<Response>  {
+        return this.http.post(HTTP_SERVER_ROOT +  appName + "/rest/broadcast/filterVoD?offset="+offset+"&size="+size,searchParam).toPromise()
+            .then((res: Response) => res.json());
+
+    }
+
+
 
     public createLiveStreamSocialNetworks(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Promise<Response> {
 
@@ -82,8 +90,8 @@ export class RestService {
             .map((res: Response) => res.json());
     }
 
-    public deleteVoDFile(appName: string, streamId:string) {
-        return this.http.post(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/deleteVoDFile/'+streamId, {})
+    public deleteVoDFile(appName: string, name:string,vodId:number) {
+        return this.http.post(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/deleteVoDFile/'+name+"/"+vodId, {})
             .map((res: Response) => res.json());
 
     }
