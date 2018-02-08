@@ -8,6 +8,8 @@ import { Routes } from '@angular/router';
 import { AppPageComponent } from './app.page.component';
 import { ClipboardModule } from 'ngx-clipboard';
 
+import {MatButtonModule, MatCheckboxModule} from '@angular/material';
+
 
 export const AppPageRoutes: Routes = [
     {
@@ -29,7 +31,12 @@ export const AppPageRoutes: Routes = [
         HttpClientModule,
         ClipboardModule,
 
+        MatButtonModule,
+        MatCheckboxModule
+
+
     ],
+    exports: [MatButtonModule, MatCheckboxModule],
     declarations: [AppPageComponent]
 })
 

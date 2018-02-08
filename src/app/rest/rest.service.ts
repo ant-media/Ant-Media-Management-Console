@@ -13,6 +13,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
 
 
+
 export const SERVER_ADDR = location.hostname;
 export const HTTP_SERVER_ROOT = "http://" + location.hostname + ":5080/";
 

@@ -8,6 +8,8 @@ import { SERVER_ADDR, REST_SERVICE_ROOT, HTTP_SERVER_ROOT } from '../rest/rest.s
 import { RestService, LiveBroadcast } from '../rest/rest.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
+import {MatButtonModule, MatCheckboxModule} from '@angular/material';
+
 
 
 declare var $: any;
