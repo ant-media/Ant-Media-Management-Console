@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import {Camera} from "../app.page/app.page.component";
+import { Camera} from "../app.page/app.page.component";
 import {SearchParam} from "../app.page/app.page.component";
 import {promise} from "selenium-webdriver";
 import 'rxjs/add/operator/map';
@@ -133,6 +133,61 @@ export class RestService {
 
         return this.http.get(url).toPromise()
             .then((res: Response) => res.json());
+
+    }
+
+    moveLeft(camera: Camera,appName: string): Promise<Response> {
+
+        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveLeft?ipAddr='+camera.ipAddr;
+        console.log('URL ' + streamInfoUrl);
+
+        return this.http.get(streamInfoUrl).toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+
+    }
+
+    moveRight(camera: Camera,appName: string): Promise<Response> {
+
+        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveRight?ipAddr='+camera.ipAddr;
+        console.log('URL ' + streamInfoUrl);
+
+        return this.http.get(streamInfoUrl).toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+
+    }
+
+    moveUp(camera: Camera,appName: string): Promise<Response> {
+
+        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveUp?ipAddr='+camera.ipAddr;
+        console.log('URL ' + streamInfoUrl);
+
+        return this.http.get(streamInfoUrl).toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+
+    }
+
+    moveDown(camera: Camera,appName: string): Promise<Response> {
+
+        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveDown?ipAddr='+camera.ipAddr;
+        console.log('URL ' + streamInfoUrl);
+
+        return this.http.get(streamInfoUrl).toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+
+    }
+
+    editCameraInfo(camera: Camera,appName: string): Promise<Response> {
+
+        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/updateCamInfo';
+        console.log('URL ' + streamInfoUrl);
+
+        return this.http.post(streamInfoUrl,camera).toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
 
     }
 

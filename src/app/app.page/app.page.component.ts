@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, Renderer } from '@angular/core';
+import { Component, OnInit, OnDestroy, Renderer,NgZone,Inject } from '@angular/core';
+
 //import * as Chartist from 'chartist';
 //import * as ChartistPlugins from 'chartist-plugin-fill-donut';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -7,9 +8,6 @@ import { SERVER_ADDR, REST_SERVICE_ROOT, HTTP_SERVER_ROOT } from '../rest/rest.s
 import { RestService, LiveBroadcast } from '../rest/rest.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
-
-
-
 
 
 declare var $: any;
@@ -214,9 +212,32 @@ export class AppPageComponent implements OnInit, OnDestroy {
     constructor(private http: HttpClient, private route: ActivatedRoute,
                 private restService: RestService,
                 private clipBoardService: ClipboardService, private renderer: Renderer,
-                public router: Router) { }
+                public router: Router,
+                private zone: NgZone,
+              ) { }
 
     ngOnInit() {
+
+
+
+        var self = this;
+
+        this.zone.run(() => {
+
+            $('#selectBox').change(function () {
+
+
+                var val=$(this).val();
+                console.log(val);
+
+                self.filterAppLiveStreams(val);
+
+            });
+
+        });
+
+
+
 
 
 
@@ -277,7 +298,6 @@ export class AppPageComponent implements OnInit, OnDestroy {
     ngAfterViewInit() {
 
 
-
         this.sub = this.route.params.subscribe(params => {
             this.appName = params['appname']; // (+) converts string 'id' to a number
 
@@ -330,6 +350,9 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     }
 
+
+
+
     getAppLiveStreams(): void {
         this.restService.getAppLiveStreams(this.appName, 0, 10).then(data => {
             //console.log(data);
@@ -361,6 +384,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
         });
     }
+
 
     filterAppLiveStreams(type:String): void {
 
@@ -404,6 +428,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
             console.log("type of data -> " + typeof data);
 
             for (var i in data) {
+
+
 
                 this.gridTableData.list.push(data[i]);
 
@@ -542,7 +568,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 
-            container.setAttribute("style","width:500px");
+         //   container.setAttribute("style","width:500px");
 
 
 
@@ -1118,6 +1144,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     switchToListView():void {
 
+        this.getAppLiveStreams();
 
         this.isGridView=false;
 
@@ -1157,6 +1184,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     switchToGridView():void {
+
+        this.getAppLiveStreams();
 
         this.isGridView=true;
 
@@ -1506,7 +1535,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
         console.log("end: "+this.requestedEndDate);
         console.log("keyword: "+this.keyword);
 
-        if(!$("#keyword").val()){
+        if(!$("#keyword").val() || $("#keyword").val()==" " ){
 
             this.keyword=null;
         }
@@ -1577,8 +1606,56 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     }
 
+    moveDown(camera) {
+        this.restService.moveDown(camera,this.appName).then(
+            result => {
+                console.log('result!!!: ' + result);
+            },
+            error => {
+                console.log('!!!Error!!! ' + error);
+            },
+        );
+    }
+    moveUp(camera) {
+        this.restService.moveUp(camera,this.appName).then(
+            result => {
+                console.log('result!!!: ' + result);
+            },
+            error => {
+                console.log('!!!Error!!! ' + error);
+            },
+        );
+    }
 
+    moveRight(camera) {
+        this.restService.moveRight(camera,this.appName).then(
+            result => {
+                console.log('result!!!: ' + result);
+            },
+            error => {
+                console.log('!!!Error!!! ' + error);
+            },
+        );
+    }
+
+
+    moveLeft(camera) {
+        this.restService.moveLeft(camera,this.appName).then(
+            result => {
+                console.log('result!!!: ' + result);
+            },
+            error => {
+                console.log('!!!Error!!! ' + error);
+            },
+        );
+    }
 
 
 
 }
+
+
+
+
+
+

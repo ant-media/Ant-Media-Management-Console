@@ -8,6 +8,7 @@ import { Routes } from '@angular/router';
 import { AppPageComponent } from './app.page.component';
 import { ClipboardModule } from 'ngx-clipboard';
 
+
 export const AppPageRoutes: Routes = [
     {
         path: '',
@@ -26,7 +27,8 @@ export const AppPageRoutes: Routes = [
         RouterModule.forChild(AppPageRoutes),
         FormsModule,
         HttpClientModule,
-        ClipboardModule
+        ClipboardModule,
+
     ],
     declarations: [AppPageComponent]
 })

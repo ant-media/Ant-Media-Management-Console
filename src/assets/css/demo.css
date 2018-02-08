@@ -73,3 +73,12 @@
 body.nude{
     background-color: #f4f3ef;
 }
+
+.ptz-buttons {
+    align-content: center;
+    position: relative;
+    width: 110px;
+    float: right;
+    top: -140px;
+}
+

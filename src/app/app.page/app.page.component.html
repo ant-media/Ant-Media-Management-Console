@@ -391,27 +391,20 @@
                                         <div class="cbp-vm-options">
 
 
-                                            <div class="dropdown text-left" style="float: left;margin: 4px">
-                                                <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" data-toggle="dropdown" role="button">Filter
-                                                    <span class="caret"></span></button>
+                                            <div class="col-sm-6 col-lg-2 " style=" float: left; margin-top: 4px; margin-left: 15px;">
+                                                <select id="selectBox" style="float: left" class="selectpicker  " data-style="btn btn-danger btn-block"  title="Filter" data-size="7">
+                                                    <option  value="liveStream">Live Stream</option>
+                                                    <option  value="ipCamera">IP Camera</option>
+                                                    <option  value="source">Stream Source</option>
 
-                                                <ul class="dropdown-menu dropdown-menu-left">
-
-                                                    <li><a (click)="filterAppLiveStreams('liveStream')" role="button">Live Stream</a></li>
-                                                    <li><a (click)="filterAppLiveStreams('ipCamera')" role="button">IP Camera</a></li>
-                                                    <li><a (click)="filterAppLiveStreams('source')" role="button">Stream Source</a></li>
-                                                </ul>
-                                            </div>
-
-                                            <div class=" text-left" style="float: left;margin: 4px">
-                                                <button (click)="getAppLiveStreams()" class="btn btn-fill btn-success"  role="button">Filter Reset
-                                                </button>
-
-
+                                                </select>
                                             </div>
 
 
 
+
+
+                                            <button (click)="getAppLiveStreams()"  class="btn btn-danger btn-fill btn-wd"  style="float: left;margin-top: 4px">Filter Reset</button>
 
 
 
@@ -480,7 +473,7 @@
                                                         <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
                                                     </button>
 
-                                                    <h6 *ngIf="isGridView">{{row.ipAddr}}</h6>
+
 
 
                                                 </div>
@@ -500,42 +493,62 @@
 
                                                         <div id="{{row.streamId}}"></div>
 
+                                                        <div *ngIf="row.type=='ipCamera' && row.status=='broadcasting'" class="ptz-buttons">
 
 
 
-                                                        <div >{{row.name}}
-                                                            <button *ngIf="row.status=='broadcasting' && !isGridView"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
-                                                                    type="button">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-control-play"></i>
-                                                                                        </span>
-                                                                <ng-container i18n="@@tablePlayButton">Play</ng-container>
+                                                            <span  (click)="moveUp(row)" class="ti-arrow-circle-up" style="top: 8px; left: 40px; position: absolute"></span>
 
-                                                            </button>
+                                                            <span (click)="moveRight(row)"class="ti-arrow-circle-right" style="top: 40px; left: 70px; position: absolute"></span>
 
+                                                            <span (click)="moveLeft(row)"class="ti-arrow-circle-left" style="top: 40px; left: 10px; position: absolute"></span>
 
-                                                            <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-clipboard"></i>
-                                                                                        </span>
-                                                                <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
-                                                            </button>
-                                                            <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
-                                                                    [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                    type="button">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-clipboard"></i>
-                                                                                        </span>
-                                                                <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
-                                                            </button>
-                                                            <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
+                                                            <span (click)="moveDown(row)"class="ti-arrow-circle-down" style="top: 70px; left: 40px; position: absolute"></span>
+
+                                                        </div>
+                                                        <div class="conf-buttons">
+                                                            
+                                                            
+                                                            <span style="float: left;"> {{row.name}}</span>
+                                                            <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button" data-toggle="tooltip" i18n-title title="Delete" style="float: right;font-size: 1.2em;">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-close"></i>
                                                                                         </span>
-                                                                <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
+                                                                <ng-container i18n="@@tableDeleteButton"></ng-container>
                                                             </button>
 
-                                                            <h6 >{{row.ipAddr}}</h6>
+                                                            <button  class="btn btn-simple btn-magnify btn-info btn-xs "   type="button" data-toggle="tooltip" i18n-title title="Settings"style="float: right;font-size: 1.2em;">
+                                                                        <span class="btn-label" style="float: right;">
+                                                                                            <i class="ti-settings"></i>
+                                                                                        </span>
+
+                                                                <ng-container ></ng-container>
+                                                            </button>
+
+
+                                                            <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy Live Embed Code to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button" style="float: right;font-size: 1.2em;">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-share"></i>
+                                                                                        </span>
+                                                                <ng-container i18n="@@tableEmbedCode"></ng-container>
+                                                            </button>
+                                                            <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
+                                                                    [title]="'Copy Publish URL to Clipboard : ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                    type="button" style="float: right;font-size: 1.2em;">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-clipboard"></i>
+                                                                                        </span>
+                                                                <ng-container i18n="@@copyPublishUrl"></ng-container>
+                                                            </button>
+
+
+
+
+
+
+
+
+
 
                                                         </div>
 
@@ -599,24 +612,26 @@
                                     </div>
 
                                     <form id="dates">
-                                    <div class="col-md-2">
+                                        <div class="col-md-2">
 
-                                        <div class="form-group">
+                                            <div class="form-group">
 
-                                            <input id="start" type="text" class="form-control datepicker" placeholder="Start Date" [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}"/>
+                                                <input id="start" type="text" class="form-control datepicker" placeholder="Start Date" [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}"/>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-2">
+                                        <div class="col-md-2">
 
-                                        <div class="form-group">
-                                            <input id="end" type="text" class="form-control datepicker" placeholder="End Date"[(ngModel)]="endDate" [ngModelOptions]="{standalone: true}"/>
+                                            <div class="form-group">
+                                                <input id="end" type="text" class="form-control datepicker" placeholder="End Date"[(ngModel)]="endDate" [ngModelOptions]="{standalone: true}"/>
+                                            </div>
                                         </div>
-                                    </div>
                                     </form>
-                                    <button class="btn btn-fill btn-success" (click)="filterVod()"  style="float: left" role="button">Search</button>
-                                    <button class="btn btn-fill btn-success" (click)="getVoDStreams()"  style="float: left" role="button">Reset</button>
+
+                                    <button style="float: left" (click)="filterVod()"  class="btn btn-danger btn-fill btn-wd">Search</button>
+                                    <button style="float: left" (click)="getVoDStreams()"  class="btn btn-danger btn-fill btn-wd">Reset</button>
+
                                     <small  class="text-danger" style="float: left" *ngIf="searchWarning" >
-                                       End date is before start date!
+                                        End date is before start date!
                                     </small>
 
                                     <div class="table-responsive " *ngIf="vodTableData.dataRows.length>0">
@@ -626,7 +641,7 @@
 
                                                 <div class="row">
                                                     <div align="left" i18n="@@streamName" class="col-lg-4 col-sm-12 col-xs-12">
-                                                        Name
+                                                        Stream Name
                                                     </div>
 
                                                     <div align="left" i18n="@@streamName" class="col-lg-4 col-sm-12 col-xs-12">
