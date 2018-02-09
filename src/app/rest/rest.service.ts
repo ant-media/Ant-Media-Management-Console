@@ -3,9 +3,7 @@ import { Http, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import { Camera} from "../app.page/app.page.component";
+import {Camera} from "../app.page/app.page.component";
 import {SearchParam} from "../app.page/app.page.component";
 import {promise} from "selenium-webdriver";
 import 'rxjs/add/operator/map';
@@ -20,12 +18,17 @@ export const HTTP_SERVER_ROOT = "http://" + location.hostname + ":5080/";
 export const REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
 
 export class LiveBroadcast {
-    public name:string;
-    public type:string;
-    public ipAddr: string;
-    public username: string;
-    public password: string;
-    public rtspUrl: string;
+    name: string;
+    type:string;
+    streamId: string;
+    viewerCount: number;
+    status: string;
+    ipAddr:string;
+    username:string;
+    password:string;
+    rtspUrl:string;
+    date:number;
+    duration:number;
 
 
 }
@@ -98,8 +101,10 @@ export class RestService {
     }
 
     public deleteIPCamera(appName: string, streamId:string) {
+        console.log("inside");
         return this.http.get(HTTP_SERVER_ROOT +  appName + '/rest/camera/deleteCamera?ipAddr='+streamId, {})
             .map((res: Response) => res.json());
+
 
     }
 
@@ -137,9 +142,9 @@ export class RestService {
 
     }
 
-    moveLeft(camera: Camera,appName: string): Promise<Response> {
+    moveLeft(camera: LiveBroadcast,appName: string): Promise<Response> {
 
-        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveLeft?ipAddr='+camera.ipAddr;
+        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveLeft?id='+camera.streamId;
         console.log('URL ' + streamInfoUrl);
 
         return this.http.get(streamInfoUrl).toPromise()
@@ -148,9 +153,9 @@ export class RestService {
 
     }
 
-    moveRight(camera: Camera,appName: string): Promise<Response> {
+    moveRight(camera: LiveBroadcast,appName: string): Promise<Response> {
 
-        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveRight?ipAddr='+camera.ipAddr;
+        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveRight?id='+camera.streamId;
         console.log('URL ' + streamInfoUrl);
 
         return this.http.get(streamInfoUrl).toPromise()
@@ -159,9 +164,9 @@ export class RestService {
 
     }
 
-    moveUp(camera: Camera,appName: string): Promise<Response> {
+    moveUp(camera: LiveBroadcast,appName: string): Promise<Response> {
 
-        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveUp?ipAddr='+camera.ipAddr;
+        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveUp?id='+camera.streamId;
         console.log('URL ' + streamInfoUrl);
 
         return this.http.get(streamInfoUrl).toPromise()
@@ -170,9 +175,9 @@ export class RestService {
 
     }
 
-    moveDown(camera: Camera,appName: string): Promise<Response> {
+    moveDown(camera: LiveBroadcast,appName: string): Promise<Response> {
 
-        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveDown?ipAddr='+camera.ipAddr;
+        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveDown?id='+camera.streamId;
         console.log('URL ' + streamInfoUrl);
 
         return this.http.get(streamInfoUrl).toPromise()
@@ -181,7 +186,7 @@ export class RestService {
 
     }
 
-    editCameraInfo(camera: Camera,appName: string): Promise<Response> {
+    editCameraInfo(camera: LiveBroadcast,appName: string): Promise<Response> {
 
         let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/updateCamInfo';
         console.log('URL ' + streamInfoUrl);

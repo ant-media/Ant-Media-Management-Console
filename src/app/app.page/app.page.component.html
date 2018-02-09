@@ -249,8 +249,8 @@
 
                                             <div class="form-group text-center">
 
-                                                <button type="submit" [disabled]='newLiveStreamCreating' class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
-                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newLiveStreamCreating" aria-hidden="true"></i>Create</button>
+                                                <button type="submit" [disabled]='newStreamSourceWarn' class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
+                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newStreamSourceAdding" aria-hidden="true"></i>Create</button>
 
                                                 <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelStreamSource()">Cancel</button>
                                             </div>
@@ -410,6 +410,7 @@
 
 
 
+
                                             <a (click)="switchToGridView()" class="cbp-vm-icon cbp-vm-grid  " data-view="cbp-vm-view-grid"></a>
                                             <a (click)="switchToListView()" class="cbp-vm-icon cbp-vm-list cbp-vm-selected " data-view="cbp-vm-view-list"></a>
 
@@ -510,6 +511,8 @@
                                                             
                                                             
                                                             <span style="float: left;"> {{row.name}}</span>
+
+
                                                             <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button" data-toggle="tooltip" i18n-title title="Delete" style="float: right;font-size: 1.2em;">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-close"></i>
@@ -517,7 +520,7 @@
                                                                 <ng-container i18n="@@tableDeleteButton"></ng-container>
                                                             </button>
 
-                                                            <button  class="btn btn-simple btn-magnify btn-info btn-xs "   type="button" data-toggle="tooltip" i18n-title title="Settings"style="float: right;font-size: 1.2em;">
+                                                            <button *ngIf="row.type=='ipCamera'" (click)="openDialog(row)" class="btn btn-simple btn-magnify btn-info btn-xs "   type="button" data-toggle="tooltip" i18n-title title="Settings"style="float: right;font-size: 1.2em;">
                                                                         <span class="btn-label" style="float: right;">
                                                                                             <i class="ti-settings"></i>
                                                                                         </span>

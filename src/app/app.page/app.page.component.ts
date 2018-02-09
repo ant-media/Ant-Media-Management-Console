@@ -8,7 +8,9 @@ import { SERVER_ADDR, REST_SERVICE_ROOT, HTTP_SERVER_ROOT } from '../rest/rest.s
 import { RestService, LiveBroadcast } from '../rest/rest.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
-import {MatButtonModule, MatCheckboxModule} from '@angular/material';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatCheckboxModule} from '@angular/material';
+import "rxjs/add/operator/toPromise";
+
 
 
 
@@ -43,6 +45,14 @@ declare interface BroadcastInfo {
     endPointList: Endpoint[];
     vodList:VOD[];
     ipAddr:string;
+    username:string;
+    password:string;
+    rtspUrl:string;
+    date:number;
+    duration:number;
+
+
+
 }
 
 declare interface VodInfo{
@@ -184,6 +194,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public liveBroadcastSharePeriscope: boolean;
     public newLiveStreamCreating = false;
     public newIPCameraAdding = false;
+    public newStreamSourceAdding=false
+    public  newStreamSourceWarn = true;
     public discoveryStarted = false;
     public newSourceAdding= false;
     public isEnterpriseEdition = false;
@@ -202,6 +214,10 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public requestedEndDate:number;
     public searchWarning=false;
     public searchParam:SearchParam;
+    public selectedBroadcast:LiveBroadcast;
+
+    animal="davut";
+    name1: string;
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
@@ -216,7 +232,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 private clipBoardService: ClipboardService, private renderer: Renderer,
                 public router: Router,
                 private zone: NgZone,
-              ) { }
+                public dialog: MatDialog  ) { }
 
     ngOnInit() {
 
@@ -284,12 +300,14 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
         this.socialMediaAuthStatus = new SocialMediAuthStatus();
         this.liveBroadcast = new LiveBroadcast();
+        this.selectedBroadcast=new LiveBroadcast();
         this.liveBroadcast.name = "";
         this.liveBroadcast.type= "";
         this.liveBroadcastShareFacebook = false;
         this.liveBroadcastShareYoutube = false;
         this.liveBroadcastSharePeriscope = false;
         this.searchParam=new SearchParam();
+
 
         this.appSettings = null;
         this.newLiveStreamActive = false;
@@ -354,6 +372,32 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 
+
+    openDialog(selected:LiveBroadcast): void {
+
+        this.selectedBroadcast=selected;
+
+        let dialogRef = this.dialog.open(DialogOverviewExampleDialogComponent, {
+            width: '400px',
+            data: { name:this.selectedBroadcast.name,url:this.selectedBroadcast.ipAddr,
+                username:this.selectedBroadcast.username,pass:this.selectedBroadcast.password,id:this.selectedBroadcast.streamId,
+                status:this.selectedBroadcast.status}
+        });
+
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+            this.getAppLiveStreams();
+
+        });
+    }
+
+
+    test(){
+
+        alert("test");
+
+    }
 
     getAppLiveStreams(): void {
         this.restService.getAppLiveStreams(this.appName, 0, 10).then(data => {
@@ -497,6 +541,9 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 }, 5000);
             });
     }
+
+
+
 
     playLive(streamId: string): void {
         if (this.isEnterpriseEdition) {
@@ -1008,9 +1055,10 @@ export class AppPageComponent implements OnInit, OnDestroy {
         setTimeout(() =>
         {
 
-            if(this.onvifURLs!=null) {
+            if(this.onvifURLs.length>0) {
                 this.discoveryStarted = false;
                 swal({
+                    text: "Onvif Camera(s) Found",
 
                     input: 'radio',
 
@@ -1608,7 +1656,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     }
 
-    moveDown(camera) {
+    moveDown(camera:LiveBroadcast) {
         this.restService.moveDown(camera,this.appName).then(
             result => {
                 console.log('result!!!: ' + result);
@@ -1618,7 +1666,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
             },
         );
     }
-    moveUp(camera) {
+    moveUp(camera:LiveBroadcast) {
         this.restService.moveUp(camera,this.appName).then(
             result => {
                 console.log('result!!!: ' + result);
@@ -1629,7 +1677,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
         );
     }
 
-    moveRight(camera) {
+    moveRight(camera:LiveBroadcast) {
         this.restService.moveRight(camera,this.appName).then(
             result => {
                 console.log('result!!!: ' + result);
@@ -1641,7 +1689,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
 
-    moveLeft(camera) {
+    moveLeft(camera:LiveBroadcast) {
         this.restService.moveLeft(camera,this.appName).then(
             result => {
                 console.log('result!!!: ' + result);
@@ -1656,6 +1704,86 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 }
 
+@Component({
+    selector: 'dialog-overview-example-dialog',
+    templateUrl: 'cam-settings-dialog.html',
+})
+
+
+
+
+export class DialogOverviewExampleDialogComponent {
+camera:LiveBroadcast;
+app:AppPageComponent;
+loading=false;
+
+    constructor(
+        public dialogRef: MatDialogRef<DialogOverviewExampleDialogComponent>, public restService: RestService,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
+    }
+
+    onNoClick(): void {
+        this.dialogRef.close();
+    }
+
+    submitDialog(){
+        this.loading=true;
+
+        console.log(this.dialogRef.componentInstance.data.status+this.dialogRef.componentInstance.data.id+this.dialogRef.componentInstance.data.name+this.dialogRef.componentInstance.data.url+this.dialogRef.componentInstance.data.username);
+
+
+        this.camera=new LiveBroadcast();
+
+
+
+
+
+        this.camera.name=this.dialogRef.componentInstance.data.name;
+        this.camera.ipAddr=this.dialogRef.componentInstance.data.url;
+        this.camera.username=this.dialogRef.componentInstance.data.username;
+        this.camera.password=this.dialogRef.componentInstance.data.pass;
+        this.camera.streamId=this.dialogRef.componentInstance.data.id;
+        this.camera.status=this.dialogRef.componentInstance.data.status;
+
+
+
+        this.restService.editCameraInfo(this.camera,"LiveApp").then(data  => {
+
+        if(data["success"] == true){
+
+            this.dialogRef.close();
+            swal({
+                type: "success",
+                title: "New Settings Saved!",
+                buttonsStyling: false,
+                confirmButtonClass: "btn btn-success"
+
+            });
+
+        }else {
+
+            this.dialogRef.close();
+            swal({
+                type: "error",
+                title: "An Error Occured!",
+
+                buttonsStyling: false,
+                confirmButtonClass: "btn btn-error"
+
+            });
+
+
+
+        }
+
+        });
+
+
+
+
+    }
+
+}
 
 
 
