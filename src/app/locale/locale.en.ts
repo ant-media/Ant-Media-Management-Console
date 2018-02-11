@@ -18,6 +18,7 @@ export let Locale_English: LocaleInterface =
     authentication_is_done : "Authentication is done",
     are_you_sure : 'Are you sure?',
     wont_be_able_to_revert : "You won't be able to revert this!",
+    live_stream_will_be_deleted: "Live stream will be deleted!",
     copy_this_code_and_enter_the_url :  'Copy this code <b>CODE_KEY</b>'
     + ' and enter it to '
     + ' <a href="URL_KEY" target="_blank"><b>URL_KEY</b></a> address',

@@ -25,5 +25,6 @@ export let Locale_Turkish: LocaleInterface =
     dashboard: 'Kontrol Paneli',
     turkish_language : "Türkçe",
     english_language : "English",
+    live_stream_will_be_deleted: "Yayın silinecek ve bu işlemi geri alamayacaksınız!",
    
 }

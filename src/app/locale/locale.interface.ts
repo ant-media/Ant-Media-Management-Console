@@ -21,4 +21,5 @@ export interface LocaleInterface {
     dashboard: string;
     turkish_language: string;
     english_language: string;
+    live_stream_will_be_deleted: string;
 }
