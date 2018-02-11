@@ -104,7 +104,7 @@
 
                                     </form>
                                 </div>
-
+<!--
                                 <div class="card" *ngIf="newIPCameraActive">
 
                                     <form method="post" #f="ngForm" validate (ngSubmit)="createLiveStream(f.valid)">
@@ -250,7 +250,7 @@
 
                                     </form>
                                 </div>
-
+                            -->
                                 <div class="row">
 
                                     <div class="table-responsive" *ngIf="broadcastTableData.dataRows.length>0">
@@ -545,15 +545,15 @@
                                                     <div class="row" *ngFor="let encoderSetting of appSettings.encoderSettings; let i = index">
                                                         <div class="col-sm-3 text-left">
 
-                                                            <input type="text" [name]="'resolutionHeight'+i" class="form-control" [(ngModel)]="encoderSetting.height">
+                                                            <input type="number" [name]="'resolutionHeight'+i" class="form-control" [(ngModel)]="encoderSetting.height">
                                                             <span class="help-block" i18n="@@ResolutionHeight">Video Resolution Height</span>
                                                         </div>
                                                         <div class="col-sm-3 text-left">
-                                                            <input type="text" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate">
+                                                            <input type="number" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate">
                                                             <span class="help-block" i18n="@@VideoBitrate">Video Bitrate(bps)</span>
                                                         </div>
                                                         <div class="col-sm-3 text-left">
-                                                            <input type="text" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate">
+                                                            <input type="number" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate">
                                                             <span class="help-block" i18n="@@AudioBitrate">Audio Bitrate(bps)</span>
                                                         </div>
 
