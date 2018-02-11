@@ -2,8 +2,8 @@ import { LocaleInterface } from './locale.interface';
 
 export let Locale_English: LocaleInterface = 
 {
-    notEnterprise : 'This is enterprise function.'
-    + 'Please  <a href="https://antmedia.io/enterprise/" target="_blank"><b>visit</b></a> our web site for detailed information',
+    notEnterprise : 'This is an Enterprise function.'
+    + 'Please  visit <a href="https://antmedia.io/" target="_blank"><b>antmedia.io</b></a> for detailed information',
     enterpriseNotActivated : 'This function is not activated! '
     + 'Make sure that, related xml file is configured correctly .',
      ketNotdefined:"Please enter service client id and client secret in app configuration.",
