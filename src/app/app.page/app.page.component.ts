@@ -66,7 +66,8 @@ export class AppSettings {
 
                 public periscopeClientId: string,
                 public periscopeClientSecret: string,
-                public encoderSettings: EncoderSettings[]) {
+                public encoderSettings: EncoderSettings[],
+                public acceptOnlyStreamsInDataStore: boolean) {
 
     }
 }
@@ -113,6 +114,10 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public gettingPeriscopeParameters = false;
     public gettingYoutubeParameters = false;
     public gettingFacebookParameters = false;
+    public waitingForPeriscopeToBeAuthorized = false;
+    public waitingForYoutubeToBeAuthorized = false;
+    public waitingForFacebookToBeAuthorized = false;
+    public userFBPagesLoading = false;
 
 
 
@@ -421,6 +426,18 @@ export class AppPageComponent implements OnInit, OnDestroy {
         this.appSettings.encoderSettings.splice(index, 1);
     }
 
+    setSocialNetworkChannel(serviceName: string, type:string, value:string): void {
+        this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/setSocialNetworkChannel/"
+        +serviceName+"/"+type+"/"+value, {})
+        .subscribe(data => {
+            console.log("set social network channel: " + data["success"]);
+            if (data["success"]) {
+                this.getFacebookChannel();
+            }
+
+        });
+    }
+
     async showChannelChooserDialog(options:any, serviceName:string, type:string): Promise<boolean> {
         const {value: id} = await swal({
             title: 'Select The Page',
@@ -434,12 +451,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
                     if (value) {
                         console.log("selected id: " + value);
 
-                        this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/setSocialNetworkChannel/"
-                            +serviceName+"/"+type+"/"+value, {})
-                            .subscribe(data => {
-                                console.log("set social network channel: " + data["success"]);
-
-                            });
+                        this.setSocialNetworkChannel(serviceName, type, value);
 
                         resolve();
                     }
@@ -459,6 +471,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     }
     showNetworkChannelList(serviceName:string, type:string):void {
+        this.userFBPagesLoading = true;
         this.http.get(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getSocialNetworkChannelList/"+serviceName +"/" + type, {})
             .subscribe(data => {
                 console.log(data);
@@ -468,14 +481,23 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 for (var i in data) {
                     options[data[i]["id"]]=data[i]["name"];
                 }
-
+                this.userFBPagesLoading = false;
                 this.showChannelChooserDialog(options, serviceName, type);
-
-
-
 
             });
 
+    }
+
+
+    getFacebookChannel(): void {
+        this.http.get(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getSocialNetworkChannel/facebook", {})
+        .subscribe(data => {
+            console.log(data);
+            this.socialMediaAuthStatus.facebookPublishChannel = new SocialNetworkChannel();
+            this.socialMediaAuthStatus.facebookPublishChannel.id = data["id"];
+            this.socialMediaAuthStatus.facebookPublishChannel.name = data["name"];
+            this.socialMediaAuthStatus.facebookPublishChannel.type = data["type"];
+        });
     }
 
     getSettings(): void {
@@ -488,14 +510,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 this.socialMediaAuthStatus.isFacebookAuthenticated = data["success"];
 
                 if (this.socialMediaAuthStatus.isFacebookAuthenticated) {
-                    this.http.get(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getSocialNetworkChannel/facebook", {})
-                        .subscribe(data => {
-                            console.log(data);
-                            this.socialMediaAuthStatus.facebookPublishChannel = new SocialNetworkChannel();
-                            this.socialMediaAuthStatus.facebookPublishChannel.id = data["id"];
-                            this.socialMediaAuthStatus.facebookPublishChannel.name = data["name"];
-                            this.socialMediaAuthStatus.facebookPublishChannel.type = data["type"];
-                        });
+                    this.getFacebookChannel();
                 }
             });
 
@@ -512,7 +527,11 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
 
-    changeSettings(): void {
+    changeSettings(valid: boolean): void {
+
+        if (!valid) {
+            return;
+        }
 
         this.http.post(REST_SERVICE_ROOT + '/changeSettings/' + this.appName,
             this.appSettings
@@ -653,11 +672,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
         this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getDeviceAuthParameters/" + networkName,
             {}).subscribe(data => {
-            console.log("************  " + JSON.stringify(data));
-
-            console.log("isEnterprise:  " + this.isEnterpriseEdition);
-
-
+          
             if (data['verification_url']) {
                 if (!data['verification_url'].startsWith("http")) {
                     data['verification_url'] = "http://" + data['verification_url'];
@@ -685,6 +700,17 @@ export class AppPageComponent implements OnInit, OnDestroy {
                         console.log("onclose");
                     }
                 }).then(() => {
+                    switch (networkName) {
+                        case "facebook":
+                            this.waitingForFacebookToBeAuthorized = true;
+                            break;
+                        case "youtube":
+                            this.waitingForYoutubeToBeAuthorized = true;
+                            break;
+                        case "periscope":
+                            this.waitingForPeriscopeToBeAuthorized = true;
+                            break;
+                    }
                     this.checkAuthStatus(networkName);
 
                 })
@@ -711,8 +737,6 @@ export class AppPageComponent implements OnInit, OnDestroy {
                     onClose: function () {
                         console.log("onclose");
                     }
-                }).then(() => {
-                    this.checkAuthStatus(networkName);
                 });
 
 
@@ -737,9 +761,6 @@ export class AppPageComponent implements OnInit, OnDestroy {
                     onClose: function () {
                         console.log("onclose");
                     }
-                }).then(() => {
-                    this.checkAuthStatus(networkName);
-
                 });
 
             }
@@ -763,9 +784,6 @@ export class AppPageComponent implements OnInit, OnDestroy {
                     onClose: function () {
                         console.log("onclose");
                     }
-                }).then(() => {
-                    this.checkAuthStatus(networkName);
-
                 });
             }
         });
@@ -792,7 +810,6 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     copyLiveEmbedCode(streamUrl: string): void {
-
 
         //if (this.isEnterpriseEdition) {
         //  streamUrl += "_adaptive";
@@ -840,11 +857,11 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     checkAuthStatus(networkName: string): void {
-
+        
         this.restService.checkAuthStatus(networkName, this.appName).subscribe(data => {
 
             if (data["success"] != true) {
-                this.checkAuthStatusTimerId = setInterval(() => {
+                this.checkAuthStatusTimerId = setTimeout(() => {
                     this.checkAuthStatus(networkName);
                 }, 5000);
             }
@@ -854,12 +871,19 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 }
                 if (networkName == "facebook") {
                     this.socialMediaAuthStatus.isFacebookAuthenticated = true;
+                    this.gettingFacebookParameters = false;
+                    this.waitingForFacebookToBeAuthorized = false;
+                    this.getFacebookChannel();
                 }
                 else if (networkName == "youtube") {
                     this.socialMediaAuthStatus.isYoutubeAuthenticated = true;
+                    this.gettingYoutubeParameters = false;
+                    this.waitingForYoutubeToBeAuthorized = false;
                 }
                 else if (networkName == "periscope") {
                     this.socialMediaAuthStatus.isPeriscopeAuthenticated = true;
+                    this.gettingPeriscopeParameters = false;
+                    this.waitingForPeriscopeToBeAuthorized = false;
                 }
 
                 swal({
