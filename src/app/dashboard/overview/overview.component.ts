@@ -47,7 +47,7 @@ export class OverviewComponent implements OnInit {
     public units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     public timerId:any;
 
-    constructor(private http: HttpClient, private restService:RestService, private router:Router) { }
+    constructor(/*private http: HttpClient,*/ private restService:RestService, private router:Router) { }
 
     niceBytes(x): string {
         let l = 0, n = parseInt(x, 10) || 0;
@@ -120,14 +120,14 @@ export class OverviewComponent implements OnInit {
     }
 
     getLiveClientsSize(): void {
-        this.http.get(REST_SERVICE_ROOT + '/getLiveClientsSize').subscribe(data => {
+        this.restService.getLiveClientsSize().subscribe(data => {
             this.liveStreamSize = Number(data["totalLiveStreamSize"]);
             this.watcherSize = Number(data["totalConnectionSize"]) - this.liveStreamSize;
         });
     }
 
     getSystemMemoryInfo(): void {
-        this.http.get(REST_SERVICE_ROOT + '/getSystemMemoryInfo').subscribe(data => {
+        this.restService.getSystemMemoryInfo().subscribe(data => {
             var freeSpace = Number(data["freeMemory"]);
             this.systemMemoryInUse = Number(data["inUseMemory"]);
             this.systemMemoryTotal  = Number(data["totalMemory"]);
@@ -139,7 +139,8 @@ export class OverviewComponent implements OnInit {
     }
 
     getFileSystemInfo(): void {
-        this.http.get(REST_SERVICE_ROOT + '/getFileSystemInfo').subscribe(data => {
+
+        this.restService.getFileSystemInfo().subscribe(data => {
             // Read the result field from the JSON response.
             var freeSpace = Number(data["freeSpace"]);
             this.diskInUseSpace = Number(data["inUseSpace"]);
@@ -151,7 +152,8 @@ export class OverviewComponent implements OnInit {
     }
 
     getJVMMemoryInfo(): void {
-        this.http.get(REST_SERVICE_ROOT + '/getJVMMemoryInfo').subscribe(data => {
+
+        this.restService.getJVMMemoryInfo().subscribe(data => {
             this.memoryInUseSpace = Number(data["inUseMemory"]);
             this.memoryTotalSpace = Number(data["maxMemory"]);
             this.memoryUsagePercent = Math.round(Number(this.memoryInUseSpace * 100 / this.memoryTotalSpace));
@@ -162,7 +164,7 @@ export class OverviewComponent implements OnInit {
 
 
     getApplicationsInfo(): void {
-        this.http.get(REST_SERVICE_ROOT + '/getApplicationsInfo').subscribe(data => {
+        this.restService.getApplicationsInfo().subscribe(data => {
             this.appTableData.dataRows = [];
             for (var i in data) {
                 this.appTableData.dataRows.push(data[i]);

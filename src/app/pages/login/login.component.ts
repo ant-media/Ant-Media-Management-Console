@@ -1,7 +1,8 @@
 import { Component, OnInit, ElementRef, LOCALE_ID, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { AuthService , User} from '../../rest/auth.service';
+import { AuthService} from '../../rest/auth.service';
+import { User} from '../../rest/rest.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { REST_SERVICE_ROOT } from '../../rest/rest.service';
 
@@ -93,7 +94,7 @@ export class LoginComponent implements OnInit{
     loginUser() {
       
         this.auth.login(this.email, this.password).subscribe(data =>{
-          
+         
             if (data["success"] == true) {
                 localStorage.setItem("authenticated", "true");
                 this.router.navigateByUrl("/dashboard");

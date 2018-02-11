@@ -3,21 +3,16 @@ import { REST_SERVICE_ROOT, HTTP_SERVER_ROOT } from './rest.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { CanActivate, Router } from '@angular/router';
+import { RestService, User } from './rest.service';
 
-export class User {
 
-  public newPassword: string;
-  public fullName: string;
-
-  constructor(public email: string, public password: string) { }
-}
 
 @Injectable()
 export class AuthService implements CanActivate {
 
   private isAuthenticated: boolean = true;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private restService: RestService, private router: Router) {
     setInterval(() => {
       this.checkServerIsAuthenticated();
     }, 10000);
@@ -32,29 +27,30 @@ export class AuthService implements CanActivate {
 
     let user = new User(email, password);
 
-    return this.http.post(REST_SERVICE_ROOT + "/authenticateUser", user);
+    return this.restService.authenticateUser(user);
   }
 
   changeUserPassword(email: string, password: string, newPassword: string): Observable<Object> {
     let user = new User(email, password);
     user.newPassword = newPassword;
-    return this.http.post(REST_SERVICE_ROOT + "/changeUserPassword", user);
+    return this.restService.changePassword(user);
   }
 
   isFirstLogin(): Observable<Object> {
-    return this.http.get(REST_SERVICE_ROOT + "/isFirstLogin");
+    return this.restService.isFirstLogin();
   }
 
   createFirstAccount(user: User): Observable<Object> {
-    return this.http.post(REST_SERVICE_ROOT + "/addInitialUser", user);
+    return this.restService.createFirstAccount(user);
   }
 
   checkServerIsAuthenticated(): void {
 
     if (localStorage.getItem('authenticated')) {
-      this.http.get(REST_SERVICE_ROOT + "/isAuthenticated").subscribe(data => {
+      this.restService.isAuthenticated().subscribe(data => {
 
         this.isAuthenticated = data["success"];
+        console.log("data success --> " + data["success"]);
         if (!this.isAuthenticated) {
           this.router.navigateByUrl('/pages/login');
         }

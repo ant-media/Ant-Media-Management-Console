@@ -128,7 +128,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
         new HLSListType('Event', 'event'),
     ];
 
-    constructor(private http: HttpClient, private route: ActivatedRoute,
+    constructor(/*private http: HttpClient,*/ private route: ActivatedRoute,
                 private restService: RestService,
                 private clipBoardService: ClipboardService, private renderer: Renderer,
                 public router: Router) { }
@@ -226,7 +226,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     getVoDStreams(): void {
-        this.http.get(REST_SERVICE_ROOT + '/getAppVoDStreams/' + this.appName).subscribe(data => {
+        this.restService.getVoDStreams(this.appName).subscribe(data => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
@@ -253,7 +253,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     checkAndPlayLive(videoUrl: string): void {
-        this.http.get(videoUrl, { responseType: 'text' }).subscribe(data => {
+        this.restService.get(videoUrl, { responseType: 'text' }).subscribe(data => {
                 console.log("loaded...");
                 $("#playerLoading").hide();
                 flowplayer('#player', {
@@ -427,9 +427,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     setSocialNetworkChannel(serviceName: string, type:string, value:string): void {
-        this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/setSocialNetworkChannel/"
-        +serviceName+"/"+type+"/"+value, {})
-        .subscribe(data => {
+        this.restService.setSocialNetworkChannel(this.appName, serviceName, type, value).subscribe(data => {
             console.log("set social network channel: " + data["success"]);
             if (data["success"]) {
                 this.getFacebookChannel();
@@ -472,8 +470,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
     showNetworkChannelList(serviceName:string, type:string):void {
         this.userFBPagesLoading = true;
-        this.http.get(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getSocialNetworkChannelList/"+serviceName +"/" + type, {})
-            .subscribe(data => {
+        this.restService.getSocialNetworkChannelList(this.appName, serviceName, type).subscribe(data => {
                 console.log(data);
                 var options = {
                 };
@@ -490,8 +487,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
     getFacebookChannel(): void {
-        this.http.get(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getSocialNetworkChannel/facebook", {})
-        .subscribe(data => {
+        this.restService.getSocialNetworkChannel(this.appName, "facebook").subscribe(data => {
             console.log(data);
             this.socialMediaAuthStatus.facebookPublishChannel = new SocialNetworkChannel();
             this.socialMediaAuthStatus.facebookPublishChannel.id = data["id"];
@@ -501,28 +497,25 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     getSettings(): void {
-        this.http.get(REST_SERVICE_ROOT + "/getSettings/" + this.appName).subscribe(data => {
+        this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
         });
 
-        this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/checkDeviceAuthStatus/facebook", {})
-            .subscribe(data => {
-                this.socialMediaAuthStatus.isFacebookAuthenticated = data["success"];
+        this.restService.checkDeviceAuthStatus(this.appName, "facebook").subscribe(data => {
+            this.socialMediaAuthStatus.isFacebookAuthenticated = data["success"];
 
-                if (this.socialMediaAuthStatus.isFacebookAuthenticated) {
-                    this.getFacebookChannel();
-                }
-            });
+            if (this.socialMediaAuthStatus.isFacebookAuthenticated) {
+                this.getFacebookChannel();
+            }
+        });
 
-        this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/checkDeviceAuthStatus/youtube", {})
-            .subscribe(data => {
-                this.socialMediaAuthStatus.isYoutubeAuthenticated = data["success"];
-            });
+        this.restService.checkDeviceAuthStatus(this.appName, "youtube").subscribe(data => {
+            this.socialMediaAuthStatus.isYoutubeAuthenticated = data["success"];
+        });
 
-        this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/checkDeviceAuthStatus/periscope", {})
-            .subscribe(data => {
-                this.socialMediaAuthStatus.isPeriscopeAuthenticated = data["success"];
-            });
+        this.restService.checkDeviceAuthStatus(this.appName, "periscope").subscribe(data => {
+            this.socialMediaAuthStatus.isPeriscopeAuthenticated = data["success"];
+        });
 
     }
 
@@ -533,9 +526,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.http.post(REST_SERVICE_ROOT + '/changeSettings/' + this.appName,
-            this.appSettings
-        ).subscribe(data => {
+        this.restService.changeSettings(this.appName, this.appSettings).subscribe(data => {
             if (data["success"] == true) {
                 $.notify({
                     icon: "ti-save",
@@ -669,9 +660,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
         }
 
 
-
-        this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getDeviceAuthParameters/" + networkName,
-            {}).subscribe(data => {
+        this.restService.getDeviceAuthParameters(this.appName, networkName).subscribe(data => {
           
             if (data['verification_url']) {
                 if (!data['verification_url'].startsWith("http")) {

@@ -16,7 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
         FormsModule,
         HttpClientModule,
     ],
-    declarations: [OverviewComponent]
+    declarations: [OverviewComponent],
 })
 
 export class DashboardModule {}
