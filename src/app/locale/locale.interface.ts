@@ -4,7 +4,6 @@ export interface LocaleInterface {
     
     
     notEnterprise:string;
-    enterpriseNotActivated:string;
     ketNotdefined:string;
     vodFileNotDeleted:string;
     broadcast_not_deleted:string;
@@ -22,4 +21,6 @@ export interface LocaleInterface {
     turkish_language: string;
     english_language: string;
     live_stream_will_be_deleted: string;
+    broadcast_updated: string;
+    broadcast_not_updated: string;
 }

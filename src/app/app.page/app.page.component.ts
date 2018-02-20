@@ -15,7 +15,9 @@ declare var Chartist: any;
 declare var swal: any;
 
 
-//declare var flowplayer: any;
+declare const ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID = -1;
+declare const ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT = -2;
+declare const ERROR_SOCIAL_ENDPOINT_NO_ENDPOINT = -3;
 
 declare interface Endpoint {
     type: string;
@@ -52,22 +54,22 @@ export class HLSListType {
 export class AppSettings {
 
     constructor(public mp4MuxingEnabled: boolean,
-                public addDateTimeToMp4FileName: boolean,
-                public hlsMuxingEnabled: boolean,
-                public hlsListSize: Number,
-                public hlsTime: Number,
-                public hlsPlayListType: string,
+        public addDateTimeToMp4FileName: boolean,
+        public hlsMuxingEnabled: boolean,
+        public hlsListSize: Number,
+        public hlsTime: Number,
+        public hlsPlayListType: string,
 
-                public facebookClientId: string,
-                public facebookClientSecret: string,
+        public facebookClientId: string,
+        public facebookClientSecret: string,
 
-                public youtubeClientId: string,
-                public youtubeClientSecret: string,
+        public youtubeClientId: string,
+        public youtubeClientSecret: string,
 
-                public periscopeClientId: string,
-                public periscopeClientSecret: string,
-                public encoderSettings: EncoderSettings[],
-                public acceptOnlyStreamsInDataStore: boolean) {
+        public periscopeClientId: string,
+        public periscopeClientSecret: string,
+        public encoderSettings: EncoderSettings[],
+        public acceptOnlyStreamsInDataStore: boolean) {
 
     }
 }
@@ -118,6 +120,11 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public waitingForYoutubeToBeAuthorized = false;
     public waitingForFacebookToBeAuthorized = false;
     public userFBPagesLoading = false;
+    public liveStreamEditing: LiveBroadcast;
+    public editBroadcastShareYoutube: boolean;
+    public editBroadcastShareFacebook: boolean;
+    public editBroadcastSharePeriscope: boolean;
+    public liveStreamUpdating = false;
 
 
 
@@ -129,9 +136,9 @@ export class AppPageComponent implements OnInit, OnDestroy {
     ];
 
     constructor(/*private http: HttpClient,*/ private route: ActivatedRoute,
-                private restService: RestService,
-                private clipBoardService: ClipboardService, private renderer: Renderer,
-                public router: Router) { }
+        private restService: RestService,
+        private clipBoardService: ClipboardService, private renderer: Renderer,
+        public router: Router) { }
 
     ngOnInit() {
 
@@ -198,11 +205,13 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     }
 
+
+
     getAppLiveStreams(): void {
         this.restService.getAppLiveStreams(this.appName, 0, 10).subscribe(data => {
             //console.log(data);
             this.broadcastTableData.dataRows = [];
-            console.log("type of data -> " + typeof data);
+            //console.log("type of data -> " + typeof data);
 
             for (var i in data) {
 
@@ -211,9 +220,6 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 for (var j in data[i].endPointList) {
                     endpoint.push(data[i].endPointList[j]);
                 }
-
-                // data[i].endPointList = endpoint;
-
 
                 this.broadcastTableData.dataRows.push(data[i]);
 
@@ -254,19 +260,19 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     checkAndPlayLive(videoUrl: string): void {
         this.restService.get(videoUrl, { responseType: 'text' }).subscribe(data => {
-                console.log("loaded...");
-                $("#playerLoading").hide();
-                flowplayer('#player', {
-                    autoplay: true,
-                    clip: {
-                        sources: [{
-                            type: 'application/x-mpegurl',
-                            src: videoUrl
-                        }]
-                    }
-                });
+            console.log("loaded...");
+            $("#playerLoading").hide();
+            flowplayer('#player', {
+                autoplay: true,
+                clip: {
+                    sources: [{
+                        type: 'application/x-mpegurl',
+                        src: videoUrl
+                    }]
+                }
+            });
 
-            },
+        },
             error => {
                 console.log("error...");
                 setTimeout(() => {
@@ -368,15 +374,108 @@ export class AppPageComponent implements OnInit, OnDestroy {
             icon: "ti-save",
             message: Locale.getLocaleInterface().vodFileNotDeleted
         }, {
-            type: "warning",
-            delay: 900,
-            placement: {
-                from: 'top',
-                align: 'right'
-            }
-        });
+                type: "warning",
+                delay: 900,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
     }
 
+    editLiveBroadcast(stream: BroadcastInfo): void {
+        if (stream.endPointList != null) 
+        {
+            this.editBroadcastShareFacebook = false;
+            this.editBroadcastShareYoutube = false;
+            this.editBroadcastSharePeriscope = false;
+
+            stream.endPointList.forEach(element => {
+                switch (element.type) {
+                    case "facebook":
+                        this.editBroadcastShareFacebook = true;
+                        break;
+                    case "youtube":
+                        this.editBroadcastShareYoutube = true;
+                        break;
+                    case "periscope":
+                        this.editBroadcastSharePeriscope = true;
+                        break;
+                }
+
+            });
+        }
+        if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId) {
+            this.liveStreamEditing = new LiveBroadcast();
+            this.liveStreamEditing.streamId = stream.streamId;
+            this.liveStreamEditing.name = stream.name;
+            this.liveStreamEditing.description = "";
+        }
+        else {
+            this.liveStreamEditing = null;
+        }
+    }
+
+    updateLiveStream(isValid: boolean): void {
+        if (!isValid) {
+            return;
+        }
+
+        this.liveStreamUpdating = true;
+        var socialNetworks = [];
+        
+        if (this.editBroadcastShareFacebook) {
+            socialNetworks.push("facebook");
+        }
+
+        if (this.editBroadcastShareYoutube == true) {
+            socialNetworks.push("youtube");
+        }
+
+        if (this.editBroadcastSharePeriscope == true) {
+            socialNetworks.push("periscope");
+        }
+
+        this.restService.updateLiveStream(this.appName, this.liveStreamEditing,
+            socialNetworks).subscribe(data => {
+                this.liveStreamUpdating = false;
+                console.log(data["success"]);
+                if (data["success"]) {
+                    this.liveStreamEditing = null;
+                    //update the rows
+                    this.getAppLiveStreams();
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().broadcast_updated
+                    }, {
+                            type: "success",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                }
+                else {
+                    $.notify({
+                        icon: "ti-alert",
+                        message: Locale.getLocaleInterface().broadcast_not_updated  + " " + data["message"] + " " + data["errorId"]
+                    }, {
+                            type: "warning",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                }
+            });
+        
+    }
+
+    cancelEditLiveStream(): void {
+        this.liveStreamEditing = null;
+    }
     deleteLiveBroadcast(streamId: string): void {
         swal({
             title: Locale.getLocaleInterface().are_you_sure,
@@ -397,13 +496,13 @@ export class AppPageComponent implements OnInit, OnDestroy {
                             icon: "ti-save",
                             message: Locale.getLocaleInterface().broadcast_not_deleted
                         }, {
-                            type: "warning",
-                            delay: 900,
-                            placement: {
-                                from: 'top',
-                                align: 'right'
-                            }
-                        });
+                                type: "warning",
+                                delay: 900,
+                                placement: {
+                                    from: 'top',
+                                    align: 'right'
+                                }
+                            });
                     };
                     this.getAppLiveStreams();
                 });
@@ -426,7 +525,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
         this.appSettings.encoderSettings.splice(index, 1);
     }
 
-    setSocialNetworkChannel(serviceName: string, type:string, value:string): void {
+    setSocialNetworkChannel(serviceName: string, type: string, value: string): void {
         this.restService.setSocialNetworkChannel(this.appName, serviceName, type, value).subscribe(data => {
             console.log("set social network channel: " + data["success"]);
             if (data["success"]) {
@@ -436,8 +535,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    async showChannelChooserDialog(options:any, serviceName:string, type:string): Promise<boolean> {
-        const {value: id} = await swal({
+    async showChannelChooserDialog(options: any, serviceName: string, type: string): Promise<boolean> {
+        const { value: id } = await swal({
             title: 'Select The Page',
             input: 'select',
             inputOptions: options,
@@ -468,20 +567,20 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
     }
-    showNetworkChannelList(serviceName:string, type:string):void {
+    showNetworkChannelList(serviceName: string, type: string): void {
         this.userFBPagesLoading = true;
         this.restService.getSocialNetworkChannelList(this.appName, serviceName, type).subscribe(data => {
-                console.log(data);
-                var options = {
-                };
+            console.log(data);
+            var options = {
+            };
 
-                for (var i in data) {
-                    options[data[i]["id"]]=data[i]["name"];
-                }
-                this.userFBPagesLoading = false;
-                this.showChannelChooserDialog(options, serviceName, type);
+            for (var i in data) {
+                options[data[i]["id"]] = data[i]["name"];
+            }
+            this.userFBPagesLoading = false;
+            this.showChannelChooserDialog(options, serviceName, type);
 
-            });
+        });
 
     }
 
@@ -532,26 +631,26 @@ export class AppPageComponent implements OnInit, OnDestroy {
                     icon: "ti-save",
                     message: Locale.getLocaleInterface().settings_saved
                 }, {
-                    type: "success",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
+                        type: "success",
+                        delay: 900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
             }
             else {
                 $.notify({
                     icon: "ti-alert",
                     message: Locale.getLocaleInterface().settings_not_saved
                 }, {
-                    type: 'warning',
-                    delay: 1900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
+                        type: 'warning',
+                        delay: 1900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
 
             }
         });
@@ -605,13 +704,13 @@ export class AppPageComponent implements OnInit, OnDestroy {
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().new_broadcast_created
                     }, {
-                        type: "success",
-                        delay: 900,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                            type: "success",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
                     this.getAppLiveStreams();
                     this.liveBroadcast.name = "";
                 }
@@ -624,10 +723,6 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
     getParam(): void {
-
-
-
-
     }
 
 
@@ -661,7 +756,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
         this.restService.getDeviceAuthParameters(this.appName, networkName).subscribe(data => {
-          
+
             if (data['verification_url']) {
                 if (!data['verification_url'].startsWith("http")) {
                     data['verification_url'] = "http://" + data['verification_url'];
@@ -707,7 +802,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
             } else if (this.isEnterpriseEdition == false
-                && data['message'] == "Service with the name specified is not found in this app") {
+                && data['errorId'] == ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT) {
 
                 message = Locale.getLocaleInterface().notEnterprise;
 
@@ -730,30 +825,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 
-            } else if (this.isEnterpriseEdition == true && data['message'] == "Service with the name specified is not found in this app") {
-
-                message = Locale.getLocaleInterface().enterpriseNotActivated;;
-
-
-                typem = 'error';
-                this.setGettingParametersFalse(networkName);
-                swal({
-                    html: message,
-                    type: typem,
-                    // showConfirmButton: false,
-                    showCancelButton: true,
-                    // width: '800px',
-                    onOpen: function () {
-                        console.log("onopen");
-
-                    },
-                    onClose: function () {
-                        console.log("onclose");
-                    }
-                });
-
-            }
-            else if (this.isEnterpriseEdition == true && data['message'] == "Please enter service client id and client secret in app configuration") {
+            } else if (this.isEnterpriseEdition == true && data['errorId'] == ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID) {
 
                 message = Locale.getLocaleInterface().ketNotdefined;;
 
@@ -787,14 +859,14 @@ export class AppPageComponent implements OnInit, OnDestroy {
         $.notify({
             message: Locale.getLocaleInterface().publish_url_copied_to_clipboard
         }, {
-            type: "success",
-            delay: 400,
-            timer: 500,
-            placement: {
-                from: 'top',
-                align: 'right'
-            }
-        });
+                type: "success",
+                delay: 400,
+                timer: 500,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
 
     }
 
@@ -812,14 +884,14 @@ export class AppPageComponent implements OnInit, OnDestroy {
         $.notify({
             message: Locale.getLocaleInterface().embed_code_copied_to_clipboard
         }, {
-            type: "success",
-            delay: 400,
-            timer: 500,
-            placement: {
-                from: 'top',
-                align: 'right'
-            }
-        });
+                type: "success",
+                delay: 400,
+                timer: 500,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
     }
 
 
@@ -846,7 +918,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     checkAuthStatus(networkName: string): void {
-        
+
         this.restService.checkAuthStatus(networkName, this.appName).subscribe(data => {
 
             if (data["success"] != true) {

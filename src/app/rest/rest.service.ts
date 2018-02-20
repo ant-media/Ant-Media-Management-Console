@@ -36,10 +36,10 @@ else {
 export const REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
 
 export class LiveBroadcast {
-    public name
-
+    public name;
+    public streamId;
+    public description;
 }
- 
  
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor{
@@ -64,33 +64,39 @@ export class RestService {
     }
 
     public checkAuthStatus(networkName: string, appName: string): Observable<Object> {
-        return this.http.post(HTTP_SERVER_ROOT + appName + "/rest/broadcast/checkDeviceAuthStatus/" + networkName,
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/checkDeviceAuthStatus/" + networkName,
             {});
     }
 
 
     public getAppLiveStreams(appName:string, offset:Number, size:Number): Observable<Object> {
-        return this.http.get(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/getList/'+offset+"/"+size);
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getList/'+offset+"/"+size);
     }
 
     public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Observable<Object> {
 
 
-        return this.http.post(HTTP_SERVER_ROOT + appName + "/rest/broadcast/createWithSocial?socialNetworks="+socialNetworks,
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/createWithSocial?socialNetworks="+socialNetworks,
             liveBroadcast);
     }
 
+    public updateLiveStream(appName: string, broadcast: LiveBroadcast, socialNetworks): Observable<Object> {
+
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/update?socialNetworks="+socialNetworks,
+                broadcast);
+    }
+
     public deleteBroadcast(appName: string, streamId:string): Observable<Object> {
-        return this.http.post(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/delete/'+streamId, {});
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/broadcast/delete/'+streamId, {});
     }
 
     public deleteVoDFile(appName: string, streamId:string) {
-        return this.http.post(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/deleteVoDFile/'+streamId, {});
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/broadcast/deleteVoDFile/'+streamId, {});
 
     }
 
     public revokeSocialNetwork(appName: string, serviceName:string): Observable<Object> {
-        return this.http.post(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/revokeSocialNetwork/'+serviceName, {});
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/broadcast/revokeSocialNetwork/'+serviceName, {});
     }
 
     public isEnterpriseEdition(): Observable<Object> {
@@ -139,16 +145,16 @@ export class RestService {
     }
 
     public setSocialNetworkChannel(appName: string, serviceName: string, type:string, value:string): Observable<Object> {
-        return this.http.post(HTTP_SERVER_ROOT + appName + "/rest/broadcast/setSocialNetworkChannel/"
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/setSocialNetworkChannel/"
                 +serviceName+"/"+type+"/"+value, {});
     }
 
     public getSocialNetworkChannelList(appName: string, serviceName: string, type: string): Observable<Object> {
-        return this.http.get(HTTP_SERVER_ROOT + appName + "/rest/broadcast/getSocialNetworkChannelList/"+serviceName +"/" + type);
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/getSocialNetworkChannelList/"+serviceName +"/" + type);
     }
 
     public getSocialNetworkChannel(appName: string, serviceName: string): Observable<Object> {
-       return this.http.get(HTTP_SERVER_ROOT + appName + "/rest/broadcast/getSocialNetworkChannel/" + serviceName, {});
+       return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/getSocialNetworkChannel/" + serviceName, {});
     }
 
     public getSettings(appName: string) : Observable<Object> {
@@ -156,7 +162,7 @@ export class RestService {
     }
 
     public checkDeviceAuthStatus(appName: string, serviceName:string): Observable<Object> {
-        return this.http.post(HTTP_SERVER_ROOT + appName + "/rest/broadcast/checkDeviceAuthStatus/" + serviceName, {});
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/checkDeviceAuthStatus/" + serviceName, {});
     }
 
     public changeSettings(appName: string, appSettings: AppSettings ): Observable<Object> {
@@ -164,7 +170,7 @@ export class RestService {
     }
 
     public getDeviceAuthParameters(appName: string, networkName: string): Observable<Object> {
-        return this.http.post(HTTP_SERVER_ROOT + appName + "/rest/broadcast/getDeviceAuthParameters/" + networkName, {});
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/getDeviceAuthParameters/" + networkName, {});
     }
 
     public getLiveClientsSize(): Observable<Object> {

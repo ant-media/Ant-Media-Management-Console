@@ -4,9 +4,7 @@ export let Locale_English: LocaleInterface =
 {
     notEnterprise : 'This is an Enterprise function.'
     + 'Please  visit <a href="https://antmedia.io/" target="_blank"><b>antmedia.io</b></a> for detailed information',
-    enterpriseNotActivated : 'This function is not activated! '
-    + 'Make sure that, related xml file is configured correctly .',
-     ketNotdefined:"Please enter service client id and client secret in app configuration.",
+    ketNotdefined:"Please enter service client id and client secret in app configuration.",
     vodFileNotDeleted : "VoD file is not deleted",
     broadcast_not_deleted : "Broadcast is not deleted",
     settings_saved : "Settings saved",
@@ -25,5 +23,7 @@ export let Locale_English: LocaleInterface =
     dashboard: 'Dashboard',
     turkish_language : "Türkçe",
     english_language : "English",
+    broadcast_updated: "Stream is updated.",
+    broadcast_not_updated: "Stream is not updated. Please send below message to contact@antmedia.io",
    
 }

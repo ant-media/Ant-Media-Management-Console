@@ -6,8 +6,8 @@
     </a>
 
     <a href="/" class="simple-text logo-normal" style="text-transform:none" i18n="@@antMediaServer">
-		Ant Media Server
-	</a>
+        Ant Media Server
+    </a>
 </div>
 
 
@@ -100,29 +100,67 @@
     <ul class="nav">
 
         <li routerLinkActive="active">
-               
-                <!--If it have a submenu-->
-                <a data-toggle="collapse" href="#Applications">
-                        <i class="ti-package"></i>
-                        <p><ng-container i18n="@@applicationsMenuItem">Applications</ng-container><b class="caret"></b></p>
-                    </a>
+            <a routerLink="/dashboard">
+                <i class="ti-panel"></i>
+                <p i18n="@@dashboardMenuItem">Dashboard</p>
+            </a>
+        </li>
 
-                <!--Display the submenu items-->
-                <div id="Applications" class="collapse">
-                    <ul class="nav">
-                        <li routerLinkActive="active" *ngFor="let app of getApps" >
-                            
-                            <a [routerLink]="['/applications/' +  app]" routerLinkActive="active">
-                                    <i class="ti-file"></i>
-                                    <span class="sidebar-mini"></span>
-                                    <span class="sidebar-normal">{{app}}</span>
-                                </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
+        <li>
+            <!--If it have a submenu-->
+            <a data-toggle="collapse" href="#Applications">
+                <i class="ti-package"></i>
+                <p>
+                    <ng-container i18n="@@applicationsMenuItem">Applications</ng-container>
+                    <b class="caret"></b>
+                </p>
+            </a>
+            <!--Display the submenu items-->
+            <div id="Applications" class="collapse">
+                <ul class="nav">
+                    <li routerLinkActive="active" *ngFor="let app of getApps">
+
+                        <a [routerLink]="['/applications/' +  app]" routerLinkActive="active">
+                            <i class="ti-file"></i>
+                            <span class="sidebar-mini"></span>
+                            <span class="sidebar-normal">{{app}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+        <li *ngIf="isNotMobileMenu()">
+            <a data-toggle="collapse" href="#UserAccount">
+                <i class="ti-user"></i> <p>
+                        <ng-container i18n="@@myAccountMenuItem">My Account</ng-container>
+                        <b class="caret"></b>
+                        </p>
+            </a>
+            <div id="UserAccount" class="collapse">
+                <ul class="nav">
+                    <li>
+                        <a routerLink="/pages/changepass" routerLinkActive="active">
+                            <i class="ti-angle-double-right"></i>
+                            <ng-container i18n="@@changePassword">Change Password</ng-container>
+                        </a>
+
+                    </li>
+                    <li class="text-left">
+                        <a routerLink="/pages/login" routerLinkActive="active">
+
+                            <i class="ti-angle-double-right"></i>
+                            <ng-container i18n="@@logout">Logout</ng-container>
+
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </li>
+
     </ul>
 
-    
+
 
 </div>
