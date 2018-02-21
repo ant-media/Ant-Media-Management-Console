@@ -215,9 +215,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public searchWarning=false;
     public searchParam:SearchParam;
     public selectedBroadcast:LiveBroadcast;
+    public showVodButtons=false;
 
-    animal="davut";
-    name1: string;
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
@@ -236,6 +235,29 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
 
+
+        //  Init Bootstrap Select Picker
+        if($(".selectpicker").length != 0){
+            $(".selectpicker").selectpicker({
+                iconBase: "ti",
+                tickIcon: "ti-check"
+            });
+        }
+
+        $('.datepicker').datetimepicker({
+            format: 'YYYY-MM-DD', //use this format if you want the 12hours timpiecker with AM/PM toggle
+            icons: {
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+                up: "fa fa-chevron-up",
+                down: "fa fa-chevron-down",
+                previous: 'fa fa-chevron-left',
+                next: 'fa fa-chevron-right',
+                today: 'fa fa-screenshot',
+                clear: 'fa fa-trash',
+                close: 'fa fa-remove'
+            }
+        });
 
 
         var self = this;
@@ -259,30 +281,9 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 
-        //  Init Bootstrap Select Picker
-        if($(".selectpicker").length != 0){
-            $(".selectpicker").selectpicker({
-                iconBase: "ti",
-                tickIcon: "ti-check"
-            });
-        }
 
 
 
-        $('.datepicker').datetimepicker({
-            format: 'YYYY-MM-DD', //use this format if you want the 12hours timpiecker with AM/PM toggle
-            icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-chevron-up",
-                down: "fa fa-chevron-down",
-                previous: 'fa fa-chevron-left',
-                next: 'fa fa-chevron-right',
-                today: 'fa fa-screenshot',
-                clear: 'fa fa-trash',
-                close: 'fa fa-remove'
-            }
-        });
 
 
         this.broadcastTableData = {
@@ -315,7 +316,16 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     }
 
+
+
+
     ngAfterViewInit() {
+
+
+
+
+
+
 
 
         this.sub = this.route.params.subscribe(params => {
@@ -434,35 +444,44 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     filterAppLiveStreams(type:String): void {
 
-
-        this.restService.filterAppLiveStreams(this.appName, 0, 10,type).then(data => {
-            //console.log(data);
-            this.broadcastTableData.dataRows = [];
-            console.log("type of data -> " + typeof data);
-
-            for (var i in data) {
-
-                this.broadcastTableData.dataRows.push(data[i]);
-
-            }
+        if(type=="displayAll"){
 
 
+            this.getAppLiveStreams();
+        }
 
-            if(this.isGridView){
-                setTimeout(() => {
-                    this.openGridPlayers();
+        else{
+            this.restService.filterAppLiveStreams(this.appName, 0, 10,type).then(data => {
+                //console.log(data);
+                this.broadcastTableData.dataRows = [];
+                console.log("type of data -> " + typeof data);
+
+                for (var i in data) {
+
+                    this.broadcastTableData.dataRows.push(data[i]);
+
+                }
+
+
+
+                if(this.isGridView){
+                    setTimeout(() => {
+                        this.openGridPlayers();
+                    }, 500);
+
+                }
+
+
+                setTimeout(function () {
+                    $('[data-toggle="tooltip"]').tooltip();
                 }, 500);
 
-            }
 
 
-            setTimeout(function () {
-                $('[data-toggle="tooltip"]').tooltip();
-            }, 500);
+            });
+        }
 
 
-
-        });
     }
 
 
@@ -493,13 +512,33 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     getVoDStreams(): void {
         this.searchWarning=false;
+        this.keyword=null;
+
+
         this.restService.getVodList(this.appName, 0, 10).then(data  => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
             }
         });
+
+        setTimeout(() => {
+            console.log(this.vodTableData.dataRows.length);
+            if (this.vodTableData.dataRows.length>0){
+                this.showVodButtons=false;
+
+
+            } else {
+                this.showVodButtons=true;
+
+            }
+        }, 500);
+
+
+
     }
+
+
 
     ngOnDestroy() {
         this.sub.unsubscribe();
@@ -617,7 +656,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 
-         //   container.setAttribute("style","width:500px");
+            //   container.setAttribute("style","width:500px");
 
 
 
@@ -1055,14 +1094,15 @@ export class AppPageComponent implements OnInit, OnDestroy {
         setTimeout(() =>
         {
 
-            if(this.onvifURLs.length>0) {
+            if(this.onvifURLs) {
                 this.discoveryStarted = false;
                 swal({
-                    text: "Onvif Camera(s) Found",
 
+                    type: 'info',
+                    title: "Onvif Camera(s) ",
                     input: 'radio',
-
                     inputOptions: this.onvifURLs,
+                    width: '355px',
 
                     inputValidator: function (value) {
                         return new Promise(function (resolve, reject) {
@@ -1078,12 +1118,11 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
                 }).then((result) => {
 
+                    if(result){
+                        this.liveBroadcast.ipAddr = this.onvifURLs[result].toString();
 
-                    this.liveBroadcast.ipAddr = this.onvifURLs[result].toString();
-
+                    }
                 })
-
-
 
             }else{
 
@@ -1098,12 +1137,9 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     }
 
-
-
-
-
-
     getDiscoveryList():String[] {
+
+        this.onvifURLs=null;
 
         this.restService.autoDiscover(this.appName).then(
             streams => {
@@ -1543,7 +1579,6 @@ export class AppPageComponent implements OnInit, OnDestroy {
         this.searchWarning=false;
 
 
-
         if($("#start").val()){
             this.requestedStartDate= this.convertStartUnixTime($("#start").val());
 
@@ -1565,6 +1600,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
         if(this.searchParam.endDate>this.searchParam.startDate){
+
+            console.log("");
             this.restService.filterVod(this.appName, 0, 10,this.searchParam).then(data  => {
                 this.vodTableData.dataRows = [];
                 for (var i in data) {
@@ -1573,7 +1610,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
                 console.log(this.vodTableData.dataRows.length.toString());
             });
-        }else{
+        }else if (this.searchParam.endDate<this.searchParam.startDate){
 
             this.searchWarning=true;
         }
@@ -1581,9 +1618,9 @@ export class AppPageComponent implements OnInit, OnDestroy {
         console.log("search param end:  "+this.searchParam.endDate);
         console.log("search param keyword:  "+this.searchParam.keyword);
 
-        console.log("start: "+ this.requestedStartDate);
-        console.log("end: "+this.requestedEndDate);
-        console.log("keyword: "+this.keyword);
+        console.log("req start: "+ this.requestedStartDate);
+        console.log("req end: "+this.requestedEndDate);
+        console.log("req keyword: "+this.keyword);
 
         if(!$("#keyword").val() || $("#keyword").val()==" " ){
 
@@ -1713,9 +1750,9 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 export class DialogOverviewExampleDialogComponent {
-camera:LiveBroadcast;
-app:AppPageComponent;
-loading=false;
+    camera:LiveBroadcast;
+    app:AppPageComponent;
+    loading=false;
 
     constructor(
         public dialogRef: MatDialogRef<DialogOverviewExampleDialogComponent>, public restService: RestService,
@@ -1749,32 +1786,32 @@ loading=false;
 
         this.restService.editCameraInfo(this.camera,"LiveApp").then(data  => {
 
-        if(data["success"] == true){
+            if(data["success"] == true){
 
-            this.dialogRef.close();
-            swal({
-                type: "success",
-                title: "New Settings Saved!",
-                buttonsStyling: false,
-                confirmButtonClass: "btn btn-success"
+                this.dialogRef.close();
+                swal({
+                    type: "success",
+                    title: "New Settings Saved!",
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-success"
 
-            });
+                });
 
-        }else {
+            }else {
 
-            this.dialogRef.close();
-            swal({
-                type: "error",
-                title: "An Error Occured!",
+                this.dialogRef.close();
+                swal({
+                    type: "error",
+                    title: "An Error Occured!",
 
-                buttonsStyling: false,
-                confirmButtonClass: "btn btn-error"
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-error"
 
-            });
+                });
 
 
 
-        }
+            }
 
         });
 

@@ -33,21 +33,34 @@
                                 </div>
                                 -->
 
+                                <div class="main" >
 
-                                <div class="dropdown text-right">
-                                    <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" data-toggle="dropdown" role="button">New Live Stream
-                                        <span class="caret"></span></button>
 
-                                    <ul class="dropdown-menu dropdown-menu-right">
 
-                                        <li><a (click)="newLiveStream()" role="button">Live Stream</a></li>
-                                        <li><a (click)="newIPCamera()" role="button">IP Camera</a></li>
-                                        <li><a (click)="newStreamSource()" role="button">Stream Source</a></li>
-                                    </ul>
+                                    <div class="dropdown text-right"style="float: right">
+                                        <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" data-toggle="dropdown" role="button">New Live Stream
+                                            <span class="caret"></span></button>
+
+                                        <ul class="dropdown-menu dropdown-menu-right">
+
+                                            <li><a (click)="newLiveStream()" role="button">Live Stream</a></li>
+                                            <li><a (click)="newIPCamera()" role="button">IP Camera</a></li>
+
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-lg-2 " style="float: right">
+                                        <select id="selectBox"  class="selectpicker  " data-style="btn btn-danger btn-block"  title="Filter" data-size="7">
+                                            <option  value="liveStream">Live Stream</option>
+                                            <option  value="ipCamera">IP Camera</option>
+
+                                            <option  value="displayAll">Display All</option>
+
+                                        </select>
+                                    </div>
+
+
+
                                 </div>
-
-
-
 
 
                                 <div class="card" *ngIf="newLiveStreamActive">
@@ -261,152 +274,16 @@
                                 </div>
 
                                 <br><br>
-                                <!--
-
-                                                                <div class="container">
-
-                                                                    <div class="table-responsive" *ngIf="broadcastTableData.dataRows.length>0">
-                                                                        <table class="table table-striped">
-
-                                                                            <thead  *ngIf="isMobileMenu()">
-
-                                                                            <tr>
-                                                                                <div class="row">
-
-
-                                                                                    <div align="left" i18n="@@streamName" class="col-lg-1 col-md-6 col-sm-12 col-xs-12">
-                                                                                        Name</div>
-
-                                                                                    <div align="left" i18n="@@streamName" class="col-lg-1 col-md-6 col-sm-12 col-xs-12">
-                                                                                        Type</div>
-
-                                                                                    <div align="left" i18n="@@streamStatus" class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
-                                                                                        Status</div>
-
-                                                                                    <div align="left" i18n="@@streamSocialShare" class="col-lg-1 col-md-6 col-sm-12 col-xs-12">
-                                                                                        Social Share</div>
-
-                                                                                    <div align="left" i18n="@@tableActionField" class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                                                                                        Action</div>
-                                                                                </div>
-                                                                            </tr>
-                                                                            </thead>
 
 
 
-                                                                            <tbody>
-
-                                                                            <tr *ngFor="let row of broadcastTableData.dataRows">
-                                                                                <div class="row">
-
-                                                                                    <div align="left" class="col-lg-1 col-md-6  col-sm-12 col-xs-12" >
-                                                                                        {{row.name}}
-                                                                                    </div>
-
-                                                                                    <div align="left" class="col-lg-1 col-md-6  col-sm-12 col-xs-12" >
-                                                                                        {{row.type}}
-                                                                                    </div>
-
-
-
-
-                                                                                    <div  align="left" class="col-lg-2 col-md-6 col-sm-12 col-xs-12" >
-
-                                                                                        <ng-container [ngSwitch]="row.status">
-                                                                                            <ng-container *ngSwitchCase="'created'"><i class="fa fa-circle text-muted" >&nbsp;</i>Offline</ng-container>
-                                                                                            <ng-container *ngSwitchCase="'broadcasting'"><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
-                                                                                            <ng-container *ngSwitchCase="'finished'"><i class="fa fa-circle text-muted" *ngSwitchCase="'finished'">&nbsp;</i>Offline</ng-container>
-                                                                                        </ng-container>
-
-                                                                                    </div>
-
-                                                                                    <div align="left" class="col-lg-1 col-md-6 col-sm-12 col-xs-12" >
-
-
-                                                                                        <ng-container *ngFor="let endpoint of row.endPointList" class="text-center">
-                                                                                            <ng-container [ngSwitch]="endpoint.type">
-                                                                                                <i class="ti-facebook " style="color:#3b5998;" *ngSwitchCase="'facebook'"> </i>
-                                                                                                <i class="ti-youtube " style="color:#e52d27;" *ngSwitchCase="'youtube'"> </i>
-                                                                                                <i class="ti-twitter-alt " style="color:#55acee;" *ngSwitchCase="'periscope'"></i>
-                                                                                            </ng-container>
-                                                                                        </ng-container>
-
-                                                                                    </div>
-
-                                                                                    <div align="left" class="col-lg-5 col-md-6 col-sm-12 col-xs-12">
-                                                                                        <div class="row">
-
-                                                                                            <button *ngIf="row.status=='broadcasting'"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
-                                                                                                    type="button">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-control-play"></i>
-                                                                                        </span>
-                                                                                                <ng-container i18n="@@tablePlayButton">Play</ng-container>
-
-                                                                                            </button>
-
-
-                                                                                            <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-clipboard"></i>
-                                                                                        </span>
-                                                                                                <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
-                                                                                            </button>
-                                                                                            <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
-                                                                                                    [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                                                    type="button">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-clipboard"></i>
-                                                                                        </span>
-                                                                                                <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
-                                                                                            </button>
-                                                                                            <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-close"></i>
-                                                                                        </span>
-                                                                                                <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
-                                                                                            </button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </tr>
-
-                                                                            </tbody>
-
-                                                                        </table>
-
-                                                                    </div>
-                                                                </div>
-
-                                                                <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
-                                                                    There is no live stream at this time.
-                                                                </p>
-
-
--->
 
                                 <div class="main" >
 
-                                    <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list"  >
+
+
+                                    <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list" *ngIf="broadcastTableData.dataRows.length>0" >
                                         <div class="cbp-vm-options">
-
-
-                                            <div class="col-sm-6 col-lg-2 " style=" float: left; margin-top: 4px; margin-left: 15px;">
-                                                <select id="selectBox" style="float: left" class="selectpicker  " data-style="btn btn-danger btn-block"  title="Filter" data-size="7">
-                                                    <option  value="liveStream">Live Stream</option>
-                                                    <option  value="ipCamera">IP Camera</option>
-                                                    <option  value="source">Stream Source</option>
-
-                                                </select>
-                                            </div>
-
-
-
-
-
-                                            <button (click)="getAppLiveStreams()"  class="btn btn-danger btn-fill btn-wd"  style="float: left;margin-top: 4px">Filter Reset</button>
-
-
 
 
 
@@ -415,7 +292,13 @@
                                             <a (click)="switchToListView()" class="cbp-vm-icon cbp-vm-list cbp-vm-selected " data-view="cbp-vm-view-list"></a>
 
                                         </div>
-                                        <ul *ngIf="!isGridView && broadcastTableData.dataRows.length>0">
+
+
+
+                                        <ul *ngIf="!isGridView ">
+
+
+
                                             <li *ngFor="let row of broadcastTableData.dataRows">
 
 
@@ -484,8 +367,11 @@
                                         </ul>
 
 
+
+
+
                                         <ul>
-                                            <div *ngIf="isGridView && broadcastTableData.dataRows.length>0" >
+                                            <div *ngIf="isGridView" >
 
                                                 <div class="card col-md-6" *ngFor="let row of broadcastTableData.dataRows" >
 
@@ -508,8 +394,8 @@
 
                                                         </div>
                                                         <div class="conf-buttons">
-                                                            
-                                                            
+
+
                                                             <span style="float: left;"> {{row.name}}</span>
 
 
@@ -577,12 +463,14 @@
 
 
 
-                                        <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
-                                            There is no stream at this time.
-                                        </p>
+
 
 
                                     </div>
+
+                                    <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+                                        There is no stream at this time.
+                                    </p>
 
 
 
@@ -607,36 +495,40 @@
 
 
                                 <div class="container">
-                                    <div class="col-md-2">
 
-                                        <div class="form-group">
-                                            <input  type="text" id="keyword" class="form-control " placeholder="Keyword" [(ngModel)]="keyword"/>
+
+
+                                    <div id="vod-buttons" [hidden]="showVodButtons">
+                                        <div class="col-md-2">
+
+                                            <div class="form-group">
+                                                <input  type="text" id="keyword" class="form-control " placeholder="Keyword" [(ngModel)]="keyword"/>
+                                            </div>
                                         </div>
+
+                                        <form id="dates">
+                                            <div class="col-md-2">
+
+                                                <div class="form-group">
+
+                                                    <input id="start" type="text" class="form-control datepicker" placeholder="Start Date" [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+
+                                                <div class="form-group">
+                                                    <input id="end" type="text" class="form-control datepicker" placeholder="End Date"[(ngModel)]="endDate" [ngModelOptions]="{standalone: true}"/>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        <button style="float: left" (click)="filterVod()"  class="btn btn-danger btn-fill btn-wd">Search</button>
+                                        <button style="float: left" (click)="getVoDStreams()"  class="btn btn-danger btn-fill btn-wd">Reset</button>
+                                        <br><br>
+                                        <small  class="text-danger" style="float: left" *ngIf="searchWarning" >
+                                            End date is before start date!
+                                        </small>
                                     </div>
-
-                                    <form id="dates">
-                                        <div class="col-md-2">
-
-                                            <div class="form-group">
-
-                                                <input id="start" type="text" class="form-control datepicker" placeholder="Start Date" [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-
-                                            <div class="form-group">
-                                                <input id="end" type="text" class="form-control datepicker" placeholder="End Date"[(ngModel)]="endDate" [ngModelOptions]="{standalone: true}"/>
-                                            </div>
-                                        </div>
-                                    </form>
-
-                                    <button style="float: left" (click)="filterVod()"  class="btn btn-danger btn-fill btn-wd">Search</button>
-                                    <button style="float: left" (click)="getVoDStreams()"  class="btn btn-danger btn-fill btn-wd">Reset</button>
-
-                                    <small  class="text-danger" style="float: left" *ngIf="searchWarning" >
-                                        End date is before start date!
-                                    </small>
-
                                     <div class="table-responsive " *ngIf="vodTableData.dataRows.length>0">
                                         <table class="table table-striped">
                                             <thead *ngIf="isMobileMenu()">
