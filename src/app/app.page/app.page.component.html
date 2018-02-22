@@ -302,8 +302,8 @@
                                             <li *ngFor="let row of broadcastTableData.dataRows">
 
 
-                                                <p class="cbp-vm-image" *ngIf="row.type=='liveStream'&& !isGridView" ><img src="/assets/img/live_streaming.gif"></p>
-                                                <p class="cbp-vm-image" *ngIf="row.type=='ipCamera'&& !isGridView" ><img src="/assets/img/ipcam.jpg"></p>
+                                                <p class="cbp-vm-image" *ngIf="row.type=='liveStream'&& !isGridView" ><img src="/assets/img/icons/video-camera.svg"></p>
+                                                <p class="cbp-vm-image" *ngIf="row.type=='ipCamera'&& !isGridView" ><img src="/assets/img/icons/cctv.svg"></p>
 
 
                                                 <h3 class="cbp-vm-title" >{{row.name}}</h3>
@@ -373,14 +373,23 @@
                                         <ul>
                                             <div *ngIf="isGridView" >
 
-                                                <div class="card col-md-6" *ngFor="let row of broadcastTableData.dataRows" >
+                                                <div class="card col-md-6 col-lg-6 col-sm-12 col-xs-12" *ngFor="let row of broadcastTableData.dataRows" >
 
 
                                                     <div class="card-content" >
 
-                                                        <div id="{{row.streamId}}"></div>
+                                                        <!--   <div id="{{row.streamId}}"></div>
+                                                        src="http://localhost:5080/LiveApp/play.html?name=711790025373335366896087"-->
 
-                                                        <div *ngIf="row.type=='ipCamera' && row.status=='broadcasting'" class="ptz-buttons">
+
+                                                        <div class="embed-container">
+
+
+                                                            <iframe id="{{row.streamId}}"   frameborder="0" allowfullscreen></iframe>
+
+
+                                                        </div>
+                                                        <div *ngIf="row.type=='ipCamera' && row.status=='broadcasting'&&isMobileMenu()" class="ptz-buttons">
 
 
 

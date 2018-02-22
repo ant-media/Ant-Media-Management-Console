@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, Renderer,NgZone,Inject } from '@angular/core';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
 //import * as Chartist from 'chartist';
 //import * as ChartistPlugins from 'chartist-plugin-fill-donut';
@@ -50,6 +51,7 @@ declare interface BroadcastInfo {
     rtspUrl:string;
     date:number;
     duration:number;
+    iframeSource:string;
 
 
 
@@ -231,7 +233,8 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 private clipBoardService: ClipboardService, private renderer: Renderer,
                 public router: Router,
                 private zone: NgZone,
-                public dialog: MatDialog  ) { }
+                public dialog: MatDialog,
+                public sanitizer: DomSanitizer) { }
 
     ngOnInit() {
 
@@ -388,7 +391,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
         this.selectedBroadcast=selected;
 
         let dialogRef = this.dialog.open(DialogOverviewExampleDialogComponent, {
-            width: '400px',
+            width: '300px',
             data: { name:this.selectedBroadcast.name,url:this.selectedBroadcast.ipAddr,
                 username:this.selectedBroadcast.username,pass:this.selectedBroadcast.password,id:this.selectedBroadcast.streamId,
                 status:this.selectedBroadcast.status}
@@ -428,6 +431,10 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 this.broadcastTableData.dataRows.push(data[i]);
 
 
+
+                this.broadcastTableData.dataRows[i].iframeSource="http://localhost:5080/LiveApp/play.html?name="+this.broadcastTableData.dataRows[i].streamId+ "&autoplay=true";
+                console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
+
             }
 
 
@@ -439,6 +446,12 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
         });
+    }
+
+
+    cleanURL(oldURL: string): SafeResourceUrl{
+        console.log("clean url");
+        return this.sanitizer.bypassSecurityTrustResourceUrl(oldURL);
     }
 
 
@@ -618,7 +631,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 
-        var id,name,srcFile;
+        var id,name,srcFile,iframeSource;
 
 
         for (var i in this.gridTableData.list) {
@@ -632,12 +645,20 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
             console.log(id+"::::"+name+":::::::::"+srcFile);
 
-            var container = document.getElementById(id);
+            iframeSource="http://" + location.hostname + ":5080/"+this.appName+"/play.html?name="+id+"&autoplay=true";
 
 
+            var $iframe = $('#' + id);
+
+            $iframe.prop('src', iframeSource);
 
 
             // install flowplayer into selected container
+
+
+            /*
+                var container = document.getElementById(id);
+
             flowplayer(container, {
 
                 clip: {
@@ -651,7 +672,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
             });
 
 
-
+*/
 
 
 

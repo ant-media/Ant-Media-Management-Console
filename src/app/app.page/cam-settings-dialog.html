@@ -1,26 +1,29 @@
 
+
+<div mat-dialog-title>Camera Settings</div>
+
+
 <div mat-dialog-content >
-    <mat-form-field>
-        <input matInput placeholder="Camera Name"[(ngModel)]="data.name">
+
+    <mat-form-field style="width:100%;">
+        <input matInput placeholder="Camera Name"[(ngModel)]="data.name" >
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field style="width:100%;">
         <input matInput placeholder="Onvif Url"[(ngModel)]="data.url">
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field style="width:100%;">
         <input matInput placeholder="User Name"[(ngModel)]="data.username">
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field style="width:100%;">
         <input matInput placeholder="Password"[(ngModel)]="data.pass">
     </mat-form-field>
 
 </div>
 
 
-<div mat-dialog-actions>
+<div mat-dialog-actions style="width:100%;">
 
-    <button  class="btn btn-default  btn-wd"(click)="onNoClick()">Close</button>
+    <button mat-raised-button color="primary" (click)="submitDialog() "><i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="loading" aria-hidden="true"></i>Save</button>
 
-    <button class="btn btn-success  btn-wd" (click)="submitDialog() " >
-        <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="loading" aria-hidden="true"></i>
-        Save</button>
+    <button mat-raised-button (click)="onNoClick()">Close</button>
 </div>
