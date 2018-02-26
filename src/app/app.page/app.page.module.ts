@@ -4,9 +4,10 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+
 import { HttpClientModule } from '@angular/common/http';
 import { Routes } from '@angular/router';
-import {AppPageComponent, DialogOverviewExampleDialogComponent} from './app.page.component';
+import {AppPageComponent, CamSettinsDialogComponent,UploadVodDialogComponent} from './app.page.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import {
     MatDialogModule,
@@ -63,15 +64,16 @@ export const AppPageRoutes: Routes = [
 
 @NgModule({
 
-    declarations: [AppPageComponent,DialogOverviewExampleDialogComponent],
+    declarations: [AppPageComponent,CamSettinsDialogComponent,UploadVodDialogComponent],
 
 
 
 
     entryComponents: [
-        DialogOverviewExampleDialogComponent
+        CamSettinsDialogComponent,AppPageComponent,UploadVodDialogComponent
 
     ],
+    bootstrap: [AppPageComponent],
 
     imports: [
 

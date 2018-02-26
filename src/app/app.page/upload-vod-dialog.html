@@ -1,0 +1,38 @@
+
+
+
+
+
+
+
+<mat-card class="upload-card">
+    <mat-card-header>
+        <div mat-card-avatar >   <span class="btn-label" style="float: right;font-size: 1.8em">
+            <i class="ti-upload"></i>
+        </span></div>
+        <mat-card-title>Upload Vod</mat-card-title>
+
+    </mat-card-header>
+    <br>
+    <mat-card-content>
+
+        <p>
+
+            Please Select a Vod File to Upload.
+
+
+        </p>
+        <br><br>
+        <p>
+
+            <input type="file" #fileInput placeholder="Upload file..."      id="file"
+                   (change)="handleFileInput($event.target.files)"/>
+
+
+        </p>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button (click)="submitUpload()">Submit</button>
+        <button mat-button (click)="onNoClick()">Cancel</button>
+    </mat-card-actions>
+</mat-card>

@@ -1,16 +1,25 @@
-import { Component, OnInit, OnDestroy, Renderer,NgZone,Inject } from '@angular/core';
+import {
+    Component, OnInit, OnDestroy, Renderer, NgZone, Inject, EventEmitter, Output, Input,
+    ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges,OnChanges
+} from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-
-//import * as Chartist from 'chartist';
-//import * as ChartistPlugins from 'chartist-plugin-fill-donut';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SERVER_ADDR, REST_SERVICE_ROOT, HTTP_SERVER_ROOT } from '../rest/rest.service';
 import { RestService, LiveBroadcast } from '../rest/rest.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatCheckboxModule} from '@angular/material';
+import {
+    MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatCheckboxModule, PageEvent, MatPaginator, MatSort,
+    MatTableDataSource, MatPaginatorIntl
+} from '@angular/material';
 import "rxjs/add/operator/toPromise";
+import {RequestOptions} from "@angular/http";
+
+
+
+
+
 
 
 
@@ -174,10 +183,11 @@ export class SocialMediAuthStatus {
     templateUrl: 'app.page.component.html',
     styleUrls: ['app.page.component.css'],
 
+
 })
 
 
-export class AppPageComponent implements OnInit, OnDestroy {
+export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChanges {
 
     public appName: string;
     public sub: any;
@@ -218,25 +228,87 @@ export class AppPageComponent implements OnInit, OnDestroy {
     public searchParam:SearchParam;
     public selectedBroadcast:LiveBroadcast;
     public showVodButtons=false;
-
-
-
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
-
     public listTypes = [
         new HLSListType('None', ''),
         new HLSListType('Event', 'event'),
     ];
 
+    displayedColumnsStreams = ['name', 'status', 'social media', 'actions'];
+    displayedColumnsVod = ['name', 'date',  'actions'];
+
+
+    dataSource: MatTableDataSource<BroadcastInfo>;
+
+    dataSourceVod: MatTableDataSource<VodInfo>;
+
+
+    public streamsPageSize=5;
+
+
+    public vodPageSize=5;
+
+
+
+    pageSize=5 ;
+    pageSizeOptions = [5, 10, 25, 100];
+
+    streamsLength:number;
+    vodLength:number;
+
+    // MatPaginator Output
+
+    @Input() pageEvent: PageEvent;
+
+    @Output()
+    pageChange: EventEmitter<PageEvent>;
+
+
+
+
+    @ViewChild(MatPaginator) paginator: MatPaginator;
+    @ViewChild(MatSort) sort: MatSort;
+
+
+
+
     constructor(private http: HttpClient, private route: ActivatedRoute,
                 private restService: RestService,
-                private clipBoardService: ClipboardService, private renderer: Renderer,
+                private clipBoardService: ClipboardService,
+                private renderer: Renderer,
                 public router: Router,
                 private zone: NgZone,
                 public dialog: MatDialog,
-                public sanitizer: DomSanitizer) { }
+                public sanitizer: DomSanitizer,
+                private cdr: ChangeDetectorRef,
+                private matpage: MatPaginatorIntl,
+
+
+
+    ) {
+
+
+        this.dataSource = new MatTableDataSource<BroadcastInfo>();
+        this.dataSourceVod=new MatTableDataSource<VodInfo>();
+
+
+    }
+
+    setPageSizeOptions(setPageSizeOptionsInput: string) {
+        this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
+    }
+
+
+
 
     ngOnInit() {
+
+
+
+
+
+
+
 
 
         //  Init Bootstrap Select Picker
@@ -280,15 +352,6 @@ export class AppPageComponent implements OnInit, OnDestroy {
         });
 
 
-
-
-
-
-
-
-
-
-
         this.broadcastTableData = {
             dataRows: [],
         };
@@ -319,16 +382,97 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
     }
 
+    ngOnChanges() {
 
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+    onPaginateChange(event){
+
+
+        console.log("page index:" + event.pageIndex);
+        console.log("length:"+ event.length);
+        console.log("page size:"+event.pageSize);
+
+
+
+        if(event.pageIndex==0){
+            this.keyword=null;
+            console.log("index sifir");
+            this.restService.getVodList(this.appName, 0, event.pageSize).then(data  => {
+                this.vodTableData.dataRows = [];
+                for (var i in data) {
+                    this.vodTableData.dataRows.push(data[i]);
+                }
+
+                this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
+
+
+            });
+
+        }else {
+
+
+            event.pageIndex = event.pageIndex * event.pageSize ;
+
+            this.keyword = null;
+
+            this.restService.getVodList(this.appName, event.pageIndex, event.pageSize).then(data => {
+                this.vodTableData.dataRows = [];
+                for (var i in data) {
+                    this.vodTableData.dataRows.push(data[i]);
+                }
+
+                this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
+
+
+            });
+
+        }
+
+    }
 
 
     ngAfterViewInit() {
 
 
+        setTimeout(() => {
+
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+
+        }, 300);
 
 
 
 
+        setTimeout(() => {
+            console.log(this.vodTableData.dataRows.length);
+            if (this.vodTableData.dataRows.length>0){
+                this.showVodButtons=false;
+
+
+            } else {
+                this.showVodButtons=true;
+
+            }
+        }, 500);
+
+
+
+        this.cdr.detectChanges();
 
 
         this.sub = this.route.params.subscribe(params => {
@@ -353,11 +497,18 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
                 return;
             }
+            this.getVoDStreams();
+
 
             this.getAppLiveStreams();
-            this.getVoDStreams();
+
+
+
+
+
+
             this.getSettings();
-            this.getAppLiveStreamsOnce();
+            //this.getAppLiveStreamsOnce();
 
 
 
@@ -384,17 +535,27 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
 
+    applyFilter(filterValue: string) {
+        filterValue = filterValue.trim(); // Remove whitespace
+        filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+        this.dataSource.filter = filterValue;
+    }
 
+    applyFilterVod(filterValue: string) {
+        filterValue = filterValue.trim(); // Remove whitespace
+        filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+        this.dataSourceVod.filter = filterValue;
+    }
 
-    openDialog(selected:LiveBroadcast): void {
+    openSettingsDialog(selected:LiveBroadcast): void {
 
         this.selectedBroadcast=selected;
 
-        let dialogRef = this.dialog.open(DialogOverviewExampleDialogComponent, {
+        let dialogRef = this.dialog.open(CamSettinsDialogComponent, {
             width: '300px',
             data: { name:this.selectedBroadcast.name,url:this.selectedBroadcast.ipAddr,
                 username:this.selectedBroadcast.username,pass:this.selectedBroadcast.password,id:this.selectedBroadcast.streamId,
-                status:this.selectedBroadcast.status}
+                status:this.selectedBroadcast.status,appName:this.appName}
         });
 
 
@@ -406,6 +567,22 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
 
+    openVodUploadDialog(): void {
+
+
+
+        let dialogRef = this.dialog.open(UploadVodDialogComponent, {
+
+        });
+
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+
+
+        });
+    }
+
     test(){
 
         alert("test");
@@ -413,7 +590,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     getAppLiveStreams(): void {
-        this.restService.getAppLiveStreams(this.appName, 0, 10).then(data => {
+        this.restService.getAppLiveStreams(this.appName, 0, 99999).then(data => {
             //console.log(data);
             this.broadcastTableData.dataRows = [];
             console.log("type of data -> " + typeof data);
@@ -427,9 +604,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
                 }
 
 
-
                 this.broadcastTableData.dataRows.push(data[i]);
-
 
 
                 this.broadcastTableData.dataRows[i].iframeSource="http://localhost:5080/LiveApp/play.html?name="+this.broadcastTableData.dataRows[i].streamId+ "&autoplay=true";
@@ -437,15 +612,27 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
             }
 
+            this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
+            this.streamsLength= this.broadcastTableData.dataRows.length;
 
             if(this.isGridView){
                 setTimeout(() => {
                     this.openGridPlayers();
                 }, 300);}
 
-
-
         });
+
+
+        setTimeout(() => {
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+
+        }, 300);
+
+
+
+
+
     }
 
 
@@ -524,28 +711,47 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
     getVoDStreams(): void {
+
         this.searchWarning=false;
         this.keyword=null;
 
 
-        this.restService.getVodList(this.appName, 0, 10).then(data  => {
+        //this for getting full length of vod streams for paginations
+
+        //TODO: (davut) write a seperate rest service which turns vod streams total length
+        this.restService.getVodList(this.appName, 0, 99999).then(data  => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
             }
+
+            this.vodLength= this.vodTableData.dataRows.length;
+
+
         });
 
-        setTimeout(() => {
-            console.log(this.vodTableData.dataRows.length);
-            if (this.vodTableData.dataRows.length>0){
-                this.showVodButtons=false;
 
-
-            } else {
-                this.showVodButtons=true;
-
+        this.restService.getVodList(this.appName, 0, 5).then(data  => {
+            this.vodTableData.dataRows = [];
+            for (var i in data) {
+                this.vodTableData.dataRows.push(data[i]);
             }
-        }, 500);
+
+            this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
+
+
+
+        });
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -634,7 +840,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
         var id,name,srcFile,iframeSource;
 
 
-        for (var i in this.gridTableData.list) {
+        for (var i in this.broadcastTableData.dataRows) {
 
 
             id=this.broadcastTableData.dataRows[i]['streamId'];
@@ -798,6 +1004,9 @@ export class AppPageComponent implements OnInit, OnDestroy {
         }).catch(function () {
 
         });
+
+
+
     }
 
     showVoDFileNotDeleted() {
@@ -1249,7 +1458,9 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
 
+
     switchToListView():void {
+
 
         this.getAppLiveStreams();
 
@@ -1597,6 +1808,7 @@ export class AppPageComponent implements OnInit, OnDestroy {
     }
 
     filterVod(){
+
         this.searchWarning=false;
 
 
@@ -1623,14 +1835,25 @@ export class AppPageComponent implements OnInit, OnDestroy {
         if(this.searchParam.endDate>this.searchParam.startDate){
 
             console.log("");
+
+
+
             this.restService.filterVod(this.appName, 0, 10,this.searchParam).then(data  => {
                 this.vodTableData.dataRows = [];
                 for (var i in data) {
                     this.vodTableData.dataRows.push(data[i]);
                 }
 
-                console.log(this.vodTableData.dataRows.length.toString());
+                console.log("filtered vod:  " +this.vodTableData.dataRows.length.toString());
+
+                this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
+                this.vodLength= this.vodTableData.dataRows.length;
             });
+
+
+
+
+
         }else if (this.searchParam.endDate<this.searchParam.startDate){
 
             this.searchWarning=true;
@@ -1762,6 +1985,36 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 }
 
+
+
+/** Builds and returns a new User. */
+function createNewUser(id: number): UserData {
+    const name =
+        NAMES[Math.round(Math.random() * (NAMES.length - 1))] + ' ' +
+        NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) + '.';
+
+    return {
+        id: id.toString(),
+        name: name,
+        progress: Math.round(Math.random() * 100).toString(),
+        color: COLORS[Math.round(Math.random() * (COLORS.length - 1))]
+    };
+}
+
+/** Constants used to fill up our data base. */
+const COLORS = ['maroon', 'red', 'orange', 'yellow', 'olive', 'green', 'purple',
+    'fuchsia', 'lime', 'teal', 'aqua', 'blue', 'navy', 'black', 'gray'];
+const NAMES = ['Maia', 'Asher', 'Olivia', 'Atticus', 'Amelia', 'Jack',
+    'Charlotte', 'Theodore', 'Isla', 'Oliver', 'Isabella', 'Jasper',
+    'Cora', 'Levi', 'Violet', 'Arthur', 'Mia', 'Thomas', 'Elizabeth'];
+
+export interface UserData {
+    id: string;
+    name: string;
+    progress: string;
+    color: string;
+}
+
 @Component({
     selector: 'dialog-overview-example-dialog',
     templateUrl: 'cam-settings-dialog.html',
@@ -1770,13 +2023,13 @@ export class AppPageComponent implements OnInit, OnDestroy {
 
 
 
-export class DialogOverviewExampleDialogComponent {
+export class CamSettinsDialogComponent {
     camera:LiveBroadcast;
     app:AppPageComponent;
     loading=false;
 
     constructor(
-        public dialogRef: MatDialogRef<DialogOverviewExampleDialogComponent>, public restService: RestService,
+        public dialogRef: MatDialogRef<CamSettinsDialogComponent>, public restService: RestService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
     }
 
@@ -1805,7 +2058,7 @@ export class DialogOverviewExampleDialogComponent {
 
 
 
-        this.restService.editCameraInfo(this.camera,"LiveApp").then(data  => {
+        this.restService.editCameraInfo(this.camera,this.dialogRef.componentInstance.data.appName).then(data  => {
 
             if(data["success"] == true){
 
@@ -1836,6 +2089,94 @@ export class DialogOverviewExampleDialogComponent {
 
         });
 
+
+
+
+    }
+
+}
+
+
+@Component({
+    selector: 'upload-vod-dialog',
+    templateUrl: 'upload-vod-dialog.html',
+})
+
+
+
+
+export class UploadVodDialogComponent {
+
+    app:AppPageComponent;
+    loading=false;
+    fileToUpload: File = null;
+    search:SearchParam;
+
+    constructor(
+        public dialogRef: MatDialogRef<UploadVodDialogComponent>, public restService: RestService,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
+    }
+
+    onNoClick(): void {
+        this.dialogRef.close();
+    }
+
+    handleFileInput(files: FileList){
+
+        this.fileToUpload = files.item(0);
+
+
+
+
+
+    }
+
+
+
+    submitUpload(){
+
+
+        if(this.fileToUpload){
+
+        let formData: FormData = new FormData();
+
+        formData.append('file', this.fileToUpload);
+
+        console.log("file upload"+this.fileToUpload.name);
+
+
+        this.restService.uploadVod(this.fileToUpload.name,formData,"LiveApp").then(data  => {
+
+            if(data["success"] == true){
+
+                this.dialogRef.close();
+                swal({
+                    type: "success",
+                    title: " Saved!",
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-success"
+
+                });
+
+            }else {
+
+                this.dialogRef.close();
+                swal({
+                    type: "error",
+                    title: "An Error Occured!",
+
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-error"
+
+                });
+
+
+
+            }
+
+        });
+
+        }
 
 
 

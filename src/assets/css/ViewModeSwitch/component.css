@@ -12,7 +12,7 @@
 /* Main container */
 .cbp-vm-switcher {
 	padding: 2px;
-	border: 2px solid #ccdad2;
+	border: 1px solid #dad9d2;
 }
 
 /* options/select wrapper with switch anchors */
@@ -20,7 +20,7 @@
 
 	text-align: right;
 	padding-bottom: 5px;
-	border-bottom: 2px solid #ccdad2;
+	border-bottom: 1px solid #dad9d2;
 }
 
 .cbp-vm-options a {

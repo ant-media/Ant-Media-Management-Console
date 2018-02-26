@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import {Http, RequestOptions, Response} from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
@@ -70,6 +70,14 @@ export class RestService {
     public filterVod(appName:string, offset:Number, size:Number,searchParam:SearchParam): Promise<Response>  {
         return this.http.post(HTTP_SERVER_ROOT +  appName + "/rest/broadcast/filterVoD?offset="+offset+"&size="+size,searchParam).toPromise()
             .then((res: Response) => res.json());
+
+    }
+
+
+    public uploadVod(fileName:string, formData:any,appName:string): Promise<Response> {
+
+
+        return this.http.post(HTTP_SERVER_ROOT +  appName + "/rest/broadcast/uploadVoDFile/"+fileName,formData).toPromise().then((res: Response) => res.json());
 
     }
 

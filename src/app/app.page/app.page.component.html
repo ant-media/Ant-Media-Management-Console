@@ -33,7 +33,7 @@
                                 </div>
                                 -->
 
-                                <div class="main" >
+                                <div  >
 
 
 
@@ -47,7 +47,13 @@
                                             <li><a (click)="newIPCamera()" role="button">IP Camera</a></li>
 
                                         </ul>
+
+                                        <button *ngIf="!isGridView" class="btn btn-fill btn-success" (click)="switchToGridView()"> Grid View </button>
+                                        <button *ngIf="isGridView" class="btn btn-fill btn-success" (click)="switchToListView()"> List View </button>
                                     </div>
+                                    <br> <br>
+
+                                    <!--
                                     <div class="col-sm-6 col-lg-2 " style="float: right">
                                         <select id="selectBox"  class="selectpicker  " data-style="btn btn-danger btn-block"  title="Filter" data-size="7">
                                             <option  value="liveStream">Live Stream</option>
@@ -57,11 +63,11 @@
 
                                         </select>
                                     </div>
+                                    -->
 
 
 
                                 </div>
-
 
                                 <div class="card" *ngIf="newLiveStreamActive">
 
@@ -273,60 +279,86 @@
                                     </form>
                                 </div>
 
-                                <br><br>
 
 
 
+                                <div id="broadcastTable" style="text-align: left" *ngIf="!isGridView && broadcastTableData.dataRows.length>0">
 
-                                <div class="main" >
+                                    <div class="example-header"  >
+                                        <mat-form-field>
+                                            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                                        </mat-form-field>
+                                    </div>
 
+                                    <div class="example-container mat-elevation-z1">
 
-
-                                    <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list" *ngIf="broadcastTableData.dataRows.length>0" >
-                                        <div class="cbp-vm-options">
-
-
-
-
-                                            <a (click)="switchToGridView()" class="cbp-vm-icon cbp-vm-grid  " data-view="cbp-vm-view-grid"></a>
-                                            <a (click)="switchToListView()" class="cbp-vm-icon cbp-vm-list cbp-vm-selected " data-view="cbp-vm-view-list"></a>
-
-                                        </div>
+                                        <mat-table  [dataSource]="dataSource" matSort>
 
 
+                                            <ng-container matColumnDef="name" >
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header> Stream Name </mat-header-cell>
 
-                                        <ul *ngIf="!isGridView ">
+                                                <mat-cell *matCellDef="let row">
 
+                                                    <p *ngIf="row.type=='liveStream'" ><img style="width: 10%"  src="/assets/img/icons/video-camera.svg">  {{row.name}}</p>
+                                                    <p *ngIf="row.type=='ipCamera'" ><img style="width: 10%"  src="/assets/img/icons/cctv.svg">  {{row.name}}</p>
 
-
-                                            <li *ngFor="let row of broadcastTableData.dataRows">
-
-
-                                                <p class="cbp-vm-image" *ngIf="row.type=='liveStream'&& !isGridView" ><img src="/assets/img/icons/video-camera.svg"></p>
-                                                <p class="cbp-vm-image" *ngIf="row.type=='ipCamera'&& !isGridView" ><img src="/assets/img/icons/cctv.svg"></p>
-
-
-                                                <h3 class="cbp-vm-title" >{{row.name}}</h3>
+                                                </mat-cell>
+                                            </ng-container>
 
 
+                                            <ng-container matColumnDef="status">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header>Status </mat-header-cell>
+                                                <mat-cell *matCellDef="let row">
 
-                                                <div class="cbp-vm-details">
 
-
-
-
-                                                    <ng-container [ngSwitch]="row.status" *ngIf="!isGridView">
+                                                    <ng-container [ngSwitch]="row.status" >
                                                         <ng-container *ngSwitchCase="'created'"><i class="fa fa-circle text-muted" >&nbsp;</i>Offline</ng-container>
                                                         <ng-container *ngSwitchCase="'broadcasting'"><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
                                                         <ng-container *ngSwitchCase="'finished'"><i class="fa fa-circle text-muted" *ngSwitchCase="'finished'">&nbsp;</i>Offline</ng-container>
+                                                    </ng-container>
+
+                                                </mat-cell>
+
+
+
+                                            </ng-container>
+
+
+                                            <ng-container matColumnDef="social media">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header> Social Share  </mat-header-cell>
+                                                <mat-cell *matCellDef="let row">
+
+                                                    <div *ngIf="!row.endPointList">
+                                                        <i class="ti-facebook " style="color:#dad9d2;"> </i>
+                                                        <i class="ti-youtube " style="color:#dad9d2;"> </i>
+                                                        <i class="ti-twitter-alt " style="color:#dad9d2;"></i>
+
+                                                    </div>
+                                                    <ng-container *ngFor="let endpoint of row.endPointList" class="text-center">
+                                                        <ng-container [ngSwitch]="endpoint.type">
+                                                            <i class="ti-facebook " style="color:#3b5998;" *ngSwitchCase="'facebook'"> </i>
+                                                            <i class="ti-youtube " style="color:#e52d27;" *ngSwitchCase="'youtube'"> </i>
+                                                            <i class="ti-twitter-alt " style="color:#55acee;" *ngSwitchCase="'periscope'"></i>
+                                                        </ng-container>
+
                                                     </ng-container>
 
 
 
 
 
+                                                </mat-cell>
+                                            </ng-container>
 
-                                                    <button *ngIf="row.status=='broadcasting' && !isGridView"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
+
+                                            <ng-container matColumnDef="actions">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
+                                                <mat-cell *matCellDef="let row" >
+
+
+
+                                                    <button *ngIf="row.status=='broadcasting' "  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
                                                             type="button">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-control-play"></i>
@@ -360,18 +392,130 @@
 
 
 
-                                                </div>
+
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <mat-header-row *matHeaderRowDef="displayedColumnsStreams"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: displayedColumnsStreams;">
+                                            </mat-row>
+                                        </mat-table>
+
+                                        <mat-paginator  [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                                    </div>
+
+                                </div>
 
 
-                                            </li>
-                                        </ul>
 
 
 
 
+
+
+                                <div class="main" >
+
+
+
+                                    <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list" *ngIf="broadcastTableData.dataRows.length>0 && isGridView" >
+
+                                        <!--
+                                          <div class="cbp-vm-options">
+
+
+
+
+                                              <a (click)="switchToGridView()" class="cbp-vm-icon cbp-vm-grid  " data-view="cbp-vm-view-grid"></a>
+                                              <a (click)="switchToListView()" class="cbp-vm-icon cbp-vm-list cbp-vm-selected " data-view="cbp-vm-view-list"></a>
+
+                                          </div>
+
+
+
+                                          <ul *ngIf="!isGridView ">
+
+
+
+                                              <li *ngFor="let row of broadcastTableData.dataRows">
+
+
+                                                  <p class="cbp-vm-image" *ngIf="row.type=='liveStream'&& !isGridView" ><img src="/assets/img/icons/video-camera.svg"></p>
+                                                  <p class="cbp-vm-image" *ngIf="row.type=='ipCamera'&& !isGridView" ><img src="/assets/img/icons/cctv.svg"></p>
+
+
+                                                  <h3 class="cbp-vm-title" >{{row.name}}</h3>
+
+
+
+                                                  <div class="cbp-vm-details">
+
+
+
+
+                                                      <ng-container [ngSwitch]="row.status" *ngIf="!isGridView">
+                                                          <ng-container *ngSwitchCase="'created'"><i class="fa fa-circle text-muted" >&nbsp;</i>Offline</ng-container>
+                                                          <ng-container *ngSwitchCase="'broadcasting'"><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
+                                                          <ng-container *ngSwitchCase="'finished'"><i class="fa fa-circle text-muted" *ngSwitchCase="'finished'">&nbsp;</i>Offline</ng-container>
+                                                      </ng-container>
+
+
+
+                                                      <button *ngIf="row.status=='broadcasting' && !isGridView"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
+                                                              type="button">
+                                                                                          <span class="btn-label">
+                                                                                              <i class="ti-control-play"></i>
+                                                                                          </span>
+                                                          <ng-container i18n="@@tablePlayButton">Play</ng-container>
+
+                                                      </button>
+
+
+                                                      <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
+                                                                                          <span class="btn-label">
+                                                                                              <i class="ti-clipboard"></i>
+                                                                                          </span>
+                                                          <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
+                                                      </button>
+                                                      <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
+                                                              [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                              type="button">
+                                                                                          <span class="btn-label">
+                                                                                              <i class="ti-clipboard"></i>
+                                                                                          </span>
+                                                          <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
+                                                      </button>
+                                                      <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
+                                                                                          <span class="btn-label">
+                                                                                              <i class="ti-close"></i>
+                                                                                          </span>
+                                                          <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
+                                                      </button>
+
+
+
+
+                                                  </div>
+
+
+                                              </li>
+
+
+
+
+
+
+
+
+
+
+                                          </ul>
+
+
+
+  -->
 
                                         <ul>
-                                            <div *ngIf="isGridView" >
+                                            <div  >
 
                                                 <div class="card col-md-6 col-lg-6 col-sm-12 col-xs-12" *ngFor="let row of broadcastTableData.dataRows" >
 
@@ -385,7 +529,7 @@
                                                         <div class="embed-container">
 
 
-                                                            <iframe id="{{row.streamId}}"   frameborder="0" allowfullscreen></iframe>
+                                                            <iframe id="{{row.streamId}}"   ></iframe>
 
 
                                                         </div>
@@ -415,7 +559,7 @@
                                                                 <ng-container i18n="@@tableDeleteButton"></ng-container>
                                                             </button>
 
-                                                            <button *ngIf="row.type=='ipCamera'" (click)="openDialog(row)" class="btn btn-simple btn-magnify btn-info btn-xs "   type="button" data-toggle="tooltip" i18n-title title="Settings"style="float: right;font-size: 1.2em;">
+                                                            <button *ngIf="row.type=='ipCamera'" (click)="openSettingsDialog(row)" class="btn btn-simple btn-magnify btn-info btn-xs " type="button" data-toggle="tooltip" i18n-title title="Settings" style="float: right;font-size: 1.2em;">
                                                                         <span class="btn-label" style="float: right;">
                                                                                             <i class="ti-settings"></i>
                                                                                         </span>
@@ -507,90 +651,183 @@
 
 
 
-                                    <div id="vod-buttons" [hidden]="showVodButtons">
-                                        <div class="col-md-2">
+                                    <!--
 
-                                            <div class="form-group">
-                                                <input  type="text" id="keyword" class="form-control " placeholder="Keyword" [(ngModel)]="keyword"/>
-                                            </div>
-                                        </div>
+                                            <div id="vod-buttons" [hidden]="showVodButtons">
 
-                                        <form id="dates">
-                                            <div class="col-md-2">
+                                                <div class="col-md-2">
 
-                                                <div class="form-group">
-
-                                                    <input id="start" type="text" class="form-control datepicker" placeholder="Start Date" [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}"/>
+                                                    <div class="form-group">
+                                                        <input  type="text" id="keyword" class="form-control " placeholder="Keyword" [(ngModel)]="keyword"/>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-2">
 
-                                                <div class="form-group">
-                                                    <input id="end" type="text" class="form-control datepicker" placeholder="End Date"[(ngModel)]="endDate" [ngModelOptions]="{standalone: true}"/>
-                                                </div>
-                                            </div>
-                                        </form>
+                                                <form id="dates">
+                                                    <div class="col-md-2">
 
-                                        <button style="float: left" (click)="filterVod()"  class="btn btn-danger btn-fill btn-wd">Search</button>
-                                        <button style="float: left" (click)="getVoDStreams()"  class="btn btn-danger btn-fill btn-wd">Reset</button>
-                                        <br><br>
-                                        <small  class="text-danger" style="float: left" *ngIf="searchWarning" >
-                                            End date is before start date!
-                                        </small>
+                                                        <div class="form-group">
+
+                                                            <input id="start" type="text" class="form-control datepicker" placeholder="Start Date" [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+
+                                                        <div class="form-group">
+                                                            <input id="end" type="text" class="form-control datepicker" placeholder="End Date"[(ngModel)]="endDate" [ngModelOptions]="{standalone: true}"/>
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+                                                <button style="float: left" (click)="filterVod()"  class="btn btn-danger btn-fill btn-wd">Search</button>
+                                                <button style="float: left" (click)="getVoDStreams()"  class="btn btn-danger btn-fill btn-wd">Reset</button>
+                                                <br><br>
+                                                <small  class="text-danger" style="float: left" *ngIf="searchWarning" >
+                                                    End date is before start date!
+                                                </small>
+                                            </div>
+
+        -->
+
+
+
+
+
+
+
+                                    <!--
+
+                                            <div class="table-responsive " *ngIf="vodTableData.dataRows.length>0">
+                                                <table class="table table-striped">
+                                                    <thead *ngIf="isMobileMenu()">
+                                                    <tr>
+
+                                                        <div class="row">
+                                                            <div align="left" i18n="@@streamName" class="col-lg-4 col-sm-12 col-xs-12">
+                                                                Stream Name
+                                                            </div>
+
+                                                            <div align="left" i18n="@@streamName" class="col-lg-4 col-sm-12 col-xs-12">
+                                                                Date
+                                                            </div>
+
+                                                            <div i18n="@@tableActionField" class="col-lg-4 col-sm-12 col-xs-12">
+                                                                Action</div>
+                                                        </div>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody >
+                                                    <tr *ngFor="let row of vodTableData.dataRows">
+                                                        <div class="row">
+                                                            <div align="left" class="col-lg-4 col-sm-12 col-xs-12">
+
+                                                                {{row.streamName}}  </div>
+
+                                                            <div align="left" class="col-lg-4 col-sm-12 col-xs-12">
+
+
+                                                                {{convertJavaTime(row.creationDate)}}
+                                                            </div>
+
+                                                            <div  class="col-lg-4 col-sm-12 col-xs-12">
+
+                                                                <button (click)="playVoD(row.vodName)" class="btn btn-success btn-simple btn-magnify" type="button">
+                                                                <span class="btn-label">
+                                                                    <i class="ti-control-play"></i>
+                                                                </span>
+                                                                    <ng-container i18n="@@tablePlayButton">Play</ng-container>
+                                                                </button>
+                                                                <button (click)="deleteVoD(row.vodName,row.vodId)" class="btn btn-simple btn-magnify btn-danger" type="button">
+                                                                <span class="btn-label">
+                                                                    <i class="ti-close"></i>
+                                                                </span>
+                                                                    <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
+                                                                </button>
+
+                                                            </div>
+                                                        </div>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            -->
+                                </div>
+
+                                <div class=" text-right">
+                                    <button class="btn btn-fill btn-success"  (click)="openVodUploadDialog()" data-toggle="dropdown" role="button">New Vod
+                                        </button>
+
+
+                                </div>
+
+
+                                <div id="vodTable" style="text-align: left" *ngIf=" vodTableData.dataRows.length>0">
+
+                                    <div class="example-header" >
+                                        <mat-form-field>
+                                            <input matInput (keyup)="applyFilterVod($event.target.value)" placeholder="Filter">
+                                        </mat-form-field>
                                     </div>
-                                    <div class="table-responsive " *ngIf="vodTableData.dataRows.length>0">
-                                        <table class="table table-striped">
-                                            <thead *ngIf="isMobileMenu()">
-                                            <tr>
 
-                                                <div class="row">
-                                                    <div align="left" i18n="@@streamName" class="col-lg-4 col-sm-12 col-xs-12">
-                                                        Stream Name
-                                                    </div>
+                                    <div class="example-container mat-elevation-z1">
 
-                                                    <div align="left" i18n="@@streamName" class="col-lg-4 col-sm-12 col-xs-12">
-                                                        Date
-                                                    </div>
-
-                                                    <div i18n="@@tableActionField" class="col-lg-4 col-sm-12 col-xs-12">
-                                                        Action</div>
-                                                </div>
-                                            </tr>
-                                            </thead>
-                                            <tbody >
-                                            <tr *ngFor="let row of vodTableData.dataRows">
-                                                <div class="row">
-                                                    <div align="left" class="col-lg-4 col-sm-12 col-xs-12">
-
-                                                        {{row.streamName}}  </div>
-
-                                                    <div align="left" class="col-lg-4 col-sm-12 col-xs-12">
+                                        <mat-table [dataSource]="dataSourceVod" >
 
 
-                                                        {{convertJavaTime(row.creationDate)}}
-                                                    </div>
-                                                    <!--
-                                                    <td class="text-center">{{row.watcherCount}}</td>
-                                                    -->
-                                                    <div  class="col-lg-4 col-sm-12 col-xs-12">
+                                            <ng-container matColumnDef="name" >
+                                                <mat-header-cell *matHeaderCellDef > Stream Name </mat-header-cell>
 
-                                                        <button (click)="playVoD(row.vodName)" class="btn btn-success btn-simple btn-magnify" type="button">
+                                                <mat-cell *matCellDef="let row">
+                                                    {{row.streamName}}
+
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="date" >
+                                                <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+                                                    {{convertJavaTime(row.creationDate)}}
+
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="actions" >
+                                                <mat-header-cell *matHeaderCellDef > Actions </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+
+
+                                                    <button (click)="playVoD(row.vodName)" class="btn btn-success btn-simple btn-magnify" type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-control-play"></i>
                                                         </span>
-                                                            <ng-container i18n="@@tablePlayButton">Play</ng-container>
-                                                        </button>
-                                                        <button (click)="deleteVoD(row.vodName,row.vodId)" class="btn btn-simple btn-magnify btn-danger" type="button">
+                                                        <ng-container i18n="@@tablePlayButton">Play</ng-container>
+                                                    </button>
+                                                    <button (click)="deleteVoD(row.vodName,row.vodId)" class="btn btn-simple btn-magnify btn-danger" type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-close"></i>
                                                         </span>
-                                                            <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
-                                                        </button></div>
-                                                </div>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                        <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
+                                                    </button>
+
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <mat-header-row *matHeaderRowDef="displayedColumnsVod"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: displayedColumnsVod;">
+                                            </mat-row>
+                                        </mat-table>
+
+
+                                        <mat-paginator [length]="vodLength"
+                                                       [pageSize]="pageSize"
+                                                       [pageSizeOptions]="pageSizeOptions"
+                                                       (page)="onPaginateChange($event)"
+                                        >
+                                        </mat-paginator>
                                     </div>
+
                                 </div>
 
                                 <p *ngIf="vodTableData.dataRows.length == 0" i18n="no vod stream info | text messages appears when no vod streams@@noVoDStreamExistsMessage">
@@ -856,5 +1093,12 @@
 
         </div>
     </div>
+
+
+
 </div>
+
+
+
+
 
