@@ -16,7 +16,7 @@ import { AdminLayoutComponent } from './layouts/admin/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth/auth-layout.component';
 import { AppRoutes } from './app.routing';
 import { AuthService } from './rest/auth.service';
-import { RestService } from './rest/rest.service';
+import { RestService , AuthInterceptor} from './rest/rest.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 //import { AuthInterceptor } from './rest/auth.interceptor';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -46,7 +46,13 @@ import {AppPageComponent} from "./app.page/app.page.component";
         AuthService,
         RestService,
         Locale,
-        {provide: LocationStrategy, useClass: HashLocationStrategy}
+        {provide: LocationStrategy, useClass: HashLocationStrategy},
+        //{provide: RequestOptions, useClass: CustomRequestOptions},
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true
+          }
     ],
     bootstrap: [ AppComponent ]
 })

@@ -40,12 +40,12 @@
                                 <div class="card-content">
                                     <div class="form-group text-success text-center" [hidden]="!showYouCanLogin"
                                     i18n="@@login_success_message" >
-                                            You can now login with your e-mail and password
+                                            You can now login with your username and password
                                     </div>
 
                                     <div class="form-group">
-                                        <label i18n="@@loginFormEmail">E-mail</label>
-                                        <input (keydown)="credentialsChanged()" type="email" name="email" i18n-placeholder="@@email_place_holder" placeholder="E-mail" class="form-control input-no-border" [(ngModel)]="email">
+                                        <label i18n="@@loginFormEmail">Username</label>
+                                        <input (keydown)="credentialsChanged()" type="email" name="email" i18n-placeholder="@@email_place_holder" placeholder="Username" class="form-control input-no-border" [(ngModel)]="email">
 
                                     </div>
                                     <div class="form-group">
@@ -92,11 +92,11 @@
                                              </div>
                                            
                                             <div class="form-group">
-                                                <label i18n="@@loginFormEmail">E-mail<span class="star">*</span></label>
+                                                <label i18n="@@loginFormEmail">Username<span class="star">*</span></label>
                                                 <input  type="email" name="firstEmail" class="form-control input-no-border" 
-                                                    [(ngModel)]="firstUser.email" required #firstAccountEmail="ngModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$">
+                                                    [(ngModel)]="firstUser.email" required #firstAccountEmail="ngModel" minlength="5">
                                                     <small i18n="@@fistAccountEmailRequired" [hidden]="firstAccountEmail.valid || (firstAccountEmail.pristine && !registerForm.submitted)" class="text-danger">
-                                                    Email is not valid
+                                                    Username should be at least 5 characters
                                                     </small>
                                             </div>
                                             <div class="form-group">

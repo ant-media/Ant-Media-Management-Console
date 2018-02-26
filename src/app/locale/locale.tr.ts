@@ -3,11 +3,9 @@ import { LocaleInterface } from './locale.interface';
 export let Locale_Turkish: LocaleInterface = 
 {
     
-    notEnterprise : 'Bu özellik bir enterprise özelliktir.'
-    + 'Detaylı bilgi için lütfen web sitemizi <a href="https://antmedia.io/enterprise/" target="_blank"><b>ziyaret</b></a> ediniz',
-    enterpriseNotActivated : 'Bu sosyal medya entegrasyonu aktif değil! '
-    + 'Aktifleştirmek için ilgili xml dosyasını düzenleyiniz ya da destek talep ediniz.',
-    ketNotdefined:"Lütfen servisle ilgili parametreleri tanımlayınız.",
+    notEnterprise : 'Bu özellik bir kurumsal özelliktir.'
+    + 'Detaylı bilgi için lütfen <a href="https://antmedia.io/" target="_blank"><b>antmedia.io</b></a> sitesini ziyaret ediniz',
+    ketNotdefined:"Lütfen servisle ilgili istemci id ve şifresini tanımlayınız.",
     vodFileNotDeleted : "Video maalesef silinemedi.",
     broadcast_not_deleted : "Yayın maalesef silinemedi.",
     settings_saved : "Ayarlar kaydedildi.",
@@ -25,5 +23,8 @@ export let Locale_Turkish: LocaleInterface =
     dashboard: 'Kontrol Paneli',
     turkish_language : "Türkçe",
     english_language : "English",
+    live_stream_will_be_deleted: "Yayın silinecek ve bu işlemi geri alamayacaksınız!",
+    broadcast_updated: "Yayın güncellendi.",
+    broadcast_not_updated: "Yayın güncellenemedi. Lütfen aşağıdaki mesajı contact@antmedia.io'ya gönderiniz.",
    
 }
