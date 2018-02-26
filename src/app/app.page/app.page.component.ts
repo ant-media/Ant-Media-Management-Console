@@ -15,9 +15,9 @@ declare var Chartist: any;
 declare var swal: any;
 
 
-declare const ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID = -1;
-declare const ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT = -2;
-declare const ERROR_SOCIAL_ENDPOINT_NO_ENDPOINT = -3;
+const ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID = -1;
+const ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT = -2;
+const ERROR_SOCIAL_ENDPOINT_NO_ENDPOINT = -3;
 
 declare interface Endpoint {
     type: string;
