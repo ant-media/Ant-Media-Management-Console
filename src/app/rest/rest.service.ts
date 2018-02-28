@@ -9,11 +9,29 @@ import {promise} from "selenium-webdriver";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
+import {HttpRequest, HttpHandler, HttpInterceptor,  HttpEvent,HttpClient,HttpResponse}from '@angular/common/http';
+import { AppSettings } from '../app.page/app.page.component';
 
+
+export class User {
+
+    public newPassword: string;
+    public fullName: string;
+
+    constructor(public email: string, public password: string) { }
+}
 
 
 export const SERVER_ADDR = location.hostname;
-export const HTTP_SERVER_ROOT = "http://" + location.hostname + ":5080/";
+export var HTTP_SERVER_ROOT;
+
+if (environment.production) {
+    HTTP_SERVER_ROOT = "//" + location.hostname + ":" + location.port + "/";
+}
+else {
+    HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/";
+}
+
 
 export const REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
 
@@ -29,194 +47,73 @@ export class LiveBroadcast {
     rtspUrl:string;
     date:number;
     duration:number;
+    description:string;
 
 
 }
 
 @Injectable()
+export class AuthInterceptor implements HttpInterceptor{
+    constructor(){}
+
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        req = req.clone({
+            withCredentials: true
+        });
+        return next.handle(req);
+    }
+}
+
+
+
+
+@Injectable()
 export class RestService {
-    constructor(private http: Http, private router: Router) {
+    constructor(private http: HttpClient, private router: Router) {
+    }
+
+    public getCPULoad(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/getCPUInfo');
+    }
+
+    public checkAuthStatus(networkName: string, appName: string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/checkDeviceAuthStatus/" + networkName,
+            {});
     }
 
 
-    public getCPULoad(): Observable<Response> {
-        return this.http.get(REST_SERVICE_ROOT + '/getCPUInfo')
-            .map((res: Response) => res.json());
+    public getAppLiveStreams(appName:string, offset:Number, size:Number): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getList/'+offset+"/"+size);
     }
 
-    public checkAuthStatus(networkName: string, appName: string): Observable<Response> {
-        return this.http.post(HTTP_SERVER_ROOT + appName + "/rest/broadcast/checkDeviceAuthStatus/" + networkName,
-            {})
-            .map((res: Response) => res.json());
+    public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Observable<Object> {
+
+
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/createWithSocial?socialNetworks="+socialNetworks,
+            liveBroadcast);
     }
 
+    public updateLiveStream(appName: string, broadcast: LiveBroadcast, socialNetworks): Observable<Object> {
 
-    public getAppLiveStreams(appName:string, offset:Number, size:Number): Promise<Response>  {
-        return this.http.get(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/getList/'+offset+"/"+size).toPromise()
-            .then((res: Response) => res.json());
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/update?socialNetworks="+socialNetworks,
+            broadcast);
     }
 
-    public getVodList(appName:string, offset:Number, size:Number): Promise<Response>  {
-        return this.http.get(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/getVodList/'+offset+"/"+size).toPromise()
-            .then((res: Response) => res.json());
+    public deleteBroadcast(appName: string, streamId:string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/broadcast/delete/'+streamId, {});
     }
 
-
-    public filterAppLiveStreams(appName:string, offset:Number, size:Number,type:String): Promise<Response>  {
-        return this.http.get(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/filterList/'+offset+"/"+size+"/"+type).toPromise()
-            .then((res: Response) => res.json());
-    }
-
-    public filterVod(appName:string, offset:Number, size:Number,searchParam:SearchParam): Promise<Response>  {
-        return this.http.post(HTTP_SERVER_ROOT +  appName + "/rest/broadcast/filterVoD?offset="+offset+"&size="+size,searchParam).toPromise()
-            .then((res: Response) => res.json());
+    public deleteVoDFile(appName: string, vodName:string,id:number) {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/broadcast/deleteVoDFile/'+vodName+'/'+id, {});
 
     }
 
-
-    public uploadVod(fileName:string, formData:any,appName:string): Promise<Response> {
-
-
-        return this.http.post(HTTP_SERVER_ROOT +  appName + "/rest/broadcast/uploadVoDFile/"+fileName,formData).toPromise().then((res: Response) => res.json());
-
+    public revokeSocialNetwork(appName: string, serviceName:string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/broadcast/revokeSocialNetwork/'+serviceName, {});
     }
 
-
-
-    public createLiveStreamSocialNetworks(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Promise<Response> {
-
-        return this.http.post(HTTP_SERVER_ROOT + appName + "/rest/broadcast/createWithSocial?socialNetworks="+socialNetworks,
-            liveBroadcast).toPromise()
-            .then((res: Response) => res.json());
-    }
-
-    public createLiveStream(appName: string, liveBroadcast: LiveBroadcast): Promise<Response> {
-
-        return this.http.post(HTTP_SERVER_ROOT + appName + "/rest/broadcast/create",
-            liveBroadcast).toPromise()
-            .then((res: Response) => res.json());
-    }
-
-    public deleteBroadcast(appName: string, streamId:string): Observable<Response> {
-        return this.http.post(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/delete/'+streamId, {})
-            .map((res: Response) => res.json());
-    }
-
-    public deleteVoDFile(appName: string, name:string,vodId:number) {
-        return this.http.post(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/deleteVoDFile/'+name+"/"+vodId, {})
-            .map((res: Response) => res.json());
-
-    }
-
-    public deleteIPCamera(appName: string, streamId:string) {
-        console.log("inside");
-        return this.http.get(HTTP_SERVER_ROOT +  appName + '/rest/camera/deleteCamera?ipAddr='+streamId, {})
-            .map((res: Response) => res.json());
-
-
-    }
-
-    public addIPCamera(appName: string, camera:Camera): Promise<Response> {
-
-
-
-
-        let url=HTTP_SERVER_ROOT + appName + '/rest/camera/add';
-
-        console.log('URL ' + url);
-
-        return this.http.post(url,camera).toPromise().then((res: Response) => res.json());
-    }
-
-
-    public  autoDiscover(appName: string): Promise<String[]> {
-
-        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/searchOnvifDevices';
-        console.log('URL ' + streamInfoUrl);
-
-        return this.http.get(streamInfoUrl).toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-
-    }
-
-    public  getCamList(appName: string): Promise<Response> {
-
-        let url = HTTP_SERVER_ROOT + appName +'/rest/camera/getList';
-        console.log('URL ' + url);
-
-        return this.http.get(url).toPromise()
-            .then((res: Response) => res.json());
-
-    }
-
-    moveLeft(camera: LiveBroadcast,appName: string): Promise<Response> {
-
-        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveLeft?id='+camera.streamId;
-        console.log('URL ' + streamInfoUrl);
-
-        return this.http.get(streamInfoUrl).toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-
-    }
-
-    moveRight(camera: LiveBroadcast,appName: string): Promise<Response> {
-
-        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveRight?id='+camera.streamId;
-        console.log('URL ' + streamInfoUrl);
-
-        return this.http.get(streamInfoUrl).toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-
-    }
-
-    moveUp(camera: LiveBroadcast,appName: string): Promise<Response> {
-
-        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveUp?id='+camera.streamId;
-        console.log('URL ' + streamInfoUrl);
-
-        return this.http.get(streamInfoUrl).toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-
-    }
-
-    moveDown(camera: LiveBroadcast,appName: string): Promise<Response> {
-
-        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/moveDown?id='+camera.streamId;
-        console.log('URL ' + streamInfoUrl);
-
-        return this.http.get(streamInfoUrl).toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-
-    }
-
-    editCameraInfo(camera: LiveBroadcast,appName: string): Promise<Response> {
-
-        let streamInfoUrl = HTTP_SERVER_ROOT + appName +'/rest/camera/updateCamInfo';
-        console.log('URL ' + streamInfoUrl);
-
-        return this.http.post(streamInfoUrl,camera).toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-
-    }
-
-
-
-
-
-    public revokeSocialNetwork(appName: string, serviceName:string): Observable<Response> {
-        return this.http.post(HTTP_SERVER_ROOT +  appName + '/rest/broadcast/revokeSocialNetwork/'+serviceName, {})
-            .map((res: Response) => res.json());
-    }
-
-    public isEnterpriseEdition(): Observable<Response> {
-        return this.http.get(REST_SERVICE_ROOT + "/isEnterpriseEdition")
-            .map((res: Response) => res.json());
+    public isEnterpriseEdition(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/isEnterpriseEdition");
     }
 
     public handleError(error: Response) {
@@ -228,12 +125,219 @@ export class RestService {
         return Observable.throw(error || 'Server error');
     }
 
-    public getApplications(): Observable<Response> {
-        return this.http.get(REST_SERVICE_ROOT + '/getApplications')
-            .map((res: Response) => res.json());;
+    public getApplications(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/getApplications');
+    }
+
+    public authenticateUser(user: User): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/authenticateUser", user);
+    }
+
+    public changePassword(user: User): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/changeUserPassword", user);
+    }
+
+    public isFirstLogin(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/isFirstLogin");
+    }
+
+    public createFirstAccount(user: User): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/addInitialUser", user);
+    }
+
+    public isAuthenticated(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/isAuthenticated");
+    }
+
+    public getVoDStreams(appName: String): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/getAppVoDStreams/' + appName);
+    }
+
+    public get(url: string, options:any): Observable<Object> {
+        return this.http.get(url, options);
+    }
+
+    public setSocialNetworkChannel(appName: string, serviceName: string, type:string, value:string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/setSocialNetworkChannel/"
+            +serviceName+"/"+type+"/"+value, {});
+    }
+
+    public getSocialNetworkChannelList(appName: string, serviceName: string, type: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/getSocialNetworkChannelList/"+serviceName +"/" + type);
+    }
+
+    public getSocialNetworkChannel(appName: string, serviceName: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/getSocialNetworkChannel/" + serviceName, {});
+    }
+
+    public getSettings(appName: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/getSettings/" + appName);
+    }
+
+    public checkDeviceAuthStatus(appName: string, serviceName:string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/checkDeviceAuthStatus/" + serviceName, {});
+    }
+
+    public changeSettings(appName: string, appSettings: AppSettings ): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + '/changeSettings/' + appName, appSettings);
+    }
+
+    public getDeviceAuthParameters(appName: string, networkName: string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/getDeviceAuthParameters/" + networkName, {});
+    }
+
+    public getLiveClientsSize(): Observable<Object> {
+        return  this.http.get(REST_SERVICE_ROOT + '/getLiveClientsSize');
+    }
+
+    public getSystemMemoryInfo(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/getSystemMemoryInfo');
     }
 
 
+    public getFileSystemInfo(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/getFileSystemInfo');
+    }
+
+    public getJVMMemoryInfo(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/getJVMMemoryInfo');
+    }
+
+    public getApplicationsInfo(): Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + '/getApplicationsInfo');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public getVodList(appName:string, offset:Number, size:Number): Observable<Object>  {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/broadcast/getVodList/'+offset+"/"+size,{});
+
+    }
+
+
+    public filterAppLiveStreams(appName:string, offset:Number, size:Number,type:String): Observable<Object>  {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/broadcast/filterList/'+offset+"/"+size+"/"+type,{});
+
+    }
+
+    public filterVod(appName:string, offset:Number, size:Number,searchParam:SearchParam): Observable<Object>  {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path="   +  appName + "/rest/broadcast/filterVoD?offset="+offset+"&size="+size,searchParam);
+    }
+
+
+    public uploadVod(fileName:string, formData:any,appName:string): Observable<Object>  {
+
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/broadcast/uploadVoDFile/"+fileName,formData);
+
+    }
+
+
+
+    public createLiveStreamSocialNetworks(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Observable<Object> {
+
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path="+ "/rest/broadcast/createWithSocial?socialNetworks="+socialNetworks,
+            liveBroadcast);
+    }
+
+
+
+
+
+
+
+    public deleteIPCamera(appName: string, streamId:string): Observable<Object> {
+
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/camera/deleteCamera?ipAddr='+streamId, {});
+
+
+
+    }
+
+    public addIPCamera(appName: string, camera:Camera): Observable<Object>  {
+
+        let url=REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/camera/add';
+
+
+        return this.http.post(url,camera);
+    }
+
+
+    public  autoDiscover(appName: string): Observable<any> {
+
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName +'/rest/camera/searchOnvifDevices';
+        console.log('URL ' + streamInfoUrl);
+
+        return this.http.get(streamInfoUrl);
+
+    }
+
+    public  getCamList(appName: string): Observable<Object> {
+
+        let url =REST_SERVICE_ROOT + "/request?_path="+ appName +'/rest/camera/getList';
+        console.log('URL ' + url);
+
+        return this.http.get(url);
+
+    }
+
+    moveLeft(camera: LiveBroadcast,appName: string): Observable<Object> {
+
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + "/request?_path="+ appName +'/rest/camera/moveLeft?id='+camera.streamId;
+        console.log('URL ' + streamInfoUrl);
+
+        return this.http.get(streamInfoUrl);
+    }
+
+    moveRight(camera: LiveBroadcast,appName: string): Observable<Object> {
+
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName +'/rest/camera/moveRight?id='+camera.streamId;
+        console.log('URL ' + streamInfoUrl);
+
+        return this.http.get(streamInfoUrl);
+
+    }
+
+    moveUp(camera: LiveBroadcast,appName: string): Observable<Object> {
+
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName +'/rest/camera/moveUp?id='+camera.streamId;
+        console.log('URL ' + streamInfoUrl);
+
+        return this.http.get(streamInfoUrl);
+
+    }
+
+    moveDown(camera: LiveBroadcast,appName: string): Observable<Object> {
+
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName +'/rest/camera/moveDown?id='+camera.streamId;
+        console.log('URL ' + streamInfoUrl);
+
+        return this.http.get(streamInfoUrl);
+
+    }
+
+    editCameraInfo(camera: LiveBroadcast,appName: string):Observable<Object> {
+
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName +'/rest/camera/updateCamInfo';
+        console.log('URL ' + streamInfoUrl);
+
+        return this.http.post(streamInfoUrl,camera);
+
+    }
     private extractData(res: Response) {
         let body = res.json();
         return body || { };

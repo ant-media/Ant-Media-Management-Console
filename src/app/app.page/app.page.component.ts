@@ -1,7 +1,6 @@
 import {
     Component, OnInit, OnDestroy, Renderer, NgZone, Inject, EventEmitter, Output, Input,
-    ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges,OnChanges
-} from '@angular/core';
+    ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges,OnChanges} from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -31,7 +30,9 @@ declare var classie:any;
 
 
 
-//declare var flowplayer: any;
+const ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID = -1;
+const ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT = -2;
+const ERROR_SOCIAL_ENDPOINT_NO_ENDPOINT = -3;
 
 declare interface Endpoint {
     type: string;
@@ -151,7 +152,8 @@ export class AppSettings {
 
                 public periscopeClientId: string,
                 public periscopeClientSecret: string,
-                public encoderSettings: EncoderSettings[]) {
+                public encoderSettings: EncoderSettings[],
+                public acceptOnlyStreamsInDataStore: boolean) {
 
     }
 }
@@ -187,7 +189,7 @@ export class SocialMediAuthStatus {
 })
 
 
-export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChanges {
+export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
     public appName: string;
     public sub: any;
@@ -214,8 +216,10 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
     public gettingPeriscopeParameters = false;
     public gettingYoutubeParameters = false;
     public gettingFacebookParameters = false;
+
     public camera:Camera;
     public onvifURLs:String[];
+    public newOnvifURLs:String[];
     public broadcastList:CameraInfoTable;
     public noCamWarning=false;
     public isGridView=false;
@@ -228,13 +232,28 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
     public searchParam:SearchParam;
     public selectedBroadcast:LiveBroadcast;
     public showVodButtons=false;
+
+    public waitingForPeriscopeToBeAuthorized = false;
+    public waitingForYoutubeToBeAuthorized = false;
+    public waitingForFacebookToBeAuthorized = false;
+    public userFBPagesLoading = false;
+    public liveStreamEditing: LiveBroadcast;
+    public editBroadcastShareYoutube: boolean;
+    public editBroadcastShareFacebook: boolean;
+    public editBroadcastSharePeriscope: boolean;
+    public liveStreamUpdating = false;
+
+
+
+
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
     public listTypes = [
         new HLSListType('None', ''),
         new HLSListType('Event', 'event'),
     ];
 
-    displayedColumnsStreams = ['name', 'status', 'social media', 'actions'];
+
+    displayedColumnsStreams = ['name', 'status', 'social_media', 'actions'];
     displayedColumnsVod = ['name', 'date',  'actions'];
 
 
@@ -297,6 +316,8 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
     setPageSizeOptions(setPageSizeOptionsInput: string) {
         this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
     }
+
+
 
 
 
@@ -382,22 +403,6 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
     }
 
-    ngOnChanges() {
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-
 
     onPaginateChange(event){
 
@@ -411,7 +416,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
         if(event.pageIndex==0){
             this.keyword=null;
             console.log("index sifir");
-            this.restService.getVodList(this.appName, 0, event.pageSize).then(data  => {
+            this.restService.getVodList(this.appName, 0, event.pageSize).subscribe(data  => {
                 this.vodTableData.dataRows = [];
                 for (var i in data) {
                     this.vodTableData.dataRows.push(data[i]);
@@ -429,7 +434,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
             this.keyword = null;
 
-            this.restService.getVodList(this.appName, event.pageIndex, event.pageSize).then(data => {
+            this.restService.getVodList(this.appName, event.pageIndex, event.pageSize).subscribe(data => {
                 this.vodTableData.dataRows = [];
                 for (var i in data) {
                     this.vodTableData.dataRows.push(data[i]);
@@ -457,20 +462,20 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
 
 
-
-        setTimeout(() => {
-            console.log(this.vodTableData.dataRows.length);
-            if (this.vodTableData.dataRows.length>0){
-                this.showVodButtons=false;
-
-
-            } else {
-                this.showVodButtons=true;
-
-            }
-        }, 500);
+        /*
+                setTimeout(() => {
+                    console.log(this.vodTableData.dataRows.length);
+                    if (this.vodTableData.dataRows.length>0){
+                        this.showVodButtons=false;
 
 
+                    } else {
+                        this.showVodButtons=true;
+
+                    }
+                }, 500);
+
+        */
 
         this.cdr.detectChanges();
 
@@ -516,12 +521,12 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
                 this.isEnterpriseEdition = data["success"];
             })
 
-
+            /*
             setTimeout(() => {
                 this.switchToListView();
             }, 500);
 
-
+            */
             this.timerId = window.setInterval(() => {
                 // this.getAppLiveStreams();
                 // this.getVoDStreams();
@@ -533,6 +538,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
         });
 
     }
+
 
 
     applyFilter(filterValue: string) {
@@ -589,11 +595,13 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
     }
 
+
+
     getAppLiveStreams(): void {
-        this.restService.getAppLiveStreams(this.appName, 0, 99999).then(data => {
+        this.restService.getAppLiveStreams(this.appName, 0, 99999).subscribe(data => {
             //console.log(data);
             this.broadcastTableData.dataRows = [];
-            console.log("type of data -> " + typeof data);
+            //console.log("type of data -> " + typeof data);
 
             for (var i in data) {
 
@@ -608,7 +616,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
 
                 this.broadcastTableData.dataRows[i].iframeSource="http://localhost:5080/LiveApp/play.html?name="+this.broadcastTableData.dataRows[i].streamId+ "&autoplay=true";
-                console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
+                // console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
 
             }
 
@@ -651,7 +659,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
         }
 
         else{
-            this.restService.filterAppLiveStreams(this.appName, 0, 10,type).then(data => {
+            this.restService.filterAppLiveStreams(this.appName, 0, 10,type).subscribe(data => {
                 //console.log(data);
                 this.broadcastTableData.dataRows = [];
                 console.log("type of data -> " + typeof data);
@@ -687,25 +695,26 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
 
     getAppLiveStreamsOnce(): void {
-        this.restService.getAppLiveStreams(this.appName, 0, 10).then(data => {
-            //console.log(data);
-            this.gridTableData.list = [];
-            console.log("type of data -> " + typeof data);
+        this.restService.getAppLiveStreams(this.appName, 0, 10).subscribe(
+            data => {
+                //console.log(data);
+                this.gridTableData.list = [];
+                console.log("type of data -> " + typeof data);
 
-            for (var i in data) {
-
-
-
-                this.gridTableData.list.push(data[i]);
+                for (var i in data) {
 
 
 
-            }
-            setTimeout(function () {
-                $('[data-toggle="tooltip"]').tooltip();
-            }, 500);
+                    this.gridTableData.list.push(data[i]);
 
-        });
+
+
+                }
+                setTimeout(function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                }, 500);
+
+            });
     }
 
 
@@ -719,7 +728,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
         //this for getting full length of vod streams for paginations
 
         //TODO: (davut) write a seperate rest service which turns vod streams total length
-        this.restService.getVodList(this.appName, 0, 99999).then(data  => {
+        this.restService.getVodList(this.appName, 0, 99999).subscribe(data  => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
@@ -731,7 +740,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
         });
 
 
-        this.restService.getVodList(this.appName, 0, 5).then(data  => {
+        this.restService.getVodList(this.appName, 0, 5).subscribe(data  => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
@@ -898,8 +907,8 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
         for (var i in this.broadcastTableData.dataRows) {
 
-            id=this.broadcastTableData.dataRows[i]['streamId'];
 
+            id = this.broadcastTableData.dataRows[i]['streamId'];
 
 
             var container = document.getElementById(id);
@@ -907,14 +916,13 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
             flowplayer(container).shutdown();
 
 
-            $("#" + id).html("").attr('class', + '');
+            $("#" + id).html("").attr('class', +'');       }
 
-
-
-
-
-        }
     }
+
+
+
+
 
 
 
@@ -1023,7 +1031,100 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
         });
     }
 
+    editLiveBroadcast(stream: BroadcastInfo): void {
+        if (stream.endPointList != null)
+        {
+            this.editBroadcastShareFacebook = false;
+            this.editBroadcastShareYoutube = false;
+            this.editBroadcastSharePeriscope = false;
 
+            stream.endPointList.forEach(element => {
+                switch (element.type) {
+                    case "facebook":
+                        this.editBroadcastShareFacebook = true;
+                        break;
+                    case "youtube":
+                        this.editBroadcastShareYoutube = true;
+                        break;
+                    case "periscope":
+                        this.editBroadcastSharePeriscope = true;
+                        break;
+                }
+
+            });
+        }
+        if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId) {
+            this.liveStreamEditing = new LiveBroadcast();
+            this.liveStreamEditing.streamId = stream.streamId;
+            this.liveStreamEditing.name = stream.name;
+            this.liveStreamEditing.description = "";
+        }
+        else {
+            this.liveStreamEditing = null;
+        }
+    }
+
+
+    updateLiveStream(isValid: boolean): void {
+        if (!isValid) {
+            return;
+        }
+
+        this.liveStreamUpdating = true;
+        var socialNetworks = [];
+
+        if (this.editBroadcastShareFacebook) {
+            socialNetworks.push("facebook");
+        }
+
+        if (this.editBroadcastShareYoutube == true) {
+            socialNetworks.push("youtube");
+        }
+
+        if (this.editBroadcastSharePeriscope == true) {
+            socialNetworks.push("periscope");
+        }
+
+        this.restService.updateLiveStream(this.appName, this.liveStreamEditing,
+            socialNetworks).subscribe(data => {
+            this.liveStreamUpdating = false;
+            console.log(data["success"]);
+            if (data["success"]) {
+                this.liveStreamEditing = null;
+                //update the rows
+                this.getAppLiveStreams();
+                $.notify({
+                    icon: "ti-save",
+                    message: Locale.getLocaleInterface().broadcast_updated
+                }, {
+                    type: "success",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else {
+                $.notify({
+                    icon: "ti-alert",
+                    message: Locale.getLocaleInterface().broadcast_not_updated  + " " + data["message"] + " " + data["errorId"]
+                }, {
+                    type: "warning",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+        });
+
+    }
+
+    cancelEditLiveStream(): void {
+        this.liveStreamEditing = null;
+    }
 
     deleteLiveBroadcast(streamId: string): void {
         swal({
@@ -1086,8 +1187,18 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
         this.appSettings.encoderSettings.splice(index, 1);
     }
 
-    async showChannelChooserDialog(options:any, serviceName:string, type:string): Promise<boolean> {
-        const {value: id} = await swal({
+    setSocialNetworkChannel(serviceName: string, type: string, value: string): void {
+        this.restService.setSocialNetworkChannel(this.appName, serviceName, type, value).subscribe(data => {
+            console.log("set social network channel: " + data["success"]);
+            if (data["success"]) {
+                this.getFacebookChannel();
+            }
+
+        });
+    }
+
+    async showChannelChooserDialog(options: any, serviceName: string, type: string): Promise<boolean> {
+        const { value: id } = await swal({
             title: 'Select The Page',
             input: 'select',
             inputOptions: options,
@@ -1099,12 +1210,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
                     if (value) {
                         console.log("selected id: " + value);
 
-                        this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/setSocialNetworkChannel/"
-                            +serviceName+"/"+type+"/"+value, {})
-                            .subscribe(data => {
-                                console.log("set social network channel: " + data["success"]);
-
-                            });
+                        this.setSocialNetworkChannel(serviceName, type, value);
 
                         resolve();
                     }
@@ -1123,65 +1229,65 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
 
     }
-    showNetworkChannelList(serviceName:string, type:string):void {
-        this.http.get(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getSocialNetworkChannelList/"+serviceName +"/" + type, {})
-            .subscribe(data => {
-                console.log(data);
-                var options = {
-                };
+    showNetworkChannelList(serviceName: string, type: string): void {
+        this.userFBPagesLoading = true;
+        this.restService.getSocialNetworkChannelList(this.appName, serviceName, type).subscribe(data => {
+            console.log(data);
+            var options = {
+            };
 
-                for (var i in data) {
-                    options[data[i]["id"]]=data[i]["name"];
-                }
+            for (var i in data) {
+                options[data[i]["id"]] = data[i]["name"];
+            }
+            this.userFBPagesLoading = false;
+            this.showChannelChooserDialog(options, serviceName, type);
 
-                this.showChannelChooserDialog(options, serviceName, type);
+        });
+
+    }
 
 
-
-
-            });
-
+    getFacebookChannel(): void {
+        this.restService.getSocialNetworkChannel(this.appName, "facebook").subscribe(data => {
+            console.log(data);
+            this.socialMediaAuthStatus.facebookPublishChannel = new SocialNetworkChannel();
+            this.socialMediaAuthStatus.facebookPublishChannel.id = data["id"];
+            this.socialMediaAuthStatus.facebookPublishChannel.name = data["name"];
+            this.socialMediaAuthStatus.facebookPublishChannel.type = data["type"];
+        });
     }
 
     getSettings(): void {
-        this.http.get(REST_SERVICE_ROOT + "/getSettings/" + this.appName).subscribe(data => {
+        this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
         });
 
-        this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/checkDeviceAuthStatus/facebook", {})
-            .subscribe(data => {
-                this.socialMediaAuthStatus.isFacebookAuthenticated = data["success"];
+        this.restService.checkDeviceAuthStatus(this.appName, "facebook").subscribe(data => {
+            this.socialMediaAuthStatus.isFacebookAuthenticated = data["success"];
 
-                if (this.socialMediaAuthStatus.isFacebookAuthenticated) {
-                    this.http.get(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getSocialNetworkChannel/facebook", {})
-                        .subscribe(data => {
-                            console.log(data);
-                            this.socialMediaAuthStatus.facebookPublishChannel = new SocialNetworkChannel();
-                            this.socialMediaAuthStatus.facebookPublishChannel.id = data["id"];
-                            this.socialMediaAuthStatus.facebookPublishChannel.name = data["name"];
-                            this.socialMediaAuthStatus.facebookPublishChannel.type = data["type"];
-                        });
-                }
-            });
+            if (this.socialMediaAuthStatus.isFacebookAuthenticated) {
+                this.getFacebookChannel();
+            }
+        });
 
-        this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/checkDeviceAuthStatus/youtube", {})
-            .subscribe(data => {
-                this.socialMediaAuthStatus.isYoutubeAuthenticated = data["success"];
-            });
+        this.restService.checkDeviceAuthStatus(this.appName, "youtube").subscribe(data => {
+            this.socialMediaAuthStatus.isYoutubeAuthenticated = data["success"];
+        });
 
-        this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/checkDeviceAuthStatus/periscope", {})
-            .subscribe(data => {
-                this.socialMediaAuthStatus.isPeriscopeAuthenticated = data["success"];
-            });
+        this.restService.checkDeviceAuthStatus(this.appName, "periscope").subscribe(data => {
+            this.socialMediaAuthStatus.isPeriscopeAuthenticated = data["success"];
+        });
 
     }
 
 
-    changeSettings(): void {
+    changeSettings(valid: boolean): void {
 
-        this.http.post(REST_SERVICE_ROOT + '/changeSettings/' + this.appName,
-            this.appSettings
-        ).subscribe(data => {
+        if (!valid) {
+            return;
+        }
+
+        this.restService.changeSettings(this.appName, this.appSettings).subscribe(data => {
             if (data["success"] == true) {
                 $.notify({
                     icon: "ti-save",
@@ -1242,7 +1348,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
 
         this.restService.addIPCamera(this.appName,this.liveBroadcast)
-            .then(data => {
+            .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
 
@@ -1317,43 +1423,83 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
     startDiscover() {
         this.discoveryStarted=true;
-        this.getDiscoveryList();
+        this.onvifURLs=this.getDiscoveryList();
         this.noCamWarning=false;
-
 
         setTimeout(() =>
         {
 
             if(this.onvifURLs) {
-                this.discoveryStarted = false;
-                swal({
 
-                    type: 'info',
-                    title: "Onvif Camera(s) ",
-                    input: 'radio',
-                    inputOptions: this.onvifURLs,
-                    width: '355px',
 
-                    inputValidator: function (value) {
-                        return new Promise(function (resolve, reject) {
-                            if (value !== '') {
-                                resolve();
-                            } else {
-                                reject('Select Camera');
+                for (var i = 0; i < this.broadcastTableData.dataRows.length; i++) {
+                    for (var j = 0; j < this.onvifURLs.length; j++) {
+
+                        if (this.broadcastTableData.dataRows[i].type == "ipCamera") {
+
+                            if (this.onvifURLs[j] == this.broadcastTableData.dataRows[i].ipAddr) {
+
+                                console.log("found:  " + this.onvifURLs[j]);
+                                // if camera is already registered then remove it from aray
+                                var x = this.onvifURLs.indexOf(this.onvifURLs[j]);
+                                this.onvifURLs.splice(x, 1);
+
                             }
-                        });
-
-                    },
-
-
-                }).then((result) => {
-
-                    if(result){
-                        this.liveBroadcast.ipAddr = this.onvifURLs[result].toString();
-
+                        }
                     }
-                })
 
+
+                }
+
+            }
+
+            if(this.onvifURLs){
+
+                //if all cameras are added, onvif array may still be alive, then length control should be done
+                if(this.onvifURLs.length>0 ) {
+
+                    console.log(this.onvifURLs[0]);
+
+
+                    console.log(this.onvifURLs.length);
+
+
+                    this.discoveryStarted = false;
+                    swal({
+
+                        type: 'info',
+                        title: "Onvif Camera(s) ",
+                        input: 'radio',
+                        inputOptions: this.onvifURLs,
+                        width: '355px',
+
+                        inputValidator: function (value) {
+                            return new Promise(function (resolve, reject) {
+                                if (value !== '') {
+                                    resolve();
+                                } else {
+                                    reject('Select Camera');
+                                }
+                            });
+
+                        },
+
+
+                    }).then((result) => {
+
+                        if(result){
+                            this.liveBroadcast.ipAddr = this.onvifURLs[result].toString();
+
+                        }
+                    })
+
+                }else{
+
+                    this.discoveryStarted = false;
+                    this.noCamWarning=true;
+                    this.camera.ipAddr="";
+
+                }
             }else{
 
                 this.discoveryStarted = false;
@@ -1361,6 +1507,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
                 this.camera.ipAddr="";
 
             }
+
 
         }, 6000);
 
@@ -1371,7 +1518,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
         this.onvifURLs=null;
 
-        this.restService.autoDiscover(this.appName).then(
+        this.restService.autoDiscover(this.appName).subscribe(
             streams => {
 
 
@@ -1385,6 +1532,10 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
             },
         );
 
+
+
+
+
         return this.onvifURLs;
     }
 
@@ -1395,7 +1546,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
     }
 
-    createLiveStreamSocialNetworks(isValid: boolean): void {
+    createLiveStream(isValid: boolean): void {
 
         if (!isValid) {
             //not valid form return directly
@@ -1420,8 +1571,8 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
 
         this.newLiveStreamCreating = true;
-        this.restService.createLiveStreamSocialNetworks(this.appName, this.liveBroadcast, socialNetworks.join(","))
-            .then(data => {
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
+            .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["streamId"] != null) {
 
@@ -1497,9 +1648,11 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
             classie.add(opt, 'cbp-vm-selected');
         }
 
-        this.closeGridPlayers();
+        // this.closeGridPlayers();
 
     }
+
+
 
     switchToGridView():void {
 
@@ -1547,8 +1700,6 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
     }
 
-
-
     setGettingParametersFalse(networkName: string): void {
         switch (networkName) {
             case "facebook":
@@ -1578,13 +1729,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
         }
 
 
-
-        this.http.post(HTTP_SERVER_ROOT + this.appName + "/rest/broadcast/getDeviceAuthParameters/" + networkName,
-            {}).subscribe(data => {
-            console.log("************  " + JSON.stringify(data));
-
-            console.log("isEnterprise:  " + this.isEnterpriseEdition);
-
+        this.restService.getDeviceAuthParameters(this.appName, networkName).subscribe(data => {
 
             if (data['verification_url']) {
                 if (!data['verification_url'].startsWith("http")) {
@@ -1613,6 +1758,17 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
                         console.log("onclose");
                     }
                 }).then(() => {
+                    switch (networkName) {
+                        case "facebook":
+                            this.waitingForFacebookToBeAuthorized = true;
+                            break;
+                        case "youtube":
+                            this.waitingForYoutubeToBeAuthorized = true;
+                            break;
+                        case "periscope":
+                            this.waitingForPeriscopeToBeAuthorized = true;
+                            break;
+                    }
                     this.checkAuthStatus(networkName);
 
                 })
@@ -1620,7 +1776,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
 
             } else if (this.isEnterpriseEdition == false
-                && data['message'] == "Service with the name specified is not found in this app") {
+                && data['errorId'] == ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT) {
 
                 message = Locale.getLocaleInterface().notEnterprise;
 
@@ -1639,39 +1795,11 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
                     onClose: function () {
                         console.log("onclose");
                     }
-                }).then(() => {
-                    this.checkAuthStatus(networkName);
                 });
 
 
 
-            } else if (this.isEnterpriseEdition == true && data['message'] == "Service with the name specified is not found in this app") {
-
-                message = Locale.getLocaleInterface().enterpriseNotActivated;;
-
-
-                typem = 'error';
-                this.setGettingParametersFalse(networkName);
-                swal({
-                    html: message,
-                    type: typem,
-                    // showConfirmButton: false,
-                    showCancelButton: true,
-                    // width: '800px',
-                    onOpen: function () {
-                        console.log("onopen");
-
-                    },
-                    onClose: function () {
-                        console.log("onclose");
-                    }
-                }).then(() => {
-                    this.checkAuthStatus(networkName);
-
-                });
-
-            }
-            else if (this.isEnterpriseEdition == true && data['message'] == "Please enter service client id and client secret in app configuration") {
+            } else if (this.isEnterpriseEdition == true && data['errorId'] == ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID) {
 
                 message = Locale.getLocaleInterface().ketNotdefined;;
 
@@ -1691,9 +1819,6 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
                     onClose: function () {
                         console.log("onclose");
                     }
-                }).then(() => {
-                    this.checkAuthStatus(networkName);
-
                 });
             }
         });
@@ -1728,7 +1853,6 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
     }
 
     copyLiveEmbedCode(streamUrl: string): void {
-
 
         //if (this.isEnterpriseEdition) {
         //  streamUrl += "_adaptive";
@@ -1780,7 +1904,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
         this.restService.checkAuthStatus(networkName, this.appName).subscribe(data => {
 
             if (data["success"] != true) {
-                this.checkAuthStatusTimerId = setInterval(() => {
+                this.checkAuthStatusTimerId = setTimeout(() => {
                     this.checkAuthStatus(networkName);
                 }, 5000);
             }
@@ -1790,12 +1914,19 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
                 }
                 if (networkName == "facebook") {
                     this.socialMediaAuthStatus.isFacebookAuthenticated = true;
+                    this.gettingFacebookParameters = false;
+                    this.waitingForFacebookToBeAuthorized = false;
+                    this.getFacebookChannel();
                 }
                 else if (networkName == "youtube") {
                     this.socialMediaAuthStatus.isYoutubeAuthenticated = true;
+                    this.gettingYoutubeParameters = false;
+                    this.waitingForYoutubeToBeAuthorized = false;
                 }
                 else if (networkName == "periscope") {
                     this.socialMediaAuthStatus.isPeriscopeAuthenticated = true;
+                    this.gettingPeriscopeParameters = false;
+                    this.waitingForPeriscopeToBeAuthorized = false;
                 }
 
                 swal({
@@ -1838,7 +1969,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
 
 
-            this.restService.filterVod(this.appName, 0, 10,this.searchParam).then(data  => {
+            this.restService.filterVod(this.appName, 0, 10,this.searchParam).subscribe(data  => {
                 this.vodTableData.dataRows = [];
                 for (var i in data) {
                     this.vodTableData.dataRows.push(data[i]);
@@ -1938,7 +2069,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
     }
 
     moveDown(camera:LiveBroadcast) {
-        this.restService.moveDown(camera,this.appName).then(
+        this.restService.moveDown(camera,this.appName).subscribe(
             result => {
                 console.log('result!!!: ' + result);
             },
@@ -1948,7 +2079,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
         );
     }
     moveUp(camera:LiveBroadcast) {
-        this.restService.moveUp(camera,this.appName).then(
+        this.restService.moveUp(camera,this.appName).subscribe(
             result => {
                 console.log('result!!!: ' + result);
             },
@@ -1959,7 +2090,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
     }
 
     moveRight(camera:LiveBroadcast) {
-        this.restService.moveRight(camera,this.appName).then(
+        this.restService.moveRight(camera,this.appName).subscribe(
             result => {
                 console.log('result!!!: ' + result);
             },
@@ -1971,7 +2102,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit,OnChang
 
 
     moveLeft(camera:LiveBroadcast) {
-        this.restService.moveLeft(camera,this.appName).then(
+        this.restService.moveLeft(camera,this.appName).subscribe(
             result => {
                 console.log('result!!!: ' + result);
             },
@@ -2058,7 +2189,7 @@ export class CamSettinsDialogComponent {
 
 
 
-        this.restService.editCameraInfo(this.camera,this.dialogRef.componentInstance.data.appName).then(data  => {
+        this.restService.editCameraInfo(this.camera,this.dialogRef.componentInstance.data.appName).subscribe(data  => {
 
             if(data["success"] == true){
 
@@ -2138,43 +2269,43 @@ export class UploadVodDialogComponent {
 
         if(this.fileToUpload){
 
-        let formData: FormData = new FormData();
+            let formData: FormData = new FormData();
 
-        formData.append('file', this.fileToUpload);
+            formData.append('file', this.fileToUpload);
 
-        console.log("file upload"+this.fileToUpload.name);
-
-
-        this.restService.uploadVod(this.fileToUpload.name,formData,"LiveApp").then(data  => {
-
-            if(data["success"] == true){
-
-                this.dialogRef.close();
-                swal({
-                    type: "success",
-                    title: " Saved!",
-                    buttonsStyling: false,
-                    confirmButtonClass: "btn btn-success"
-
-                });
-
-            }else {
-
-                this.dialogRef.close();
-                swal({
-                    type: "error",
-                    title: "An Error Occured!",
-
-                    buttonsStyling: false,
-                    confirmButtonClass: "btn btn-error"
-
-                });
+            console.log("file upload"+this.fileToUpload.name);
 
 
+            this.restService.uploadVod(this.fileToUpload.name,formData,"LiveApp").subscribe(data  => {
 
-            }
+                if(data["success"] == true){
 
-        });
+                    this.dialogRef.close();
+                    swal({
+                        type: "success",
+                        title: " Saved!",
+                        buttonsStyling: false,
+                        confirmButtonClass: "btn btn-success"
+
+                    });
+
+                }else {
+
+                    this.dialogRef.close();
+                    swal({
+                        type: "error",
+                        title: "An Error Occured!",
+
+                        buttonsStyling: false,
+                        confirmButtonClass: "btn btn-error"
+
+                    });
+
+
+
+                }
+
+            });
 
         }
 
