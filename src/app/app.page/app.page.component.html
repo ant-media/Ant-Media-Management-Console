@@ -36,6 +36,14 @@
                                 <div  >
 
 
+                                    <div style="float: right">
+                                        <button *ngIf="!isGridView" class="btn btn-fill btn-success"
+                                                (click)="switchToGridView()"> Grid View
+                                        </button>
+                                        <button *ngIf="isGridView" class="btn btn-fill btn-success"
+                                                (click)="switchToListView()"> List View
+                                        </button>
+                                    </div>
 
                                     <div class="dropdown text-right"style="float: right">
                                         <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" data-toggle="dropdown" role="button">New Live Stream
@@ -48,9 +56,9 @@
 
                                         </ul>
 
-                                        <button *ngIf="!isGridView" class="btn btn-fill btn-success" (click)="switchToGridView()"> Grid View </button>
-                                        <button *ngIf="isGridView" class="btn btn-fill btn-success" (click)="switchToListView()"> List View </button>
+
                                     </div>
+
                                     <br> <br>
 
                                     <!--
@@ -356,53 +364,82 @@
                                                 <mat-header-cell *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
                                                 <mat-cell *matCellDef="let row" >
 
-                                                    <button *ngIf="row.status!='broadcasting'&& row.type=='liveStream'" (click)="openBroadcastEditDialog(row)" title="Edit" data-toggle="tooltip" class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                            type="button">
-                                                                            <span class="btn-label">
-                                                                                <i class="ti-pencil"></i>
-                                                                            </span>
-                                                        <ng-container i18n="@@tableEditButton">Edit</ng-container>
 
-                                                    </button>
-
-                                                    <button *ngIf="row.type=='ipCamera'" (click)="openSettingsDialog(row)" class="btn btn-simple btn-magnify btn-info btn-xs " type="button" data-toggle="tooltip" i18n-title title="Settings" >
-                                                                        <span class="btn-label">
-                                                                                            <i class="ti-settings"></i>
-                                                                                        </span>
-
-                                                        <ng-container i18n="@@tableSettingsButton">Settings</ng-container>
-                                                    </button>
-
-                                                    <button *ngIf="row.status=='broadcasting' "  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
-                                                            type="button">
+                                                    <div style="font-size: 1.1em">
+                                                        <button *ngIf="row.status=='broadcasting' " ata-toggle="tooltip"
+                                                                i18n-title title="Play Stream"
+                                                                (click)="playLive(row.streamId)"
+                                                                class="btn btn-success btn-simple btn-magnify btn-xs "
+                                                                type="button" style="font-size: 1.1em">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-control-play"></i>
                                                                                         </span>
-                                                        <ng-container i18n="@@tablePlayButton">Play</ng-container>
+                                                            <ng-container i18n="@@tablePlayButton"></ng-container>
 
-                                                    </button>
+                                                        </button>
+
+                                                        <button *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
+                                                                (click)="openBroadcastEditDialog(row)" title="Edit"
+                                                                data-toggle="tooltip"
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                type="button" style="font-size: 1.1em">
+                                                                            <span class="btn-label">
+                                                                                <i class="ti-pencil"></i>
+                                                                            </span>
+                                                            <ng-container i18n="@@tableEditButton"></ng-container>
+
+                                                        </button>
 
 
-                                                    <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
+                                                        <button *ngIf="row.type=='ipCamera'"
+                                                                (click)="openSettingsDialog(row)"
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                type="button" data-toggle="tooltip" i18n-title
+                                                                title="Settings"
+                                                                style="font-size: 1.1em">
+                                                                        <span class="btn-label" style="float: right;">
+                                                                                            <i class="ti-settings"></i>
+                                                                                        </span>
+
+                                                            <ng-container i18n="@@tableSettings"></ng-container>
+                                                        </button>
+
+
+                                                        <button (click)="copyLiveEmbedCode(row.streamId)"
+                                                                data-toggle="tooltip" i18n-title
+                                                                title="Copy Live Embed Code to Clipboard"
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                type="button" style="font-size: 1.1em">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-share"></i>
+                                                                                        </span>
+                                                            <ng-container i18n="@@tableEmbedCode"></ng-container>
+                                                        </button>
+
+                                                        <button *ngIf="row.status!='broadcasting'"
+                                                                id="copyPublishUrlButton"
+                                                                (click)="copyPublishUrl(row.streamId)"
+                                                                data-toggle="tooltip"
+                                                                [title]="'Copy Publish URL to Clipboard : ' + getRtmpUrl(row.streamId)"
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                type="button" style="font-size: 1.1em">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-clipboard"></i>
                                                                                         </span>
-                                                        <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
-                                                    </button>
-                                                    <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
-                                                            [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                            type="button">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-clipboard"></i>
-                                                                                        </span>
-                                                        <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
-                                                    </button>
-                                                    <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
+                                                            <ng-container i18n="@@copyPublishUrl"></ng-container>
+                                                        </button>
+                                                        <button (click)="deleteLiveBroadcast(row.streamId)"
+                                                                class="btn btn-simple btn-magnify btn-danger btn-xs "
+                                                                type="button" data-toggle="tooltip" i18n-title
+                                                                title="Delete"
+                                                                style="font-size: 1.1em">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-close"></i>
                                                                                         </span>
-                                                        <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
-                                                    </button>
+                                                            <ng-container i18n="@@tableDeleteButton"></ng-container>
+                                                        </button>
+
+                                                    </div>
 
 
                                                 </mat-cell>
@@ -579,20 +616,11 @@
 
                                                             <span style="float: left;"> {{row.name}}</span>
 
-
                                                             <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button" data-toggle="tooltip" i18n-title title="Delete" style="float: right;font-size: 1.2em;">
                                                                                         <span class="btn-label">
                                                                                             <i class="ti-close"></i>
                                                                                         </span>
                                                                 <ng-container i18n="@@tableDeleteButton"></ng-container>
-                                                            </button>
-
-                                                            <button *ngIf="row.type=='ipCamera'" (click)="openSettingsDialog(row)" class="btn btn-simple btn-magnify btn-info btn-xs " type="button" data-toggle="tooltip" i18n-title title="Settings" style="float: right;font-size: 1.2em;">
-                                                                        <span class="btn-label" style="float: right;">
-                                                                                            <i class="ti-settings"></i>
-                                                                                        </span>
-
-                                                                <ng-container ></ng-container>
                                                             </button>
 
 
@@ -611,14 +639,31 @@
                                                                 <ng-container i18n="@@copyPublishUrl"></ng-container>
                                                             </button>
 
+                                                            <button *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
+                                                                    (click)="openBroadcastEditDialog(row)" title="Edit"
+                                                                    data-toggle="tooltip"
+                                                                    class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                    type="button"
+                                                                    style="float: right;font-size: 1.2em;">
+                                                                            <span class="btn-label">
+                                                                                <i class="ti-pencil"></i>
+                                                                            </span>
+                                                                <ng-container i18n="@@tableEditButton"></ng-container>
 
+                                                            </button>
 
+                                                            <button *ngIf="row.type=='ipCamera'"
+                                                                    (click)="openSettingsDialog(row)"
+                                                                    class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                    type="button" data-toggle="tooltip" i18n-title
+                                                                    title="Settings"
+                                                                    style="float: right;font-size: 1.2em;">
+                                                                        <span class="btn-label" style="float: right;">
+                                                                                            <i class="ti-settings"></i>
+                                                                                        </span>
 
-
-
-
-
-
+                                                                <ng-container></ng-container>
+                                                            </button>
 
                                                         </div>
 
