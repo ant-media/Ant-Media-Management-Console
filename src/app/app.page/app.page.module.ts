@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 
 import { HttpClientModule } from '@angular/common/http';
 import { Routes } from '@angular/router';
-import {AppPageComponent, CamSettinsDialogComponent,UploadVodDialogComponent} from './app.page.component';
+import {AppPageComponent, CamSettinsDialogComponent,UploadVodDialogComponent,BroadcastEditComponent} from './app.page.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import {
     MatDialogModule,
@@ -64,13 +64,13 @@ export const AppPageRoutes: Routes = [
 
 @NgModule({
 
-    declarations: [AppPageComponent,CamSettinsDialogComponent,UploadVodDialogComponent],
+    declarations: [AppPageComponent,CamSettinsDialogComponent,UploadVodDialogComponent,BroadcastEditComponent],
 
 
 
 
     entryComponents: [
-        CamSettinsDialogComponent,AppPageComponent,UploadVodDialogComponent
+        CamSettinsDialogComponent,AppPageComponent,UploadVodDialogComponent,BroadcastEditComponent
 
     ],
     bootstrap: [AppPageComponent],

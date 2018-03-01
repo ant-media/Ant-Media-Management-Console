@@ -54,7 +54,6 @@ declare interface BroadcastInfo {
     viewerCount: number;
     status: string;
     endPointList: Endpoint[];
-    vodList:VOD[];
     ipAddr:string;
     username:string;
     password:string;
@@ -588,6 +587,64 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
         });
     }
+
+
+    openBroadcastEditDialog(stream: BroadcastInfo): void {
+
+
+        if (stream.endPointList != null)
+        {
+            this.editBroadcastShareFacebook = false;
+            this.editBroadcastShareYoutube = false;
+            this.editBroadcastSharePeriscope = false;
+
+            stream.endPointList.forEach(element => {
+                switch (element.type) {
+                    case "facebook":
+                        this.editBroadcastShareFacebook = true;
+                        break;
+                    case "youtube":
+                        this.editBroadcastShareYoutube = true;
+                        break;
+                    case "periscope":
+                        this.editBroadcastSharePeriscope = true;
+                        break;
+                }
+
+            });
+        }
+        if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId) {
+            this.liveStreamEditing = new LiveBroadcast();
+            this.liveStreamEditing.streamId = stream.streamId;
+            this.liveStreamEditing.name = stream.name;
+            this.liveStreamEditing.description = "";
+        }
+        else {
+            this.liveStreamEditing = null;
+        }
+
+        let dialogRef = this.dialog.open(BroadcastEditComponent, {
+
+            data: { name:this.liveStreamEditing.name,streamId:this.liveStreamEditing.streamId,appName:this.appName,
+                editBroadcastShareFacebook:this.editBroadcastShareFacebook,editBroadcastShareYoutube:this.editBroadcastShareYoutube,
+                editBroadcastSharePeriscope:this.editBroadcastSharePeriscope,socialMediaAuthStatus:this.socialMediaAuthStatus}
+
+
+
+        });
+
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+            this.getAppLiveStreams();
+
+
+        });
+    }
+
+
+
+
 
     test(){
 
@@ -2168,15 +2225,21 @@ export class CamSettinsDialogComponent {
         this.dialogRef.close();
     }
 
-    submitDialog(){
+
+
+
+    editCamSettings(isValid: boolean){
+
+            if (!isValid) {
+                return;
+            }
+
         this.loading=true;
 
         console.log(this.dialogRef.componentInstance.data.status+this.dialogRef.componentInstance.data.id+this.dialogRef.componentInstance.data.name+this.dialogRef.componentInstance.data.url+this.dialogRef.componentInstance.data.username);
 
 
         this.camera=new LiveBroadcast();
-
-
 
 
 
@@ -2191,31 +2254,34 @@ export class CamSettinsDialogComponent {
 
         this.restService.editCameraInfo(this.camera,this.dialogRef.componentInstance.data.appName).subscribe(data  => {
 
-            if(data["success"] == true){
+            if (data["success"]) {
 
                 this.dialogRef.close();
-                swal({
+
+                $.notify({
+                    icon: "ti-save",
+                    message: Locale.getLocaleInterface().broadcast_updated
+                }, {
                     type: "success",
-                    title: "New Settings Saved!",
-                    buttonsStyling: false,
-                    confirmButtonClass: "btn btn-success"
-
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
                 });
-
-            }else {
-
-                this.dialogRef.close();
-                swal({
-                    type: "error",
-                    title: "An Error Occured!",
-
-                    buttonsStyling: false,
-                    confirmButtonClass: "btn btn-error"
-
+            }
+            else {
+                $.notify({
+                    icon: "ti-alert",
+                    message: Locale.getLocaleInterface().broadcast_not_updated  + " " + data["message"] + " " + data["errorId"]
+                }, {
+                    type: "warning",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
                 });
-
-
-
             }
 
         });
@@ -2316,6 +2382,106 @@ export class UploadVodDialogComponent {
 }
 
 
+@Component({
+    selector: 'broadcast-edit-dialog',
+    templateUrl: 'broadcast-edit-dialog.html',
+})
 
 
 
+
+export class BroadcastEditComponent {
+
+    app:AppPageComponent;
+    loading=false;
+    public liveStreamUpdating = false;
+    public editBroadcastShareYoutube: boolean;
+    public editBroadcastShareFacebook: boolean;
+    public editBroadcastSharePeriscope: boolean;
+    public liveStreamEditing:LiveBroadcast;
+
+
+    constructor(
+        public dialogRef: MatDialogRef<BroadcastEditComponent>, public restService: RestService,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
+    }
+
+    onNoClick(): void {
+        this.dialogRef.close();
+    }
+
+
+
+
+
+
+    updateLiveStream(isValid: boolean): void {
+        if (!isValid) {
+            return;
+        }
+
+        this.liveStreamEditing=new LiveBroadcast();
+        this.liveStreamEditing.name=this.dialogRef.componentInstance.data.name;
+        this.liveStreamEditing.streamId=this.dialogRef.componentInstance.data.streamId;
+
+
+
+
+        this.liveStreamUpdating = true;
+        var socialNetworks = [];
+
+        if (this.editBroadcastShareFacebook) {
+            socialNetworks.push("facebook");
+        }
+
+        if (this.editBroadcastShareYoutube == true) {
+            socialNetworks.push("youtube");
+        }
+
+        if (this.editBroadcastSharePeriscope == true) {
+            socialNetworks.push("periscope");
+        }
+
+        this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.liveStreamEditing,
+            socialNetworks).subscribe(data => {
+            this.liveStreamUpdating = false;
+            console.log(data["success"]);
+            if (data["success"]) {
+
+                this.dialogRef.close();
+
+                $.notify({
+                    icon: "ti-save",
+                    message: Locale.getLocaleInterface().broadcast_updated
+                }, {
+                    type: "success",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else {
+                $.notify({
+                    icon: "ti-alert",
+                    message: Locale.getLocaleInterface().broadcast_not_updated  + " " + data["message"] + " " + data["errorId"]
+                }, {
+                    type: "warning",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+        });
+
+    }
+
+    cancelEditLiveStream(): void {
+        this.dialogRef.close();
+    }
+
+
+}

@@ -356,7 +356,22 @@
                                                 <mat-header-cell *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
                                                 <mat-cell *matCellDef="let row" >
 
+                                                    <button *ngIf="row.status!='broadcasting'&& row.type=='liveStream'" (click)="openBroadcastEditDialog(row)" title="Edit" data-toggle="tooltip" class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                            type="button">
+                                                                            <span class="btn-label">
+                                                                                <i class="ti-pencil"></i>
+                                                                            </span>
+                                                        <ng-container i18n="@@tableEditButton">Edit</ng-container>
 
+                                                    </button>
+
+                                                    <button *ngIf="row.type=='ipCamera'" (click)="openSettingsDialog(row)" class="btn btn-simple btn-magnify btn-info btn-xs " type="button" data-toggle="tooltip" i18n-title title="Settings" >
+                                                                        <span class="btn-label">
+                                                                                            <i class="ti-settings"></i>
+                                                                                        </span>
+
+                                                        <ng-container i18n="@@tableSettingsButton">Settings</ng-container>
+                                                    </button>
 
                                                     <button *ngIf="row.status=='broadcasting' "  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
                                                             type="button">
@@ -389,18 +404,13 @@
                                                         <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
                                                     </button>
 
-                                                    <button *ngIf="row.status!='broadcasting'" (click)="editLiveBroadcast(row)" title="Edit" data-toggle="tooltip" class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                            type="button">
-                                                                            <span class="btn-label">
-                                                                                <i class="ti-pencil"></i>
-                                                                            </span>
-
-                                                    </button>
-
 
                                                 </mat-cell>
 
                                             </ng-container>
+
+
+
 
                                             <mat-header-row *matHeaderRowDef="displayedColumnsStreams"></mat-header-row>
                                             <mat-row *matRowDef="let row; columns: displayedColumnsStreams;">
