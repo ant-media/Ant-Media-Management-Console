@@ -1,34 +1,39 @@
 import {
-    Component, OnInit, OnDestroy, Renderer, NgZone, Inject, EventEmitter, Output, Input,
-    ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges,OnChanges} from '@angular/core';
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Inject,
+    Input,
+    NgZone,
+    OnDestroy,
+    OnInit,
+    Output,
+    Renderer,
+    ViewChild
+} from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Router, ActivatedRoute } from '@angular/router';
-import { SERVER_ADDR, REST_SERVICE_ROOT, HTTP_SERVER_ROOT } from '../rest/rest.service';
-import { RestService, LiveBroadcast } from '../rest/rest.service';
-import { ClipboardService } from 'ngx-clipboard';
-import { Locale } from "../locale/locale";
+import {HttpClient} from '@angular/common/http';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../rest/rest.service';
+import {ClipboardService} from 'ngx-clipboard';
+import {Locale} from "../locale/locale";
 import {
-    MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatCheckboxModule, PageEvent, MatPaginator, MatSort,
-    MatTableDataSource, MatPaginatorIntl
+    MAT_DIALOG_DATA,
+    MatDialog,
+    MatDialogRef,
+    MatPaginator,
+    MatPaginatorIntl,
+    MatSort,
+    MatTableDataSource,
+    PageEvent
 } from '@angular/material';
 import "rxjs/add/operator/toPromise";
-import {RequestOptions} from "@angular/http";
-
-
-
-
-
-
-
-
 
 declare var $: any;
 declare var Chartist: any;
 declare var swal: any;
 declare var classie:any;
-
-
 
 const ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID = -1;
 const ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT = -2;
@@ -210,7 +215,8 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     public newStreamSourceAdding=false
     public  newStreamSourceWarn = true;
     public discoveryStarted = false;
-    public newSourceAdding= false;
+    public newSourceAdding = false;
+    uplo
     public isEnterpriseEdition = false;
     public gettingPeriscopeParameters = false;
     public gettingYoutubeParameters = false;
@@ -269,10 +275,10 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
 
     pageSize=5 ;
-    pageSizeOptions = [5, 10, 25, 100];
+    pageSizeOptions = [5, 10, 25];
 
     streamsLength:number;
-    vodLength:number;
+    vodLength: any;
 
     // MatPaginator Output
 
@@ -577,12 +583,14 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
 
         let dialogRef = this.dialog.open(UploadVodDialogComponent, {
+            data: {appName: this.appName}
 
         });
 
 
         dialogRef.afterClosed().subscribe(result => {
             console.log('The dialog was closed');
+            this.getVoDStreams();
 
 
         });
@@ -784,14 +792,10 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
         //this for getting full length of vod streams for paginations
 
-        //TODO: (davut) write a seperate rest service which turns vod streams total length
-        this.restService.getVodList(this.appName, 0, 99999).subscribe(data  => {
-            this.vodTableData.dataRows = [];
-            for (var i in data) {
-                this.vodTableData.dataRows.push(data[i]);
-            }
+        this.restService.getTotalVodNumber(this.appName).subscribe(data => {
 
-            this.vodLength= this.vodTableData.dataRows.length;
+
+            this.vodLength = data;
 
 
         });
@@ -2035,7 +2039,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
                 console.log("filtered vod:  " +this.vodTableData.dataRows.length.toString());
 
                 this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
-                this.vodLength= this.vodTableData.dataRows.length;
+
             });
 
 
@@ -2305,9 +2309,12 @@ export class CamSettinsDialogComponent {
 export class UploadVodDialogComponent {
 
     app:AppPageComponent;
-    loading=false;
+    uploading = false;
     fileToUpload: File = null;
     search:SearchParam;
+    fileselected = false;
+    fileName: string;
+    appName: string;
 
     constructor(
         public dialogRef: MatDialogRef<UploadVodDialogComponent>, public restService: RestService,
@@ -2321,11 +2328,8 @@ export class UploadVodDialogComponent {
     handleFileInput(files: FileList){
 
         this.fileToUpload = files.item(0);
-
-
-
-
-
+        this.fileselected = true;
+        this.fileName = this.fileToUpload.name;
     }
 
 
@@ -2334,6 +2338,7 @@ export class UploadVodDialogComponent {
 
 
         if(this.fileToUpload){
+            this.uploading = true;
 
             let formData: FormData = new FormData();
 
@@ -2341,21 +2346,43 @@ export class UploadVodDialogComponent {
 
             console.log("file upload"+this.fileToUpload.name);
 
+            if (!this.fileName || this.fileName.length == 0) {
 
-            this.restService.uploadVod(this.fileToUpload.name,formData,"LiveApp").subscribe(data  => {
+                this.fileName = this.fileToUpload.name;
+            }
+
+            this.fileName = this.fileName.replace(/\s/g, '_');
+
+
+            this.restService.uploadVod(this.fileName, formData, this.dialogRef.componentInstance.data.appName).subscribe(data => {
 
                 if(data["success"] == true){
+
+                    this.uploading = false;
 
                     this.dialogRef.close();
                     swal({
                         type: "success",
-                        title: " Saved!",
+                        title: " File is successfully uploaded!",
                         buttonsStyling: false,
                         confirmButtonClass: "btn btn-success"
 
                     });
 
-                }else {
+                } else if (data["message"] == "notMp4File") {
+
+                    this.uploading = false;
+                    swal({
+                        type: "error",
+                        title: "Only Mp4 files are accepted!",
+
+                        buttonsStyling: false,
+                        confirmButtonClass: "btn btn-error"
+
+                    });
+
+                } else {
+                    this.uploading = false;
 
                     this.dialogRef.close();
                     swal({

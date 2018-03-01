@@ -10,19 +10,26 @@
         <div mat-card-avatar >   <span class="btn-label" style="float: right;font-size: 1.8em">
             <i class="ti-upload"></i>
         </span></div>
-        <mat-card-title>Upload Vod</mat-card-title>
+        <mat-card-title>Upload VoD</mat-card-title>
 
     </mat-card-header>
     <br>
     <mat-card-content>
 
+        <div class="form-group text-left">
+            <label i18n="@@newVoDName">VoD Name</label>
+            <input type="text" name="vodName" i18n-placeholder="@@onvif_url_place_holder" placeholder="VoD Name"
+                   class="form-control" [(ngModel)]="fileName" #onvifUrl="ngModel">
+
+        </div>
+        <br><br>
         <p>
 
-            Please Select a Vod File to Upload.
+            Please Select a VoD File to Upload.
 
 
         </p>
-        <br><br>
+
         <p>
 
             <input type="file" #fileInput placeholder="Upload file..."      id="file"
@@ -32,7 +39,20 @@
         </p>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button (click)="submitUpload()">Submit</button>
-        <button mat-button (click)="onNoClick()">Cancel</button>
+
+
+        <div class="form-group text-center">
+
+            <button [disabled]='!fileselected' (click)="submitUpload()" class="btn btn-fill btn-success"
+                    i18n="@@newLiveStreamSaveButton">
+                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="uploading" aria-hidden="true"></i>Save
+            </button>
+
+            <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="onNoClick()">
+                Cancel
+            </button>
+        </div>
+
     </mat-card-actions>
+
 </mat-card>

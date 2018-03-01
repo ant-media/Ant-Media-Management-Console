@@ -36,7 +36,7 @@
                                 <div  >
 
 
-                                    <div style="float: right">
+                                    <div style="float: right" *ngIf="broadcastTableData.dataRows.length>0">
                                         <button *ngIf="!isGridView" class="btn btn-fill btn-success"
                                                 (click)="switchToGridView()"> Grid View
                                         </button>
@@ -262,7 +262,7 @@
                                                         <div class="col-sm-12 checkbox">
                                                             <input id="shareOnPeriscope" name="shareOnPeriscope" [disabled]="!socialMediaAuthStatus.isPeriscopeAuthenticated" type="checkbox"
                                                                    [(ngModel)]="liveBroadcastSharePeriscope">
-                                                            <label for="shareOnshareOnPeriscopeYoutube">
+                                                            <label for="shareOnPeriscope">
                                                                 <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>Periscope</label>
                                                             <span class="help-block" *ngIf="!socialMediaAuthStatus.isPeriscopeAuthenticated">
                                                                 <small i18n="@@periscope_disabled_message">Disabled. Authenticate For Periscope(Twitter) on Settings Tab</small>
@@ -461,7 +461,7 @@
 
                                         </mat-table>
 
-                                        <mat-paginator  [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                                        <mat-paginator [pageSizeOptions]="[5, 10, 25]"></mat-paginator>
 
 
 
@@ -827,7 +827,8 @@
                                 </div>
 
                                 <div class=" text-right">
-                                    <button class="btn btn-fill btn-success"  (click)="openVodUploadDialog()" data-toggle="dropdown" role="button">New Vod
+                                    <button class="btn btn-fill btn-success" (click)="openVodUploadDialog()"
+                                            data-toggle="dropdown" role="button">Upload VoD
                                     </button>
 
 

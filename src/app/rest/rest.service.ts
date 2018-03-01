@@ -1,16 +1,13 @@
-import { Injectable } from '@angular/core';
-import {Http, RequestOptions, Response} from '@angular/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { environment } from '../../environments/environment';
-import {Camera} from "../app.page/app.page.component";
-import {SearchParam} from "../app.page/app.page.component";
-import {promise} from "selenium-webdriver";
+import {Injectable} from '@angular/core';
+import {Response} from '@angular/http';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs/Observable';
+import {environment} from '../../environments/environment';
+import {AppSettings, Camera, SearchParam} from "../app.page/app.page.component";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
-import {HttpRequest, HttpHandler, HttpInterceptor,  HttpEvent,HttpClient,HttpResponse}from '@angular/common/http';
-import { AppSettings } from '../app.page/app.page.component';
+import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 
 
 export class User {
@@ -231,6 +228,11 @@ export class RestService {
 
     }
 
+    public getTotalVodNumber(appName: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getTotalVodNumber', {});
+
+    }
+
 
     public filterAppLiveStreams(appName:string, offset:Number, size:Number,type:String): Observable<Object>  {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/broadcast/filterList/'+offset+"/"+size+"/"+type,{});
@@ -329,6 +331,7 @@ export class RestService {
         console.log('URL ' + streamInfoUrl);
 
         return this.http.get(streamInfoUrl);
+
 
     }
 
