@@ -258,27 +258,25 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     ];
 
 
-    displayedColumnsStreams = ['name', 'status', 'social_media', 'actions'];
-    displayedColumnsVod = ['name', 'date',  'actions'];
+    public displayedColumnsStreams = ['name', 'status', 'social_media', 'actions'];
+    public displayedColumnsVod = ['name', 'date', 'actions'];
 
 
-    dataSource: MatTableDataSource<BroadcastInfo>;
+    public dataSource: MatTableDataSource<BroadcastInfo>;
 
-    dataSourceVod: MatTableDataSource<VodInfo>;
+    public dataSourceVod: MatTableDataSource<VodInfo>;
 
 
     public streamsPageSize=5;
 
 
     public vodPageSize=5;
+    public pageSize = 5;
+    public pageSizeOptions = [5, 10, 25];
 
-
-
-    pageSize=5 ;
-    pageSizeOptions = [5, 10, 25];
-
-    streamsLength:number;
-    vodLength: any;
+    public streamsLength: number;
+    public vodLength: any;
+    public gridLength: any;
 
     // MatPaginator Output
 
@@ -455,6 +453,19 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     }
 
 
+    onGridPaginateChange(event) {
+
+
+        console.log("page index:" + event.pageIndex);
+        console.log("length:" + event.length);
+        console.log("page size:" + event.pageSize);
+
+        this.openGridPlayers(event.pageIndex, event.pageSize);
+
+
+    }
+
+
     ngAfterViewInit() {
 
 
@@ -583,7 +594,8 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
 
         let dialogRef = this.dialog.open(UploadVodDialogComponent, {
-            data: {appName: this.appName}
+            data: {appName: this.appName},
+            width: '300px'
 
         });
 
@@ -663,7 +675,12 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
 
     getAppLiveStreams(): void {
-        this.restService.getAppLiveStreams(this.appName, 0, 99999).subscribe(data => {
+
+
+        if (!this.isGridView) {
+
+            console.log("request list view broadcast")
+            this.restService.getAppLiveStreams(this.appName, 0, 9999).subscribe(data => {
             //console.log(data);
             this.broadcastTableData.dataRows = [];
             //console.log("type of data -> " + typeof data);
@@ -687,12 +704,15 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
             this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
             this.streamsLength= this.broadcastTableData.dataRows.length;
+                this.gridLength = this.broadcastTableData.dataRows.length;
 
-            if(this.isGridView){
-                setTimeout(() => {
-                    this.openGridPlayers();
-                }, 300);}
 
+                /*
+                if(this.isGridView){
+                    setTimeout(() => {
+                        this.openGridPlayers();
+                    }, 300);}
+                */
         });
 
 
@@ -703,7 +723,43 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
         }, 300);
 
 
+        } else if (this.isGridView) {
 
+            console.log("request grid view broadcast")
+
+            this.restService.getAppLiveStreams(this.appName, 0, 5).subscribe(data => {
+                //console.log(data);
+                this.broadcastTableData.dataRows = [];
+                //console.log("type of data -> " + typeof data);
+
+                for (var i in data) {
+
+
+                    var endpoint = [];
+                    for (var j in data[i].endPointList) {
+                        endpoint.push(data[i].endPointList[j]);
+                    }
+
+
+                    this.broadcastTableData.dataRows.push(data[i]);
+
+
+                    this.broadcastTableData.dataRows[i].iframeSource = "http://localhost:5080/LiveApp/play.html?name=" + this.broadcastTableData.dataRows[i].streamId + "&autoplay=true";
+                    // console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
+
+                }
+
+
+                /*
+                if(this.isGridView){
+                    setTimeout(() => {
+                        this.openGridPlayers();
+                    }, 300);}
+                */
+            });
+
+
+        }
 
 
     }
@@ -739,7 +795,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
                 if(this.isGridView){
                     setTimeout(() => {
-                        this.openGridPlayers();
+                        this.openGridPlayers(0, 5);
                     }, 500);
 
                 }
@@ -903,63 +959,107 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     }
 
 
-    openGridPlayers():void{
-
-
-
+    openGridPlayers(index: number, size: number): void {
         var id,name,srcFile,iframeSource;
 
 
-        for (var i in this.broadcastTableData.dataRows) {
+        if (index == 0) {
+
+            console.log("index sifir");
 
 
-            id=this.broadcastTableData.dataRows[i]['streamId'];
+            this.restService.getAppLiveStreams(this.appName, index, size).subscribe(data => {
+                //console.log(data);
+                this.broadcastTableData.dataRows = [];
+                //console.log("type of data -> " + typeof data);
 
-            name=this.broadcastTableData.dataRows[i]['name'];
-
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + this.broadcastTableData.dataRows[i]['streamId'] + '.m3u8';
-
-            console.log(id+"::::"+name+":::::::::"+srcFile);
-
-            iframeSource="http://" + location.hostname + ":5080/"+this.appName+"/play.html?name="+id+"&autoplay=true";
+                for (var i in data) {
 
 
-            var $iframe = $('#' + id);
+                    var endpoint = [];
+                    for (var j in data[i].endPointList) {
+                        endpoint.push(data[i].endPointList[j]);
+                    }
 
-            $iframe.prop('src', iframeSource);
+                    this.broadcastTableData.dataRows.push(data[i]);
 
 
-            // install flowplayer into selected container
+                    // console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
 
 
-            /*
-                var container = document.getElementById(id);
-
-            flowplayer(container, {
-
-                clip: {
-                    autoplay: true,
-
-                    sources: [
-                        { type: "application/x-mpegurl",
-                            src:  srcFile }
-                    ]
                 }
+
+
+            });
+
+            setTimeout(() => {
+
+                for (var i in this.broadcastTableData.dataRows) {
+
+                    id = this.broadcastTableData.dataRows[i]['streamId'];
+
+
+                    iframeSource = "http://" + location.hostname + ":5080/" + this.appName + "/play.html?name=" + id + "&autoplay=true";
+
+
+                    var $iframe = $('#' + id);
+
+                    $iframe.prop('src', iframeSource);
+                }
+
+            }, 200);
+
+
+        } else {
+
+
+            index = index * size;
+
+
+            this.restService.getAppLiveStreams(this.appName, index, size).subscribe(data => {
+                //console.log(data);
+                this.broadcastTableData.dataRows = [];
+                //console.log("type of data -> " + typeof data);
+
+                for (var i in data) {
+
+
+                    var endpoint = [];
+                    for (var j in data[i].endPointList) {
+                        endpoint.push(data[i].endPointList[j]);
+                    }
+
+
+                    this.broadcastTableData.dataRows.push(data[i]);
+
+
+                }
+
+
             });
 
 
-*/
+            setTimeout(() => {
+
+                for (var i in this.broadcastTableData.dataRows) {
+
+                    id = this.broadcastTableData.dataRows[i]['streamId'];
 
 
+                    iframeSource = "http://" + location.hostname + ":5080/" + this.appName + "/play.html?name=" + id + "&autoplay=true";
 
 
-            //   container.setAttribute("style","width:500px");
+                    var $iframe = $('#' + id);
 
+                    $iframe.prop('src', iframeSource);
+                }
 
-
+            }, 200);
 
 
         }
+
+
     }
     closeGridPlayers():void{
 
@@ -1672,11 +1772,11 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
 
     switchToListView():void {
-
+        this.isGridView = false;
 
         this.getAppLiveStreams();
 
-        this.isGridView=false;
+
 
         var container = document.getElementById('cbp-vm'),
             optionSwitch = Array.prototype.slice.call(container.querySelectorAll('div.cbp-vm-options > a'));
@@ -1716,46 +1816,12 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
 
     switchToGridView():void {
-
+        this.isGridView = true;
         this.getAppLiveStreams();
-
-        this.isGridView=true;
-
-        var container = document.getElementById('cbp-vm'),
-            optionSwitch = Array.prototype.slice.call(container.querySelectorAll('div.cbp-vm-options > a'));
-
-
-
-
-
-        optionSwitch.forEach(function (el, i) {
-            el.addEventListener('click', function () {
-
-                change(this);
-
-
-
-            }, );
-        });
-
-
-        function change(opt) {
-            // remove other view classes and any selected option
-
-
-            optionSwitch.forEach(function (el) {
-                classie.remove(container, el.getAttribute('data-view'));
-                classie.remove(el, 'cbp-vm-selected');
-            });
-            // add the view class for this option
-            classie.add(container, opt.getAttribute('data-view'));
-            // this option stays selected
-            classie.add(opt, 'cbp-vm-selected');
-        }
 
 
         setTimeout(() => {
-            this.openGridPlayers();
+            this.openGridPlayers(0, 5);
         }, 500);
 
 
@@ -2329,9 +2395,10 @@ export class UploadVodDialogComponent {
 
         this.fileToUpload = files.item(0);
         this.fileselected = true;
-        this.fileName = this.fileToUpload.name;
-    }
+        this.fileName = this.fileToUpload.name.replace(/\s/g, '_');
+        console.log(this.fileName);
 
+    }
 
 
     submitUpload(){
@@ -2348,7 +2415,8 @@ export class UploadVodDialogComponent {
 
             if (!this.fileName || this.fileName.length == 0) {
 
-                this.fileName = this.fileToUpload.name;
+                this.fileName = this.fileToUpload.name.substring(0, this.fileToUpload.name.lastIndexOf("."));
+                ;
             }
 
             this.fileName = this.fileName.replace(/\s/g, '_');

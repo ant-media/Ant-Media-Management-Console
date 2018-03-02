@@ -1,45 +1,31 @@
+<div class="upload-card">
 
-
-
-
-
-
-
-<mat-card class="upload-card">
-    <mat-card-header>
-        <div mat-card-avatar >   <span class="btn-label" style="float: right;font-size: 1.8em">
+    Upload VoD <span class="btn-label" style="float: right;font-size: 1.2em">
             <i class="ti-upload"></i>
-        </span></div>
-        <mat-card-title>Upload VoD</mat-card-title>
+        </span>
 
-    </mat-card-header>
     <br>
-    <mat-card-content>
 
-        <div class="form-group text-left">
-            <label i18n="@@newVoDName">VoD Name</label>
+    <br>
+
+
+    <div class="form-group text-left" style="float: left">
+        <label i18n="@@newVoDName">Name</label>
             <input type="text" name="vodName" i18n-placeholder="@@onvif_url_place_holder" placeholder="VoD Name"
                    class="form-control" [(ngModel)]="fileName" #onvifUrl="ngModel">
 
         </div>
-        <br><br>
-        <p>
 
-            Please Select a VoD File to Upload.
+    <br><br>
 
 
-        </p>
-
-        <p>
-
-            <input type="file" #fileInput placeholder="Upload file..."      id="file"
-                   (change)="handleFileInput($event.target.files)"/>
+    <div class="fileUpload btn">
+        <span>Choose File</span>
+        <input type="file" class="upload" (change)="handleFileInput($event.target.files)"/>
+    </div>
 
 
-        </p>
-    </mat-card-content>
-    <mat-card-actions>
-
+    <br><br><br>
 
         <div class="form-group text-center">
 
@@ -53,6 +39,5 @@
             </button>
         </div>
 
-    </mat-card-actions>
 
-</mat-card>
+</div>
