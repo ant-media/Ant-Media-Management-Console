@@ -1283,9 +1283,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
     }
 
-    cancelEditLiveStream(): void {
-        this.liveStreamEditing = null;
-    }
+
 
     deleteLiveBroadcast(streamId: string): void {
         swal({
@@ -1821,7 +1819,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
 
         setTimeout(() => {
-            this.openGridPlayers(0, 5);
+            this.openGridPlayers(0, 4);
         }, 500);
 
 
@@ -1964,7 +1962,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     }
 
     copyPublishUrl(streamUrl: string): void {
-        this.clipBoardService.copyFromContent(this.getRtmpUrl(streamUrl), this.renderer);
+        this.clipBoardService.copyFromContent(this.getRtmpUrl(streamUrl));
         $.notify({
             message: Locale.getLocaleInterface().publish_url_copied_to_clipboard
         }, {
@@ -1989,7 +1987,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
             + HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamUrl
             + '" frameborder="0" allowfullscreen></iframe>';
 
-        this.clipBoardService.copyFromContent(embedCode, this.renderer);
+        this.clipBoardService.copyFromContent(embedCode);
         $.notify({
             message: Locale.getLocaleInterface().embed_code_copied_to_clipboard
         }, {
@@ -2284,7 +2282,8 @@ export interface UserData {
 export class CamSettinsDialogComponent {
     camera:LiveBroadcast;
     app:AppPageComponent;
-    loading=false;
+    loadingSettings = false;
+
 
     constructor(
         public dialogRef: MatDialogRef<CamSettinsDialogComponent>, public restService: RestService,
@@ -2296,7 +2295,9 @@ export class CamSettinsDialogComponent {
     }
 
 
-
+    cancelEditLiveStream(): void {
+        this.dialogRef.close();
+    }
 
     editCamSettings(isValid: boolean){
 
@@ -2304,7 +2305,7 @@ export class CamSettinsDialogComponent {
                 return;
             }
 
-        this.loading=true;
+        this.loadingSettings = true;
 
         console.log(this.dialogRef.componentInstance.data.status+this.dialogRef.componentInstance.data.id+this.dialogRef.componentInstance.data.name+this.dialogRef.componentInstance.data.url+this.dialogRef.componentInstance.data.username);
 

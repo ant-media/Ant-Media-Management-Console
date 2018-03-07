@@ -42,10 +42,11 @@
                 </div>
 
 
-                <div class="form-group text-center">
+                <div>
 
-                    <button type="submit" [disabled]='liveStreamUpdating' class="btn btn-fill btn-success" i18n="@@newLiveStreamSaveButton">
-                        <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="loading" aria-hidden="true"></i>Save</button>
+                    <button type="submit" class="btn btn-fill btn-success" i18n="@@newLiveStreamSaveButton">
+                        <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="loadingSettings" aria-hidden="true"></i>Save
+                    </button>
 
                     <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelEditLiveStream()">Cancel</button>
                 </div>
