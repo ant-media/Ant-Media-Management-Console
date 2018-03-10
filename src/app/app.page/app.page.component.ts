@@ -134,7 +134,7 @@ export class Camera {
         public ipAddr: string,
         public username: string,
         public password: string,
-        public rtspUrl: string,
+        public streamUrl: string,
         public type:string)
     { }
 }
@@ -213,10 +213,9 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     public newLiveStreamCreating = false;
     public newIPCameraAdding = false;
     public newStreamSourceAdding=false
-    public  newStreamSourceWarn = true;
+    public newStreamSourceWarn = false;
     public discoveryStarted = false;
     public newSourceAdding = false;
-    uplo
     public isEnterpriseEdition = false;
     public gettingPeriscopeParameters = false;
     public gettingYoutubeParameters = false;
@@ -473,8 +472,10 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
+            this.getVoDStreams();
 
         }, 300);
+
 
 
 
@@ -518,7 +519,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
                 return;
             }
-            this.getVoDStreams();
+
 
 
             this.getAppLiveStreams();
@@ -1506,7 +1507,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
         this.liveBroadcast.type="ipCamera";
 
 
-        this.restService.addIPCamera(this.appName,this.liveBroadcast)
+        this.restService.addStreamSource(this.appName, this.liveBroadcast)
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
@@ -1566,6 +1567,79 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
 
                 if(this.isGridView){
+                    setTimeout(() => {
+                        this.switchToGridView();
+                    }, 500);
+                }
+
+
+            });
+
+    }
+
+
+    addStreamSource(isValid: boolean): void {
+
+
+        if (!isValid) {
+            //not valid form return directly
+            return;
+        }
+        this.newStreamSourceAdding = true;
+        this.liveBroadcast.type = "streamSource";
+
+
+        this.restService.addStreamSource(this.appName, this.liveBroadcast)
+            .subscribe(data => {
+                //console.log("data :" + JSON.stringify(data));
+                if (data["success"] == true) {
+
+                    this.newStreamSourceAdding = false;
+
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().new_broadcast_created
+                    }, {
+                        type: "success",
+                        delay: 1000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                    this.getAppLiveStreams();
+
+
+                }
+                else {
+
+                    this.newIPCameraAdding = false;
+
+                    $.notify({
+                        icon: "ti-save",
+                        message: "Error: Not added"
+                    }, {
+                        type: "error",
+                        delay: 2000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                    this.getAppLiveStreams();
+
+                }
+
+                //swal.close();
+                this.newStreamSourceAdding = false;
+                this.newStreamSourceActive = false;
+                this.liveBroadcast.name = "";
+                this.liveBroadcast.ipAddr = "";
+                this.liveBroadcast.username = "";
+                this.liveBroadcast.password = "";
+
+
+                if (this.isGridView) {
                     setTimeout(() => {
                         this.switchToGridView();
                     }, 500);

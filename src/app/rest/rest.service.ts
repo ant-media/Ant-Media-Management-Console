@@ -3,7 +3,7 @@ import {Response} from '@angular/http';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {environment} from '../../environments/environment';
-import {AppSettings, Camera, SearchParam} from "../app.page/app.page.component";
+import {AppSettings, SearchParam} from "../app.page/app.page.component";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
@@ -41,7 +41,7 @@ export class LiveBroadcast {
     ipAddr:string;
     username:string;
     password:string;
-    rtspUrl:string;
+    streamUrl: string;
     date:number;
     duration:number;
     description:string;
@@ -266,24 +266,24 @@ export class RestService {
 
     public deleteIPCamera(appName: string, streamId:string): Observable<Object> {
 
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/camera/deleteCamera?ipAddr='+streamId, {});
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/deleteCamera?ipAddr=' + streamId, {});
 
 
 
     }
 
-    public addIPCamera(appName: string, camera:Camera): Observable<Object>  {
+    public addStreamSource(appName: string, stream: LiveBroadcast): Observable<Object> {
 
-        let url=REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/camera/add';
+        let url = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/addStreamSource';
 
 
-        return this.http.post(url,camera);
+        return this.http.post(url, stream);
     }
 
 
     public  autoDiscover(appName: string): Observable<any> {
 
-        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName +'/rest/camera/searchOnvifDevices';
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/searchOnvifDevices';
         console.log('URL ' + streamInfoUrl);
 
         return this.http.get(streamInfoUrl);
@@ -292,7 +292,7 @@ export class RestService {
 
     public  getCamList(appName: string): Observable<Object> {
 
-        let url =REST_SERVICE_ROOT + "/request?_path="+ appName +'/rest/camera/getList';
+        let url = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/getList';
         console.log('URL ' + url);
 
         return this.http.get(url);
@@ -301,7 +301,7 @@ export class RestService {
 
     moveLeft(camera: LiveBroadcast,appName: string): Observable<Object> {
 
-        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + "/request?_path="+ appName +'/rest/camera/moveLeft?id='+camera.streamId;
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + "/request?_path=" + appName + '/rest/streamSource/moveLeft?id=' + camera.streamId;
         console.log('URL ' + streamInfoUrl);
 
         return this.http.get(streamInfoUrl);
@@ -309,7 +309,7 @@ export class RestService {
 
     moveRight(camera: LiveBroadcast,appName: string): Observable<Object> {
 
-        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName +'/rest/camera/moveRight?id='+camera.streamId;
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/moveRight?id=' + camera.streamId;
         console.log('URL ' + streamInfoUrl);
 
         return this.http.get(streamInfoUrl);
@@ -318,7 +318,7 @@ export class RestService {
 
     moveUp(camera: LiveBroadcast,appName: string): Observable<Object> {
 
-        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName +'/rest/camera/moveUp?id='+camera.streamId;
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/moveUp?id=' + camera.streamId;
         console.log('URL ' + streamInfoUrl);
 
         return this.http.get(streamInfoUrl);
@@ -327,7 +327,7 @@ export class RestService {
 
     moveDown(camera: LiveBroadcast,appName: string): Observable<Object> {
 
-        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName +'/rest/camera/moveDown?id='+camera.streamId;
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/moveDown?id=' + camera.streamId;
         console.log('URL ' + streamInfoUrl);
 
         return this.http.get(streamInfoUrl);
@@ -337,7 +337,7 @@ export class RestService {
 
     editCameraInfo(camera: LiveBroadcast,appName: string):Observable<Object> {
 
-        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName +'/rest/camera/updateCamInfo';
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/updateCamInfo';
         console.log('URL ' + streamInfoUrl);
 
         return this.http.post(streamInfoUrl,camera);
