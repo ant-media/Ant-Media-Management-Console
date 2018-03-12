@@ -228,8 +228,18 @@ export class RestService {
 
     }
 
+    public getUserVodList(appName: string, offset: Number, size: Number): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/getUserVodList/' + offset + "/" + size, {});
+
+    }
+
     public getTotalVodNumber(appName: string): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getTotalVodNumber', {});
+
+    }
+
+    public getTotalUserVodNumber(appName: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/getTotalUserVodNumber', {});
 
     }
 

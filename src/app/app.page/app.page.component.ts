@@ -200,6 +200,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     public broadcastTableData: BroadcastInfoTable;
     public gridTableData:CameraInfoTable;
     public vodTableData: VodInfoTable;
+    public userVodTableData: VodInfoTable;
     public timerId: any;
     public checkAuthStatusTimerId: any;
     public socialMediaAuthStatus: SocialMediAuthStatus;
@@ -259,11 +260,14 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
     public displayedColumnsStreams = ['name', 'status', 'social_media', 'actions'];
     public displayedColumnsVod = ['name', 'date', 'actions'];
+    public displayedColumnsUserVod = ['name', 'date', 'actions'];
+
 
 
     public dataSource: MatTableDataSource<BroadcastInfo>;
 
     public dataSourceVod: MatTableDataSource<VodInfo>;
+    public dataSourceUserVod: MatTableDataSource<VodInfo>;
 
 
     public streamsPageSize=5;
@@ -275,7 +279,11 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
     public streamsLength: number;
     public vodLength: any;
+    public userVodLength: any;
     public gridLength: any;
+
+    public displayVodTable = true;
+    public displayUserVodTable = false;
 
     // MatPaginator Output
 
@@ -388,6 +396,10 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
             dataRows: []
         };
 
+        this.userVodTableData = {
+            dataRows: []
+        };
+
         this.socialMediaAuthStatus = new SocialMediAuthStatus();
         this.liveBroadcast = new LiveBroadcast();
         this.selectedBroadcast=new LiveBroadcast();
@@ -452,6 +464,52 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     }
 
 
+    onUserVodPaginateChange(event) {
+
+
+        console.log("page index:" + event.pageIndex);
+        console.log("length:" + event.length);
+        console.log("page size:" + event.pageSize);
+
+
+        if (event.pageIndex == 0) {
+            this.keyword = null;
+            console.log("index sifir");
+            this.restService.getUserVodList(this.appName, 0, event.pageSize).subscribe(data => {
+                this.userVodTableData.dataRows = [];
+                for (var i in data) {
+                    this.userVodTableData.dataRows.push(data[i]);
+                }
+
+                this.dataSourceUserVod = new MatTableDataSource(this.userVodTableData.dataRows);
+
+
+            });
+
+        } else {
+
+
+            event.pageIndex = event.pageIndex * event.pageSize;
+
+            this.keyword = null;
+
+            this.restService.getUserVodList(this.appName, event.pageIndex, event.pageSize).subscribe(data => {
+                this.userVodTableData.dataRows = [];
+                for (var i in data) {
+                    this.userVodTableData.dataRows.push(data[i]);
+                }
+
+                this.dataSourceUserVod = new MatTableDataSource(this.userVodTableData.dataRows);
+
+
+            });
+
+        }
+
+    }
+
+
+
     onGridPaginateChange(event) {
 
 
@@ -473,8 +531,9 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
             this.getVoDStreams();
+            this.getUserVoDStreams();
 
-        }, 300);
+        }, 500);
 
 
 
@@ -594,6 +653,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
 
 
+
         let dialogRef = this.dialog.open(UploadVodDialogComponent, {
             data: {appName: this.appName},
             width: '300px'
@@ -609,6 +669,27 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
         });
     }
 
+
+    showUserVodTable() {
+
+        this.displayVodTable = false;
+
+        this.displayUserVodTable = true;
+
+        this.getUserVoDStreams();
+
+    }
+
+
+    showVodTable() {
+
+        this.displayVodTable = true;
+
+        this.displayUserVodTable = false;
+
+        this.getVoDStreams();
+
+    }
 
     openBroadcastEditDialog(stream: BroadcastInfo): void {
 
@@ -854,6 +935,8 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
             this.vodLength = data;
 
+            console.log("vod table length: " + this.vodLength);
+
 
         });
 
@@ -871,18 +954,40 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
         });
 
 
+    }
+
+
+    getUserVoDStreams(): void {
 
 
 
+        //this for getting full length of vod streams for paginations
+
+        this.restService.getTotalUserVodNumber(this.appName).subscribe(data => {
 
 
+            this.userVodLength = data;
+
+            console.log("uservod table length: " + this.userVodLength);
 
 
+        });
 
 
+        this.restService.getUserVodList(this.appName, 0, 5).subscribe(data => {
+            this.userVodTableData.dataRows = [];
+            for (var i in data) {
+                this.userVodTableData.dataRows.push(data[i]);
+            }
 
+            this.dataSourceUserVod = new MatTableDataSource(this.userVodTableData.dataRows);
+
+
+        });
 
     }
+
+
 
 
 
@@ -1123,6 +1228,34 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
         // var container = document.getElementById("player");
         // install flowplayer into selected container
         var srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamName;
+
+        swal({
+            html: '<div id="player"></div>',
+            showConfirmButton: false,
+            width: '800px',
+            animation: false,
+            onOpen: function () {
+
+                flowplayer('#player', {
+                    autoplay: true,
+                    clip: {
+                        sources: [{
+                            type: 'video/mp4',
+                            src: srcFile
+                        }]
+                    }
+                });
+            },
+            onClose: function () {
+                flowplayer("#player").shutdown();
+            }
+        });
+    }
+
+    playUserVoD(streamName: string): void {
+        // var container = document.getElementById("player");
+        // install flowplayer into selected container
+        var srcFile = HTTP_SERVER_ROOT + this.appName + '/uploads/' + streamName;
 
         swal({
             html: '<div id="player"></div>',
