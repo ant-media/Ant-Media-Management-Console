@@ -66,6 +66,7 @@ declare interface BroadcastInfo {
     date:number;
     duration:number;
     iframeSource:string;
+    quality: string;
 
 
 

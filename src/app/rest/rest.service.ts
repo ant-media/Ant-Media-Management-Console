@@ -45,6 +45,7 @@ export class LiveBroadcast {
     date:number;
     duration:number;
     description:string;
+    quality: string;
 
 
 
