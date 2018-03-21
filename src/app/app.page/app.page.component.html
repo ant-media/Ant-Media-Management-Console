@@ -876,10 +876,26 @@
 
 
                                             <ng-container matColumnDef="name" >
-                                                <mat-header-cell *matHeaderCellDef > Stream Name </mat-header-cell>
+                                                <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
-                                                    {{row.streamName}}
+
+                                                    <ng-container [ngSwitch]="row.type">
+                                                        <i *ngSwitchCase="'streamVod'"> {{row.streamName}}</i>
+                                                        <i *ngSwitchCase="'uploadedVod'">{{row.vodName}} </i>
+                                                        <i *ngSwitchCase="'userVod'">{{row.vodName}}</i>
+                                                    </ng-container>
+
+                                                </mat-cell>
+
+
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="type">
+                                                <mat-header-cell *matHeaderCellDef> Type</mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+                                                    {{row.type}}
 
                                                 </mat-cell>
                                             </ng-container>
@@ -899,7 +915,9 @@
                                                 <mat-cell *matCellDef="let row">
 
 
-                                                    <button (click)="playVoD(row.vodName)" class="btn btn-success btn-simple btn-magnify" type="button">
+                                                    <button (click)="playVoD(row.vodName,row.type)"
+                                                            class="btn btn-success btn-simple btn-magnify"
+                                                            type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-control-play"></i>
                                                         </span>
@@ -933,88 +951,90 @@
 
                                 </div>
 
+                                <!--
+                                                                <div id="userVodTable" style="text-align: left"
+                                                                     *ngIf="userVodTableData.dataRows.length>0 && displayUserVodTable">
 
-                                <div id="userVodTable" style="text-align: left"
-                                     *ngIf="userVodTableData.dataRows.length>0 && displayUserVodTable">
+                                                                    <br>
+                                                                    <div class="mat-container mat-elevation-z1">
 
-                                    <br>
-                                    <div class="mat-container mat-elevation-z1">
-
-                                        <mat-table [dataSource]="dataSourceUserVod">
-
-
-                                            <ng-container matColumnDef="name">
-                                                <mat-header-cell *matHeaderCellDef> Name</mat-header-cell>
-
-                                                <mat-cell *matCellDef="let row">
-                                                    {{row.vodName}}
-
-                                                </mat-cell>
-                                            </ng-container>
-
-                                            <ng-container matColumnDef="date">
-                                                <mat-header-cell *matHeaderCellDef> Date</mat-header-cell>
-
-                                                <mat-cell *matCellDef="let row">
-                                                    {{convertJavaTime(row.creationDate)}}
-
-                                                </mat-cell>
-                                            </ng-container>
-
-                                            <ng-container matColumnDef="actions">
-                                                <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
-
-                                                <mat-cell *matCellDef="let row">
+                                                                        <mat-table [dataSource]="dataSourceUserVod">
 
 
-                                                    <button (click)="playUserVoD(row.vodName)"
-                                                            class="btn btn-success btn-simple btn-magnify"
-                                                            type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-control-play"></i>
-                                                        </span>
-                                                        <ng-container i18n="@@tablePlayButton">Play</ng-container>
-                                                    </button>
-                                                    <button (click)="deleteVoD(row.vodName,row.vodId)"
-                                                            class="btn btn-simple btn-magnify btn-danger" type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-close"></i>
-                                                        </span>
-                                                        <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
-                                                    </button>
+                                                                            <ng-container matColumnDef="name">
+                                                                                <mat-header-cell *matHeaderCellDef> Name</mat-header-cell>
 
-                                                </mat-cell>
-                                            </ng-container>
+                                                                                <mat-cell *matCellDef="let row">
+                                                                                    {{row.vodName}}
 
-                                            <mat-header-row *matHeaderRowDef="displayedColumnsUserVod"></mat-header-row>
-                                            <mat-row *matRowDef="let row; columns: displayedColumnsUserVod;">
-                                            </mat-row>
-                                        </mat-table>
+                                                                                </mat-cell>
+                                                                            </ng-container>
 
+                                                                            <ng-container matColumnDef="date">
+                                                                                <mat-header-cell *matHeaderCellDef> Date</mat-header-cell>
 
-                                        <mat-paginator [length]="userVodLength"
-                                                       [pageSize]="pageSize"
-                                                       [pageSizeOptions]="pageSizeOptions"
-                                                       (page)="onUserVodPaginateChange($event)"
-                                        >
-                                        </mat-paginator>
+                                                                                <mat-cell *matCellDef="let row">
+                                                                                    {{convertJavaTime(row.creationDate)}}
 
-                                        <div style="text-align: center">
+                                                                                </mat-cell>
+                                                                            </ng-container>
 
-                                            <button class="btn btn-fill btn-success" (click)="showVodTable()"
-                                                    data-toggle="dropdown" role="button">Close
-                                            </button>
+                                                                            <ng-container matColumnDef="actions">
+                                                                                <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
 
-                                            <button class="btn btn-fill btn-success" (click)="showUserVodTable()"
-                                                    data-toggle="dropdown" role="button">Refresh
-                                            </button>
+                                                                                <mat-cell *matCellDef="let row">
 
 
-                                        </div>
-                                        <br>
-                                    </div>
+                                                                                    <button (click)="playUserVoD(row.vodName)"
+                                                                                            class="btn btn-success btn-simple btn-magnify"
+                                                                                            type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-control-play"></i>
+                                                                                        </span>
+                                                                                        <ng-container i18n="@@tablePlayButton">Play</ng-container>
+                                                                                    </button>
+                                                                                    <button (click)="deleteVoD(row.vodName,row.vodId)"
+                                                                                            class="btn btn-simple btn-magnify btn-danger" type="button">
+                                                                                        <span class="btn-label">
+                                                                                            <i class="ti-close"></i>
+                                                                                        </span>
+                                                                                        <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
+                                                                                    </button>
 
-                                </div>
+                                                                                </mat-cell>
+                                                                            </ng-container>
+
+                                                                            <mat-header-row *matHeaderRowDef="displayedColumnsUserVod"></mat-header-row>
+                                                                            <mat-row *matRowDef="let row; columns: displayedColumnsUserVod;">
+                                                                            </mat-row>
+                                                                        </mat-table>
+
+
+                                                                        <mat-paginator [length]="userVodLength"
+                                                                                       [pageSize]="pageSize"
+                                                                                       [pageSizeOptions]="pageSizeOptions"
+                                                                                       (page)="onUserVodPaginateChange($event)"
+                                                                        >
+                                                                        </mat-paginator>
+
+                                                                        <div style="text-align: center">
+
+                                                                            <button class="btn btn-fill btn-success" (click)="showVodTable()"
+                                                                                    data-toggle="dropdown" role="button">Close
+                                                                            </button>
+
+                                                                            <button class="btn btn-fill btn-success" (click)="showUserVodTable()"
+                                                                                    data-toggle="dropdown" role="button">Refresh
+                                                                            </button>
+
+
+                                                                        </div>
+                                                                        <br>
+                                                                    </div>
+
+                                                                </div>
+
+                                                                -->
 
 
                                 <p *ngIf="vodTableData.dataRows.length == 0" i18n="no vod stream info | text messages appears when no vod streams@@noVoDStreamExistsMessage">

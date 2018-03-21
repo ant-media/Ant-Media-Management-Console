@@ -260,7 +260,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
 
     public displayedColumnsStreams = ['name', 'status', 'social_media', 'actions'];
-    public displayedColumnsVod = ['name', 'date', 'actions'];
+    public displayedColumnsVod = ['name', 'type', 'date', 'actions'];
     public displayedColumnsUserVod = ['name', 'date', 'actions'];
 
 
@@ -665,6 +665,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
         dialogRef.afterClosed().subscribe(result => {
             console.log('The dialog was closed');
             this.getVoDStreams();
+            this.getUserVoDStreams();
 
 
         });
@@ -764,29 +765,29 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
             console.log("request list view broadcast")
             this.restService.getAppLiveStreams(this.appName, 0, 9999).subscribe(data => {
-            //console.log(data);
-            this.broadcastTableData.dataRows = [];
-            //console.log("type of data -> " + typeof data);
+                //console.log(data);
+                this.broadcastTableData.dataRows = [];
+                //console.log("type of data -> " + typeof data);
 
-            for (var i in data) {
+                for (var i in data) {
 
 
-                var endpoint = [];
-                for (var j in data[i].endPointList) {
-                    endpoint.push(data[i].endPointList[j]);
+                    var endpoint = [];
+                    for (var j in data[i].endPointList) {
+                        endpoint.push(data[i].endPointList[j]);
+                    }
+
+
+                    this.broadcastTableData.dataRows.push(data[i]);
+
+
+                    this.broadcastTableData.dataRows[i].iframeSource = "http://localhost:5080/LiveApp/play.html?name=" + this.broadcastTableData.dataRows[i].streamId + "&autoplay=true";
+                    // console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
+
                 }
 
-
-                this.broadcastTableData.dataRows.push(data[i]);
-
-
-                this.broadcastTableData.dataRows[i].iframeSource="http://localhost:5080/LiveApp/play.html?name="+this.broadcastTableData.dataRows[i].streamId+ "&autoplay=true";
-                // console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
-
-            }
-
-            this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
-            this.streamsLength= this.broadcastTableData.dataRows.length;
+                this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
+                this.streamsLength = this.broadcastTableData.dataRows.length;
                 this.gridLength = this.broadcastTableData.dataRows.length;
 
 
@@ -796,14 +797,14 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
                         this.openGridPlayers();
                     }, 300);}
                 */
-        });
+            });
 
 
-        setTimeout(() => {
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
+            setTimeout(() => {
+                this.dataSource.paginator = this.paginator;
+                this.dataSource.sort = this.sort;
 
-        }, 300);
+            }, 300);
 
 
         } else if (this.isGridView) {
@@ -1224,33 +1225,68 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     }
 
 
-
-    playVoD(streamName: string): void {
+    playVoD(streamName: string, type: string): void {
         // var container = document.getElementById("player");
         // install flowplayer into selected container
-        var srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamName;
 
-        swal({
-            html: '<div id="player"></div>',
-            showConfirmButton: false,
-            width: '800px',
-            animation: false,
-            onOpen: function () {
 
-                flowplayer('#player', {
-                    autoplay: true,
-                    clip: {
-                        sources: [{
-                            type: 'video/mp4',
-                            src: srcFile
-                        }]
-                    }
-                });
-            },
-            onClose: function () {
-                flowplayer("#player").shutdown();
-            }
-        });
+        if (type == "streamVod" || type == "uploadedVod") {
+            var srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamName;
+
+
+            swal({
+                html: '<div id="player"></div>',
+                showConfirmButton: false,
+                width: '800px',
+                animation: false,
+                onOpen: function () {
+
+                    flowplayer('#player', {
+                        autoplay: true,
+                        clip: {
+                            sources: [{
+                                type: 'video/mp4',
+                                src: srcFile
+                            }
+                            ]
+                        }
+                    });
+                },
+                onClose: function () {
+                    flowplayer("#player").shutdown();
+                }
+            });
+
+        }
+
+        if (type == "uploadedVod" || type == "userVod") {
+
+            var srcUploadFile = HTTP_SERVER_ROOT + this.appName + '/uploads/' + streamName;
+
+            swal({
+                html: '<div id="player"></div>',
+                showConfirmButton: false,
+                width: '800px',
+                animation: false,
+                onOpen: function () {
+
+                    flowplayer('#player', {
+                        autoplay: true,
+                        clip: {
+                            sources: [{
+                                type: 'video/mp4',
+                                src: srcUploadFile
+                            }
+                            ]
+                        }
+                    });
+                },
+                onClose: function () {
+                    flowplayer("#player").shutdown();
+                }
+            });
+
+        }
     }
 
     playUserVoD(streamName: string): void {
@@ -1303,6 +1339,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
                     this.showVoDFileNotDeleted();
                 };
                 this.getVoDStreams();
+                this.getUserVoDStreams();
             });
 
         }).catch(function () {
@@ -2509,9 +2546,9 @@ export class CamSettinsDialogComponent {
 
     editCamSettings(isValid: boolean){
 
-            if (!isValid) {
-                return;
-            }
+        if (!isValid) {
+            return;
+        }
 
         this.loadingSettings = true;
 
