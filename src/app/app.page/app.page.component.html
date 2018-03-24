@@ -35,9 +35,6 @@
 
                                 <div>
 
-
-
-
                                     <div class="dropdown text-right" style="float: right">
                                         <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" data-toggle="dropdown" role="button">New Live Stream
                                             <span class="caret"></span>
@@ -57,7 +54,6 @@
 
                                         </ul>
 
-
                                     </div>
 
                                     <br>
@@ -74,9 +70,6 @@
                                         </select>
                                     </div>
                                     -->
-
-
-
                                 </div>
 
                                 <div class="card" *ngIf="newLiveStreamActive">
@@ -96,49 +89,31 @@
                                                     Stream name should be at least 4 characters.
                                                 </small>
                                             </div>
+                                    
                                             <div class="form-group text-left">
-                                                <label class="control-label" i18n="@@newLiveStreamSocialShare">Share</label>
-                                                <div class="col-sm-12 text-left">
-                                                    <div class="row">
-                                                        <div class="col-sm-12 checkbox text-left vcenter">
-                                                            <input id="shareOnFacebook" name="shareOnFacebook" [disabled]="!socialMediaAuthStatus.isFacebookAuthenticated" type="checkbox"
-                                                                [(ngModel)]="liveBroadcastShareFacebook">
-                                                            <label for="shareOnFacebook">
-                                                                <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>Facebook</label>
-                                                            <span class="help-block" *ngIf="!socialMediaAuthStatus.isFacebookAuthenticated">
-                                                                <small i18n="@@facebook_disabled_message">Disabled. Authenticate For Facebook on Settings Tab</small>
-                                                            </span>
-                                                        </div>
+                                                <label  class="col-sm-12" style="padding-left:0px" i18n="@@newLiveStreamSocialShare">Share</label>
+                                                <ng-container *ngFor="let endpoint of videoServiceEndpoints; let i = index">
+                                                    
+                                                    <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
+
+                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
+                                                        <label [for]="endpoint.id">
+                                                            <ng-container [ngSwitch]="endpoint.serviceName">
+                                                                <ng-container *ngSwitchCase="'facebook'">
+                                                                    <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>
+                                                                </ng-container>
+                                                                <ng-container *ngSwitchCase="'youtube'">
+                                                                    <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>
+                                                                </ng-container>
+                                                                <ng-container *ngSwitchCase="'periscope'">
+                                                                    <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>
+                                                                </ng-container>
+                                                            </ng-container>
+                                                            {{endpoint.accountName}}
+                                                        </label>
+
                                                     </div>
-
-                                                    <div class="row">
-                                                        <div class="col-sm-12 checkbox">
-                                                            <input id="shareOnYoutube" name="shareOnYoutube" [disabled]="!socialMediaAuthStatus.isYoutubeAuthenticated" type="checkbox"
-                                                                [(ngModel)]="liveBroadcastShareYoutube">
-                                                            <label for="shareOnYoutube">
-                                                                <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>Youtube</label>
-                                                            <span class="help-block" *ngIf="!socialMediaAuthStatus.isYoutubeAuthenticated">
-                                                                <small i18n="@@youtube_disabled_message">Disabled. Authenticate For Youtube on Settings Tab</small>
-                                                            </span>
-
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-sm-12 checkbox">
-                                                            <input id="shareOnPeriscope" name="shareOnPeriscope" [disabled]="!socialMediaAuthStatus.isPeriscopeAuthenticated" type="checkbox"
-                                                                [(ngModel)]="liveBroadcastSharePeriscope">
-                                                            <label for="shareOnshareOnPeriscopeYoutube">
-                                                                <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>Periscope</label>
-                                                            <span class="help-block" *ngIf="!socialMediaAuthStatus.isPeriscopeAuthenticated">
-                                                                <small i18n="@@periscope_disabled_message">Disabled. Authenticate For Periscope(Twitter) on Settings
-                                                                    Tab
-                                                                </small>
-                                                            </span>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-
+                                                </ng-container>
                                             </div>
 
                                             <div class="form-group text-center">
@@ -153,10 +128,6 @@
 
                                     </form>
                                 </div>
-
-
-
-
 
                                 <div class="card" *ngIf="newIPCameraActive">
 
@@ -263,7 +234,6 @@
 
                                 <div style="display: flex; justify-content: flex-end" *ngIf="broadcastTableData.dataRows.length>0">
 
-
                                     <div class="mat-header">
 
                                         <input (keyup)="applyFilter($event.target.value)" placeholder="Search">
@@ -345,11 +315,6 @@
                                                         </ng-container>
 
                                                     </ng-container>
-
-
-
-
-
                                                 </mat-cell>
                                             </ng-container>
 
@@ -533,29 +498,11 @@
                                                           <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
                                                       </button>
 
-
-
-
                                                   </div>
-
-
                                               </li>
-
-
-
-
-
-
-
-
-
-
                                           </ul>
 
-
-
   -->
-
                                         <ul>
                                             <div>
 
@@ -1132,153 +1079,39 @@
                                             </div>
 
                                         </div>
-                                        <legend style="border-color: #efefef"></legend>
-                                        <div class="form-group">
+
+                                        <div class="form-group" style="margin-top:10px">
+
                                             <div class="row">
-                                                <label class="col-sm-2 control-label" >
+                                                <label class="col-sm-2 control-label">
                                                     Add Account
                                                 </label>
-                                              
-                                                <button class="col-sm-2 form-control-static btn btn-fill btn-success" style="margin-right:10px"  i18n="@@authenticate" type="button" (click)="getSocialMediaAuthParameters('facebook')">
-                                                    <i class="ti-facebook"></i>  Add Facebook 
+
+                                                <button class="col-sm-2 form-control-static btn btn-fill btn-success" style="margin-right:10px" i18n="@@authenticate" type="button"
+                                                    (click)="getSocialMediaAuthParameters('facebook')">
+                                                    <i class="ti-facebook"></i> Add Facebook
                                                 </button>
-                                                <button class="col-sm-2 form-control-static btn btn-fill btn-success "  style="margin-right:10px"  i18n="@@authenticate" type="button" (click)="getSocialMediaAuthParameters('youtube')">
+                                                <button class="col-sm-2 form-control-static btn btn-fill btn-success " style="margin-right:10px" i18n="@@authenticate" type="button"
+                                                    (click)="getSocialMediaAuthParameters('youtube')">
                                                     <i class="ti-youtube"></i> Add Youtube
                                                 </button>
-                                                <button class="col-sm-2 form-control-static btn btn-fill btn-success " style="margin-right:10px"  i18n="@@authenticate" type="button" (click)="getSocialMediaAuthParameters('periscope')">
+                                                <button class="col-sm-2 form-control-static btn btn-fill btn-success " style="margin-right:10px" i18n="@@authenticate" type="button"
+                                                    (click)="getSocialMediaAuthParameters('periscope')">
                                                     <i class="ti-twitter-alt"></i> Add Periscope
                                                 </button>
-
-                                                <a class="btn btn-simple col-sm-2 control-label" style="text-align:left" *ngIf="gettingDeviceParameters">
-                                                        <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
+                                            </div>
+                                            <div class="row">
+                                                <a class="btn btn-simple col-sm-12" *ngIf="gettingDeviceParameters">
+                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
                                                 </a>
-                                                <a class="btn btn-simple col-sm-2 control-label" style="text-align:left" *ngIf="waitingForConfirmation">
-                                                        <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-                                                        Waiting for confirmation
+                                                <a class="btn btn-simple col-sm-12" *ngIf="waitingForConfirmation">
+                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
+                                                    Waiting for confirmation
                                                 </a>
-                                           
                                             </div>
-                                  
+
                                         </div>
 
-                                        <!-- FACEBOOK
-
-
-                                            <label class="col-sm-2 control-label">
-                                                <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>Facebook:</label>
-
-                                            <div class="col-sm-2 control-label text-info" style="text-align: left" *ngIf="socialMediaAuthStatus.isFacebookAuthenticated">
-                                                Linked
-                                                <button class=" btn btn-simple btn-danger btn-xs" *ngIf="socialMediaAuthStatus.isFacebookAuthenticated" style="text-align:left"
-                                                    i18n="@@YoutubeAuthenticated" type="button" (click)="revokeSocialMediaAuth('facebook')">
-                                                    <i class="ti-unlink"></i>Unlink
-                                                </button>
-                                            </div>
-                                            <button class="col-sm-1 form-control-static btn btn-simple btn-success " style="text-align:left" *ngIf="!socialMediaAuthStatus.isFacebookAuthenticated"
-                                                i18n="@@authenticate" type="button" (click)="getSocialMediaAuthParameters('facebook')">
-                                                <i class="ti-link"></i>Link
-                                            </button>
-                                        
-
-                                            <a class="btn btn-simple col-sm-1 control-label" style="text-align:left" *ngIf="gettingFacebookParameters">
-                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-                                            </a>
-
-                                            <small class="btn btn-simple col-sm-4 control-label" style="text-align:left;font-size:12px;" *ngIf="waitingForFacebookToBeAuthorized"
-                                                i18n="@@waitingForFacebookToBeAuthorized">
-                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>Waiting Facebook for confirmation. It may take 10-15 seconds after you
-                                                enter code</small>
-
-
-                                            <div class="col-sm-8 form-group" style="margin-bottom:0px;" *ngIf="socialMediaAuthStatus.isFacebookAuthenticated == true && socialMediaAuthStatus.facebookPublishChannel != null">
-
-                                                <label class="col-sm-3 control-label">
-                                                    <i class="ti-facebook" style="color:#3b5998">&nbsp;</i> Publish Channel:</label>
-
-                                                <div class="col-sm-9">
-                                                    <div class="radio col-sm-4 text-left" style="margin-top:12px">
-                                                        <input type="radio" name="facebookPublishTarget" id="radio1" value="myAccount" [checked]="socialMediaAuthStatus.facebookPublishChannel.id == null"
-                                                            (click)="setSocialNetworkChannel('facebook', 'profile', 'id')">
-                                                        <label for="radio1">
-                                                            User Profile
-                                                        </label>
-                                                    </div>
-                                                    <div class="radio col-sm-8 text-left" style="margin-top:12px">
-                                                        <input type="radio" name="facebookPublishTarget" id="radio2" value="myPage" [checked]="socialMediaAuthStatus.facebookPublishChannel.id != null"
-                                                            (click)="showNetworkChannelList('facebook', 'page')">
-                                                        <label for="radio2">
-                                                            User's Page
-                                                            <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="userFBPagesLoading" aria-hidden="true"></i>
-                                                            <span *ngIf="socialMediaAuthStatus.facebookPublishChannel.id != null" class=" btn btn-simple btn-info" style="padding:0px 3px 0px 3px">({{socialMediaAuthStatus.facebookPublishChannel.name}})</span>
-                                                        </label>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    -->
-
-
-
-                                        <!-- YOUTUBE                                       
-                                        <div class="form-group">
-
-                                            <label class="col-sm-2 control-label">
-                                                <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>Youtube</label>
-
-                                            <div class="col-sm-2 control-label text-info" style="text-align: left" *ngIf="socialMediaAuthStatus.isYoutubeAuthenticated">
-                                                Linked
-                                                <button class="btn btn-simple btn-danger btn-xs" style="text-align:left" *ngIf="socialMediaAuthStatus.isYoutubeAuthenticated"
-                                                    i18n="@@YoutubeAuthenticated" type="button" (click)="revokeSocialMediaAuth('youtube')">
-                                                    <i class="ti-unlink"></i>Unlink
-                                                </button>
-                                            </div>
-                                            <button class="col-sm-1 control-label btn btn-simple btn-success" style="text-align:left" *ngIf="!socialMediaAuthStatus.isYoutubeAuthenticated"
-                                                i18n="@@authenticateYoutube" type="button" (click)="getSocialMediaAuthParameters('youtube')">
-                                                <i class="ti-link"></i>Link
-                                            </button>
-
-
-                                            <a class="btn btn-simple col-sm-1 control-label" style="text-align:left" *ngIf="gettingYoutubeParameters">
-                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-                                            </a>
-                                            <small class="btn btn-simple col-sm-4 control-label" style="text-align:left;font-size:12px;" *ngIf="waitingForYoutubeToBeAuthorized"
-                                                i18n="@@waitingForYoutubeToBeAuthorized">
-                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>Waiting Youtube for confirmation. It may take 10-15 seconds after you
-                                                enter code</small>
-                                        </div>
-                                    -->
-
-
-                                        <!-- PERISCOPE  
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">
-                                                <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>Periscope</label>
-
-                                            <div class="col-sm-2 control-label text-info" style="text-align: left" *ngIf="socialMediaAuthStatus.isPeriscopeAuthenticated">
-                                                Linked
-                                                <button class="btn btn-simple btn-danger btn-xs" style="text-align:left" *ngIf="socialMediaAuthStatus.isPeriscopeAuthenticated"
-                                                    i18n="@@YoutubeAuthenticated" type="button" (click)="revokeSocialMediaAuth('periscope')">
-                                                    <i class="ti-unlink"></i>Unlink
-                                                </button>
-                                            </div>
-                                            <button class="col-sm-1 control-label btn btn-simple btn-success" style="text-align:left" *ngIf="!socialMediaAuthStatus.isPeriscopeAuthenticated"
-                                                i18n="@@authenticate" type="button" (click)="getSocialMediaAuthParameters('periscope')">
-                                                <i class="ti-link"></i>Link
-                                            </button>
-
-
-
-                                            <a class="btn btn-simple col-sm-1 control-label" style="text-align:left" *ngIf="gettingPeriscopeParameters">
-                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-                                            </a>
-                                            <small class="btn btn-simple col-sm-4 control-label" style="text-align:left;font-size:12px;" *ngIf="waitingForPeriscopeToBeAuthorized"
-                                                i18n="@@waitingForPeriscopeToBeAuthorized">
-                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>Waiting Periscope for confirmation. It may take 10-15 seconds after you
-                                                enter code</small>
-
-                                        </div>
-                                    -->
                                     </fieldset>
 
 

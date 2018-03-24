@@ -1,5 +1,6 @@
 export declare interface Endpoint {
     type: string;
+    endpointServiceId: string;
 }
 
 
