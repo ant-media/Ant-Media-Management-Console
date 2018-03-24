@@ -45,10 +45,6 @@ export class LiveBroadcast {
     date:number;
     duration:number;
     description:string;
-
-
-
-
 }
 
 @Injectable()
@@ -154,6 +150,10 @@ export class RestService {
 
     public get(url: string, options:any): Observable<Object> {
         return this.http.get(url, options);
+    }
+
+    public getSocialEndpoints(appName:string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT +  "/request?_path=" + appName + "/rest/broadcast/getSocialEndpoints/0/20");
     }
 
     public setSocialNetworkChannel(appName: string, serviceName: string, type:string, value:string): Observable<Object> {

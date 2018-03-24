@@ -29,6 +29,9 @@ import {
     PageEvent
 } from '@angular/material';
 import "rxjs/add/operator/toPromise";
+import {BroadcastInfo, BroadcastInfoTable, Endpoint, VideoServiceEndpoint, CamStreamInfo, VOD, 
+            EncoderSettings, VodInfoTable, CameraInfoTable, VodInfo} from './app.definitions';
+import { element } from 'protractor';
 
 declare var $: any;
 declare var Chartist: any;
@@ -38,85 +41,6 @@ declare var classie:any;
 const ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID = -1;
 const ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT = -2;
 const ERROR_SOCIAL_ENDPOINT_NO_ENDPOINT = -3;
-
-declare interface Endpoint {
-    type: string;
-}
-
-declare interface VOD {
-    type: string;
-    streamName:string;
-    streamId:string;
-    vodName:string;
-    creationDate:string;
-    duration:string;
-}
-
-declare interface BroadcastInfo {
-    name: string;
-    type:string;
-    streamId: string;
-    viewerCount: number;
-    status: string;
-    endPointList: Endpoint[];
-    ipAddr:string;
-    username:string;
-    password:string;
-    rtspUrl:string;
-    date:number;
-    duration:number;
-    iframeSource:string;
-
-
-
-}
-
-declare interface VodInfo{
-    streamName: string;
-    streamId:string;
-    filePath: string;
-    viewerCount: number;
-    vodName: string;
-    creationDate:number;
-    duration:number;
-    fileSize:number;
-    vodId:string;
-
-}
-declare interface CamStreamInfo{
-    name: string;
-    type:string;
-    streamId: string;
-    viewerCount: number;
-    status: string;
-    endPointList: Endpoint[];
-    vodList:VOD[];
-    ipAddr:string
-
-}
-
-
-
-declare interface EncoderSettings {
-    height: Number;
-    videoBitrate: Number;
-    audioBitrate: Number;
-}
-
-declare interface BroadcastInfoTable {
-    dataRows: BroadcastInfo[];
-
-}
-
-declare interface VodInfoTable {
-    dataRows: VodInfo[];
-
-}
-
-declare interface CameraInfoTable{
-
-    list:CamStreamInfo[];
-}
 
 declare function require(name: string);
 var flowplayer = require('flowplayer');
@@ -174,15 +98,6 @@ export class SearchParam {
     public endDate: number;
 }
 
-
-export class SocialMediAuthStatus {
-    public isFacebookAuthenticated: boolean;
-    public isPeriscopeAuthenticated: boolean;
-    public isYoutubeAuthenticated: boolean;
-
-    public facebookPublishChannel: SocialNetworkChannel;
-}
-
 @Component({
     selector: 'manage-app-cmp',
     moduleId: module.id,
@@ -203,7 +118,6 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     public userVodTableData: VodInfoTable;
     public timerId: any;
     public checkAuthStatusTimerId: any;
-    public socialMediaAuthStatus: SocialMediAuthStatus;
     public newLiveStreamActive: boolean;
     public newIPCameraActive:boolean;
     public newStreamSourceActive:boolean;
@@ -218,9 +132,9 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     public discoveryStarted = false;
     public newSourceAdding = false;
     public isEnterpriseEdition = false;
-    public gettingPeriscopeParameters = false;
-    public gettingYoutubeParameters = false;
-    public gettingFacebookParameters = false;
+
+    public gettingDeviceParameters = false;
+    public waitingForConfirmation = false;
 
     public camera:Camera;
     public onvifURLs:String[];
@@ -238,15 +152,15 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     public selectedBroadcast:LiveBroadcast;
     public showVodButtons=false;
 
-    public waitingForPeriscopeToBeAuthorized = false;
-    public waitingForYoutubeToBeAuthorized = false;
-    public waitingForFacebookToBeAuthorized = false;
     public userFBPagesLoading = false;
     public liveStreamEditing: LiveBroadcast;
     public editBroadcastShareYoutube: boolean;
     public editBroadcastShareFacebook: boolean;
     public editBroadcastSharePeriscope: boolean;
     public liveStreamUpdating = false;
+
+
+    public videoServiceEndpoints: VideoServiceEndpoint[];
 
 
 
@@ -293,12 +207,8 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     pageChange: EventEmitter<PageEvent>;
 
 
-
-
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
-
-
 
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
@@ -334,14 +244,6 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
     ngOnInit() {
 
-
-
-
-
-
-
-
-
         //  Init Bootstrap Select Picker
         if($(".selectpicker").length != 0){
             $(".selectpicker").selectpicker({
@@ -372,7 +274,6 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
             $('#selectBox').change(function () {
 
-
                 var val=$(this).val();
                 console.log(val);
 
@@ -400,7 +301,6 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
             dataRows: []
         };
 
-        this.socialMediaAuthStatus = new SocialMediAuthStatus();
         this.liveBroadcast = new LiveBroadcast();
         this.selectedBroadcast=new LiveBroadcast();
         this.liveBroadcast.name = "";
@@ -579,19 +479,10 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
                 return;
             }
 
-
-
             this.getAppLiveStreams();
-
-
-
-
-
 
             this.getSettings();
             //this.getAppLiveStreamsOnce();
-
-
 
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
@@ -650,9 +541,6 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
 
     openVodUploadDialog(): void {
-
-
-
 
         let dialogRef = this.dialog.open(UploadVodDialogComponent, {
             data: {appName: this.appName},
@@ -727,9 +615,16 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
         let dialogRef = this.dialog.open(BroadcastEditComponent, {
 
-            data: { name:this.liveStreamEditing.name,streamId:this.liveStreamEditing.streamId,appName:this.appName,
-                editBroadcastShareFacebook:this.editBroadcastShareFacebook,editBroadcastShareYoutube:this.editBroadcastShareYoutube,
-                editBroadcastSharePeriscope:this.editBroadcastSharePeriscope,socialMediaAuthStatus:this.socialMediaAuthStatus}
+            data: { 
+                name:this.liveStreamEditing.name,
+                streamId:this.liveStreamEditing.streamId,
+                appName:this.appName,
+                editBroadcastShareFacebook:this.editBroadcastShareFacebook,
+                editBroadcastShareYoutube:this.editBroadcastShareYoutube,
+                editBroadcastSharePeriscope:this.editBroadcastSharePeriscope,
+                // ************** TODO: open it *************************
+                //socialMediaAuthStatus:this.socialMediaAuthStatus
+            }
 
 
 
@@ -744,17 +639,9 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
         });
     }
 
-
-
-
-
     test(){
-
         alert("test");
-
     }
-
-
 
     getAppLiveStreams(): void {
 
@@ -816,22 +703,17 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
                 for (var i in data) {
 
-
                     var endpoint = [];
                     for (var j in data[i].endPointList) {
                         endpoint.push(data[i].endPointList[j]);
                     }
 
-
                     this.broadcastTableData.dataRows.push(data[i]);
-
 
                     this.broadcastTableData.dataRows[i].iframeSource = "http://localhost:5080/LiveApp/play.html?name=" + this.broadcastTableData.dataRows[i].streamId + "&autoplay=true";
                     // console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
 
                 }
-
-
                 /*
                 if(this.isGridView){
                     setTimeout(() => {
@@ -856,8 +738,6 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     filterAppLiveStreams(type:String): void {
 
         if(type=="displayAll"){
-
-
             this.getAppLiveStreams();
         }
 
@@ -868,12 +748,8 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
                 console.log("type of data -> " + typeof data);
 
                 for (var i in data) {
-
                     this.broadcastTableData.dataRows.push(data[i]);
-
                 }
-
-
 
                 if(this.isGridView){
                     setTimeout(() => {
@@ -881,18 +757,12 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
                     }, 500);
 
                 }
-
-
                 setTimeout(function () {
                     $('[data-toggle="tooltip"]').tooltip();
                 }, 500);
 
-
-
             });
         }
-
-
     }
 
 
@@ -905,13 +775,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
                 console.log("type of data -> " + typeof data);
 
                 for (var i in data) {
-
-
-
                     this.gridTableData.list.push(data[i]);
-
-
-
                 }
                 setTimeout(function () {
                     $('[data-toggle="tooltip"]').tooltip();
@@ -919,8 +783,6 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
             });
     }
-
-
 
     getVoDStreams(): void {
 
@@ -931,13 +793,8 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
         //this for getting full length of vod streams for paginations
 
         this.restService.getTotalVodNumber(this.appName).subscribe(data => {
-
-
             this.vodLength = data;
-
             console.log("vod table length: " + this.vodLength);
-
-
         });
 
 
@@ -946,50 +803,30 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
             }
-
             this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
-
-
-
         });
-
-
     }
 
 
     getUserVoDStreams(): void {
 
-
-
         //this for getting full length of vod streams for paginations
-
         this.restService.getTotalUserVodNumber(this.appName).subscribe(data => {
-
-
             this.userVodLength = data;
 
             console.log("uservod table length: " + this.userVodLength);
-
-
         });
-
 
         this.restService.getUserVodList(this.appName, 0, 5).subscribe(data => {
             this.userVodTableData.dataRows = [];
             for (var i in data) {
                 this.userVodTableData.dataRows.push(data[i]);
             }
-
             this.dataSourceUserVod = new MatTableDataSource(this.userVodTableData.dataRows);
-
 
         });
 
     }
-
-
-
-
 
     ngOnDestroy() {
         this.sub.unsubscribe();
@@ -1543,10 +1380,25 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
     getFacebookChannel(): void {
         this.restService.getSocialNetworkChannel(this.appName, "facebook").subscribe(data => {
             console.log(data);
+            /*
             this.socialMediaAuthStatus.facebookPublishChannel = new SocialNetworkChannel();
             this.socialMediaAuthStatus.facebookPublishChannel.id = data["id"];
             this.socialMediaAuthStatus.facebookPublishChannel.name = data["name"];
             this.socialMediaAuthStatus.facebookPublishChannel.type = data["type"];
+            */
+        });
+    }
+
+
+    getSocialEndpoints(): void {
+        this.restService.getSocialEndpoints(this.appName).subscribe(data => {
+
+            this.videoServiceEndpoints = [];
+            for (var i in data) {
+               console.log(data[i]);
+               this.videoServiceEndpoints.push(data[i]);
+            }
+
         });
     }
 
@@ -1555,6 +1407,9 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
             this.appSettings = <AppSettings>data;
         });
 
+        this.getSocialEndpoints();
+
+        /*
         this.restService.checkDeviceAuthStatus(this.appName, "facebook").subscribe(data => {
             this.socialMediaAuthStatus.isFacebookAuthenticated = data["success"];
 
@@ -1570,6 +1425,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
         this.restService.checkDeviceAuthStatus(this.appName, "periscope").subscribe(data => {
             this.socialMediaAuthStatus.isPeriscopeAuthenticated = data["success"];
         });
+        */
 
     }
 
@@ -1782,10 +1638,6 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
             });
 
     }
-
-
-
-
 
     startDiscover() {
         this.discoveryStarted=true;
@@ -2032,34 +1884,9 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
 
     }
 
-    setGettingParametersFalse(networkName: string): void {
-        switch (networkName) {
-            case "facebook":
-                this.gettingFacebookParameters = false;
-                break;
-            case "youtube":
-                this.gettingYoutubeParameters = false;
-                break;
-            case "periscope":
-                this.gettingPeriscopeParameters = false;
-                break;
-        }
-    }
-
     getSocialMediaAuthParameters(networkName: string): void {
 
-        switch (networkName) {
-            case "facebook":
-                this.gettingFacebookParameters = true;
-                break;
-            case "youtube":
-                this.gettingYoutubeParameters = true;
-                break;
-            case "periscope":
-                this.gettingPeriscopeParameters = true;
-                break;
-        }
-
+        this.gettingDeviceParameters = true;
 
         this.restService.getDeviceAuthParameters(this.appName, networkName).subscribe(data => {
 
@@ -2075,7 +1902,7 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
                 var typem = 'info';
 
 
-                this.setGettingParametersFalse(networkName);
+                this.gettingDeviceParameters = false;
                 swal({
                     html: message,
                     type: typem,
@@ -2090,18 +1917,8 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
                         console.log("onclose");
                     }
                 }).then(() => {
-                    switch (networkName) {
-                        case "facebook":
-                            this.waitingForFacebookToBeAuthorized = true;
-                            break;
-                        case "youtube":
-                            this.waitingForYoutubeToBeAuthorized = true;
-                            break;
-                        case "periscope":
-                            this.waitingForPeriscopeToBeAuthorized = true;
-                            break;
-                    }
-                    this.checkAuthStatus(networkName);
+                    this.waitingForConfirmation = true;
+                    this.checkAuthStatus(data['user_code']);
 
                 })
 
@@ -2113,7 +1930,8 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
                 message = Locale.getLocaleInterface().notEnterprise;
 
                 typem = 'error';
-                this.setGettingParametersFalse(networkName);
+                this.gettingDeviceParameters = false;
+               
                 swal({
                     html: message,
                     type: typem,
@@ -2129,15 +1947,12 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
                     }
                 });
 
-
-
             } else if (this.isEnterpriseEdition == true && data['errorId'] == ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID) {
 
                 message = Locale.getLocaleInterface().ketNotdefined;;
 
-
                 typem = 'error';
-                this.setGettingParametersFalse(networkName);
+                this.gettingDeviceParameters = false;
                 swal({
                     html: message,
                     type: typem,
@@ -2214,53 +2029,35 @@ export class AppPageComponent implements OnInit, OnDestroy,AfterViewInit {
         return "rtmp://" + SERVER_ADDR + "/" + this.appName + "/" + streamUrl;
     }
 
-    revokeSocialMediaAuth(networkName: string): void {
-        this.restService.revokeSocialNetwork(this.appName, networkName)
+    revokeSocialMediaAuth(endpointId: string): void {
+        this.restService.revokeSocialNetwork(this.appName, endpointId)
             .subscribe(data => {
                 if (data["success"] == true) {
-                    if (networkName == "facebook") {
-                        this.socialMediaAuthStatus.isFacebookAuthenticated = false;
-                    }
-                    else if (networkName == "youtube") {
-                        this.socialMediaAuthStatus.isYoutubeAuthenticated = false;
-                    }
-                    else if (networkName == "periscope") {
-                        this.socialMediaAuthStatus.isPeriscopeAuthenticated = false;
-                    }
+
+                    this.videoServiceEndpoints = this.videoServiceEndpoints.filter(
+                        element => { element.id !== endpointId }
+                    );
                 }
             });
     }
 
-    checkAuthStatus(networkName: string): void {
+    checkAuthStatus(userCode: string): void {
 
-        this.restService.checkAuthStatus(networkName, this.appName).subscribe(data => {
+        this.restService.checkAuthStatus(userCode, this.appName).subscribe(data => {
 
             if (data["success"] != true) {
                 this.checkAuthStatusTimerId = setTimeout(() => {
-                    this.checkAuthStatus(networkName);
+                    this.checkAuthStatus(userCode);
                 }, 5000);
             }
             else {
                 if (this.checkAuthStatusTimerId) {
                     clearInterval(this.checkAuthStatusTimerId);
                 }
-                if (networkName == "facebook") {
-                    this.socialMediaAuthStatus.isFacebookAuthenticated = true;
-                    this.gettingFacebookParameters = false;
-                    this.waitingForFacebookToBeAuthorized = false;
-                    this.getFacebookChannel();
-                }
-                else if (networkName == "youtube") {
-                    this.socialMediaAuthStatus.isYoutubeAuthenticated = true;
-                    this.gettingYoutubeParameters = false;
-                    this.waitingForYoutubeToBeAuthorized = false;
-                }
-                else if (networkName == "periscope") {
-                    this.socialMediaAuthStatus.isPeriscopeAuthenticated = true;
-                    this.gettingPeriscopeParameters = false;
-                    this.waitingForPeriscopeToBeAuthorized = false;
-                }
 
+                this.getSocialEndpoints();
+                
+                this.waitingForConfirmation = false;
                 swal({
                     type: "success",
                     title: Locale.getLocaleInterface().congrats,
