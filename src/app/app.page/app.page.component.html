@@ -70,8 +70,6 @@
                                         </select>
                                     </div>
                                     -->
-
-
                                 </div>
 
                                 <div class="card" *ngIf="newLiveStreamActive">
@@ -86,7 +84,8 @@
                                             <div class="form-group text-left">
                                                 <label i18n="@@newLiveStreamName">Name</label>
                                                 <input type="text" required minlength="4" name="broadcastName" i18n-placeholder="@@stream_name_place_holder" placeholder="Stream name"
-                                                    class="form-control" [(ngModel)]="liveBroadcast.name" #broadcastName="ngModel">
+                                                       class="form-control" [(ngModel)]="liveBroadcast.name"
+                                                       #broadcastName="ngModel">
                                                 <small [hidden]="broadcastName.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                                                     Stream name should be at least 4 characters.
                                                 </small>
@@ -131,7 +130,6 @@
                                     </form>
                                 </div>
 
-
                                 <div class="card" *ngIf="newIPCameraActive">
 
                                     <form method="post" #f="ngForm" validate (ngSubmit)="addIPCamera(f.valid)">
@@ -166,8 +164,7 @@
                                                 <input type="text" name="onvifURL"
                                                        i18n-placeholder="@@onvifUrl_place_holder"
                                                        placeholder="Onvif Url" class="form-control"
-                                                       [(ngModel)]="liveBroadcast.ipAddr"
-                                                       #onvifURL="ngModel">
+                                                       [(ngModel)]="liveBroadcast.ipAddr" #onvifURL="ngModel">
 
                                             </div>
 
@@ -176,8 +173,7 @@
                                                 <input type="text" name="username"
                                                        i18n-placeholder="@@username_place_holder"
                                                        placeholder="User Name" class="form-control"
-                                                       [(ngModel)]="liveBroadcast.username"
-                                                       #username="ngModel">
+                                                       [(ngModel)]="liveBroadcast.username" #username="ngModel">
 
                                             </div>
 
@@ -185,8 +181,8 @@
                                                 <label i18n="@@newLiveStreamName">Password</label>
                                                 <input type="text" name="password"
                                                        i18n-placeholder="@@password_place_holder" placeholder="Password"
-                                                       class="form-control" [(ngModel)]="liveBroadcast.password"
-                                                       #password="ngModel">
+                                                       class="form-control"
+                                                       [(ngModel)]="liveBroadcast.password" #password="ngModel">
 
                                             </div>
 
@@ -220,8 +216,8 @@
                                                 <label i18n="@@newLiveStreamName">Name</label>
                                                 <input type="text" required minlength="4" name="broadcastName"
                                                        i18n-placeholder="@@stream_name_place_holder"
-                                                       placeholder="Stream name" class="form-control"
-                                                       [(ngModel)]="liveBroadcast.name"
+                                                       placeholder="Stream name"
+                                                       class="form-control" [(ngModel)]="liveBroadcast.name"
                                                        #broadcastName="ngModel">
                                                 <small [hidden]="broadcastName.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                                                     Stream name should be at least 4 characters.
@@ -233,8 +229,8 @@
                                                 <label i18n="@@newLiveStreamUrl">Stream Url</label>
                                                 <input type="text" required minlength="4" name="broadcasturl"
                                                        i18n-placeholder="@@stream_name_place_holder"
-                                                       placeholder="Stream Url" class="form-control"
-                                                       [(ngModel)]="liveBroadcast.streamUrl"
+                                                       placeholder="Stream Url"
+                                                       class="form-control" [(ngModel)]="liveBroadcast.streamUrl"
                                                        #broadcastName="ngModel">
 
                                             </div>
@@ -258,18 +254,17 @@
                                 <div style="display: flex; justify-content: flex-end"
                                      *ngIf="broadcastTableData.dataRows.length>0">
 
-
                                     <div class="mat-header">
 
                                         <input (keyup)="applyFilter($event.target.value)" placeholder="Search">
 
                                     </div>
                                     <div>
-                                        <button class="btn" *ngIf="isGridView" (click)="switchToListView()"><i
-                                                class="fa fa-bars"></i> List
+                                        <button class="btn" *ngIf="isGridView" (click)="switchToListView()">
+                                            <i class="fa fa-bars"></i> List
                                         </button>
-                                        <button class="btn" *ngIf="!isGridView" (click)="switchToGridView()"><i
-                                                class="fa fa-th-large"></i> Grid
+                                        <button class="btn" *ngIf="!isGridView" (click)="switchToGridView()">
+                                            <i class="fa fa-th-large"></i> Grid
                                         </button>
                                     </div>
 
@@ -290,15 +285,16 @@
 
                                                 <mat-cell *matCellDef="let row">
 
-                                                    <p *ngIf="row.type=='liveStream'"><img style="width: 10%"
-                                                                                           src="/assets/img/icons/video-camera.svg">
+                                                    <p *ngIf="row.type=='liveStream'">
+                                                        <img style="width: 10%"
+                                                             src="/assets/img/icons/video-camera.svg"> {{row.name}}</p>
+                                                    <p *ngIf="row.type=='ipCamera'">
+                                                        <img style="width: 10%" src="/assets/img/icons/cctv.svg">
                                                         {{row.name}}</p>
-                                                    <p *ngIf="row.type=='ipCamera'"><img style="width: 10%"
-                                                                                         src="/assets/img/icons/cctv.svg">
-                                                        {{row.name}}</p>
-                                                    <p *ngIf="row.type=='streamSource'"><img style="width: 10%"
-                                                                                             src="/assets/img/icons/video-camera.svg">
-                                                        {{row.name}}</p>
+                                                    <p *ngIf="row.type=='streamSource'">
+                                                        <img style="width: 10%"
+                                                             src="/assets/img/icons/video-camera.svg"> {{row.name}}
+                                                    </p>
 
                                                 </mat-cell>
                                             </ng-container>
@@ -310,39 +306,52 @@
 
 
                                                     <ng-container [ngSwitch]="row.status">
-                                                        <ng-container *ngSwitchCase="'created'"><i
-                                                                class="fa fa-circle text-muted">&nbsp;</i>Offline
+                                                        <ng-container *ngSwitchCase="'created'">
+                                                            <i class="fa fa-circle text-muted">&nbsp;</i>Offline
                                                         </ng-container>
-                                                        <ng-container *ngSwitchCase="'broadcasting'"><i
-                                                                class="fa fa-circle text-success">&nbsp;</i>Broadcasting
+                                                        <ng-container *ngSwitchCase="'broadcasting'">
+                                                            <i class="fa fa-circle text-success">&nbsp;</i>Broadcasting
 
 
                                                             <ng-container [ngSwitch]="row.quality">
 
-                                                                <ng-container *ngSwitchCase="'poor'"><i class="ti-pulse"
-                                                                                                        style="color:#98000b;font-size: 1.1em"
-                                                                                                        data-toggle="tooltip"
-                                                                                                        i18n-title
-                                                                                                        title="Quality: Poor"> </i>
+                                                                <ng-container *ngSwitchCase="'poor'">
+                                                                    <i class="ti-pulse"
+                                                                       style="color:#98000b;font-size: 1.1em"
+                                                                       data-toggle="tooltip"
+                                                                       i18n-title
+                                                                       title="Quality: Poor"> </i>
                                                                 </ng-container>
-                                                                <ng-container *ngSwitchCase="'average'"><i
-                                                                        class="ti-pulse"
-                                                                        style="color:#190e98;font-size: 1.1em"
-                                                                        data-toggle="tooltip" i18n-title
-                                                                        title="Quality: Average"> </i></ng-container>
-                                                                <ng-container *ngSwitchCase="'good'"><i class="ti-pulse"
-                                                                                                        style="color:#199826;font-size: 1.1em"
-                                                                                                        data-toggle="tooltip"
-                                                                                                        i18n-title
-                                                                                                        title="Quality: Good"> </i>
+                                                                <ng-container *ngSwitchCase="'average'">
+                                                                    <i class="ti-pulse"
+                                                                       style="color:#190e98;font-size: 1.1em"
+                                                                       data-toggle="tooltip" i18n-title
+                                                                       title="Quality: Average"> </i></ng-container>
+                                                                <ng-container *ngSwitchCase="'good'">
+                                                                    <i class="ti-pulse"
+                                                                       style="color:#199826;font-size: 1.1em"
+                                                                       data-toggle="tooltip"
+                                                                       i18n-title
+                                                                       title="Quality: Good"> </i>
                                                                 </ng-container>
 
                                                             </ng-container>
 
+                                                            <ng-container>
+
+                                                                <i
+
+                                                                        data-toggle="tooltip"
+                                                                        i18n-title
+                                                                        title="Speed">
+                                                                    {{row.speed| number : '1.2-2'}}x</i>
+                                                            </ng-container>
+
 
                                                         </ng-container>
-                                                        <ng-container *ngSwitchCase="'finished'"><i
-                                                                class="fa fa-circle text-muted">&nbsp;</i>Offline
+                                                        <ng-container *ngSwitchCase="'finished'">
+                                                            <i class="fa fa-circle text-muted"
+                                                               *ngSwitchCase="'finished'">&nbsp;</i>Offline
                                                         </ng-container>
                                                     </ng-container>
 
@@ -371,8 +380,6 @@
                                                         </ng-container>
 
                                                     </ng-container>
-
-
                                                 </mat-cell>
                                             </ng-container>
 
@@ -383,14 +390,14 @@
 
                                                     <div style="font-size: 1.1em">
                                                         <button *ngIf="row.status=='broadcasting' "
-                                                                data-toggle="tooltip"
-                                                                i18n-title title="Play Stream"
+                                                                data-toggle="tooltip" i18n-title title="Play Stream"
                                                                 (click)="playLive(row.streamId)"
                                                                 class="btn btn-success btn-simple btn-magnify btn-xs "
-                                                                type="button" style="font-size: 1.1em">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-control-play"></i>
-                                                                                        </span>
+                                                                type="button"
+                                                                style="font-size: 1.1em">
+                                                            <span class="btn-label">
+                                                                <i class="ti-control-play"></i>
+                                                            </span>
                                                             <ng-container i18n="@@tablePlayButton"></ng-container>
 
                                                         </button>
@@ -399,10 +406,11 @@
                                                                 (click)="openBroadcastEditDialog(row)" title="Edit"
                                                                 data-toggle="tooltip"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                type="button" style="font-size: 1.1em">
-                                                                            <span class="btn-label">
-                                                                                <i class="ti-pencil"></i>
-                                                                            </span>
+                                                                type="button"
+                                                                style="font-size: 1.1em">
+                                                            <span class="btn-label">
+                                                                <i class="ti-pencil"></i>
+                                                            </span>
                                                             <ng-container i18n="@@tableEditButton"></ng-container>
 
                                                         </button>
@@ -412,11 +420,10 @@
                                                                 (click)="openSettingsDialog(row)"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs "
                                                                 type="button" data-toggle="tooltip" i18n-title
-                                                                title="Settings"
-                                                                style="font-size: 1.1em">
-                                                                        <span class="btn-label" style="float: right;">
-                                                                                            <i class="ti-settings"></i>
-                                                                                        </span>
+                                                                title="Settings" style="font-size: 1.1em">
+                                                            <span class="btn-label" style="float: right;">
+                                                                <i class="ti-settings"></i>
+                                                            </span>
 
                                                             <ng-container i18n="@@tableSettings"></ng-container>
                                                         </button>
@@ -426,10 +433,11 @@
                                                                 data-toggle="tooltip" i18n-title
                                                                 title="Copy Live Embed Code to Clipboard"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                type="button" style="font-size: 1.1em">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-share"></i>
-                                                                                        </span>
+                                                                type="button"
+                                                                style="font-size: 1.1em">
+                                                            <span class="btn-label">
+                                                                <i class="ti-share"></i>
+                                                            </span>
                                                             <ng-container i18n="@@tableEmbedCode"></ng-container>
                                                         </button>
 
@@ -439,20 +447,20 @@
                                                                 data-toggle="tooltip"
                                                                 [title]="'Copy Publish URL to Clipboard : ' + getRtmpUrl(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                type="button" style="font-size: 1.1em">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-clipboard"></i>
-                                                                                        </span>
+                                                                type="button"
+                                                                style="font-size: 1.1em">
+                                                            <span class="btn-label">
+                                                                <i class="ti-clipboard"></i>
+                                                            </span>
                                                             <ng-container i18n="@@copyPublishUrl"></ng-container>
                                                         </button>
                                                         <button (click)="deleteLiveBroadcast(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-danger btn-xs "
-                                                                type="button" data-toggle="tooltip" i18n-title
-                                                                title="Delete"
-                                                                style="font-size: 1.1em">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-close"></i>
-                                                                                        </span>
+                                                                type="button" data-toggle="tooltip"
+                                                                i18n-title title="Delete" style="font-size: 1.1em">
+                                                            <span class="btn-label">
+                                                                <i class="ti-close"></i>
+                                                            </span>
                                                             <ng-container i18n="@@tableDeleteButton"></ng-container>
                                                         </button>
 
@@ -478,7 +486,14 @@
 
                                         </mat-table>
 
-                                        <mat-paginator [pageSizeOptions]="[5, 10, 25]"></mat-paginator>
+                                        <mat-paginator
+                                                [pageSizeOptions]="[5, 10, 25]"
+                                                (page)="onListPaginateChange($event)"
+                                                [length]="listLength"
+                                        >
+
+
+                                        </mat-paginator>
 
 
 
@@ -566,29 +581,11 @@
                                                           <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
                                                       </button>
 
-
-
-
                                                   </div>
-
-
                                               </li>
-
-
-
-
-
-
-
-
-
-
                                           </ul>
 
-
-
   -->
-
                                         <ul>
                                             <div>
 
@@ -632,12 +629,12 @@
 
                                                             <button (click)="deleteLiveBroadcast(row.streamId)"
                                                                     class="btn btn-simple btn-magnify btn-danger btn-xs "
-                                                                    type="button" data-toggle="tooltip" i18n-title
-                                                                    title="Delete"
+                                                                    type="button" data-toggle="tooltip"
+                                                                    i18n-title title="Delete"
                                                                     style="float: right;font-size: 1.2em;">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-close"></i>
-                                                                                        </span>
+                                                                <span class="btn-label">
+                                                                    <i class="ti-close"></i>
+                                                                </span>
                                                                 <ng-container i18n="@@tableDeleteButton"></ng-container>
                                                             </button>
 
@@ -648,9 +645,9 @@
                                                                     class="btn btn-simple btn-magnify btn-info btn-xs "
                                                                     type="button"
                                                                     style="float: right;font-size: 1.2em;">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-share"></i>
-                                                                                        </span>
+                                                                <span class="btn-label">
+                                                                    <i class="ti-share"></i>
+                                                                </span>
                                                                 <ng-container i18n="@@tableEmbedCode"></ng-container>
                                                             </button>
                                                             <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
@@ -658,9 +655,9 @@
                                                                     class="btn btn-simple btn-magnify btn-info btn-xs "
                                                                     type="button"
                                                                     style="float: right;font-size: 1.2em;">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-clipboard"></i>
-                                                                                        </span>
+                                                                <span class="btn-label">
+                                                                    <i class="ti-clipboard"></i>
+                                                                </span>
                                                                 <ng-container i18n="@@copyPublishUrl"></ng-container>
                                                             </button>
 
@@ -670,9 +667,9 @@
                                                                     class="btn btn-simple btn-magnify btn-info btn-xs "
                                                                     type="button"
                                                                     style="float: right;font-size: 1.2em;">
-                                                                            <span class="btn-label">
-                                                                                <i class="ti-pencil"></i>
-                                                                            </span>
+                                                                <span class="btn-label">
+                                                                    <i class="ti-pencil"></i>
+                                                                </span>
                                                                 <ng-container i18n="@@tableEditButton"></ng-container>
 
                                                             </button>
@@ -683,9 +680,9 @@
                                                                     type="button" data-toggle="tooltip" i18n-title
                                                                     title="Settings"
                                                                     style="float: right;font-size: 1.2em;">
-                                                                        <span class="btn-label" style="float: right;">
-                                                                                            <i class="ti-settings"></i>
-                                                                                        </span>
+                                                                <span class="btn-label" style="float: right;">
+                                                                    <i class="ti-settings"></i>
+                                                                </span>
 
                                                                 <ng-container></ng-container>
                                                             </button>
@@ -701,10 +698,8 @@
 
                                         </ul>
                                         <div>
-                                            <mat-paginator
-                                                    [pageSizeOptions]="[4, 10, 25]"
-                                                    [length]="gridLength"
-                                                    (page)="onGridPaginateChange($event)">
+                                            <mat-paginator [pageSizeOptions]="[4, 10, 25]" [length]="listLength"
+                                                           (page)="onGridPaginateChange($event)">
 
 
                                             </mat-paginator>
@@ -732,7 +727,8 @@
                                     </p>
 
 
-                                </div><!-- /main -->
+                                </div>
+                                <!-- /main -->
 
 
 
@@ -868,14 +864,14 @@
 
                                         <button class="btn btn-fill btn-success"
                                                 *ngIf="userVodTableData.dataRows.length>0 " (click)="showUserVodTable()"
-                                                data-toggle="dropdown" role="button">User VoDs
+                                                data-toggle="dropdown"
+                                                role="button">User VoDs
                                         </button>
 
 
                                     </div>
 
                                 </div>
-
 
                                 <div id="vodTable" style="text-align: left"
                                      *ngIf=" vodTableData.dataRows.length>0 && displayVodTable">
@@ -906,7 +902,7 @@
                                                 <mat-header-cell *matHeaderCellDef> Type</mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
-                                                    {{row.streamName}}
+                                                    {{row.type}}
 
                                                 </mat-cell>
                                             </ng-container>
@@ -926,7 +922,9 @@
                                                 <mat-cell *matCellDef="let row">
 
 
-                                                    <button (click)="playVoD(row.vodName)" class="btn btn-success btn-simple btn-magnify" type="button">
+                                                    <button (click)="playVoD(row.vodName,row.type)"
+                                                            class="btn btn-success btn-simple btn-magnify"
+                                                            type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-control-play"></i>
                                                         </span>
@@ -956,89 +954,6 @@
                                         </mat-paginator>
 
 
-                                    </div>
-
-                                </div>
-
-                                <!--
-                                                                <div id="userVodTable" style="text-align: left"
-                                                                     *ngIf="userVodTableData.dataRows.length>0 && displayUserVodTable">
-
-                                    <br>
-                                    <div class="mat-container mat-elevation-z1">
-
-                                        <mat-table [dataSource]="dataSourceUserVod">
-
-
-                                            <ng-container matColumnDef="name">
-                                                <mat-header-cell *matHeaderCellDef> Name</mat-header-cell>
-
-                                                <mat-cell *matCellDef="let row">
-                                                    {{row.vodName}}
-
-                                                </mat-cell>
-                                            </ng-container>
-
-                                            <ng-container matColumnDef="date">
-                                                <mat-header-cell *matHeaderCellDef> Date</mat-header-cell>
-
-                                                <mat-cell *matCellDef="let row">
-                                                    {{convertJavaTime(row.creationDate)}}
-
-                                                </mat-cell>
-                                            </ng-container>
-
-                                            <ng-container matColumnDef="actions">
-                                                <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
-
-                                                <mat-cell *matCellDef="let row">
-
-
-                                                                                    <button (click)="playUserVoD(row.vodName)"
-                                                                                            class="btn btn-success btn-simple btn-magnify"
-                                                                                            type="button">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-control-play"></i>
-                                                                                        </span>
-                                                                                        <ng-container i18n="@@tablePlayButton">Play</ng-container>
-                                                                                    </button>
-                                                                                    <button (click)="deleteVoD(row.vodName,row.vodId)"
-                                                                                            class="btn btn-simple btn-magnify btn-danger" type="button">
-                                                                                        <span class="btn-label">
-                                                                                            <i class="ti-close"></i>
-                                                                                        </span>
-                                                                                        <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
-                                                                                    </button>
-
-                                                </mat-cell>
-                                            </ng-container>
-
-                                            <mat-header-row *matHeaderRowDef="displayedColumnsUserVod"></mat-header-row>
-                                            <mat-row *matRowDef="let row; columns: displayedColumnsUserVod;">
-                                            </mat-row>
-                                        </mat-table>
-
-
-                                                                        <mat-paginator [length]="userVodLength"
-                                                                                       [pageSize]="pageSize"
-                                                                                       [pageSizeOptions]="pageSizeOptions"
-                                                                                       (page)="onUserVodPaginateChange($event)"
-                                                                        >
-                                                                        </mat-paginator>
-
-                                        <div style="text-align: center">
-
-                                                                            <button class="btn btn-fill btn-success" (click)="showVodTable()"
-                                                                                    data-toggle="dropdown" role="button">Close
-                                                                            </button>
-
-                                                                            <button class="btn btn-fill btn-success" (click)="showUserVodTable()"
-                                                                                    data-toggle="dropdown" role="button">Refresh
-                                                                            </button>
-
-
-                                        </div>
-                                        <br>
                                     </div>
 
                                 </div>
@@ -1189,74 +1104,22 @@
                                         <legend class="text-left" i18n="@@SocialSharing">Social Network Sharing</legend>
                                         <div class="form-group">
 
-                                            <label class="col-sm-2 control-label">
-                                                <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>Facebook:</label>
+                                            <div class="row"
+                                                 *ngFor="let endpoint of videoServiceEndpoints; let i = index">
 
-                                            <div class="col-sm-2 control-label text-info" style="text-align: left"
-                                                 *ngIf="socialMediaAuthStatus.isFacebookAuthenticated">
-                                                Linked
-                                                <button class=" btn btn-simple btn-danger btn-xs"
-                                                        *ngIf="socialMediaAuthStatus.isFacebookAuthenticated"
-                                                        style="text-align:left"
-                                                        i18n="@@YoutubeAuthenticated" type="button"
-                                                        (click)="revokeSocialMediaAuth('facebook')">
-                                                    <i class="ti-unlink"></i>Unlink
-                                                </button>
-                                            </div>
-                                            <button class="col-sm-1 form-control-static btn btn-simple btn-success "
-                                                    style="text-align:left"
-                                                    *ngIf="!socialMediaAuthStatus.isFacebookAuthenticated"
-                                                    i18n="@@authenticate" type="button"
-                                                    (click)="getSocialMediaAuthParameters('facebook')">
-                                                <i class="ti-link"></i>Link
-                                            </button>
-
-
-                                            <a class="btn btn-simple col-sm-1 control-label" style="text-align:left"
-                                               *ngIf="gettingFacebookParameters">
-                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-                                            </a>
-
-                                            <small class="btn btn-simple col-sm-4 control-label"
-                                                   style="text-align:left;font-size:12px;"
-                                                   *ngIf="waitingForFacebookToBeAuthorized"
-                                                   i18n="@@waitingForFacebookToBeAuthorized">
-                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>Waiting
-                                                Facebook for confirmation. It may take 10-15 seconds after you
-                                                enter code
-                                            </small>
-
-
-                                            <div class="col-sm-8 form-group" style="margin-bottom:0px;"
-                                                 *ngIf="socialMediaAuthStatus.isFacebookAuthenticated == true && socialMediaAuthStatus.facebookPublishChannel != null">
-
-                                                <label class="col-sm-3 control-label">
-                                                    <i class="ti-facebook" style="color:#3b5998">&nbsp;</i> Publish
-                                                    Channel:</label>
-
-                                                <div class="col-sm-9">
-                                                    <div class="radio col-sm-4 text-left" style="margin-top:12px">
-                                                        <input type="radio" name="facebookPublishTarget" id="radio1"
-                                                               value="myAccount"
-                                                               [checked]="socialMediaAuthStatus.facebookPublishChannel.id == null"
-                                                               (click)="setSocialNetworkChannel('facebook', 'profile', 'id')">
-                                                        <label for="radio1">
-                                                            User Profile
-                                                        </label>
-                                                    </div>
-                                                    <div class="radio col-sm-8 text-left" style="margin-top:12px">
-                                                        <input type="radio" name="facebookPublishTarget" id="radio2"
-                                                               value="myPage"
-                                                               [checked]="socialMediaAuthStatus.facebookPublishChannel.id != null"
-                                                               (click)="showNetworkChannelList('facebook', 'page')">
-                                                        <label for="radio2">
-                                                            User's Page
-                                                            <i class="fa fa-spinner fa-pulse fa-1x fa-fw"
-                                                               *ngIf="userFBPagesLoading" aria-hidden="true"></i>
-                                                            <span *ngIf="socialMediaAuthStatus.facebookPublishChannel.id != null"
-                                                                  class=" btn btn-simple btn-info"
-                                                                  style="padding:0px 3px 0px 3px">({{socialMediaAuthStatus.facebookPublishChannel.name}})</span>
-                                                        </label>
+                                                <label class="col-sm-2 control-label">
+                                                    <ng-container [ngSwitch]="endpoint.serviceName">
+                                                        <ng-container *ngSwitchCase="'facebook'">
+                                                            <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>Facebook
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'youtube'">
+                                                            <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>Youtube
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'periscope'">
+                                                            <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>Periscope
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </label>
 
                                                 <div class="col-sm-4 control-label text-info" style="text-align: left">
                                                     {{endpoint.accountName}}
@@ -1278,15 +1141,15 @@
                                                 </label>
 
                                                 <button class="col-sm-2 form-control-static btn btn-fill btn-success" style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                    (click)="getSocialMediaAuthParameters('facebook')">
+                                                        (click)="getSocialMediaAuthParameters('facebook')">
                                                     <i class="ti-facebook"></i> Add Facebook
                                                 </button>
                                                 <button class="col-sm-2 form-control-static btn btn-fill btn-success " style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                    (click)="getSocialMediaAuthParameters('youtube')">
+                                                        (click)="getSocialMediaAuthParameters('youtube')">
                                                     <i class="ti-youtube"></i> Add Youtube
                                                 </button>
                                                 <button class="col-sm-2 form-control-static btn btn-fill btn-success " style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                    (click)="getSocialMediaAuthParameters('periscope')">
+                                                        (click)="getSocialMediaAuthParameters('periscope')">
                                                     <i class="ti-twitter-alt"></i> Add Periscope
                                                 </button>
                                             </div>
@@ -1375,8 +1238,3 @@
 
 
 </div>
-
-
-
-
-

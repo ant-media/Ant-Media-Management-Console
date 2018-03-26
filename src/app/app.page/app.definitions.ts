@@ -18,6 +18,8 @@ export declare interface BroadcastInfo {
     date: number;
     duration: number;
     iframeSource: string;
+    quality: string;
+    speed: number;
 }
 
 export declare interface BroadcastInfoTable {

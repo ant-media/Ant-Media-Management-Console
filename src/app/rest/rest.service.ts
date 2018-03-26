@@ -45,6 +45,8 @@ export class LiveBroadcast {
     date:number;
     duration:number;
     description:string;
+    quality: string;
+    speed: number;
 }
 
 @Injectable()
@@ -238,10 +240,6 @@ export class RestService {
 
     }
 
-    public getTotalUserVodNumber(appName: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/getTotalUserVodNumber', {});
-
-    }
 
 
     public filterAppLiveStreams(appName:string, offset:Number, size:Number,type:String): Observable<Object>  {
