@@ -12,52 +12,35 @@
                     <label i18n="@@newLiveStreamName">Name</label>
                     <input type="text" required minlength="4" name="broadcastName" i18n-placeholder="@@stream_name_place_holder" placeholder="Stream name"
                            class="form-control" [(ngModel)]="data.name" #broadcastName="ngModel">
-                    <small [hidden]="data.name.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
+                    <small [hidden]="broadcastName.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                         Stream name should be at least 4 characters.
                     </small>
                 </div>
                 <div class="form-group text-left">
-                    <label class="control-label" i18n="@@newLiveStreamSocialShare">Share</label>
-                    <div class="col-sm-12 text-left">
-                        <div class="row">
-                            <div class="col-sm-12 checkbox" style="width:100%">
-                                <input id="shareOnFacebook" name="shareOnFacebook" [disabled]="!data.socialMediaAuthStatus.isFacebookAuthenticated" type="checkbox"
-                                       [(ngModel)]="data.editBroadcastShareFacebook" >
-                                <label for="shareOnFacebook">
-                                    <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>Facebook</label>
-                                <span class="help-block" *ngIf="!data.socialMediaAuthStatus.isFacebookAuthenticated">
-                                                                                                <small i18n="@@facebook_disabled_message">Disabled. Authenticate For Facebook on Settings Tab</small>
-                                                                                            </span>
-                            </div>
-                        </div>
+                    <label class="col-sm-12" style="padding-left:0px"  i18n="@@newLiveStreamSocialShare">Share</label>
+      
+                        <ng-container *ngFor="let endpoint of data.videoServiceEndpoints; let i = index">
+                                                    
+                                <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
 
-                        <div class="row">
-                            <div class="col-sm-12 checkbox" style="width:100%">
-                                <input id="shareOnYoutube" name="shareOnYoutube" [disabled]="!data.socialMediaAuthStatus.isYoutubeAuthenticated" type="checkbox"
-                                       [(ngModel)]="data.editBroadcastShareYoutube">
-                                <label for="shareOnYoutube">
-                                    <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>Youtube</label>
-                                <span class="help-block" *ngIf="!data.socialMediaAuthStatus.isYoutubeAuthenticated">
-                                                                                                <small i18n="@@youtube_disabled_message">Disabled. Authenticate For Youtube on Settings Tab</small>
-                                                                                            </span>
+                                    <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
+                                    <label [for]="endpoint.id">
+                                        <ng-container [ngSwitch]="endpoint.serviceName">
+                                            <ng-container *ngSwitchCase="'facebook'">
+                                                <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'youtube'">
+                                                <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'periscope'">
+                                                <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>
+                                            </ng-container>
+                                        </ng-container>
+                                        {{endpoint.accountName}}
+                                    </label>
 
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12 checkbox" style="width:100%">
-                                <input id="shareOnPeriscope" name="shareOnPeriscope" [disabled]="!data.socialMediaAuthStatus.isPeriscopeAuthenticated" type="checkbox"
-                                       [(ngModel)]="data.editBroadcastSharePeriscope">
-                                <label for="shareOnPeriscope">
-                                    <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>Periscope</label>
-                                <span class="help-block" *ngIf="!data.socialMediaAuthStatus.isPeriscopeAuthenticated">
-                                                                                                <small i18n="@@periscope_disabled_message">Disabled. Authenticate For Periscope(Twitter) on Settings
-                                                                                                    Tab
-                                                                                                </small>
-                                                                                            </span>
-
-                            </div>
-                        </div>
-                    </div>
+                                </div>
+                            </ng-container>    
 
                 </div>
 
