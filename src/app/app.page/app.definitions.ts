@@ -33,34 +33,34 @@ export declare interface VideoServiceEndpoint {
 
 export declare interface VOD {
     type: string;
-    streamName:string;
-    streamId:string;
-    vodName:string;
-    creationDate:string;
-    duration:string;
+    streamName: string;
+    streamId: string;
+    vodName: string;
+    creationDate: string;
+    duration: string;
 }
 
-export declare interface CamStreamInfo{
+export declare interface CamStreamInfo {
     name: string;
-    type:string;
+    type: string;
     streamId: string;
     viewerCount: number;
     status: string;
     endPointList: Endpoint[];
-    vodList:VOD[];
-    ipAddr:string
+    vodList: VOD[];
+    ipAddr: string
 }
 
-export declare interface VodInfo{
+export declare interface VodInfo {
     streamName: string;
-    streamId:string;
+    streamId: string;
     filePath: string;
     viewerCount: number;
     vodName: string;
-    creationDate:number;
-    duration:number;
-    fileSize:number;
-    vodId:string;
+    creationDate: number;
+    duration: number;
+    fileSize: number;
+    vodId: string;
 
 }
 
@@ -73,6 +73,7 @@ export declare interface EncoderSettings {
 export declare interface VodInfoTable {
     dataRows: VodInfo[];
 }
-export declare interface CameraInfoTable{
-    list:CamStreamInfo[];
+
+export declare interface CameraInfoTable {
+    list: CamStreamInfo[];
 }
