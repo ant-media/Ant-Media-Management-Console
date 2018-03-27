@@ -1,29 +1,32 @@
-import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 
 
-import { HttpClientModule } from '@angular/common/http';
-import { Routes } from '@angular/router';
-import { AppPageComponent, CamSettinsDialogComponent, UploadVodDialogComponent, BroadcastEditComponent } from './app.page.component';
-import { ClipboardModule } from 'ngx-clipboard';
+import {HttpClientModule} from '@angular/common/http';
 import {
-    MatDialogModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
+    AppPageComponent,
+    BroadcastEditComponent,
+    CamSettinsDialogComponent,
+    UploadVodDialogComponent
+} from './app.page.component';
+import {ClipboardModule} from 'ngx-clipboard';
+import {
     MatAutocompleteModule,
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
+    MatCheckboxModule,
     MatChipsModule,
     MatDatepickerModule,
+    MatDialogModule,
     MatDividerModule,
     MatExpansionModule,
+    MatFormFieldModule,
     MatGridListModule,
     MatIconModule,
+    MatInputModule,
     MatListModule,
     MatMenuModule,
     MatNativeDateModule,
@@ -157,4 +160,5 @@ export const AppPageRoutes: Routes = [
 
 })
 
-export class AppPageModule { }
+export class AppPageModule {
+}
