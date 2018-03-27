@@ -1068,12 +1068,17 @@
                                                     </ng-container>
                                                 </label>
 
-                                                <div class="col-sm-4 control-label text-info" style="text-align: left">
-                                                    {{endpoint.accountName}}
-                                                    <button class=" btn btn-simple btn-danger btn-xs" style="text-align:left" i18n="@@YoutubeAuthenticated" type="button" (click)="revokeSocialMediaAuth(endpoint.id)">
-                                                        <i class="ti-unlink"></i>Remove
-                                                    </button>
+                                                <div class="col-sm-3 form-control-static">
+                                                   
+                                                        {{endpoint.accountName}}
+                                                        <button class="btn btn-simple btn-danger btn-xs" style="text-align:left" i18n="@@YoutubeAuthenticated" type="button" (click)="revokeSocialMediaAuth(endpoint.id)">
+                                                            <i class="ti-unlink"></i>Remove
+                                                        </button>
+                                                    
+                                                    
                                                 </div>
+                                                
+                                                
 
 
                                             </div>
@@ -1087,15 +1092,15 @@
                                                     Add Account
                                                 </label>
 
-                                                <button class="col-sm-2 form-control-static btn btn-fill btn-success" style="margin-right:10px" i18n="@@authenticate" type="button"
+                                                <button class="col-sm-2 form-control-static btn btn-simple btn-success" style="margin-right:10px" i18n="@@authenticate" type="button"
                                                     (click)="getSocialMediaAuthParameters('facebook')">
                                                     <i class="ti-facebook"></i> Add Facebook
                                                 </button>
-                                                <button class="col-sm-2 form-control-static btn btn-fill btn-success " style="margin-right:10px" i18n="@@authenticate" type="button"
+                                                <button class="col-sm-2 form-control-static btn btn-simple btn-success " style="margin-right:10px" i18n="@@authenticate" type="button"
                                                     (click)="getSocialMediaAuthParameters('youtube')">
                                                     <i class="ti-youtube"></i> Add Youtube
                                                 </button>
-                                                <button class="col-sm-2 form-control-static btn btn-fill btn-success " style="margin-right:10px" i18n="@@authenticate" type="button"
+                                                <button class="col-sm-2 form-control-static btn btn-simple btn-success " style="margin-right:10px" i18n="@@authenticate" type="button"
                                                     (click)="getSocialMediaAuthParameters('periscope')">
                                                     <i class="ti-twitter-alt"></i> Add Periscope
                                                 </button>
@@ -1126,41 +1131,6 @@
 
                             </div>
                         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

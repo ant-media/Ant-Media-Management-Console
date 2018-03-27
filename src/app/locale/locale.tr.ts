@@ -26,5 +26,8 @@ export let Locale_Turkish: LocaleInterface =
     live_stream_will_be_deleted: "Yayın silinecek ve bu işlemi geri alamayacaksınız!",
     broadcast_updated: "Yayın güncellendi.",
     broadcast_not_updated: "Yayın güncellenemedi. Lütfen aşağıdaki mesajı contact@antmedia.io'ya gönderiniz.",
+    error_occured: "Bir hata oluştu. Lütfen sonra tekrar deneyiniz",
+    authentication_timeout_message: "Yetkilendirme zaman aşımına uğradı. Lütfen işlemi biraz daha hızlı bir şekilde tekrar deneyiniz.",
+    live_streaming_not_enabled_message: "Canlı Yayın özelliği hesabınızda etkin değil. Lütfen ilgili servis üzerinden etkinleştirin",
    
 }

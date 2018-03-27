@@ -49,6 +49,9 @@ var flowplayer = require('flowplayer');
 var engine = require('flowplayer-hlsjs');
 engine(flowplayer);
 
+const LIVE_STREAMING_NOT_ENABLED = "LIVE_STREAMING_NOT_ENABLED";
+const AUTHENTICATION_TIMEOUT = "AUTHENTICATION_TIMEOUT";
+
 export class HLSListType {
     constructor(public name: string, public value: string) {
     }
@@ -1954,9 +1957,27 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.checkAuthStatus(userCode, this.appName).subscribe(data => {
 
             if (data["success"] != true) {
-                this.checkAuthStatusTimerId = setTimeout(() => {
-                    this.checkAuthStatus(userCode, networkName);
-                }, 5000);
+                if (data["message"] == null) {
+                    this.checkAuthStatusTimerId = setTimeout(() => {
+                        this.checkAuthStatus(userCode, networkName);
+                    }, 5000);
+                }
+                else {
+                    this.waitingForConfirmation = false;
+                    let message = Locale.getLocaleInterface().error_occured;
+                    if (data["message"] == LIVE_STREAMING_NOT_ENABLED) {
+                        message = Locale.getLocaleInterface().live_streaming_not_enabled_message;
+                    }
+                    else if (data["message"] == AUTHENTICATION_TIMEOUT) {
+                        message = Locale.getLocaleInterface().authentication_timeout_message;
+                    }
+                    swal({
+                        type: "warning",
+                        //title: Locale.getLocaleInterface().congrats,
+                        text: message,
+                    });
+                }
+                
             }
             else {
                 if (this.checkAuthStatusTimerId) {
