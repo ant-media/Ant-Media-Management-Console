@@ -116,6 +116,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public appName: string;
     public sub: any;
     public broadcastTableData: BroadcastInfoTable;
+    public broadcastGridTableData: BroadcastInfoTable;
     public broadcastTempTable: BroadcastInfoTable;
 
     public gridTableData: CameraInfoTable;
@@ -298,6 +299,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         this.broadcastTempTable = {
+            dataRows: [],
+        };
+
+        this.broadcastGridTableData = {
             dataRows: [],
         };
 
@@ -899,7 +904,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.restService.getAppLiveStreams(this.appName, index, size).subscribe(data => {
                 //console.log(data);
-                this.broadcastTableData.dataRows = [];
+                this.broadcastGridTableData.dataRows = [];
                 //console.log("type of data -> " + typeof data);
 
                 for (var i in data) {
@@ -910,7 +915,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         endpoint.push(data[i].endPointList[j]);
                     }
 
-                    this.broadcastTableData.dataRows.push(data[i]);
+                    this.broadcastGridTableData.dataRows.push(data[i]);
 
 
                     // console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
@@ -923,12 +928,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             setTimeout(() => {
 
-                for (var i in this.broadcastTableData.dataRows) {
+                for (var i in this.broadcastGridTableData.dataRows) {
 
-                    id = this.broadcastTableData.dataRows[i]['streamId'];
+                    id = this.broadcastGridTableData.dataRows[i]['streamId'];
 
 
-                    iframeSource = "http://" + location.hostname + ":5080/" + this.appName + "/play.html?name=" + id + "&autoplay=true";
+                    iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + id + "&autoplay=true";
 
 
                     var $iframe = $('#' + id);
@@ -936,7 +941,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     $iframe.prop('src', iframeSource);
                 }
 
-            }, 200);
+            }, 600);
 
 
         } else {
@@ -947,7 +952,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.restService.getAppLiveStreams(this.appName, index, size).subscribe(data => {
                 //console.log(data);
-                this.broadcastTableData.dataRows = [];
+                this.broadcastGridTableData.dataRows = [];
                 //console.log("type of data -> " + typeof data);
 
                 for (var i in data) {
@@ -959,7 +964,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
 
 
-                    this.broadcastTableData.dataRows.push(data[i]);
+                    this.broadcastGridTableData.dataRows.push(data[i]);
 
 
                 }
@@ -970,12 +975,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             setTimeout(() => {
 
-                for (var i in this.broadcastTableData.dataRows) {
+                for (var i in this.broadcastGridTableData.dataRows) {
 
-                    id = this.broadcastTableData.dataRows[i]['streamId'];
+                    id = this.broadcastGridTableData.dataRows[i]['streamId'];
 
 
-                    iframeSource = "http://" + location.hostname + ":5080/" + this.appName + "/play.html?name=" + id + "&autoplay=true";
+                    iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + id + "&autoplay=true";
 
 
                     var $iframe = $('#' + id);
@@ -983,7 +988,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     $iframe.prop('src', iframeSource);
                 }
 
-            }, 200);
+            }, 600);
 
 
         }
@@ -996,10 +1001,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         var id;
 
 
-        for (var i in this.broadcastTableData.dataRows) {
+        for (var i in this.broadcastGridTableData.dataRows) {
 
 
-            id = this.broadcastTableData.dataRows[i]['streamId'];
+            id = this.broadcastGridTableData.dataRows[i]['streamId'];
 
 
             var container = document.getElementById(id);
