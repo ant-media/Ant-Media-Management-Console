@@ -507,85 +507,6 @@
                                     <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list"
                                          *ngIf="broadcastTableData.dataRows.length>0 && isGridView">
 
-                                        <!--
-                                          <div class="cbp-vm-options">
-
-
-
-
-                                              <a (click)="switchToGridView()" class="cbp-vm-icon cbp-vm-grid  " data-view="cbp-vm-view-grid"></a>
-                                              <a (click)="switchToListView()" class="cbp-vm-icon cbp-vm-list cbp-vm-selected " data-view="cbp-vm-view-list"></a>
-
-                                          </div>
-
-
-
-                                          <ul *ngIf="!isGridView ">
-
-
-
-                                              <li *ngFor="let row of broadcastTableData.dataRows">
-
-
-                                                  <p class="cbp-vm-image" *ngIf="row.type=='liveStream'&& !isGridView" ><img src="/assets/img/icons/video-camera.svg"></p>
-                                                  <p class="cbp-vm-image" *ngIf="row.type=='ipCamera'&& !isGridView" ><img src="/assets/img/icons/cctv.svg"></p>
-
-
-                                                  <h3 class="cbp-vm-title" >{{row.name}}</h3>
-
-
-
-                                                  <div class="cbp-vm-details">
-
-
-
-
-                                                      <ng-container [ngSwitch]="row.status" *ngIf="!isGridView">
-                                                          <ng-container *ngSwitchCase="'created'"><i class="fa fa-circle text-muted" >&nbsp;</i>Offline</ng-container>
-                                                          <ng-container *ngSwitchCase="'broadcasting'"><i class="fa fa-circle text-success">&nbsp;</i>Broadcasting</ng-container>
-                                                          <ng-container *ngSwitchCase="'finished'"><i class="fa fa-circle text-muted" *ngSwitchCase="'finished'">&nbsp;</i>Offline</ng-container>
-                                                      </ng-container>
-
-
-
-                                                      <button *ngIf="row.status=='broadcasting' && !isGridView"  (click)="playLive(row.streamId)" class="btn btn-success btn-simple btn-magnify btn-xs "
-                                                              type="button">
-                                                                                          <span class="btn-label">
-                                                                                              <i class="ti-control-play"></i>
-                                                                                          </span>
-                                                          <ng-container i18n="@@tablePlayButton">Play</ng-container>
-
-                                                      </button>
-
-
-                                                      <button (click)="copyLiveEmbedCode(row.streamId)" data-toggle="tooltip" i18n-title title="Copy to Clipboard" class="btn btn-simple btn-magnify btn-info btn-xs " type="button">
-                                                                                          <span class="btn-label">
-                                                                                              <i class="ti-clipboard"></i>
-                                                                                          </span>
-                                                          <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
-                                                      </button>
-                                                      <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
-                                                              [title]="'Copy to Clipboard ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                              type="button">
-                                                                                          <span class="btn-label">
-                                                                                              <i class="ti-clipboard"></i>
-                                                                                          </span>
-                                                          <ng-container i18n="@@copyPublishUrl">Publish URL</ng-container>
-                                                      </button>
-                                                      <button (click)="deleteLiveBroadcast(row.streamId)" class="btn btn-simple btn-magnify btn-danger btn-xs " type="button">
-                                                                                          <span class="btn-label">
-                                                                                              <i class="ti-close"></i>
-                                                                                          </span>
-                                                          <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
-                                                      </button>
-
-                                                  </div>
-                                              </li>
-                                          </ul>
-
-  -->
-
-
                                         <ul>
                                             <div>
 
@@ -707,19 +628,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     </div>
 
                                     <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
@@ -731,18 +639,7 @@
                                 <!-- /main -->
 
 
-
-
-
-
-
-
-
                             </div>
-
-
-
-
 
                             <div class="tab-pane container-fluid" id="vod">
 
@@ -750,108 +647,6 @@
 
                                 <div class="container">
 
-
-
-                                    <!--
-
-                                            <div id="vod-buttons" [hidden]="showVodButtons">
-
-                                                <div class="col-md-2">
-
-                                                    <div class="form-group">
-                                                        <input  type="text" id="keyword" class="form-control " placeholder="Keyword" [(ngModel)]="keyword"/>
-                                                    </div>
-                                                </div>
-
-                                                <form id="dates">
-                                                    <div class="col-md-2">
-
-                                                        <div class="form-group">
-
-                                                            <input id="start" type="text" class="form-control datepicker" placeholder="Start Date" [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}"/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2">
-
-                                                        <div class="form-group">
-                                                            <input id="end" type="text" class="form-control datepicker" placeholder="End Date"[(ngModel)]="endDate" [ngModelOptions]="{standalone: true}"/>
-                                                        </div>
-                                                    </div>
-                                                </form>
-
-                                                <button style="float: left" (click)="filterVod()"  class="btn btn-danger btn-fill btn-wd">Search</button>
-                                                <button style="float: left" (click)="getVoDStreams()"  class="btn btn-danger btn-fill btn-wd">Reset</button>
-                                                <br><br>
-                                                <small  class="text-danger" style="float: left" *ngIf="searchWarning" >
-                                                    End date is before start date!
-                                                </small>
-                                            </div>
-
-        -->
-
-
-
-
-
-
-
-                                    <!--
-
-                                            <div class="table-responsive " *ngIf="vodTableData.dataRows.length>0">
-                                                <table class="table table-striped">
-                                                    <thead *ngIf="isMobileMenu()">
-                                                    <tr>
-
-                                                        <div class="row">
-                                                            <div align="left" i18n="@@streamName" class="col-lg-4 col-sm-12 col-xs-12">
-                                                                Stream Name
-                                                            </div>
-
-                                                            <div align="left" i18n="@@streamName" class="col-lg-4 col-sm-12 col-xs-12">
-                                                                Date
-                                                            </div>
-
-                                                            <div i18n="@@tableActionField" class="col-lg-4 col-sm-12 col-xs-12">
-                                                                Action</div>
-                                                        </div>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody >
-                                                    <tr *ngFor="let row of vodTableData.dataRows">
-                                                        <div class="row">
-                                                            <div align="left" class="col-lg-4 col-sm-12 col-xs-12">
-
-                                                                {{row.streamName}}  </div>
-
-                                                            <div align="left" class="col-lg-4 col-sm-12 col-xs-12">
-
-
-                                                                {{convertJavaTime(row.creationDate)}}
-                                                            </div>
-
-                                                            <div  class="col-lg-4 col-sm-12 col-xs-12">
-
-                                                                <button (click)="playVoD(row.vodName)" class="btn btn-success btn-simple btn-magnify" type="button">
-                                                                <span class="btn-label">
-                                                                    <i class="ti-control-play"></i>
-                                                                </span>
-                                                                    <ng-container i18n="@@tablePlayButton">Play</ng-container>
-                                                                </button>
-                                                                <button (click)="deleteVoD(row.vodName,row.vodId)" class="btn btn-simple btn-magnify btn-danger" type="button">
-                                                                <span class="btn-label">
-                                                                    <i class="ti-close"></i>
-                                                                </span>
-                                                                    <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
-                                                                </button>
-
-                                                            </div>
-                                                        </div>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-
-                                            -->
                                 </div>
 
                                 <div class=" text-right">
@@ -860,12 +655,7 @@
                                         <button class="btn btn-fill btn-success" (click)="openVodUploadDialog()"
                                                 data-toggle="dropdown" role="button">Upload VoD
                                         </button>
-                                        <input
-                                                #folderInput
-                                                type="file"
-                                                (change)="filesPicked(folderInput.files)"
-                                                webkitDirectory
-                                        >
+
 
                                         <button class="btn btn-fill btn-success"
                                                 *ngIf="userVodTableData.dataRows.length>0 " (click)="showUserVodTable()"
@@ -1027,17 +817,7 @@
                                                     <span class="help-block" i18n="@@HLSSegmentDuration">Segment Duration</span>
 
                                                 </div>
-                                                <!--
-                                                <div>
-                                                    <select class="selectpicker" id="hlsPlayListType" name="hlsPlayListType" data-style="btn btn-block" title="Type" data-size="7"
-                                                            [(ngModel)]="appSettings.hlsPlayListType">
-
-                                                        <option *ngFor="let type of listTypes" [value]="type.value" [selected]="type.value == appSettings.hlsPlayListType">{{type.name}}</option>
-                                                    </select>
-                                                    <span class="help-block" i18n="@@HLSListType">List Type</span>
-
-                                                </div>
-                                                 -->
+     
                                             </div>
                                         </div>
                                     </fieldset>
@@ -1065,7 +845,6 @@
                                         </div>
 
                                     </fieldset>
-
 
                                     <fieldset>
                                         <legend class="text-left">Adaptive Streaming</legend>
@@ -1127,13 +906,15 @@
                                                     </ng-container>
                                                 </label>
 
-                                                <div class="col-sm-4 control-label text-info" style="text-align: left">
-                                                    {{endpoint.accountName}}
-                                                    <button class=" btn btn-simple btn-danger btn-xs" style="text-align:left" i18n="@@YoutubeAuthenticated" type="button" (click)="revokeSocialMediaAuth(endpoint.id)">
-                                                        <i class="ti-unlink"></i>Remove
-                                                    </button>
+                                                <div class="col-sm-3 form-control-static">
+                                                   
+                                                        {{endpoint.accountName}}
+                                                        <button class="btn btn-simple btn-danger btn-xs" style="text-align:left" i18n="@@YoutubeAuthenticated" type="button" (click)="revokeSocialMediaAuth(endpoint.id)">
+                                                            <i class="ti-unlink"></i>Remove
+                                                        </button>
+                                                    
+                                                    
                                                 </div>
-
 
                                             </div>
 
@@ -1146,16 +927,22 @@
                                                     Add Account
                                                 </label>
 
-                                                <button class="col-sm-2 form-control-static btn btn-fill btn-success" style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                        (click)="getSocialMediaAuthParameters('facebook')">
+                                                <button class="col-sm-2 form-control-static btn btn-simple btn-success" style="margin-right:10px" i18n="@@authenticate" type="button"
+                                                    (click)="getSocialMediaAuthParameters('facebook')">
+
                                                     <i class="ti-facebook"></i> Add Facebook
                                                 </button>
-                                                <button class="col-sm-2 form-control-static btn btn-fill btn-success " style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                        (click)="getSocialMediaAuthParameters('youtube')">
+
+                                                <button class="col-sm-2 form-control-static btn btn-simple btn-success " style="margin-right:10px" i18n="@@authenticate" type="button"
+                                                    (click)="getSocialMediaAuthParameters('youtube')">
+
                                                     <i class="ti-youtube"></i> Add Youtube
                                                 </button>
-                                                <button class="col-sm-2 form-control-static btn btn-fill btn-success " style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                        (click)="getSocialMediaAuthParameters('periscope')">
+
+                                                <button class="col-sm-2 form-control-static btn btn-simple btn-success " style="margin-right:10px" i18n="@@authenticate" type="button"
+                                                    (click)="getSocialMediaAuthParameters('periscope')">
+
+
                                                     <i class="ti-twitter-alt"></i> Add Periscope
                                                 </button>
                                             </div>
@@ -1185,41 +972,6 @@
 
                             </div>
                         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

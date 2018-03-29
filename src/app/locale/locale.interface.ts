@@ -23,4 +23,7 @@ export interface LocaleInterface {
     live_stream_will_be_deleted: string;
     broadcast_updated: string;
     broadcast_not_updated: string;
+    error_occured: string;
+    authentication_timeout_message: string;
+    live_streaming_not_enabled_message: string;
 }

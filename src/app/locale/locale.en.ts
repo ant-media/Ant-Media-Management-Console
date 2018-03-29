@@ -25,5 +25,7 @@ export let Locale_English: LocaleInterface =
     english_language : "English",
     broadcast_updated: "Stream is updated.",
     broadcast_not_updated: "Stream is not updated. Please send below message to contact@antmedia.io",
+    authentication_timeout_message: "Authentication timeout. Please try again with a faster manner",
+    live_streaming_not_enabled_message: "Live streaming is not enabled in your account. Please enable it.",
    
 }
