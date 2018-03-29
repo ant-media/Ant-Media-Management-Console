@@ -1,4 +1,4 @@
-import { LocaleInterface } from './locale.interface';
+import {LocaleInterface} from './locale.interface';
 
 export let Locale_English: LocaleInterface = 
 {
