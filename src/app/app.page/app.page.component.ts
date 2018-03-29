@@ -535,7 +535,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         dialogRef.afterClosed().subscribe(result => {
             console.log('The dialog was closed');
-            this.getAppLiveStreams(0, 50);
+            this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+            this.getAppLiveStreamsNumber();
 
         });
     }
@@ -631,7 +632,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         dialogRef.afterClosed().subscribe(result => {
             console.log('The dialog was closed');
-            this.getAppLiveStreams(0, 50);
+            this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+            this.getAppLiveStreamsNumber();
 
 
         });
@@ -1252,7 +1254,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 if (data["success"]) {
                     this.liveStreamEditing = null;
                     //update the rows
-                    this.getAppLiveStreams(0, 50);
+                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                    this.getAppLiveStreamsNumber();
                     $.notify({
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().broadcast_updated
@@ -1298,6 +1301,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 .subscribe(data => {
                     if (data["success"] == true) {
 
+                        $.notify({
+                            icon: "ti-save",
+                            message: "Successfully deleted"
+                        }, {
+                            type: "success",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+
                     }
                     else {
                         $.notify({
@@ -1312,7 +1327,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 }
                             });
                     };
-                    this.getAppLiveStreams(0, 50);
+                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                    this.getAppLiveStreamsNumber();
 
 
 
@@ -1511,7 +1527,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 align: 'right'
                             }
                         });
-                    this.getAppLiveStreams(0, 50);
+                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                    this.getAppLiveStreamsNumber();
 
 
                 }
@@ -1530,7 +1547,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 align: 'right'
                             }
                         });
-                    this.getAppLiveStreams(0, 50);
+                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                    this.getAppLiveStreamsNumber();
 
 
                 }
@@ -1582,7 +1600,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 align: 'right'
                             }
                         });
-                    this.getAppLiveStreams(0, 50);
+                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                    this.getAppLiveStreamsNumber();
 
 
                 }
@@ -1601,7 +1620,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 align: 'right'
                             }
                         });
-                    this.getAppLiveStreams(0, 50);
+                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                    this.getAppLiveStreamsNumber();
 
                 }
 
@@ -1778,7 +1798,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 align: 'right'
                             }
                         });
-                    this.getAppLiveStreams(0, 50);
+                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
                     this.liveBroadcast.name = "";
                 }
 

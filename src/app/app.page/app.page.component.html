@@ -584,6 +584,8 @@
                                           </ul>
 
   -->
+
+
                                         <ul>
                                             <div>
 
@@ -858,7 +860,12 @@
                                         <button class="btn btn-fill btn-success" (click)="openVodUploadDialog()"
                                                 data-toggle="dropdown" role="button">Upload VoD
                                         </button>
-
+                                        <input
+                                                #folderInput
+                                                type="file"
+                                                (change)="filesPicked(folderInput.files)"
+                                                webkitDirectory
+                                        >
 
                                         <button class="btn btn-fill btn-success"
                                                 *ngIf="userVodTableData.dataRows.length>0 " (click)="showUserVodTable()"
@@ -1058,6 +1065,7 @@
                                         </div>
 
                                     </fieldset>
+
 
                                     <fieldset>
                                         <legend class="text-left">Adaptive Streaming</legend>
