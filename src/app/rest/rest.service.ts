@@ -230,8 +230,8 @@ export class RestService {
 
     }
 
-    public getUserVodList(appName: string, offset: Number, size: Number): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/getUserVodList/' + offset + "/" + size, {});
+    public getUserVodList(appName: string, folderPath: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/getUserVodList/' + folderPath, {});
 
     }
 

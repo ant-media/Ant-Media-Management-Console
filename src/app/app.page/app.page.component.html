@@ -847,6 +847,35 @@
                                     </fieldset>
 
                                     <fieldset>
+                                        <legend class="text-left" i18n="@@VoDFolder">VoD Folder</legend>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Folder Path</label>
+                                            <div class="col-sm-10 text-left">
+
+                                                <div class="fileUpload btn">
+                                                    <span>Choose Folder</span>
+                                                    <input #folderinput type="file" class="upload" id="filepicker"
+                                                           (change)="folderPick(folderinput.files)" webkitdirectory/>
+                                                </div>
+
+
+                                                <i *ngIf="appSettings.vodFolder.length>2">
+                                                    Selected folder: {{appSettings.vodFolder}}
+
+                                                    <button type="button"
+                                                            class="btn btn-icon btn-simple btn-danger btn-minus"
+                                                            (click)="resetVodFolderPath()">
+                                                        <i class="ti-close"></i>
+                                                    </button>
+
+                                                </i>
+
+                                            </div>
+                                        </div>
+
+                                    </fieldset>
+
+                                    <fieldset>
                                         <legend class="text-left">Adaptive Streaming</legend>
                                         <div class="form-group" *ngIf=isEnterpriseEdition>
                                             <label class="col-sm-2 control-label">Streams</label>
