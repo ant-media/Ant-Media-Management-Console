@@ -94,7 +94,7 @@
                                                 </small>
                                             </div>
 
-                                            <div class="form-group text-left">
+                                            <div class="form-group text-left" *ngIf="videoServiceEndpoints.length>0">
                                                 <label  class="col-sm-12" style="padding-left:0px" i18n="@@newLiveStreamSocialShare">Share</label>
                                                 <ng-container *ngFor="let endpoint of videoServiceEndpoints; let i = index">
 
