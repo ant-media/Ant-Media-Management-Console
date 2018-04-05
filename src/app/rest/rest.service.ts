@@ -208,23 +208,6 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + '/getApplicationsInfo');
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public getVodList(appName:string, offset:Number, size:Number): Observable<Object>  {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/broadcast/getVodList/'+offset+"/"+size,{});
 
