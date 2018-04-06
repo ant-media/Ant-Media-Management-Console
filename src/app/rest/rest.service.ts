@@ -78,6 +78,9 @@ export class RestService {
             {});
     }
 
+    public getDetectionList(appName:string, streamId:string, offset:number, size:Number): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/detection/getList/'+offset+"/"+size+"?id="+streamId);
+    }
 
     public getAppLiveStreams(appName:string, offset:Number, size:Number): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getList/'+offset+"/"+size);
@@ -208,23 +211,6 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + '/getApplicationsInfo');
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public getVodList(appName:string, offset:Number, size:Number): Observable<Object>  {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/broadcast/getVodList/'+offset+"/"+size,{});
 
@@ -232,12 +218,10 @@ export class RestService {
 
     public getUserVodList(appName: string, folderPath: string): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/getUserVodList/' + folderPath, {});
-
     }
 
     public getTotalVodNumber(appName: string): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getTotalVodNumber', {});
-
     }
 
 
@@ -253,9 +237,7 @@ export class RestService {
 
 
     public uploadVod(fileName:string, formData:any,appName:string): Observable<Object>  {
-
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/broadcast/uploadVoDFile/"+fileName,formData);
-
     }
 
 
@@ -266,18 +248,9 @@ export class RestService {
             liveBroadcast);
     }
 
-
-
-
-
-
-
     public deleteIPCamera(appName: string, streamId:string): Observable<Object> {
 
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/deleteCamera?ipAddr=' + streamId, {});
-
-
-
     }
 
     public addStreamSource(appName: string, stream: LiveBroadcast): Observable<Object> {

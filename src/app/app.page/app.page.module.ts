@@ -47,6 +47,7 @@ import {
     MatToolbarModule,
     MatTooltipModule
 } from '@angular/material';
+import { DetectedObjectListDialog } from './dialog/detected.objects.list';
 
 
 export const AppPageRoutes: Routes = [
@@ -63,10 +64,12 @@ export const AppPageRoutes: Routes = [
 
 @NgModule({
 
-    declarations: [AppPageComponent, CamSettinsDialogComponent, UploadVodDialogComponent, BroadcastEditComponent],
+    declarations: [AppPageComponent, CamSettinsDialogComponent, UploadVodDialogComponent, BroadcastEditComponent,
+                    DetectedObjectListDialog],
 
     entryComponents: [
-        CamSettinsDialogComponent, AppPageComponent, UploadVodDialogComponent, BroadcastEditComponent
+        CamSettinsDialogComponent, AppPageComponent, UploadVodDialogComponent, BroadcastEditComponent,
+        DetectedObjectListDialog
 
     ],
     bootstrap: [AppPageComponent],
@@ -155,8 +158,6 @@ export const AppPageRoutes: Routes = [
         MatTabsModule,
         MatToolbarModule,
         MatTooltipModule],
-
-
 
 })
 

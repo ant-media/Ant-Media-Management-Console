@@ -39,6 +39,8 @@ import {
     VodInfoTable
 } from './app.definitions';
 
+import { DetectedObjectListDialog } from './dialog/detected.objects.list';
+
 declare var $: any;
 declare var Chartist: any;
 declare var swal: any;
@@ -664,10 +666,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.broadcastTableData.dataRows[i].iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + this.broadcastTableData.dataRows[i].streamId + "&autoplay=true";
 
                 }
-
                 this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
-
-
             });
 
         } else {
@@ -777,13 +776,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         //this for getting full length of vod streams for paginations
 
         this.restService.getTotalVodNumber(this.appName).subscribe(data => {
-
-
             this.vodLength = data;
-
             console.log("vod table length: " + this.vodLength);
-
-
         });
 
 
@@ -795,14 +789,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
 
-
         });
 
-        if (this.appSettings.vodFolder.length > 2) {
-
+        if (this.appSettings.vodFolder && this.appSettings.vodFolder.length > 2) {
             this.getUserVoDStreams();
-
-
         }
 
 
@@ -860,6 +850,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
+    showDetectedObject(streamId: string): void {
+        let dialogRef = this.dialog.open(DetectedObjectListDialog, {
+            width: '800px',
+            data: {
+                streamId: streamId,
+                appName: this.appName
+            }
+        });
+        
+
+    }
 
 
     playLive(streamId: string): void {

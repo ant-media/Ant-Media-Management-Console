@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Object Detection List</h2>
+<mat-table [dataSource]="dataSource" matSort>
+
+
+    <ng-container matColumnDef="image">
+        <mat-header-cell *matHeaderCellDef> Image </mat-header-cell>
+
+        <mat-cell *matCellDef="let row" style="padding:10px">
+
+            <img style="width: 100%;" [src]="getImageURL(row.imageId)">
+            {{row.objectName}} - {{row.detectionTime | date:'medium'}}
+
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="time">
+            <mat-header-cell *matHeaderCellDef > Time </mat-header-cell>
+    
+            <mat-cell *matCellDef="let row" style="padding:10px">
+    
+                {{row.detectionTime}}
+    
+            </mat-cell>
+        </ng-container>
+
+
+    <mat-header-row *matHeaderRowDef="displayedColumnsStreams"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumnsStreams;">
+    </mat-row>
+</mat-table>
+<!--
+<mat-paginator #paginator [pageSize]="100" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+</mat-paginator>
+-->
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>
