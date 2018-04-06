@@ -221,6 +221,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild(MatSort) sort: MatSort;
     public vodFolder: string;
     private vodFolderSelected = false;
+    private settingsReceived = false;
 
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
@@ -337,7 +338,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if (event.pageIndex == 0) {
             this.keyword = null;
-            console.log("index sifir");
+
             this.restService.getVodList(this.appName, 0, event.pageSize).subscribe(data => {
                 this.vodTableData.dataRows = [];
                 for (var i in data) {
@@ -397,7 +398,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if (event.pageIndex == 0) {
             this.keyword = null;
-            console.log("index sifir");
+
             this.restService.getUserVodList(this.appName, this.appSettings.vodFolder
             ).subscribe(data => {
                 this.userVodTableData.dataRows = [];
@@ -652,7 +653,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if (offset == 0) {
 
-            console.log("index sifir");
+
             this.restService.getAppLiveStreams(this.appName, 0, size).subscribe(data => {
                 this.broadcastTableData.dataRows = [];
                 for (var i in data) {
@@ -898,8 +899,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         if (index == 0) {
-
-            console.log("index sifir");
 
 
             this.restService.getAppLiveStreams(this.appName, index, size).subscribe(data => {
@@ -1442,6 +1441,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     getSettings(): void {
         this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
+            this.settingsReceived = true;
         });
 
         this.getSocialEndpoints();
