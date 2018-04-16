@@ -221,7 +221,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild(MatSort) sort: MatSort;
     public vodFolder: string;
     private vodFolderSelected = false;
-    private settingsReceived = false;
 
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
@@ -1441,7 +1440,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     getSettings(): void {
         this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
-            this.settingsReceived = true;
         });
 
         this.getSocialEndpoints();
