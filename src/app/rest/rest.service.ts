@@ -244,7 +244,7 @@ export class RestService {
 
     public createLiveStreamSocialNetworks(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Observable<Object> {
 
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path="+ "/rest/broadcast/createWithSocial?socialNetworks="+socialNetworks,
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/createWithSocial?socialNetworks=" + socialNetworks,
             liveBroadcast);
     }
 

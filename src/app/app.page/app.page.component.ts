@@ -39,7 +39,7 @@ import {
     VodInfoTable
 } from './app.definitions';
 
-import { DetectedObjectListDialog } from './dialog/detected.objects.list';
+import {DetectedObjectListDialog} from './dialog/detected.objects.list';
 
 declare var $: any;
 declare var Chartist: any;
@@ -1786,6 +1786,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         this.newLiveStreamCreating = true;
+
         this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
