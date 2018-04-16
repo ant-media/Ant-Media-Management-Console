@@ -48,11 +48,11 @@
                                             <li>
                                                 <a (click)="newIPCamera()" role="button">IP Camera</a>
                                             </li>
-
                                             <!--
-                                            <li>
-                                                <a (click)="newStreamSource()" role="button">Stream Source</a>
-                                            </li>
+
+                                                        <li>
+                                                                <a (click)="newStreamSource()" role="button">Stream Source</a>
+                                                         </li>
                                             -->
 
                                         </ul>
@@ -402,22 +402,6 @@
                                                             <ng-container i18n="@@tablePlayButton"></ng-container>
 
                                                         </button>
-
-<!--  
-                                                        <button *ngIf="isEnterpriseEdition && row.type=='ipCamera'"
-                                                                data-toggle="tooltip" i18n-title title="Show Detections"
-                                                                class="btn btn-success btn-simple btn-magnify btn-xs "
-                                                                type="button"
-                                                                style="font-size: 1.1em"
-                                                                (click)="showDetectedObject(row.streamId)"
-                                                                >
-                                                                <span class="btn-label">
-                                                                    <i class="ti-target"></i>
-                                                                </span>
-
-
-                                                        </button>
-                                                        -->
 
                                                         <button *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
                                                                 (click)="openBroadcastEditDialog(row)" title="Edit"
@@ -877,19 +861,17 @@
                                                            (change)="folderPick(folderinput.files)" webkitdirectory/>
                                                 </div>
 
-                                                <i *ngIf="settingsReceived">
-                                                    <i *ngIf="appSettings.vodFolder.length>2">
+                                                <i *ngIf="appSettings.vodFolder && appSettings.vodFolder.length>2">
                                                         Selected folder: {{appSettings.vodFolder}}
 
-                                               
-
-                                                    <button type="button"
-                                                            class="btn btn-icon btn-simple btn-danger btn-minus"
-                                                            (click)="resetVodFolderPath()">
-                                                        <i class="ti-close"></i>
-                                                    </button>
+                                                        <button type="button"
+                                                                class="btn btn-icon btn-simple btn-danger btn-minus"
+                                                                (click)="resetVodFolderPath()">
+                                                            <i class="ti-close"></i>
+                                                        </button>
 
                                                 </i>
+                                                
 
                                             </div>
                                         </div>
