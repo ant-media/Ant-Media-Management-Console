@@ -39,7 +39,7 @@ import {
     VodInfoTable
 } from './app.definitions';
 
-import { DetectedObjectListDialog } from './dialog/detected.objects.list';
+import {DetectedObjectListDialog} from './dialog/detected.objects.list';
 
 declare var $: any;
 declare var Chartist: any;
@@ -600,15 +600,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getAppLiveStreamsNumber(): void {
-        this.restService.getAppLiveStreams(this.appName, 0, 9999).subscribe(
+        this.restService.getTotalBroadcastNumber(this.appName).subscribe(
             data => {
-                //console.log(data);
-                this.broadcastTempTable.dataRows = [];
 
-                for (var i in data) {
-                    this.broadcastTempTable.dataRows.push(data[i]);
-                }
-                this.listLength = this.broadcastTempTable.dataRows.length;
+                this.listLength = data;
             });
     }
 
@@ -868,7 +863,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         else if (type == "userVod") {
             var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
             var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' +folderName + '/' + streamName;
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + streamName;
         }
 
         if (srcFile != null) {

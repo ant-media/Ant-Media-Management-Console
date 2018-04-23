@@ -99,7 +99,7 @@ export class RestService {
     }
 
     public importLiveStreams2Stalker(appName: string): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/importLiveStreamsToStalker",{});
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/importLiveStreamsToStalker", {});
     }
 
     public importVoDStreams2Stalker(appName: string): Observable<Object> {
