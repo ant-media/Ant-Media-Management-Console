@@ -278,7 +278,7 @@
                                      *ngIf="!isGridView && broadcastTableData.dataRows.length>0">
 
 
-                                    <div class="mat-container mat-elevation-z1">
+                                    <div class="mat-container mat-elevation-z0">
 
                                         <mat-table [dataSource]="dataSource" matSort>
 
@@ -472,33 +472,18 @@
 
                                             </ng-container>
 
-
-
-
                                             <mat-header-row *matHeaderRowDef="displayedColumnsStreams"></mat-header-row>
                                             <mat-row *matRowDef="let row; columns: displayedColumnsStreams;">
-
-
-
-
                                             </mat-row>
-
-
-
                                         </mat-table>
 
                                         <mat-paginator
-                                                [pageSizeOptions]="[5, 10, 25]"
+                                                [pageSizeOptions]="pageSizeOptions"
                                                 (page)="onListPaginateChange($event)"
                                                 [length]="listLength"
+                                                [pageSize]="pageSize"
                                         >
-
-
                                         </mat-paginator>
-
-
-
-
                                     </div>
 
                                 </div>
@@ -612,25 +597,19 @@
                                                             </button>
 
                                                         </div>
-
-
                                                     </div>
 
                                                 </div>
                                             </div>
-
-
                                         </ul>
                                         <div>
-                                            <mat-paginator [pageSizeOptions]="[4, 10, 25]" [length]="listLength"
+                                            <mat-paginator [pageSizeOptions]="[4, 10, 25]"
+                                                            [length]="listLength"
                                                            (page)="onGridPaginateChange($event)">
 
 
                                             </mat-paginator>
                                         </div>
-
-
-
                                     </div>
 
                                     <p *ngIf="broadcastTableData.dataRows.length == 0" i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
@@ -646,12 +625,6 @@
 
                             <div class="tab-pane container-fluid" id="vod">
 
-
-
-                                <div class="container">
-
-                                </div>
-
                                 <div class=" text-right">
 
                                     <div>
@@ -659,23 +632,15 @@
                                                 data-toggle="dropdown" role="button">Upload VoD
                                         </button>
 
-
-                                        <button class="btn btn-fill btn-success"
-                                                *ngIf="userVodTableData.dataRows.length>0 " (click)="showUserVodTable()"
-                                                data-toggle="dropdown"
-                                                role="button">User VoDs
-                                        </button>
-
-
                                     </div>
 
                                 </div>
 
                                 <div id="vodTable" style="text-align: left"
-                                     *ngIf=" vodTableData.dataRows.length>0 && displayVodTable">
+                                     *ngIf=" vodTableData.dataRows.length>0">
 
                                     <br>
-                                    <div class="mat-container mat-elevation-z1">
+                                    <div class="mat-container mat-elevation-z0">
 
                                         <mat-table [dataSource]="dataSourceVod">
 
@@ -718,8 +683,6 @@
                                                 <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
-
-
                                                     <button (click)="playVoD(row.vodName,row.type)"
                                                             class="btn btn-success btn-simple btn-magnify"
                                                             type="button">
@@ -743,20 +706,15 @@
                                             </mat-row>
                                         </mat-table>
 
-
                                         <mat-paginator [length]="vodLength"
                                                        [pageSize]="pageSize"
                                                        [pageSizeOptions]="pageSizeOptions"
                                                        (page)="onPaginateChange($event)"
                                         >
                                         </mat-paginator>
-
-
                                     </div>
 
                                 </div>
-
-
                                 <p *ngIf="vodTableData.dataRows.length == 0" i18n="no vod stream info | text messages appears when no vod streams@@noVoDStreamExistsMessage">
                                     There is no VoD stream in this app.
                                 </p>
@@ -764,10 +722,6 @@
                             <div class="tab-pane" id="logs">
                                 <p>Here are your messages.</p>
                             </div>
-
-
-
-
 
                             <div class="tab-pane" id="settings" *ngIf="appSettings">
                                 <form method="post" #f="ngForm" (ngSubmit)="changeSettings(f.valid)" class="form-horizontal">
@@ -849,36 +803,40 @@
 
                                     </fieldset>
 
+                                    
                                     <fieldset>
                                         <legend class="text-left" i18n="@@VoDFolder">VoD Folder</legend>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Folder Path</label>
                                             <div class="col-sm-10 text-left">
 
-                                                <div class="fileUpload btn">
-                                                    <span>Choose Folder</span>
-                                                    <input #folderinput type="file" class="upload" id="filepicker"
-                                                           (change)="folderPick(folderinput.files)" webkitdirectory/>
-                                                </div>
+                                                <input type="text" required minlength="4" name="vodFolderPath"
+                                                placeholder="Write full path of VoD folder"
+                                                class="form-control" [(ngModel)]="appSettings.vodFolder"
+                                                #vodFolderPath="ngModel">
+                                        
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <legend class="text-left" i18n="@@VoDFolder">Ministra TV Platform</legend>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Options</label>
+                                            <div class="col-sm-10 text-left">
 
-                                                <i *ngIf="appSettings.vodFolder && appSettings.vodFolder.length>2">
-                                                        Selected folder: {{appSettings.vodFolder}}
-
-                                                        <button type="button"
-                                                                class="btn btn-icon btn-simple btn-danger btn-minus"
-                                                                (click)="resetVodFolderPath()">
-                                                            <i class="ti-close"></i>
-                                                        </button>
-
-
-                                                </i>
-                                                
-
+                                                    <button class="col-sm-2 form-control-static btn btn-default btn-xs" i18n="@@addNewStream" type="button" (click)="importLiveStreams2Stalker()">
+                                                            <i *ngIf="importingLiveStreams" class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>Import Live Streams
+                                                    </button>
+                                                    <div class="col-xs-1"></div>
+                                                    <button class=" col-sm-2 form-control-static btn btn-default btn-xs" i18n="@@addNewStream" type="button" (click)="importVoDStreams2Stalker()">
+                                                            <i *ngIf="importingVoDStreams" class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>Import VoD Streams
+                                                    </button>
+                                        
                                             </div>
                                         </div>
 
                                     </fieldset>
-
+                                
                                     <fieldset>
                                         <legend class="text-left">Adaptive Streaming</legend>
                                         <div class="form-group" *ngIf=isEnterpriseEdition>
@@ -901,7 +859,7 @@
                                                         </div>
 
                                                         <button type="button" class="col-sm-1 btn btn-icon btn-simple btn-danger btn-minus" (click)="deleteStream(i)">
-                                                            <i class="ti-minus"></i>
+                                                            <i class="ti-close"></i>
                                                         </button>
                                                     </div>
                                                 </ng-container>
@@ -917,6 +875,7 @@
                                             </p>
                                         </div>
                                     </fieldset>
+
 
                                     <fieldset>
                                         <legend class="text-left" i18n="@@SocialSharing">Social Network Sharing</legend>

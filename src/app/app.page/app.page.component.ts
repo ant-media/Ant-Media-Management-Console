@@ -39,7 +39,7 @@ import {
     VodInfoTable
 } from './app.definitions';
 
-import {DetectedObjectListDialog} from './dialog/detected.objects.list';
+import { DetectedObjectListDialog } from './dialog/detected.objects.list';
 
 declare var $: any;
 declare var Chartist: any;
@@ -127,7 +127,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     public gridTableData: CameraInfoTable;
     public vodTableData: VodInfoTable;
-    public userVodTableData: VodInfoTable;
     public timerId: any;
     public checkAuthStatusTimerId: any;
     public newLiveStreamActive: boolean;
@@ -189,12 +188,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public dataSource: MatTableDataSource<BroadcastInfo>;
 
     public dataSourceVod: MatTableDataSource<VodInfo>;
-    public dataSourceUserVod: MatTableDataSource<VodInfo>;
 
-    public streamsPageSize = 5;
-    public vodPageSize = 5;
-    public pageSize = 5;
-    public pageSizeOptions = [5, 10, 25];
+    public streamsPageSize = 10;
+    public vodPageSize = 10;
+    public pageSize = 10;
+    public pageSizeOptions = [10, 25, 50];
 
     public streamsLength: number;
     public vodLength: any;
@@ -202,13 +200,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public gridLength: any;
     public listLength: any;
 
-    public displayVodTable = true;
-    public displayUserVodTable = false;
     public streamListOffset = 0;
-    public streamListSize = 5;
+    public vodListOffset = 0;
 
-
-
+    public importingLiveStreams = false;
+    public importingVoDStreams = false;
     // MatPaginator Output
 
     @Input() pageEvent: PageEvent;
@@ -219,8 +215,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
-    public vodFolder: string;
-    private vodFolderSelected = false;
 
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
@@ -301,11 +295,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             dataRows: []
         };
 
-        this.userVodTableData = {
-            dataRows: []
-        };
-
-
         this.broadcastTempTable = {
             dataRows: [],
         };
@@ -334,41 +323,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log("length:" + event.length);
         console.log("page size:" + event.pageSize);
 
-
-        if (event.pageIndex == 0) {
-            this.keyword = null;
-
-            this.restService.getVodList(this.appName, 0, event.pageSize).subscribe(data => {
-                this.vodTableData.dataRows = [];
-                for (var i in data) {
-                    this.vodTableData.dataRows.push(data[i]);
-                }
-
-                this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
+        this.vodListOffset = event.pageIndex * event.pageSize;
 
 
-            });
+        this.keyword = null;
 
-        } else {
+        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize).subscribe(data => {
+            this.vodTableData.dataRows = [];
+            for (var i in data) {
+                this.vodTableData.dataRows.push(data[i]);
+            }
 
-
-            event.pageIndex = event.pageIndex * event.pageSize;
-
-            this.keyword = null;
-
-            this.restService.getVodList(this.appName, event.pageIndex, event.pageSize).subscribe(data => {
-                this.vodTableData.dataRows = [];
-                for (var i in data) {
-                    this.vodTableData.dataRows.push(data[i]);
-                }
-
-                this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
+            this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
 
 
-            });
-
-        }
-
+        });
     }
 
     onListPaginateChange(event) {
@@ -379,57 +348,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log("page size:" + event.pageSize);
 
         this.streamListOffset = event.pageIndex;
-        this.streamListSize = event.pageSize;
 
         this.getAppLiveStreams(event.pageIndex, event.pageSize);
-
-
-    }
-
-
-    onUserVodPaginateChange(event) {
-
-
-        console.log("page index:" + event.pageIndex);
-        console.log("length:" + event.length);
-        console.log("page size:" + event.pageSize);
-
-
-        if (event.pageIndex == 0) {
-            this.keyword = null;
-
-            this.restService.getUserVodList(this.appName, this.appSettings.vodFolder
-            ).subscribe(data => {
-                this.userVodTableData.dataRows = [];
-                for (var i in data) {
-                    this.userVodTableData.dataRows.push(data[i]);
-                }
-
-                this.dataSourceUserVod = new MatTableDataSource(this.userVodTableData.dataRows);
-
-
-            });
-
-        } else {
-
-
-            event.pageIndex = event.pageIndex * event.pageSize;
-
-            this.keyword = null;
-
-            this.restService.getUserVodList(this.appName, this.appSettings.vodFolder).subscribe(data => {
-                this.userVodTableData.dataRows = [];
-                for (var i in data) {
-                    this.userVodTableData.dataRows.push(data[i]);
-                }
-
-                this.dataSourceUserVod = new MatTableDataSource(this.userVodTableData.dataRows);
-
-
-            });
-
-        }
-
     }
 
     onGridPaginateChange(event) {
@@ -438,7 +358,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log("page size:" + event.pageSize);
 
         this.openGridPlayers(event.pageIndex, event.pageSize);
-
 
     }
 
@@ -449,13 +368,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.getAppLiveStreamsNumber();
             this.getVoDStreams();
-            this.getAppLiveStreams(0, 5);
+            this.getAppLiveStreams(0, this.pageSize);
 
         }, 500);
-
-
-
-
 
         this.cdr.detectChanges();
 
@@ -467,9 +382,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.restService.getApplications().subscribe(data => {
 
                     //second element is the Applications. It is not safe to make static binding.
-
-
-
 
                     for (var i in data['applications']) {
                         //console.log(data['applications'][i]);
@@ -492,14 +404,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.isEnterpriseEdition = data["success"];
             })
 
-            /*
-            setTimeout(() => {
-                this.switchToListView();
-            }, 500);
-
-            */
             this.timerId = window.setInterval(() => {
-                this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                 this.getVoDStreams();
 
             }, 10000);
@@ -538,7 +444,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         dialogRef.afterClosed().subscribe(result => {
             console.log('The dialog was closed');
-            this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+            this.getAppLiveStreams(this.streamListOffset, this.pageSize);
             this.getAppLiveStreamsNumber();
 
         });
@@ -560,25 +466,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-
-    showUserVodTable() {
-        this.displayVodTable = false;
-
-        this.displayUserVodTable = true;
-
-        this.getUserVoDStreams();
-    }
-
-
-    showVodTable() {
-
-        this.displayVodTable = true;
-
-        this.displayUserVodTable = false;
-
-        this.getVoDStreams();
-
-    }
 
     openBroadcastEditDialog(stream: BroadcastInfo): void {
 
@@ -635,7 +522,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         dialogRef.afterClosed().subscribe(result => {
             console.log('The dialog was closed');
-            this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+            this.getAppLiveStreams(this.streamListOffset, this.pageSize);
             this.getAppLiveStreamsNumber();
 
 
@@ -649,37 +536,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     getAppLiveStreams(offset: number, size: number): void {
 
-
-        if (offset == 0) {
-
-
-            this.restService.getAppLiveStreams(this.appName, 0, size).subscribe(data => {
-                this.broadcastTableData.dataRows = [];
-                for (var i in data) {
-
-                    var endpoint = [];
-                    for (var j in data[i].endPointList) {
-                        endpoint.push(data[i].endPointList[j]);
-                    }
-                    this.broadcastTableData.dataRows.push(data[i]);
-
-                    this.broadcastTableData.dataRows[i].iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + this.broadcastTableData.dataRows[i].streamId + "&autoplay=true";
-
-                }
-                this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
-            });
-
-        } else {
-
-
             offset = offset * size;
-
 
             this.restService.getAppLiveStreams(this.appName, offset, size).subscribe(data => {
                 this.broadcastTableData.dataRows = [];
                 for (var i in data) {
 
-
                     var endpoint = [];
                     for (var j in data[i].endPointList) {
                         endpoint.push(data[i].endPointList[j]);
@@ -689,15 +551,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.broadcastTableData.dataRows[i].iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + this.broadcastTableData.dataRows[i].streamId + "&autoplay=true";
 
                 }
-
                 this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
-
-
             });
-
-        }
-
-
     }
 
 
@@ -742,15 +597,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
         }
 
-
     }
 
-
     getAppLiveStreamsNumber(): void {
-        this.restService.getTotalBroadcastNumber(this.appName).subscribe(
+        this.restService.getAppLiveStreams(this.appName, 0, 9999).subscribe(
             data => {
-                this.listLength = data;
+                //console.log(data);
+                this.broadcastTempTable.dataRows = [];
 
+                for (var i in data) {
+                    this.broadcastTempTable.dataRows.push(data[i]);
+                }
+                this.listLength = this.broadcastTempTable.dataRows.length;
             });
     }
 
@@ -760,7 +618,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.searchWarning = false;
         this.keyword = null;
 
-
         //this for getting full length of vod streams for paginations
 
         this.restService.getTotalVodNumber(this.appName).subscribe(data => {
@@ -769,32 +626,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
 
-        this.restService.getVodList(this.appName, 0, 5).subscribe(data => {
+        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize).subscribe(data => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
             }
-
             this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
-
         });
-
-        if (this.appSettings.vodFolder && this.appSettings.vodFolder.length > 2) {
-            this.getUserVoDStreams();
-        }
-
-
     }
-
-
-    getUserVoDStreams(): void {
-
-
-        this.restService.getUserVodList(this.appName, this.appSettings.vodFolder).subscribe(data => {
-        });
-
-    }
-
 
     ngOnDestroy() {
         this.sub.unsubscribe();
@@ -812,6 +651,77 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return true;
         }
         return false;
+    }
+
+    importLiveStreams2Stalker(): void {
+        this.importingLiveStreams = true;
+        this.restService.importLiveStreams2Stalker(this.appName).subscribe(data => {
+            console.log(data);
+            this.importingLiveStreams = false;
+            var message = Locale.getLocaleInterface().streams_imported_successfully;
+            var type = "success";
+            var delay = 500;
+            var icon = "ti-save";
+            if (!data["success"]) {
+                icon = "ti-alert";
+                if (data["errorId"] == 404) {
+                    message = Locale.getLocaleInterface().missing_configuration_parameter_for_stalker;
+                }
+                else {
+                    message = Locale.getLocaleInterface().error_occured;
+                }
+                type = "warning";
+                delay = 1900;
+            }
+
+            $.notify({
+                icon: icon,
+                message: message
+            }, {
+                type: type,
+                delay: delay,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+
+        });
+    }
+
+    importVoDStreams2Stalker(): void {
+        this.importingVoDStreams = true;
+        this.restService.importVoDStreams2Stalker(this.appName).subscribe(data => {
+            console.log(data);
+            this.importingVoDStreams = false;
+            var message = Locale.getLocaleInterface().streams_imported_successfully;
+            var type = "success";
+            var delay = 500;
+            var icon = "ti-save";
+            if (!data["success"]) {
+                icon = "ti-alert";
+                if (data["errorId"] == 404) {
+                    message = Locale.getLocaleInterface().missing_configuration_parameter_for_stalker;
+                }
+                else {
+                    message = Locale.getLocaleInterface().error_occured;
+                }
+                type = "warning";
+                delay = 1900;
+            }
+
+            $.notify({
+                icon: icon,
+                message: message
+            }, {
+                type: type,
+                delay: delay,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+        });
     }
 
     checkAndPlayLive(videoUrl: string): void {
@@ -885,79 +795,27 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         var id, name, srcFile, iframeSource;
 
 
-        if (index == 0) {
-
-
-            this.restService.getAppLiveStreams(this.appName, index, size).subscribe(data => {
-                //console.log(data);
-                this.broadcastGridTableData.dataRows = [];
-                //console.log("type of data -> " + typeof data);
-
-                for (var i in data) {
-
-
-                    var endpoint = [];
-                    for (var j in data[i].endPointList) {
-                        endpoint.push(data[i].endPointList[j]);
-                    }
-
-                    this.broadcastGridTableData.dataRows.push(data[i]);
-
-
-                    // console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
-
-
-                }
-
-
-            });
-
-            setTimeout(() => {
-
-                for (var i in this.broadcastGridTableData.dataRows) {
-
-                    id = this.broadcastGridTableData.dataRows[i]['streamId'];
-
-
-                    iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + id + "&autoplay=true";
-
-
-                    var $iframe = $('#' + id);
-
-                    $iframe.prop('src', iframeSource);
-                }
-
-            }, 1500);
-
-
-        } else {
-
 
             index = index * size;
 
-
             this.restService.getAppLiveStreams(this.appName, index, size).subscribe(data => {
                 //console.log(data);
                 this.broadcastGridTableData.dataRows = [];
                 //console.log("type of data -> " + typeof data);
 
                 for (var i in data) {
-
-
                     var endpoint = [];
                     for (var j in data[i].endPointList) {
                         endpoint.push(data[i].endPointList[j]);
                     }
 
-
                     this.broadcastGridTableData.dataRows.push(data[i]);
 
+                    // console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
 
                 }
 
-
             });
-
 
             setTimeout(() => {
 
@@ -975,17 +833,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
 
             }, 600);
-
-
-        }
-
-
     }
 
     closeGridPlayers(): void {
 
         var id;
-
 
         for (var i in this.broadcastGridTableData.dataRows) {
 
@@ -1004,50 +856,22 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-
-
-
-
-
-    playLiveCame(streamId: string): void {
-        if (this.isEnterpriseEdition) {
-            streamId += "_adaptive";
-        }
-        var srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamId + '.m3u8';
-        swal({
-            html: '<div id="player"></div>',
-            showConfirmButton: false,
-            width: '600px',
-            padding: 10,
-            animation: false,
-            showCloseButton: true,
-            onOpen: () => {
-                flowplayer('#player', {
-                    autoplay: true,
-                    clip: {
-                        sources: [{
-                            type: 'application/x-mpegurl',
-                            src: srcFile
-                        }]
-                    }
-                });
-            },
-            onClose: function () {
-                flowplayer("#player").shutdown();
-            }
-        }).then(function () { }, function () { });
-    }
-
-
     playVoD(streamName: string, type: string): void {
         // var container = document.getElementById("player");
         // install flowplayer into selected container
 
 
+        var srcFile = null;
         if (type == "streamVod" || type == "uploadedVod") {
-            var srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamName;
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamName;
+        }
+        else if (type == "userVod") {
+            var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
+            var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' +folderName + '/' + streamName;
+        }
 
-
+        if (srcFile != null) {
             swal({
                 html: '<div id="player"></div>',
                 showConfirmButton: false,
@@ -1070,65 +894,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     flowplayer("#player").shutdown();
                 }
             });
-
         }
-
-        if (type == "userVod") {
-
-            var srcUploadFile = HTTP_SERVER_ROOT + this.appName + '/' + this.appSettings.vodFolder + '/' + streamName;
-
-            swal({
-                html: '<div id="player"></div>',
-                showConfirmButton: false,
-                width: '800px',
-                animation: false,
-                onOpen: function () {
-
-                    flowplayer('#player', {
-                        autoplay: true,
-                        clip: {
-                            sources: [{
-                                type: 'video/mp4',
-                                src: srcUploadFile
-                            }
-                            ]
-                        }
-                    });
-                },
-                onClose: function () {
-                    flowplayer("#player").shutdown();
-                }
-            });
-
+        else {
+            console.error("Undefined type");
         }
-    }
-
-    playUserVoD(streamName: string): void {
-        // var container = document.getElementById("player");
-        // install flowplayer into selected container
-        var srcFile = HTTP_SERVER_ROOT + this.appName + '/uploads/' + streamName;
-
-        swal({
-            html: '<div id="player"></div>',
-            showConfirmButton: false,
-            width: '800px',
-            animation: false,
-            onOpen: function () {
-
-                flowplayer('#player', {
-                    autoplay: true,
-                    clip: {
-                        sources: [{
-                            type: 'video/mp4',
-                            src: srcFile
-                        }]
-                    }
-                });
-            },
-            onClose: function () {
-                flowplayer("#player").shutdown();
-            }
-        });
+        
     }
 
     //file with extension
@@ -1153,15 +923,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.showVoDFileNotDeleted();
                 };
                 this.getVoDStreams();
-                this.getUserVoDStreams();
             });
 
         }).catch(function () {
 
         });
-
-
-
     }
 
     showVoDFileNotDeleted() {
@@ -1238,7 +1004,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             if (data["success"]) {
                 this.liveStreamEditing = null;
                 //update the rows
-                this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                 this.getAppLiveStreamsNumber();
                 $.notify({
                     icon: "ti-save",
@@ -1311,7 +1077,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             }
                         });
                     };
-                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
 
@@ -1343,14 +1109,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     deleteStream(index: number): void {
         this.appSettings.encoderSettings.splice(index, 1);
-    }
-
-    resetVodFolderPath() {
-
-        this.vodFolderSelected = false;
-
-        this.appSettings.vodFolder = "";
-
     }
 
     setSocialNetworkChannel(endpointId: string, type: string, value: string): void {
@@ -1519,7 +1277,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             align: 'right'
                         }
                     });
-                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
 
@@ -1539,7 +1297,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             align: 'right'
                         }
                     });
-                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
 
@@ -1592,7 +1350,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             align: 'right'
                         }
                     });
-                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
 
@@ -1612,7 +1370,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             align: 'right'
                         }
                     });
-                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
                 }
@@ -1772,7 +1530,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         this.newLiveStreamCreating = true;
-
         this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
@@ -1791,7 +1548,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             align: 'right'
                         }
                     });
-                    this.getAppLiveStreams(this.streamListOffset, this.streamListSize);
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.liveBroadcast.name = "";
                 }
 
@@ -1808,19 +1565,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             });
 
-    }
-
-
-    folderPick(files) {
-
-        this.vodFolderSelected = true
-
-        const file = files[0];
-        const path = file.webkitRelativePath.split('/');
-
-
-        console.log(path[0]);
-        this.appSettings.vodFolder = path[0];
     }
 
     switchToListView(): void {
@@ -1868,8 +1612,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         setTimeout(() => {
             this.openGridPlayers(0, 4);
         }, 500);
-
-
     }
 
     getSocialMediaAuthParameters(networkName: string): void {

@@ -88,7 +88,6 @@ export class RestService {
 
     public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Observable<Object> {
 
-
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/createWithSocial?socialNetworks="+socialNetworks,
             liveBroadcast);
     }
@@ -97,6 +96,14 @@ export class RestService {
 
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/update?socialNetworks="+socialNetworks,
             broadcast);
+    }
+
+    public importLiveStreams2Stalker(appName: string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/importLiveStreamsToStalker",{});
+    }
+
+    public importVoDStreams2Stalker(appName: string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/importVoDsToStalker", {});
     }
 
     public deleteBroadcast(appName: string, streamId:string): Observable<Object> {
@@ -216,8 +223,8 @@ export class RestService {
 
     }
 
-    public getUserVodList(appName: string, folderPath: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/getUserVodList/' + folderPath, {});
+    public synchUserVodList(appName: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/synchUserVoDList', {});
     }
 
     public getTotalVodNumber(appName: string): Observable<Object> {
