@@ -314,6 +314,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.appSettings = null;
         this.newLiveStreamActive = false;
         this.camera = new Camera("", "", "", "", "", "");
+
+
+        this.timerId = window.setInterval(() => {
+            this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+            this.getVoDStreams();
+
+        }, 10000);
+
     }
 
     onPaginateChange(event) {
@@ -364,13 +372,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngAfterViewInit() {
 
-        setTimeout(() => {
+        this.timerId = null;
 
-            this.getAppLiveStreamsNumber();
-            this.getVoDStreams();
-            this.getAppLiveStreams(0, this.pageSize);
-
-        }, 500);
 
         this.cdr.detectChanges();
 
@@ -396,7 +399,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
 
-
             this.getSettings();
 
 
@@ -404,16 +406,22 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.isEnterpriseEdition = data["success"];
             })
 
-            this.timerId = window.setInterval(() => {
-                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-                this.getVoDStreams();
 
-            }, 10000);
+            this.getAppLiveStreamsNumber();
+            this.getVoDStreams();
+            this.getAppLiveStreams(0, this.pageSize);
 
         });
 
     }
 
+    changeApplication() {
+        this.clearTimer();
+        this.getAppLiveStreamsNumber();
+        this.getVoDStreams();
+        this.getAppLiveStreams(0, this.pageSize);
+
+    }
 
 
     applyFilter(filterValue: string) {
@@ -539,23 +547,23 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     getAppLiveStreams(offset: number, size: number): void {
 
-            offset = offset * size;
+        offset = offset * size;
 
-            this.restService.getAppLiveStreams(this.appName, offset, size).subscribe(data => {
-                this.broadcastTableData.dataRows = [];
-                for (var i in data) {
+        this.restService.getAppLiveStreams(this.appName, offset, size).subscribe(data => {
+            this.broadcastTableData.dataRows = [];
+            for (var i in data) {
 
-                    var endpoint = [];
-                    for (var j in data[i].endPointList) {
-                        endpoint.push(data[i].endPointList[j]);
-                    }
-                    this.broadcastTableData.dataRows.push(data[i]);
-
-                    this.broadcastTableData.dataRows[i].iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + this.broadcastTableData.dataRows[i].streamId + "&autoplay=true";
-
+                var endpoint = [];
+                for (var j in data[i].endPointList) {
+                    endpoint.push(data[i].endPointList[j]);
                 }
-                this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
-            });
+                this.broadcastTableData.dataRows.push(data[i]);
+
+                this.broadcastTableData.dataRows[i].iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + this.broadcastTableData.dataRows[i].streamId + "&autoplay=true";
+
+            }
+            this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
+        });
     }
 
 
@@ -633,11 +641,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
+    clearTimer() {
+
+        if (this.timerId) {
+            clearInterval(this.timerId);
+        }
+
+    }
+
     ngOnDestroy() {
         this.sub.unsubscribe();
         if (this.timerId) {
             clearInterval(this.timerId);
         }
+
     }
 
     getVoD(): void {
@@ -793,44 +810,43 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         var id, name, srcFile, iframeSource;
 
 
+        index = index * size;
 
-            index = index * size;
+        this.restService.getAppLiveStreams(this.appName, index, size).subscribe(data => {
+            //console.log(data);
+            this.broadcastGridTableData.dataRows = [];
+            //console.log("type of data -> " + typeof data);
 
-            this.restService.getAppLiveStreams(this.appName, index, size).subscribe(data => {
-                //console.log(data);
-                this.broadcastGridTableData.dataRows = [];
-                //console.log("type of data -> " + typeof data);
-
-                for (var i in data) {
-                    var endpoint = [];
-                    for (var j in data[i].endPointList) {
-                        endpoint.push(data[i].endPointList[j]);
-                    }
-
-                    this.broadcastGridTableData.dataRows.push(data[i]);
-
-                    // console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
-
+            for (var i in data) {
+                var endpoint = [];
+                for (var j in data[i].endPointList) {
+                    endpoint.push(data[i].endPointList[j]);
                 }
 
-            });
+                this.broadcastGridTableData.dataRows.push(data[i]);
 
-            setTimeout(() => {
+                // console.log("iframe source:  "+this.broadcastTableData.dataRows[i].iframeSource);
 
-                for (var i in this.broadcastGridTableData.dataRows) {
+            }
 
-                    id = this.broadcastGridTableData.dataRows[i]['streamId'];
+        });
+
+        setTimeout(() => {
+
+            for (var i in this.broadcastGridTableData.dataRows) {
+
+                id = this.broadcastGridTableData.dataRows[i]['streamId'];
 
 
-                    iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + id + "&autoplay=true";
+                iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + id + "&autoplay=true";
 
 
-                    var $iframe = $('#' + id);
+                var $iframe = $('#' + id);
 
-                    $iframe.prop('src', iframeSource);
-                }
+                $iframe.prop('src', iframeSource);
+            }
 
-            }, 600);
+        }, 600);
     }
 
     closeGridPlayers(): void {
