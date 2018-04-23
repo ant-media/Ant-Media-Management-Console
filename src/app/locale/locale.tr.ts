@@ -29,5 +29,6 @@ export let Locale_Turkish: LocaleInterface =
     error_occured: "Bir hata oluştu. Lütfen sonra tekrar deneyiniz",
     authentication_timeout_message: "Yetkilendirme zaman aşımına uğradı. Lütfen işlemi biraz daha hızlı bir şekilde tekrar deneyiniz.",
     live_streaming_not_enabled_message: "Canlı Yayın özelliği hesabınızda etkin değil. Lütfen ilgili servis üzerinden etkinleştirin",
-   
+    streams_imported_successfully: "Yayınlar başarıyla aktarıldı",
+    missing_configuration_parameter_for_stalker: "Konfigurasyon parametreleri girilmemiş. Lütfen sistem yönetici ile görüşünüz."
 }

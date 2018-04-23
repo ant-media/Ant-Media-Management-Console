@@ -28,5 +28,7 @@ export let Locale_English: LocaleInterface =
     error_occured: "An error is occured. Please try again later",
     authentication_timeout_message: "Authentication timeout. Please try again with a faster manner",
     live_streaming_not_enabled_message: "Live streaming is not enabled in your account. Please enable it.",
-   
+    streams_imported_successfully: "Streams are imported successfully",
+    missing_configuration_parameter_for_stalker: "Configuration params are missing. Please contact system admin",
+
 }
