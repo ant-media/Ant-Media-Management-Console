@@ -225,6 +225,10 @@ export class RestService {
     }
 
 
+    public getTotalBroadcastNumber(appName: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getTotalBroadcastNumber', {});
+    }
+
 
     public filterAppLiveStreams(appName:string, offset:Number, size:Number,type:String): Observable<Object>  {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/broadcast/filterList/'+offset+"/"+size+"/"+type,{});

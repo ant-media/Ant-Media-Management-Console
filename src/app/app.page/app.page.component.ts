@@ -747,21 +747,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     getAppLiveStreamsNumber(): void {
-        this.restService.getAppLiveStreams(this.appName, 0, 9999).subscribe(
+        this.restService.getTotalBroadcastNumber(this.appName).subscribe(
             data => {
-                //console.log(data);
-                this.broadcastTempTable.dataRows = [];
-
-                for (var i in data) {
-
-                    this.broadcastTempTable.dataRows.push(data[i]);
-
-                }
-
-                this.listLength = this.broadcastTempTable.dataRows.length;
-
-
-
+                this.listLength = data;
 
             });
     }
@@ -939,7 +927,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     $iframe.prop('src', iframeSource);
                 }
 
-            }, 600);
+            }, 1500);
 
 
         } else {
