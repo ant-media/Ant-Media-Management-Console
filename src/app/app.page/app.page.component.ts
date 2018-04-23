@@ -490,44 +490,47 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             });
         }
+
+
         if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId) {
             this.liveStreamEditing = new LiveBroadcast();
             this.liveStreamEditing.streamId = stream.streamId;
             this.liveStreamEditing.name = stream.name;
             this.liveStreamEditing.description = "";
         }
-        else {
-            this.liveStreamEditing = null;
+
+
+        if (this.liveStreamEditing) {
+            let dialogRef = this.dialog.open(BroadcastEditComponent, {
+
+
+                data: {
+                    name: this.liveStreamEditing.name,
+                    streamId: this.liveStreamEditing.streamId,
+                    appName: this.appName,
+                    endpointList: stream.endPointList,
+                    videoServiceEndpoints: this.videoServiceEndpoints,
+                    editBroadcastShareFacebook: this.editBroadcastShareFacebook,
+                    editBroadcastShareYoutube: this.editBroadcastShareYoutube,
+                    editBroadcastSharePeriscope: this.editBroadcastSharePeriscope,
+                    // ************** TODO: open it *************************
+                    //socialMediaAuthStatus:this.socialMediaAuthStatus
+                }
+
+            });
+
+
+            dialogRef.afterClosed().subscribe(result => {
+                console.log('The dialog was closed');
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                this.getAppLiveStreamsNumber();
+
+
+            });
+
         }
-
-        let dialogRef = this.dialog.open(BroadcastEditComponent, {
-
-            data: {
-                name: this.liveStreamEditing.name,
-                streamId: this.liveStreamEditing.streamId,
-                appName: this.appName,
-                endpointList: stream.endPointList,
-                videoServiceEndpoints: this.videoServiceEndpoints,
-                editBroadcastShareFacebook: this.editBroadcastShareFacebook,
-                editBroadcastShareYoutube: this.editBroadcastShareYoutube,
-                editBroadcastSharePeriscope: this.editBroadcastSharePeriscope,
-                // ************** TODO: open it *************************
-                //socialMediaAuthStatus:this.socialMediaAuthStatus
-            }
-
-
-
-        });
-
-
-        dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed');
-            this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-            this.getAppLiveStreamsNumber();
-
-
-        });
     }
+
 
     test() {
         alert("test");
@@ -751,7 +754,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 appName: this.appName
             }
         });
-        
+
 
     }
 
@@ -893,7 +896,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         else {
             console.error("Undefined type");
         }
-        
+
     }
 
     //file with extension
