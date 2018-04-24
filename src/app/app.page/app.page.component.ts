@@ -333,6 +333,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.vodListOffset = event.pageIndex * event.pageSize;
 
+        this.pageSize = event.pageSize;
 
         this.keyword = null;
 
@@ -355,9 +356,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log("length:" + event.length);
         console.log("page size:" + event.pageSize);
 
+        this.pageSize = event.pageSize;
         this.streamListOffset = event.pageIndex;
 
-        this.getAppLiveStreams(event.pageIndex, event.pageSize);
+        this.getAppLiveStreams(event.pageIndex, this.pageSize);
     }
 
     onGridPaginateChange(event) {
@@ -365,7 +367,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log("length:" + event.length);
         console.log("page size:" + event.pageSize);
 
-        this.openGridPlayers(event.pageIndex, event.pageSize);
+        this.pageSize = event.pageSize;
+        
+
+        this.openGridPlayers(event.pageIndex, this.pageSize);
 
     }
 
@@ -376,7 +381,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         this.cdr.detectChanges();
-
 
         this.sub = this.route.params.subscribe(params => {
             this.appName = params['appname']; // (+) converts string 'id' to a number

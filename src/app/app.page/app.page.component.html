@@ -288,16 +288,27 @@
 
                                                 <mat-cell *matCellDef="let row">
 
-                                                    <p *ngIf="row.type=='liveStream'">
-                                                        <img style="width: 10%"
-                                                             src="/assets/img/icons/video-camera.svg"> {{row.name}}</p>
-                                                    <p *ngIf="row.type=='ipCamera'">
-                                                        <img style="width: 10%" src="/assets/img/icons/cctv.svg">
-                                                        {{row.name}}</p>
-                                                    <p *ngIf="row.type=='streamSource'">
-                                                        <img style="width: 10%"
-                                                             src="/assets/img/icons/video-camera.svg"> {{row.name}}
-                                                    </p>
+                                                    <ng-container [ngSwitch]="row.type">
+                                                        <ng-container *ngSwitchCase="'liveStream'">
+                                                            <img style="width: 10%"
+                                                             src="/assets/img/icons/video-camera.svg">
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'ipCamera'">
+                                                            <img style="width: 10%"
+                                                             src="/assets/img/icons/cctv.svg"> 
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'streamSource'">
+                                                            <img style="width: 10%"
+                                                             src="/assets/img/icons/video-camera.svg"> 
+                                                        </ng-container>
+                                                    </ng-container>    
+
+                                                    {{row.name}}
+                                                    <ng-container *ngIf="!row.name || row.name.length == 0">
+                                                        {{row.streamId}}
+                                                    </ng-container>
+                                                   
+                                                    
 
                                                 </mat-cell>
                                             </ng-container>
@@ -311,11 +322,9 @@
                                                     <ng-container [ngSwitch]="row.status">
                                                         <ng-container *ngSwitchCase="'created'">
                                                             <i class="fa fa-circle text-muted">&nbsp;</i>Offline
+                                                    
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'broadcasting'">
-                                                            <i class="fa fa-circle text-success">&nbsp;</i>Broadcasting
-
-
                                                             <ng-container [ngSwitch]="row.quality">
 
                                                                 <ng-container *ngSwitchCase="'poor'">
@@ -337,11 +346,10 @@
                                                                        i18n-title
                                                                        title="Quality: Good"> </i>
                                                                 </ng-container>
-
+                                                                Broadcasting
                                                             </ng-container>
 
-                                                            <ng-container>
-
+                                                            <ng-container *ngIf="row.speed > 0">
                                                                 <i data-toggle="tooltip"
                                                                    i18n-title
                                                                    title="Speed">
@@ -386,8 +394,8 @@
 
 
                                             <ng-container matColumnDef="actions">
-                                                <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
-                                                <mat-cell *matCellDef="let row">
+                                                <mat-header-cell *matHeaderCellDef class="text-right"> Actions</mat-header-cell>
+                                                <mat-cell *matCellDef="let row" class="text-right">
 
                                                     <div style="font-size: 1.1em">
                                                         <button *ngIf="row.status=='broadcasting' "
