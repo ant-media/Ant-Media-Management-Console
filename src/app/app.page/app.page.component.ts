@@ -49,7 +49,6 @@ declare var classie: any;
 
 const ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID = -1;
 const ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT = -2;
-const ERROR_SOCIAL_ENDPOINT_NO_ENDPOINT = -3;
 
 declare function require(name: string);
 var flowplayer = require('flowplayer');
@@ -1708,7 +1707,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     html: message,
                     type: typem,
                     // showConfirmButton: false,
-                    showCancelButton: true,
+                    showCancelButton: false,
                     // width: '800px',
                     onOpen: function () {
                         console.log("onopen");
@@ -1729,7 +1728,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     html: message,
                     type: typem,
                     // showConfirmButton: false,
-                    showCancelButton: true,
+                    showCancelButton: false,
                     // width: '800px',
                     onOpen: function () {
                         console.log("onopen");
