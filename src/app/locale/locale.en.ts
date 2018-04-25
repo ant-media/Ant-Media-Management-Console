@@ -10,6 +10,7 @@ export let Locale_English: LocaleInterface =
     settings_saved : "Settings saved",
     settings_not_saved : "Settings could not be saved.",
     new_broadcast_created : "New broadcast is created",
+    new_broadcast_error: "New broadcast is not created.",
     publish_url_copied_to_clipboard : "Publish URL is copied to clipboard",
     embed_code_copied_to_clipboard : "Embed Code is copied to clipboard",
     congrats : "Congratulations",

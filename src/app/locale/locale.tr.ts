@@ -11,6 +11,7 @@ export let Locale_Turkish: LocaleInterface =
     settings_saved : "Ayarlar kaydedildi.",
     settings_not_saved : "Ayarlar maalesef kayıt edilemedi.",
     new_broadcast_created : "Yeni yayın oluşturuldu.",
+    new_broadcast_error: "Yeni yayın oluşturulamadı.",
     publish_url_copied_to_clipboard : "Yayın URL'i panoya kopyalandı.",
     embed_code_copied_to_clipboard : "Gömülü kod panoya kopyalandı.",
     congrats : "Tebrikler",

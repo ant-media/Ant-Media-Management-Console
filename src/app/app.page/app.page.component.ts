@@ -504,7 +504,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
 
-        if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId) {
+        if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId || stream.name != this.liveStreamEditing.name) {
             this.liveStreamEditing = new LiveBroadcast();
             this.liveStreamEditing.streamId = stream.streamId;
             this.liveStreamEditing.name = stream.name;
@@ -1282,6 +1282,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
 
+
+                    console.log("success" + data["success"]);
+                    console.log("error" + data["message"]);
+
                     this.newIPCameraAdding = false;
 
                     $.notify({
@@ -1302,13 +1306,36 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
                 else {
 
+                    console.log("success" + data["success"]);
+                    console.log("error" + data["message"]);
+
                     this.newIPCameraAdding = false;
+
+
+                    if (data["message"].includes("401")) {
+
+                        swal({
+                            title: "Authorization Error",
+                            text: "Please Check Username and/or Password",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+
+                        }).catch(function () {
+
+                        });
+
+                    }
+
 
                     $.notify({
                         icon: "ti-save",
-                        message: "Error: Not added"
+                        message: Locale.getLocaleInterface().new_broadcast_error
                     }, {
-                        type: "error",
+                        type: "warning",
                         delay: 2000,
                         placement: {
                             from: 'top',

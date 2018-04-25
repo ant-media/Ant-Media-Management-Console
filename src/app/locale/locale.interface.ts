@@ -10,6 +10,7 @@ export interface LocaleInterface {
     settings_saved:string;
     settings_not_saved :string;
     new_broadcast_created :string;
+    new_broadcast_error: string
     publish_url_copied_to_clipboard :string;
     embed_code_copied_to_clipboard :string;
     congrats :string;
