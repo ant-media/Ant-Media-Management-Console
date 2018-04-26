@@ -849,7 +849,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 $iframe.prop('src', iframeSource);
             }
 
-        }, 600);
+        }, 1500);
     }
 
     closeGridPlayers(): void {
