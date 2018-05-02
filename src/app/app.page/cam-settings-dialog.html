@@ -8,11 +8,13 @@
                     Edit Camera Settings
                 </h4>
                 <div class="form-group text-left">
-                    <label i18n="@@newCameraName">Name</label>
-                    <input type="text" required minlength="4" name="broadcastName" i18n-placeholder="@@stream_name_place_holder" placeholder="Broadcast name"
+                    <label i18n="@@newCamName">Name</label>
+                    <input type="text" required minlength="4" name="broadcastName"
+                           i18n-placeholder="@@stream_name_place_holder" placeholder="Stream name"
                            class="form-control" [(ngModel)]="data.name" #broadcastName="ngModel">
-                    <small [hidden]="data.name.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
-                        Stream name should be at least 4 characters.
+                    <small [hidden]="broadcastName.valid || (!f.submitted)" class="text-danger"
+                           i18n="@@broadcastNameIsRequired">
+                        Camera name should be at least 4 characters.
                     </small>
                 </div>
 

@@ -822,6 +822,10 @@
                                                        placeholder="Write full path of VoD folder"
                                                        class="form-control" [(ngModel)]="appSettings.vodFolder"
                                                        #vodFolderPath="ngModel">
+                                                <small [hidden]="vodFolderPath.valid || (!f.submitted)"
+                                                       class="text-danger">
+                                                    Folder path should be at least 4 characters.
+                                                </small>
 
                                             </div>
                                         </div>
