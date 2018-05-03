@@ -48,12 +48,12 @@
                                             <li>
                                                 <a (click)="newIPCamera()" role="button">IP Camera</a>
                                             </li>
-                                            <!--
+
 
                                                         <li>
                                                                 <a (click)="newStreamSource()" role="button">Stream Source</a>
                                                          </li>
-                                            -->
+
 
                                         </ul>
 
@@ -519,7 +519,8 @@
                                                         <div class="embed-container">
 
 
-                                                            <iframe id="{{row.streamId}}"></iframe>
+                                                            <iframe id="{{row.streamId}}"
+                                                                    allowfullscreen="true"></iframe>
 
 
                                                         </div>
