@@ -22,11 +22,11 @@ export class User {
 export const SERVER_ADDR = location.hostname;
 export var HTTP_SERVER_ROOT;
 
-if (environment.production) {
-    HTTP_SERVER_ROOT = "//" + location.hostname + ":" + location.port + "/";
+if (location.port == "4200") {
+    HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/";
 }
 else {
-    HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/";
+    HTTP_SERVER_ROOT = "//" + location.hostname + ":" + location.port + "/";
 }
 
 
