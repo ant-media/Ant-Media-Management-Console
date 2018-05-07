@@ -40,6 +40,12 @@ export class DetectedObjectTable {
 
 export class DetectedObjectListDialog {
 
+    public objectLenght = 10 ;
+    public pageSize = 5;
+    public pageSizeOptions = [5, 10, 20];
+    public detectedListOffset = 0;
+    
+
     public dataSource: MatTableDataSource<DetectedObjectTable>;
 
     public appName: string;
@@ -56,16 +62,19 @@ export class DetectedObjectListDialog {
 
 
             this.appName = data.appName;
-            this.getDetectionList(this.appName, data.streamId, 0, 100); 
+            this.getDetectionList(this.appName, data.streamId, this.detectedListOffset, this.pageSize); 
             
             this.timerId = window.setInterval(() => {
-                this.getDetectionList(this.appName, data.streamId, 0, 100);
+                this.getDetectionList(this.appName, data.streamId, this.detectedListOffset, this.pageSize);
 
-            }, 3000); 
+            }, 5000); 
             
             this.dialogRef.afterClosed().subscribe(result => {
                 clearInterval(this.timerId);
             })
+
+
+
     }
 
     getDetectionList(appName:string, streamId:string, offset:number, batch:number) {
@@ -80,7 +89,28 @@ export class DetectedObjectListDialog {
                 this.dataSource = new MatTableDataSource(dataRows);
             });
     }
+       onDetectionPaginateChange(event) {
 
+        this.detectedListOffset = event.pageIndex * event.pageSize;
+
+        this.pageSize = event.pageSize;
+
+         this.restService.getDetectionList(this.appName, this.data.streamId, this.detectedListOffset,  this.pageSize).subscribe(data => {
+
+                this.dataSource = null;
+                var dataRows = [];
+                for (var i in data) {
+                    dataRows.push(data[i]);
+                }
+
+                this.dataSource = new MatTableDataSource(dataRows);
+            });
+
+ 
+}
+   setPageSizeOptions(setPageSizeOptionsInput: string) {
+        this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
+    }
     onNoClick(): void {
         this.dialogRef.close();
     }

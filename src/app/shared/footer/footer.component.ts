@@ -1,6 +1,8 @@
 
 import { Component, OnInit, ElementRef, LOCALE_ID, Inject, Injectable } from '@angular/core';
 import { Locale } from 'app/locale/locale';
+import { RestService } from '../../rest/rest.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     moduleId: module.id,
@@ -12,8 +14,10 @@ export class FooterComponent{
     test : Date = new Date();
 
     public target_language:string;
+    public versionName : string;
+    public versionType : string;
 
-    constructor(@Inject(LOCALE_ID) locale: string) {
+    constructor(@Inject(LOCALE_ID) locale: string,private http: HttpClient, private restService: RestService) {
         
         if (locale == "en-US") {
             this.target_language = Locale.getLocaleInterface().turkish_language;
@@ -23,4 +27,13 @@ export class FooterComponent{
         }
       
     }
+
+    ngOnInit() {
+
+            this.restService.getVersionList("LiveApp").subscribe(data => {
+            this.versionName = data["versionName"];
+            this.versionType = data["versionType"];
+        });
+    }
+
 }

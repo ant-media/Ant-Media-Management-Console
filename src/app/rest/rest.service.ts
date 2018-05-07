@@ -78,6 +78,10 @@ export class RestService {
             {});
     }
 
+    public getVersionList(appName: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getVersion');
+    }
+
     public getDetectionList(appName:string, streamId:string, offset:number, size:Number): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/detection/getList/'+offset+"/"+size+"?id="+streamId);
     }

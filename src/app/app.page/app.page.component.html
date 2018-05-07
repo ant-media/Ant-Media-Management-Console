@@ -472,6 +472,14 @@
                                                             </span>
                                                             <ng-container i18n="@@tableDeleteButton"></ng-container>
                                                         </button>
+                                                                <button (click)="showDetectedObject(row.streamId)"
+                                                                class="btn btn-simple btn-magnify btn-danger btn-xs "
+                                                                type="button" data-toggle="tooltip"
+                                                                i18n-title title="Object Detected" style="font-size: 1.1em">
+                                                            <span class="btn-label">
+                                                                <i class="ti-target"></i>
+                                                            </span>
+                                                        </button>
 
                                                     </div>
 
@@ -544,6 +552,16 @@
 
                                                             <span style="float: left;"> {{row.name}}</span>
 
+                                                         <button (click)="showDetectedObject(row.streamId)"
+                                                                class="btn btn-simple btn-magnify btn-danger btn-xs"
+                                                                type="button" data-toggle="tooltip"
+                                                                i18n-title title="Object Detected" style="float: right;font-size: 1.2em">
+                                                            <span class="btn-label">
+                                                                <i class="ti-target"></i>
+                                                            </span>
+                                                             <ng-container i18n="@@tableObjectDetectButton"></ng-container>
+                                                        </button> 
+                                                           
                                                             <button (click)="deleteLiveBroadcast(row.streamId)"
                                                                     class="btn btn-simple btn-magnify btn-danger btn-xs "
                                                                     type="button" data-toggle="tooltip"

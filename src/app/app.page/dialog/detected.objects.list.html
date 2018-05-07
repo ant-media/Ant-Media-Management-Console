@@ -7,7 +7,7 @@
 
         <mat-cell *matCellDef="let row" style="padding:10px">
 
-            <img style="width: 100%;" [src]="getImageURL(row.imageId)">
+            <img style="width: 100px;" [src]="getImageURL(row.imageId)">
             {{row.objectName}} - {{row.detectionTime | date:'medium'}}
 
         </mat-cell>
@@ -28,10 +28,20 @@
     <mat-row *matRowDef="let row; columns: displayedColumnsStreams;">
     </mat-row>
 </mat-table>
-<!--
-<mat-paginator #paginator [pageSize]="100" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+
+
+   <mat-paginator   
+    [length]="objectLenght"
+    [pageSize]="PageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    (page)="onDetectionPaginateChange($event)"
+    >
+    </mat-paginator>
+
+<!--<mat-paginator #paginator [pageSize]="100" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
 </mat-paginator>
 -->
+
 <mat-dialog-actions>
     <button mat-button mat-dialog-close>Close</button>
 </mat-dialog-actions>
