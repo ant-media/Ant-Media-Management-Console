@@ -48,12 +48,12 @@
                                             <li>
                                                 <a (click)="newIPCamera()" role="button">IP Camera</a>
                                             </li>
-                                            <!--
+
 
                                                         <li>
                                                                 <a (click)="newStreamSource()" role="button">Stream Source</a>
                                                          </li>
-                                            -->
+
 
                                         </ul>
 
@@ -527,7 +527,8 @@
                                                         <div class="embed-container">
 
 
-                                                            <iframe id="{{row.streamId}}"></iframe>
+                                                            <iframe id="{{row.streamId}}"
+                                                                    allowfullscreen="true"></iframe>
 
 
                                                         </div>
@@ -836,7 +837,7 @@
                                             <label class="col-sm-2 control-label">Folder Path</label>
                                             <div class="col-sm-10 text-left">
 
-                                                <input type="text" required minlength="4" name="vodFolderPath"
+                                                <input type="text" name="vodFolderPath"
                                                        placeholder="Write full path of VoD folder"
                                                        class="form-control" [(ngModel)]="appSettings.vodFolder"
                                                        #vodFolderPath="ngModel">

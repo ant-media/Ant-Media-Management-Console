@@ -367,7 +367,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log("page size:" + event.pageSize);
 
         this.pageSize = event.pageSize;
-        
+
 
         this.openGridPlayers(event.pageIndex, this.pageSize);
 
@@ -781,32 +781,52 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     playLive(streamId: string): void {
-        if (this.isEnterpriseEdition) {
-            streamId += "_adaptive";
-        }
-        var srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamId + '.m3u8';
+
+        var id, name, srcFile, iframeSource;
+
+        var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
+
+
+        console.log(htmlCode);
+
+
         swal({
-            html: '<div id="player"></div>',
+            html: htmlCode,
             showConfirmButton: false,
-            width: '600px',
+            width: '800px',
+            height: '400px',
             padding: 10,
             animation: false,
             showCloseButton: true,
             onOpen: () => {
-                flowplayer('#player', {
-                    autoplay: true,
-                    clip: {
-                        sources: [{
-                            type: 'application/x-mpegurl',
-                            src: srcFile
-                        }]
-                    }
-                });
+
             },
             onClose: function () {
-                flowplayer("#player").shutdown();
+
+
+                var ifr = document.getElementById(streamId);
+                ifr.parentNode.removeChild(ifr);
+
             }
         }).then(function () { }, function () { });
+
+
+        setTimeout(() => {
+
+
+            iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&autoplay=true";
+
+
+            var $iframe = $('#' + streamId);
+
+            $iframe.prop('src', iframeSource);
+
+
+        }, 1500);
+
+
+
+
     }
 
 
