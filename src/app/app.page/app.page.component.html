@@ -229,15 +229,16 @@
 
 
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamUrl">Stream Url</label>
+                                                <label i18n="@@newLiveStreamUrl">Stream URL</label>
                                                 <input type="text" required minlength="4" name="broadcasturl"
                                                        i18n-placeholder="@@stream_name_place_holder"
                                                        placeholder="Stream Url"
                                                        class="form-control" [(ngModel)]="liveBroadcast.streamUrl"
-                                                       #broadcastName="ngModel">
-
+                                                       #broadcasturl="ngModel">
+                                                <small [hidden]="broadcasturl.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
+                                                        Stream URL is not valid 
+                                                </small>
                                             </div>
-
 
                                             <div class="form-group text-center">
 

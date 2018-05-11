@@ -1322,6 +1322,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
+                    this.liveBroadcast.streamUrl = "";
 
                 }
                 else {
@@ -1347,25 +1348,23 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         }).catch(function () {
 
                         });
-
                     }
+                    else {
 
-
-                    $.notify({
-                        icon: "ti-save",
-                        message: Locale.getLocaleInterface().new_broadcast_error
-                    }, {
-                        type: "warning",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                        $.notify({
+                            icon: "ti-save",
+                            message: Locale.getLocaleInterface().new_broadcast_error
+                        }, {
+                            type: "warning",
+                            delay: 2000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                    }
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
-
-
                 }
 
                 //swal.close();
@@ -1375,6 +1374,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.liveBroadcast.ipAddr = "";
                 this.liveBroadcast.username = "";
                 this.liveBroadcast.password = "";
+               
 
                 if (this.isGridView) {
                     setTimeout(() => {
@@ -1387,7 +1387,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     addStreamSource(isValid: boolean): void {
-
 
         if (!isValid) {
             //not valid form return directly
