@@ -22,14 +22,15 @@ import {
     PageEvent
 } from '@angular/material';
 import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../../rest/rest.service';
+import {BroadcastInfo, BroadcastInfoTable} from "../app.definitions";
 declare var $: any;
+
 export class DetectedObject {
     objectName: String;
     probability: Number;
     detectionTime: Number;
 }
-
-export class DetectedObjectTable {
+ export class DetectedObjectTable {
     dataRows: DetectedObject[];
 }
 
@@ -40,13 +41,14 @@ export class DetectedObjectTable {
 
 export class DetectedObjectListDialog {
 
-    public objectLenght = 10 ;
+    public objectLenght = 100 ;
     public pageSize = 5;
     public pageSizeOptions = [5, 10, 20];
     public detectedListOffset = 0;
-    
 
-    public dataSource: MatTableDataSource<DetectedObjectTable>;
+    public objectTableData: DetectedObjectTable;
+
+    public dataSource: MatTableDataSource<DetectedObject>;
 
     public appName: string;
 
@@ -57,9 +59,12 @@ export class DetectedObjectListDialog {
     constructor(
         public dialogRef: MatDialogRef<DetectedObjectListDialog>, public restService: RestService,
                     @Inject(MAT_DIALOG_DATA) public data: any) {
-            this.dataSource = new MatTableDataSource<DetectedObjectTable>();
-            
 
+            this.dataSource = new MatTableDataSource<DetectedObject>();
+
+        this.objectTableData = {
+            dataRows: [],
+        };
 
             this.appName = data.appName;
             this.getDetectionList(this.appName, data.streamId, this.detectedListOffset, this.pageSize); 
@@ -79,14 +84,13 @@ export class DetectedObjectListDialog {
 
     getDetectionList(appName:string, streamId:string, offset:number, batch:number) {
         this.restService.getDetectionList(appName, streamId, offset, batch).subscribe(data => 
-            {
-                this.dataSource = null;
-                var dataRows = [];
+        {
+                this.objectTableData.dataRows = [];
                 for (var i in data) {
-                    dataRows.push(data[i]);
+                    this.objectTableData.dataRows.push(data[i]);
                 }
 
-                this.dataSource = new MatTableDataSource(dataRows);
+                this.dataSource = new MatTableDataSource(this.objectTableData.dataRows);
             });
     }
        onDetectionPaginateChange(event) {
@@ -97,20 +101,18 @@ export class DetectedObjectListDialog {
 
          this.restService.getDetectionList(this.appName, this.data.streamId, this.detectedListOffset,  this.pageSize).subscribe(data => {
 
-                this.dataSource = null;
-                var dataRows = [];
+                this.objectTableData.dataRows = [];
                 for (var i in data) {
-                    dataRows.push(data[i]);
+                    this.objectTableData.dataRows.push(data[i]);
                 }
 
-                this.dataSource = new MatTableDataSource(dataRows);
+                this.dataSource = new MatTableDataSource(this.objectTableData.dataRows);
             });
 
  
 }
-   setPageSizeOptions(setPageSizeOptionsInput: string) {
-        this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
-    }
+
+
     onNoClick(): void {
         this.dialogRef.close();
     }
