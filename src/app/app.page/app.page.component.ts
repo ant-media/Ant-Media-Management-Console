@@ -16,6 +16,7 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../rest/rest.service';
+import {AuthService} from '../rest/auth.service';
 import {ClipboardService} from 'ngx-clipboard';
 import {Locale} from "../locale/locale";
 import {
@@ -226,7 +227,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 public sanitizer: DomSanitizer,
                 private cdr: ChangeDetectorRef,
                 private matpage: MatPaginatorIntl,
-
+                private authService: AuthService,
 
 
     ) {
@@ -316,11 +317,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         this.timerId = window.setInterval(() => {
-            this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-            this.getVoDStreams();
+            if(this.authService.isAuthenticated) {
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                this.getVoDStreams();
+            }
+            else{
+                    clearInterval(this.timerId);
+            }
 
         }, 10000);
-
     }
 
     onPaginateChange(event) {

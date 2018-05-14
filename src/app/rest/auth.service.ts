@@ -10,7 +10,7 @@ import { RestService, User } from './rest.service';
 @Injectable()
 export class AuthService implements CanActivate {
 
-  private isAuthenticated: boolean = true;
+  public isAuthenticated: boolean = true;
 
   constructor(private restService: RestService, private router: Router) {
     setInterval(() => {
@@ -54,11 +54,17 @@ export class AuthService implements CanActivate {
         if (!this.isAuthenticated) {
           this.router.navigateByUrl('/pages/login');
         }
+        if(this.router.url=="/pages/login"){
+                  this.router.navigateByUrl('/dashboard/overview');
+        }
       },
         error => {
           this.isAuthenticated = false;
           this.router.navigateByUrl('/pages/login');
         });
+    }
+    else{
+        this.isAuthenticated = false;
     }
   }
 
@@ -72,6 +78,7 @@ export class AuthService implements CanActivate {
     }
     else {
       this.router.navigateByUrl('/pages/login');
+      this.isAuthenticated = false;
       return false;
     }
 
