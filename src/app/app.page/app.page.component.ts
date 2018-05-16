@@ -1328,6 +1328,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreamsNumber();
 
                     this.liveBroadcast.streamUrl = "";
+                    
 
                 }
                 else {
@@ -1422,7 +1423,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
-
+                    this.liveBroadcast.streamUrl = "";
                 }
                 else {
 
