@@ -15,7 +15,7 @@ export class AuthService implements CanActivate {
   constructor(private restService: RestService, private router: Router) {
     setInterval(() => {
       this.checkServerIsAuthenticated();
-    }, 10000);
+    }, 5000);
 
   }
 

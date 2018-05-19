@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit{
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
 
-    constructor(private element : ElementRef, private auth: AuthService, private http:HttpClient, private router: Router) {
+    constructor(private authService: AuthService, private element : ElementRef, private auth: AuthService, private http:HttpClient, private router: Router) {
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
         this.showYouCanLogin = false;
@@ -96,6 +96,7 @@ export class LoginComponent implements OnInit{
         this.auth.login(this.email, this.password).subscribe(data =>{
          
             if (data["success"] == true) {
+                this.authService.isAuthenticated = data["success"];
                 localStorage.setItem("authenticated", "true");
                 this.router.navigateByUrl("/dashboard");
             }

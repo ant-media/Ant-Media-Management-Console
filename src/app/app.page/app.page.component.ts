@@ -325,7 +325,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     clearInterval(this.timerId);
             }
 
-        }, 10000);
+        }, 5000);
     }
 
     onPaginateChange(event) {
