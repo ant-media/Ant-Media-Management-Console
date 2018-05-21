@@ -16,12 +16,14 @@ import { AdminLayoutComponent } from './layouts/admin/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth/auth-layout.component';
 import { AppRoutes } from './app.routing';
 import { AuthService } from './rest/auth.service';
-import { RestService , AuthInterceptor} from './rest/rest.service';
+import { RestService , AuthInterceptor,} from './rest/rest.service';
+import { ClusterRestService,} from './rest/cluster.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 //import { AuthInterceptor } from './rest/auth.interceptor';
 import { ClipboardModule } from 'ngx-clipboard';
 import { Locale } from './locale/locale';
 import {AppPageComponent} from "./app.page/app.page.component";
+import { ClusterComponent } from './cluster/cluster.component';
 
 
 
@@ -39,12 +41,13 @@ import {AppPageComponent} from "./app.page/app.page.component";
     declarations: [
         AppComponent,
         AdminLayoutComponent,
-        AuthLayoutComponent
+        AuthLayoutComponent,
     ],
     providers: [
         AppPageComponent,
         AuthService,
         RestService,
+        ClusterRestService,
         Locale,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         //{provide: RequestOptions, useClass: CustomRequestOptions},

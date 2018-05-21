@@ -1,0 +1,36 @@
+
+
+<div >
+    <td colspan="4" style="border-top:0px">
+        <form method="post" #f="ngForm">
+
+            <div class="card-content" style="padding-top:0px">
+                <h4 class="card-title text-left" i18n="@@editNodeCardTitle">
+                    Edit Node
+                </h4>
+                <div class="form-group text-left">
+                    <label i18n="@@newNodeId">Id</label>
+                    <input type="text" disabled name="nodeId" i18n-placeholder="@@node_id_place_holder" placeholder="Node ID"
+                           class="form-control" [(ngModel)]="node.id" #nodeId="ngModel">
+                </div>
+                <div class="form-group text-left">
+                    <label i18n="@@newNodeIp">Ip</label>
+                    <input type="text" required minlength="4" name="nodeIp" i18n-placeholder="@@node_ip_place_holder" placeholder="Node IP"
+                           class="form-control" [(ngModel)]="node.ip" #nodeIp="ngModel">
+                </div>
+                
+
+                <div class="form-group text-center">
+
+                    <button type="submit" [disabled]='progressing' class="btn btn-fill btn-success" i18n="@@newNodeSaveButton" (click)="updateNode()">
+                        <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="progressing" aria-hidden="true"></i>Save</button>
+
+                    <button type="button" class="btn btn-simple" i18n="@@newNodeCancelButton" (click)="cancel()">Cancel</button>
+                </div>
+
+            </div>
+
+        </form>
+    </td>
+</div>
+

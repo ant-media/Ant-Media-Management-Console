@@ -119,6 +119,9 @@ export class NavbarComponent implements OnInit{
                 if (first_child == "applications") {
                     return titlee.split("/")[1];
                 }
+                if (first_child == "cluster") {
+                    return Locale.getLocaleInterface().cluster;
+                }
                 /*
                 var children_from_url = titlee.split("/")[1];
                 

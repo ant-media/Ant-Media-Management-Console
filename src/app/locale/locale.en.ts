@@ -28,5 +28,5 @@ export let Locale_English: LocaleInterface =
     error_occured: "An error is occured. Please try again later",
     authentication_timeout_message: "Authentication timeout. Please try again with a faster manner",
     live_streaming_not_enabled_message: "Live streaming is not enabled in your account. Please enable it.",
-   
+    cluster: "Cluster",
 }

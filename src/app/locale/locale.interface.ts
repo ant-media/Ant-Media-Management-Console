@@ -26,4 +26,5 @@ export interface LocaleInterface {
     error_occured: string;
     authentication_timeout_message: string;
     live_streaming_not_enabled_message: string;
+    cluster: string;
 }

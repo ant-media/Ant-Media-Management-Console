@@ -1,0 +1,122 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-sm-12">
+                <div class="card">
+                    <div class="card-content">
+                       
+                                <div class="container">
+
+                                </div>
+
+                                <div class=" text-right">
+
+                                    <div>
+                                        <button class="btn btn-fill btn-success" (click)="openNodeCreateDialog()"
+                                                data-toggle="dropdown" role="button">Add
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                                <div id="nodeTable" style="text-align: left"
+                                     *ngIf=" nodeTableData.dataRows.length>0">
+
+                                    <br>
+                                    <div class="mat-container mat-elevation-z1">
+
+                                        <mat-table [dataSource]="dataSourceNode">
+
+                                            <ng-container matColumnDef="nodeId">
+                                                <mat-header-cell *matHeaderCellDef> Node ID </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+
+                                                    <ng-container [ngSwitch]="row.type">
+                                                        <i> {{row.id}}</i>
+                                                    </ng-container>
+
+                                                </mat-cell>
+
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="nodeIp">
+                                                <mat-header-cell *matHeaderCellDef> Node IP </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+                                                    {{row.ip}}
+
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="status">
+                                                <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+                                                    {{row.status}}
+
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="actions">
+                                                <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+
+
+                                                    <button (click)="openNodeEditDialog(row.id)"
+                                                            class="btn btn-success btn-simple btn-magnify"
+                                                            type="button">
+                                                        <span class="btn-label">
+                                                            <i class="ti-pencil"></i>
+                                                        </span>
+                                                        <ng-container i18n="@@editNodeButton">Edit</ng-container>
+                                                    </button>
+                                                    <button (click)="deleteNode(row.id)" class="btn btn-simple btn-magnify btn-danger" type="button">
+                                                        <span class="btn-label">
+                                                            <i class="ti-close"></i>
+                                                        </span>
+                                                        <ng-container i18n="@@deleteNodeButton">Delete</ng-container>
+                                                    </button>
+
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <mat-header-row *matHeaderRowDef="nodeColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: nodeColumns;">
+                                            </mat-row>
+                                        </mat-table>
+
+
+                                        <mat-paginator [length]="nodeLength"
+                                                       [pageSize]="pageSize"
+                                                       [pageSizeOptions]="pageSizeOptions"
+                                                       (page)="onPaginateChange($event)"
+                                        >
+                                        </mat-paginator>
+
+
+                                    </div>
+
+                                </div>
+
+
+                                <p *ngIf="nodeTableData.dataRows.length == 0" i18n="no cluster node | text messages appears when no node@@noNodeExistsMessage">
+                                    There is no cluster node.
+                                </p>
+                        <div class="footer">
+                            <!--
+                        <hr />
+
+                        <div class="stats">
+                               <button class="btn btn-primary btn-simple btn-sm" (click)="updateCPULoad()">
+                                   <i class="ti-reload"></i>Update now</button>
+                        </div>
+                    -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
