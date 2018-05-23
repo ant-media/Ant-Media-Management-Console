@@ -50,9 +50,9 @@
                                             </li>
 
 
-                                                        <li>
-                                                                <a (click)="newStreamSource()" role="button">Stream Source</a>
-                                                         </li>
+                                            <li>
+                                                <a (click)="newStreamSource()" role="button">Stream Source</a>
+                                            </li>
 
 
                                         </ul>
@@ -236,7 +236,7 @@
                                                        class="form-control" [(ngModel)]="liveBroadcast.streamUrl"
                                                        #broadcasturl="ngModel">
                                                 <small [hidden]="broadcasturl.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
-                                                        Stream URL is not valid 
+                                                    Stream URL is not valid
                                                 </small>
                                             </div>
 
@@ -292,24 +292,23 @@
                                                     <ng-container [ngSwitch]="row.type">
                                                         <ng-container *ngSwitchCase="'liveStream'">
                                                             <img style="width: 10%"
-                                                             src="/assets/img/icons/video-camera.svg">
+                                                                 src="/assets/img/icons/video-camera.svg">
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'ipCamera'">
                                                             <img style="width: 10%"
-                                                             src="/assets/img/icons/cctv.svg"> 
+                                                                 src="/assets/img/icons/cctv.svg">
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'streamSource'">
                                                             <img style="width: 10%"
-                                                             src="/assets/img/icons/video-camera.svg"> 
+                                                                 src="/assets/img/icons/video-camera.svg">
                                                         </ng-container>
-                                                    </ng-container>    
+                                                    </ng-container>
 
                                                     {{row.name}}
                                                     <ng-container *ngIf="!row.name || row.name.length == 0">
                                                         {{row.streamId}}
                                                     </ng-container>
-                                                   
-                                                    
+
 
                                                 </mat-cell>
                                             </ng-container>
@@ -323,7 +322,7 @@
                                                     <ng-container [ngSwitch]="row.status">
                                                         <ng-container *ngSwitchCase="'created'">
                                                             <i class="fa fa-circle text-muted">&nbsp;</i>Offline
-                                                    
+
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'broadcasting'">
                                                             <ng-container [ngSwitch]="row.quality">
@@ -473,7 +472,10 @@
                                                             </span>
                                                             <ng-container i18n="@@tableDeleteButton"></ng-container>
                                                         </button>
-                                                                <button (click)="showDetectedObject(row.streamId)"
+                                                        <!--
+                                                        //enable this button after object detection service is written
+
+                                                        <button (click)="showDetectedObject(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-danger btn-xs "
                                                                 type="button" data-toggle="tooltip"
                                                                 i18n-title title="Object Detected" style="font-size: 1.1em">
@@ -481,6 +483,8 @@
                                                                 <i class="ti-target"></i>
                                                             </span>
                                                         </button>
+
+                                                        -->
 
                                                     </div>
 
@@ -554,16 +558,18 @@
 
                                                             <span style="float: left;"> {{row.name}}</span>
 
-                                                         <button (click)="showDetectedObject(row.streamId)"
-                                                                class="btn btn-simple btn-magnify btn-danger btn-xs"
-                                                                type="button" data-toggle="tooltip"
-                                                                i18n-title title="Object Detected" style="float: right;font-size: 1.2em">
+                                                            <button (click)="showDetectedObject(row.streamId)"
+                                                                    class="btn btn-simple btn-magnify btn-danger btn-xs"
+                                                                    type="button" data-toggle="tooltip"
+                                                                    i18n-title title="Object Detected"
+                                                                    style="float: right;font-size: 1.2em">
                                                             <span class="btn-label">
                                                                 <i class="ti-target"></i>
                                                             </span>
-                                                             <ng-container i18n="@@tableObjectDetectButton"></ng-container>
-                                                        </button> 
-                                                           
+                                                                <ng-container
+                                                                        i18n="@@tableObjectDetectButton"></ng-container>
+                                                            </button>
+
                                                             <button (click)="deleteLiveBroadcast(row.streamId)"
                                                                     class="btn btn-simple btn-magnify btn-danger btn-xs "
                                                                     type="button" data-toggle="tooltip"
