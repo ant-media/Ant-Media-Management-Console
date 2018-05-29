@@ -9,7 +9,8 @@ import {
     AppPageComponent,
     BroadcastEditComponent,
     CamSettinsDialogComponent,
-    UploadVodDialogComponent
+    UploadVodDialogComponent,
+    StreamSourceEditComponent
 } from './app.page.component';
 import {ClipboardModule} from 'ngx-clipboard';
 import {
@@ -65,11 +66,11 @@ export const AppPageRoutes: Routes = [
 @NgModule({
 
     declarations: [AppPageComponent, CamSettinsDialogComponent, UploadVodDialogComponent, BroadcastEditComponent,
-                    DetectedObjectListDialog],
+                    DetectedObjectListDialog, StreamSourceEditComponent],
 
     entryComponents: [
         CamSettinsDialogComponent, AppPageComponent, UploadVodDialogComponent, BroadcastEditComponent,
-        DetectedObjectListDialog
+        DetectedObjectListDialog,StreamSourceEditComponent
 
     ],
     bootstrap: [AppPageComponent],

@@ -8,6 +8,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
 import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Endpoint} from "../app.page/app.definitions";
 
 
 export class User {
@@ -47,6 +48,7 @@ export class LiveBroadcast {
     description:string;
     quality: string;
     speed: number;
+    endPointList:Endpoint[];
 }
 
 @Injectable()

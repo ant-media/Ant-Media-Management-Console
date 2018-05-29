@@ -438,6 +438,20 @@
                                                         </button>
 
 
+                                                        <button *ngIf="row.type=='streamSource'"
+                                                                (click)="openStreamSourceSettingsDialog(row)"
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                type="button" data-toggle="tooltip" i18n-title
+                                                                title="Settings" style="font-size: 1.1em">
+                                                            <span class="btn-label" style="float: right;">
+                                                                <i class="ti-settings"></i>
+                                                            </span>
+
+                                                            <ng-container i18n="@@tableSettings"></ng-container>
+                                                        </button>
+
+
+
                                                         <button (click)="copyLiveEmbedCode(row.streamId)"
                                                                 data-toggle="tooltip" i18n-title
                                                                 title="Copy Live Embed Code to Clipboard"
@@ -558,17 +572,22 @@
 
                                                             <span style="float: left;"> {{row.name}}</span>
 
-                                                            <button (click)="showDetectedObject(row.streamId)"
-                                                                    class="btn btn-simple btn-magnify btn-danger btn-xs"
+
+                                                            <!--
+                                                            //enable this button after object detection service is written
+
+                                                                         <button (click)="showDetectedObject(row.streamId)"
+                                                                    class="btn btn-simple btn-magnify btn-danger btn-xs "
                                                                     type="button" data-toggle="tooltip"
-                                                                    i18n-title title="Object Detected"
-                                                                    style="float: right;font-size: 1.2em">
-                                                            <span class="btn-label">
-                                                                <i class="ti-target"></i>
-                                                            </span>
-                                                                <ng-container
-                                                                        i18n="@@tableObjectDetectButton"></ng-container>
+                                                                    i18n-title title="Object Detected" style="font-size: 1.1em">
+                                                                <span class="btn-label">
+                                                                    <i class="ti-target"></i>
+                                                                </span>
+                                                                 <ng-container i18n="@@tableObjectDetectButton"></ng-container>
                                                             </button>
+
+                                                            -->
+
 
                                                             <button (click)="deleteLiveBroadcast(row.streamId)"
                                                                     class="btn btn-simple btn-magnify btn-danger btn-xs "
@@ -617,7 +636,7 @@
 
                                                             </button>
 
-                                                            <button *ngIf="row.type=='ipCamera'"
+                                                            <button *ngIf="row.type=='ipCamera' || row.type=='ipCamera'"
                                                                     (click)="openSettingsDialog(row)"
                                                                     class="btn btn-simple btn-magnify btn-info btn-xs "
                                                                     type="button" data-toggle="tooltip" i18n-title
