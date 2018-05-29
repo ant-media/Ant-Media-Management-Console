@@ -636,17 +636,30 @@
 
                                                             </button>
 
-                                                            <button *ngIf="row.type=='ipCamera' || row.type=='ipCamera'"
+
+                                                            <button *ngIf="row.type=='ipCamera'"
                                                                     (click)="openSettingsDialog(row)"
                                                                     class="btn btn-simple btn-magnify btn-info btn-xs "
                                                                     type="button" data-toggle="tooltip" i18n-title
-                                                                    title="Settings"
-                                                                    style="float: right;font-size: 1.2em;">
-                                                                <span class="btn-label" style="float: right;">
-                                                                    <i class="ti-settings"></i>
-                                                                </span>
+                                                                    title="Settings" style="float: right;font-size: 1.2em;">
+                                                            <span class="btn-label" >
+                                                                <i class="ti-settings"></i>
+                                                            </span>
 
-                                                                <ng-container></ng-container>
+                                                                <ng-container i18n="@@tableSettings"></ng-container>
+                                                            </button>
+
+
+                                                            <button *ngIf="row.type=='streamSource'"
+                                                                    (click)="openStreamSourceSettingsDialog(row)"
+                                                                    class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                    type="button" data-toggle="tooltip" i18n-title
+                                                                    title="Settings" style="float: right;font-size: 1.2em;">
+                                                            <span class="btn-label" >
+                                                                <i class="ti-settings"></i>
+                                                            </span>
+
+                                                                <ng-container i18n="@@tableSettings"></ng-container>
                                                             </button>
 
                                                         </div>
