@@ -169,10 +169,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public editBroadcastShareFacebook: boolean;
     public editBroadcastSharePeriscope: boolean;
     public liveStreamUpdating = false;
-
     public shareEndpoint: boolean[];
-
     public videoServiceEndpoints: VideoServiceEndpoint[];
+    public streamUrlValid = true;
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
     public listTypes = [
@@ -1384,6 +1383,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     addIPCamera(isValid: boolean): void {
 
+
+
         if (!isValid) {
             //not valid form return directly
             return;
@@ -1481,16 +1482,86 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
+    validateIPaddress(ipaddress) {
+        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {
+            return true;
+        }
+        return false;
+    }
 
     addStreamSource(isValid: boolean): void {
+
+        var streamUrlControl=false;
+        var ipAddr;
 
         if (!isValid) {
             //not valid form return directly
             return;
         }
+
+        if(this.liveBroadcast.streamUrl.includes("//")){
+
+            ipAddr = this.liveBroadcast.streamUrl.split("//");
+
+            ipAddr = ipAddr[1];
+
+        } else { ipAddr = this.liveBroadcast.streamUrl;
+
+        }
+
+        if (ipAddr.includes("@")){
+
+            ipAddr = ipAddr.split("@");
+
+            ipAddr = ipAddr[1];
+
+        }
+
+        if (ipAddr.includes(":")){
+
+            ipAddr = ipAddr.split(":");
+
+            ipAddr = ipAddr[0];
+
+        }
+
+        if (ipAddr.includes("/")){
+
+            ipAddr = ipAddr.split("/");
+
+            ipAddr = ipAddr[0];
+
+        }
+
+        console.log("ipAddress: " + ipAddr);
+
+        if( this.liveBroadcast.streamUrl.includes("http://") ||
+            this.liveBroadcast.streamUrl.includes("https://") ||
+            this.liveBroadcast.streamUrl.includes("rtmp://") ||
+            this.liveBroadcast.streamUrl.includes("rtmps://") ||
+            this.liveBroadcast.streamUrl.includes("rtsp://")) {
+
+            streamUrlControl=true;
+        }
+
+
+        if(ipAddr.split(".").length == 4){
+            if(!this.validateIPaddress(ipAddr)){
+                console.log("not valid IP")
+                streamUrlControl=false;
+                this.streamUrlValid=false;
+                return;
+            }
+        }
+
+        if(!streamUrlControl){
+            console.log("stream source address is not in correct format");
+            this.streamUrlValid=false;
+            return;
+        }
+
         this.newStreamSourceAdding = true;
         this.liveBroadcast.type = "streamSource";
-
 
         this.restService.addStreamSource(this.appName, this.liveBroadcast)
             .subscribe(data => {
@@ -1514,6 +1585,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreamsNumber();
 
                     this.liveBroadcast.streamUrl = "";
+                    this.streamUrlValid=true;
                 }
                 else {
 

@@ -238,6 +238,9 @@
                                                 <small [hidden]="broadcasturl.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                                                     Stream URL is not valid
                                                 </small>
+                                                <small class="text-danger" *ngIf="!streamUrlValid">
+                                                    Please write a valid stream URL
+                                                </small>
                                             </div>
 
                                             <div class="form-group text-center">
