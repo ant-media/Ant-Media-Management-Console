@@ -489,10 +489,9 @@
                                                             </span>
                                                             <ng-container i18n="@@tableDeleteButton"></ng-container>
                                                         </button>
-                                                        <!--
-                                                        //enable this button after object detection service is written
 
-                                                        <button (click)="showDetectedObject(row.streamId)"
+                                                        <button *ngIf="appSettings.objectDetectionEnabled==true"
+                                                                (click)="showDetectedObject(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-danger btn-xs "
                                                                 type="button" data-toggle="tooltip"
                                                                 i18n-title title="Object Detected" style="font-size: 1.1em">
@@ -501,7 +500,7 @@
                                                             </span>
                                                         </button>
 
-                                                        -->
+
 
                                                     </div>
 
@@ -576,10 +575,9 @@
                                                             <span style="float: left;"> {{row.name}}</span>
 
 
-                                                            <!--
-                                                            //enable this button after object detection service is written
 
-                                                                         <button (click)="showDetectedObject(row.streamId)"
+                                                                         <button *ngIf="appSettings.objectDetectionEnabled==true"
+                                                                    (click)="showDetectedObject(row.streamId)"
                                                                     class="btn btn-simple btn-magnify btn-danger btn-xs "
                                                                     type="button" data-toggle="tooltip"
                                                                     i18n-title title="Object Detected" style="font-size: 1.1em">
@@ -589,7 +587,7 @@
                                                                  <ng-container i18n="@@tableObjectDetectButton"></ng-container>
                                                             </button>
 
-                                                            -->
+
 
 
                                                             <button (click)="deleteLiveBroadcast(row.streamId)"
@@ -872,6 +870,27 @@
 
                                     </fieldset>
 
+                                    <fieldset>
+                                        <legend class="text-left" i18n="@@ObjectDetection">Object Detection</legend>
+                                        <div class="form-group">
+                                            <div class="col-sm-12 text-left">
+                                                <div class="radio col-sm-2">
+                                                    <input type="radio" name="objectDetection" id="objectDetection" [value]="false" [(ngModel)]="appSettings.objectDetectionEnabled">
+                                                    <label for="objectDetection">
+                                                        No
+                                                    </label>
+                                                </div>
+
+                                                <div class="radio col-sm-2" style="margin-top:13px">
+                                                    <input type="radio" name="objectDetection" id="objectDetection2" [value]="true" [(ngModel)]="appSettings.objectDetectionEnabled">
+                                                    <label for="objectDetection2">
+                                                        Yes
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </fieldset>
 
                                     <fieldset>
                                         <legend class="text-left" i18n="@@VoDFolder">VoD Folder</legend>

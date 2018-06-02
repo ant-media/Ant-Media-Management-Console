@@ -90,7 +90,9 @@ export class AppSettings {
                 public periscopeClientSecret: string,
                 public encoderSettings: EncoderSettings[],
                 public acceptOnlyStreamsInDataStore: boolean,
-                public vodFolder: string) {
+                public vodFolder: string,
+                public objectDetectionEnabled: boolean
+    ) {
 
     }
 }
