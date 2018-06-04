@@ -96,6 +96,11 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/get?id=" + id);
     }
 
+    public stopBroadcast(appName: string, id: string): Observable<Object> {
+
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/stop?id=" + id, {});
+    }
+
     public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Observable<Object> {
 
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/createWithSocial?socialNetworks="+socialNetworks,

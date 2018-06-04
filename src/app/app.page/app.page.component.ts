@@ -1185,6 +1185,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 .subscribe(data => {
                     if (data["success"] == true) {
 
+                        this.restService.stopBroadcast(this.appName,streamId)
+
                         $.notify({
                             icon: "ti-save",
                             message: "Successfully deleted"
