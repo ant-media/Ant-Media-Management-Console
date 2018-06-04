@@ -870,10 +870,16 @@
 
                                     </fieldset>
 
-                                    <fieldset>
+                                    <fieldset *ngIf="this.appName=='LiveApp'">
                                         <legend class="text-left" i18n="@@ObjectDetection">Object Detection</legend>
                                         <div class="form-group">
-                                            <div class="col-sm-12 text-left">
+                                            <div class="form-group text-center" *ngIf=!isEnterpriseEdition>
+                                                <p i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                    This feature is enabled in
+                                                    <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
+                                                </p>
+                                            </div>
+                                            <div class="col-sm-12 text-left" *ngIf=isEnterpriseEdition>
                                                 <div class="radio col-sm-2">
                                                     <input type="radio" name="objectDetection" id="objectDetection" [value]="false" [(ngModel)]="appSettings.objectDetectionEnabled">
                                                     <label for="objectDetection">
@@ -971,7 +977,7 @@
                                         <div class="form-group text-center" *ngIf=!isEnterpriseEdition>
                                             <p i18n="not Enterprise@@notEnterpriseEditionMessage">
                                                 These features are enabled in
-                                                <a href="http://antmedia.io">Ant Media Server Enterprise Edition.</a>
+                                                <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
                                             </p>
                                         </div>
                                     </fieldset>
