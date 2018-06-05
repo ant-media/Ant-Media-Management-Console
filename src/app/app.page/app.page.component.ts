@@ -175,6 +175,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public shareEndpoint: boolean[];
     public videoServiceEndpoints: VideoServiceEndpoint[];
     public streamUrlValid = true;
+    public streamNameEmpty=false;
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
     public listTypes = [
@@ -1373,22 +1374,26 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newLiveStreamActive = true;
         this.newIPCameraActive = false;
         this.newStreamSourceActive = false;
+        this.streamNameEmpty = false;
     }
 
     newIPCamera(): void {
         this.newLiveStreamActive = false;
         this.newIPCameraActive = true;
         this.newStreamSourceActive = false;
+        this.streamNameEmpty = false;
     }
 
     newStreamSource(): void {
         this.newLiveStreamActive = false;
         this.newIPCameraActive = false;
         this.newStreamSourceActive = true;
+        this.streamNameEmpty = false;
     }
 
 
     addIPCamera(isValid: boolean): void {
+        this.streamNameEmpty = false;
 
         if (!isValid) {
             //not valid form return directly
@@ -1397,6 +1402,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraAdding = true;
         this.liveBroadcast.type = "ipCamera";
 
+
+        if (!this.liveBroadcast.name || this.liveBroadcast.name.length === 0 || /^\s*$/.test(this.liveBroadcast.name)){
+
+            this.streamNameEmpty = true;
+            return;
+        }
 
         this.restService.addStreamSource(this.appName, this.liveBroadcast)
             .subscribe(data => {
@@ -1508,8 +1519,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     addStreamSource(isValid: boolean): void {
 
+        this.streamNameEmpty = false;
+
         if (!isValid) {
             //not valid form return directly
+            return;
+        }
+
+
+        if (!this.liveBroadcast.name || this.liveBroadcast.name.length === 0 || /^\s*$/.test(this.liveBroadcast.name)){
+
+            this.streamNameEmpty = true;
             return;
         }
 
@@ -1518,7 +1538,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.streamUrlValid=false;
             return;
         }
-
+        this.streamNameEmpty = false;
         this.newStreamSourceAdding = true;
         this.liveBroadcast.type = "streamSource";
 
@@ -1704,6 +1724,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     createLiveStream(isValid: boolean): void {
 
+        this.streamNameEmpty = false;
 
         if (!isValid) {
             //not valid form return directly
@@ -1711,6 +1732,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         this.liveBroadcast.type = "liveStream"
+
+        if (!this.liveBroadcast.name || this.liveBroadcast.name.length === 0 || /^\s*$/.test(this.liveBroadcast.name)){
+
+            this.streamNameEmpty = true;
+            return;
+        }
 
         var socialNetworks = [];
         this.shareEndpoint.forEach((value, index) => {
@@ -2221,6 +2248,7 @@ export class CamSettinsDialogComponent {
     public shareEndpoint: boolean[];
     public videoServiceEndPoints: VideoServiceEndpoint[];
     public appName:string;
+    public streamNameEmpty = false;
 
 
     constructor(
@@ -2263,6 +2291,8 @@ export class CamSettinsDialogComponent {
             return;
         }
 
+
+
         this.loadingSettings = true;
 
         console.log(this.dialogRef.componentInstance.data.status + this.dialogRef.componentInstance.data.id + this.dialogRef.componentInstance.data.name + this.dialogRef.componentInstance.data.url + this.dialogRef.componentInstance.data.username);
@@ -2279,7 +2309,11 @@ export class CamSettinsDialogComponent {
         this.camera.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
         this.appName  = this.dialogRef.componentInstance.data.appName;
 
+        if (!this.camera.name  || this.camera.name.length === 0 || /^\s*$/.test(this.camera.name )){
 
+            this.streamNameEmpty = true;
+            return;
+        }
 
         this.restService.editCameraInfo(this.camera, this.dialogRef.componentInstance.data.appName).subscribe(data => {
 
@@ -2485,6 +2519,7 @@ export class BroadcastEditComponent {
     public liveStreamEditing: LiveBroadcast;
     public shareEndpoint: boolean[];
     public videoServiceEndPoints: VideoServiceEndpoint[];
+    public streamNameEmpty = false;
 
 
     constructor(
@@ -2533,6 +2568,11 @@ export class BroadcastEditComponent {
             }
         });
 
+        if (!this.liveStreamEditing.name || this.liveStreamEditing.name.length === 0 || /^\s*$/.test(this.liveStreamEditing.name)){
+
+            this.streamNameEmpty = true;
+            return;
+        }
 
         this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.liveStreamEditing,
             socialNetworks).subscribe(data => {
@@ -2594,6 +2634,7 @@ export class StreamSourceEditComponent {
     public liveStreamEditing: LiveBroadcast;
     public shareEndpoint: boolean[];
     public videoServiceEndPoints: VideoServiceEndpoint[];
+    public streamNameEmpty = false;
 
 
     constructor(
@@ -2636,6 +2677,8 @@ export class StreamSourceEditComponent {
             return;
         }
 
+
+
         this.loadingSettings = true;
 
         console.log(this.dialogRef.componentInstance.data.status + this.dialogRef.componentInstance.data.id + this.dialogRef.componentInstance.data.name + this.dialogRef.componentInstance.data.url + this.dialogRef.componentInstance.data.username);
@@ -2650,6 +2693,12 @@ export class StreamSourceEditComponent {
         this.streamSource.streamId = this.dialogRef.componentInstance.data.id;
         this.streamSource.status = this.dialogRef.componentInstance.data.status;
         this.streamSource.streamUrl=this.dialogRef.componentInstance.data.streamUrl;
+
+        if (!this.streamSource.name || this.streamSource.name.length === 0 || /^\s*$/.test(this.streamSource.name)){
+
+            this.streamNameEmpty = true;
+            return;
+        }
 
         if(this.restService.checkStreamUrl(this.streamSource.streamUrl)){
 

@@ -16,6 +16,10 @@
                            i18n="@@broadcastNameIsRequired">
                         Camera name should be at least 4 characters.
                     </small>
+
+                    <small class="text-danger" *ngIf="streamNameEmpty">
+                        Stream name should not be empty.
+                    </small>
                 </div>
 
                 <div class="form-group text-left">
