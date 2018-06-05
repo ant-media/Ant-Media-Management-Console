@@ -130,6 +130,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public gridTableData: CameraInfoTable;
     public vodTableData: VodInfoTable;
     public timerId: any;
+    public camereErrorTimerId:any;
     public checkAuthStatusTimerId: any;
     public newLiveStreamActive: boolean;
     public newIPCameraActive: boolean;
@@ -1187,6 +1188,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 .subscribe(data => {
                     if (data["success"] == true) {
 
+                        this.restService.stopBroadcast(this.appName,streamId)
+
                         $.notify({
                             icon: "ti-save",
                             message: "Successfully deleted"
@@ -1387,8 +1390,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     addIPCamera(isValid: boolean): void {
 
-
-
         if (!isValid) {
             //not valid form return directly
             return;
@@ -1402,9 +1403,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
 
-
-                    console.log("success" + data["success"]);
-                    console.log("error" + data["message"]);
+                    console.log("success: " + data["success"]);
+                    console.log("error: " + data["message"]);
 
                     this.newIPCameraAdding = false;
 
@@ -1424,46 +1424,27 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     this.liveBroadcast.streamUrl = "";
 
-
                 }
                 else {
 
-                    console.log("success" + data["success"]);
-                    console.log("error" + data["message"]);
+                    console.log("success: " + data["success"]);
+                    console.log("error: " + data["message"]);
 
                     this.newIPCameraAdding = false;
 
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().new_broadcast_error
+                    }, {
+                        type: "warning",
+                        delay: 2000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
 
-                    if (data["message"].includes("401")) {
 
-                        swal({
-                            title: "Authorization Error",
-                            text: "Please Check Username and/or Password",
-                            type: 'error',
-
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-
-
-                        }).catch(function () {
-
-                        });
-                    }
-                    else {
-
-                        $.notify({
-                            icon: "ti-save",
-                            message: Locale.getLocaleInterface().new_broadcast_error
-                        }, {
-                            type: "warning",
-                            delay: 2000,
-                            placement: {
-                                from: 'top',
-                                align: 'right'
-                            }
-                        });
-                    }
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
                 }
@@ -1484,7 +1465,44 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             });
 
+
+        setTimeout(()=>{
+
+            this.restService.getCameraError(this.appName , this.liveBroadcast.streamId) .subscribe(data => {
+
+                console.log("data :  "+data.toString());
+
+                if(data["message"] != null){
+
+                    if (data["message"].includes("401")) {
+
+                        swal({
+                            title: "Authorization Error",
+                            text: "Please Check Username and/or Password",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+
+                        }).catch(function () {
+
+                        });
+                    }
+                }
+
+                else{
+
+                    console.log("no  camera error")
+                }
+            });
+
+        },7000)
+
     }
+
+
 
     validateIPaddress(ipaddress) {
         if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {
