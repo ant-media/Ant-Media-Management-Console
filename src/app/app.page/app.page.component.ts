@@ -320,7 +320,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.timerId = window.setInterval(() => {
             if(this.authService.isAuthenticated) {
                 this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-                this.getVoDStreams();
+                if(this.appName != "undefined"){
+                    this.getVoDStreams();
+                }
             }
             else{
                 clearInterval(this.timerId);

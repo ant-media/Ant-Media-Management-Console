@@ -74,6 +74,22 @@ export class AuthService implements CanActivate {
     */
 
     if (localStorage.getItem('authenticated') && this.isAuthenticated) {
+
+        this.restService.isAuthenticated().subscribe(data => {
+
+                this.isAuthenticated = data["success"];
+
+                if (!this.isAuthenticated) {
+                    this.router.navigateByUrl('/pages/login');
+                }
+                if(this.router.url=="/pages/login"){
+                    this.router.navigateByUrl('/dashboard/overview');
+                }
+            },
+            error => {
+                this.isAuthenticated = false;
+                this.router.navigateByUrl('/pages/login');
+            });
       return true;
     }
     else {

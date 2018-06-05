@@ -490,8 +490,7 @@
                                                             <ng-container i18n="@@tableDeleteButton"></ng-container>
                                                         </button>
 
-                                                        <button *ngIf="appSettings.objectDetectionEnabled==true"
-                                                                (click)="showDetectedObject(row.streamId)"
+                                                        <button *ngIf="appSettings.objectDetectionEnabled==true && this.appName=='LiveApp'"                                                              (click)="showDetectedObject(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-danger btn-xs "
                                                                 type="button" data-toggle="tooltip"
                                                                 i18n-title title="Object Detected" style="font-size: 1.1em">
@@ -576,7 +575,7 @@
 
 
 
-                                                                         <button *ngIf="appSettings.objectDetectionEnabled==true"
+                                                            <button *ngIf="appSettings.objectDetectionEnabled==true && this.appName=='LiveApp'"
                                                                     (click)="showDetectedObject(row.streamId)"
                                                                     class="btn btn-simple btn-magnify btn-danger btn-xs "
                                                                     type="button" data-toggle="tooltip"
