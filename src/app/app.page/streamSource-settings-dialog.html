@@ -23,6 +23,10 @@
                     <input type="text" name="streamUrl" i18n-placeholder="@@onvif_url_place_holder" placeholder="Stream Url"
                            class="form-control" [(ngModel)]="data.streamUrl" #onvifUrl="ngModel" style="width: 400px">
 
+                    <small class="text-danger" *ngIf="!streamUrlDialogValid">
+                        Please write a valid stream URL
+                    </small>
+
                 </div>
 
                 <div class="form-group text-left" *ngIf="data.videoServiceEndpoints.length>0" >

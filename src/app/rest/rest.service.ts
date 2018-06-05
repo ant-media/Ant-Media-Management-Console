@@ -360,4 +360,77 @@ export class RestService {
         return body || { };
     }
 
+    validateIPaddress(ipaddress : string) : boolean {
+        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {
+            return true;
+        }
+        return false;
+    }
+
+    checkStreamUrl(url : string) : boolean{
+
+        var streamUrlControl = false;
+
+        var ipAddr;
+
+        if(url.includes("//")){
+
+            ipAddr = url.split("//");
+
+            ipAddr = ipAddr[1];
+
+        } else { ipAddr = url;
+
+        }
+
+        if (ipAddr.includes("@")){
+
+            ipAddr = ipAddr.split("@");
+
+            ipAddr = ipAddr[1];
+
+        }
+
+        if (ipAddr.includes(":")){
+
+            ipAddr = ipAddr.split(":");
+
+            ipAddr = ipAddr[0];
+
+        }
+
+        if (ipAddr.includes("/")){
+
+            ipAddr = ipAddr.split("/");
+
+            ipAddr = ipAddr[0];
+
+        }
+
+        console.log("ipAddress: " + ipAddr);
+
+        if( url.startsWith("http://") ||
+            url.startsWith("https://") ||
+            url.startsWith("rtmp://") ||
+            url.startsWith("rtmps://") ||
+            url.startsWith("rtsp://")) {
+
+            streamUrlControl=true;
+        }
+
+
+        if(ipAddr.split(".").length == 4){
+            if(!this.validateIPaddress(ipAddr)){
+                console.log("not valid IP")
+                streamUrlControl=false;
+
+                return;
+            }
+        }
+
+        return streamUrlControl;
+
+    }
+
+
 }

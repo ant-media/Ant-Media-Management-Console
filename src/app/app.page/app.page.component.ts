@@ -1453,7 +1453,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.newIPCameraAdding = false;
                 this.newIPCameraActive = false;
                 this.liveBroadcast.name = "";
-                this.liveBroadcast.ipAddr = "";
                 this.liveBroadcast.username = "";
                 this.liveBroadcast.password = "";
 
@@ -1468,9 +1467,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         setTimeout(()=>{
 
-            this.restService.getCameraError(this.appName , this.liveBroadcast.streamId) .subscribe(data => {
+            this.restService.getCameraError(this.appName , this.liveBroadcast.ipAddr) .subscribe(data => {
 
-                console.log("data :  "+data.toString());
+                console.log("stream ID :  "+this.liveBroadcast.ipAddr);
 
                 if(data["message"] != null){
 
@@ -1496,87 +1495,25 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     console.log("no  camera error")
                 }
+
+                this.liveBroadcast.ipAddr = "";
             });
 
-        },7000)
+        },8000)
 
     }
 
 
 
-    validateIPaddress(ipaddress) {
-        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {
-            return true;
-        }
-        return false;
-    }
 
     addStreamSource(isValid: boolean): void {
-
-        var streamUrlControl=false;
-        var ipAddr;
 
         if (!isValid) {
             //not valid form return directly
             return;
         }
 
-        if(this.liveBroadcast.streamUrl.includes("//")){
-
-            ipAddr = this.liveBroadcast.streamUrl.split("//");
-
-            ipAddr = ipAddr[1];
-
-        } else { ipAddr = this.liveBroadcast.streamUrl;
-
-        }
-
-        if (ipAddr.includes("@")){
-
-            ipAddr = ipAddr.split("@");
-
-            ipAddr = ipAddr[1];
-
-        }
-
-        if (ipAddr.includes(":")){
-
-            ipAddr = ipAddr.split(":");
-
-            ipAddr = ipAddr[0];
-
-        }
-
-        if (ipAddr.includes("/")){
-
-            ipAddr = ipAddr.split("/");
-
-            ipAddr = ipAddr[0];
-
-        }
-
-        console.log("ipAddress: " + ipAddr);
-
-        if( this.liveBroadcast.streamUrl.includes("http://") ||
-            this.liveBroadcast.streamUrl.includes("https://") ||
-            this.liveBroadcast.streamUrl.includes("rtmp://") ||
-            this.liveBroadcast.streamUrl.includes("rtmps://") ||
-            this.liveBroadcast.streamUrl.includes("rtsp://")) {
-
-            streamUrlControl=true;
-        }
-
-
-        if(ipAddr.split(".").length == 4){
-            if(!this.validateIPaddress(ipAddr)){
-                console.log("not valid IP")
-                streamUrlControl=false;
-                this.streamUrlValid=false;
-                return;
-            }
-        }
-
-        if(!streamUrlControl){
+        if(!this.restService.checkStreamUrl(this.liveBroadcast.streamUrl)){
             console.log("stream source address is not in correct format");
             this.streamUrlValid=false;
             return;
@@ -2283,6 +2220,7 @@ export class CamSettinsDialogComponent {
     public liveStreamEditing: LiveBroadcast;
     public shareEndpoint: boolean[];
     public videoServiceEndPoints: VideoServiceEndpoint[];
+    public appName:string;
 
 
     constructor(
@@ -2338,7 +2276,8 @@ export class CamSettinsDialogComponent {
         this.camera.password = this.dialogRef.componentInstance.data.pass;
         this.camera.streamId = this.dialogRef.componentInstance.data.id;
         this.camera.status = this.dialogRef.componentInstance.data.status;
-        this.camera.streamUrl= this.dialogRef.componentInstance.data.streamUrl;
+        this.camera.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
+        this.appName  = this.dialogRef.componentInstance.data.appName;
 
 
 
@@ -2375,6 +2314,44 @@ export class CamSettinsDialogComponent {
             }
 
         });
+
+
+
+        setTimeout(()=>{
+
+            this.restService.getCameraError(this.appName , this.camera.ipAddr ) .subscribe(data => {
+
+                console.log("stream ID :  "+this.camera.ipAddr );
+
+                if(data["message"] != null){
+
+                    if (data["message"].includes("401")) {
+
+                        swal({
+                            title: "Authorization Error",
+                            text: "Please Check Username and/or Password",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+
+                        }).catch(function () {
+
+                        });
+                    }
+                }
+
+                else{
+
+                    console.log("no  camera error")
+                }
+
+                this.camera.ipAddr  = "";
+            });
+
+        },5000)
 
 
     }
@@ -2608,9 +2585,9 @@ export class BroadcastEditComponent {
 
 export class StreamSourceEditComponent {
 
-    streamSource: LiveBroadcast;
-    app: AppPageComponent;
-    loadingSettings = false;
+    public streamSource: LiveBroadcast;
+    public streamUrlDialogValid = true;
+    public loadingSettings = false;
     public editBroadcastShareYoutube: boolean;
     public editBroadcastShareFacebook: boolean;
     public editBroadcastSharePeriscope: boolean;
@@ -2624,9 +2601,7 @@ export class StreamSourceEditComponent {
         @Inject(MAT_DIALOG_DATA) public data: any) {
 
         this.shareEndpoint = [];
-
         this.videoServiceEndPoints = data.videoServiceEndpoints;
-
 
         let endpointList: Endpoint[] = data.endpointList;
         this.videoServiceEndPoints.forEach((item, index) => {
@@ -2655,6 +2630,8 @@ export class StreamSourceEditComponent {
 
     editSettings(isValid: boolean) {
 
+        this.streamUrlDialogValid = true;
+
         if (!isValid) {
             return;
         }
@@ -2674,42 +2651,48 @@ export class StreamSourceEditComponent {
         this.streamSource.status = this.dialogRef.componentInstance.data.status;
         this.streamSource.streamUrl=this.dialogRef.componentInstance.data.streamUrl;
 
+        if(this.restService.checkStreamUrl(this.streamSource.streamUrl)){
 
+            this.restService.editCameraInfo(this.streamSource, this.dialogRef.componentInstance.data.appName).subscribe(data => {
 
-        this.restService.editCameraInfo(this.streamSource, this.dialogRef.componentInstance.data.appName).subscribe(data => {
+                if (data["success"]) {
 
-            if (data["success"]) {
+                    this.dialogRef.close();
 
-                this.dialogRef.close();
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().broadcast_updated
+                    }, {
+                        type: "success",
+                        delay: 900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
+                else {
+                    $.notify({
+                        icon: "ti-alert",
+                        message: Locale.getLocaleInterface().broadcast_not_updated + " " + data["message"] + " " + data["errorId"]
+                    }, {
+                        type: "warning",
+                        delay: 900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
 
-                $.notify({
-                    icon: "ti-save",
-                    message: Locale.getLocaleInterface().broadcast_updated
-                }, {
-                    type: "success",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
-            else {
-                $.notify({
-                    icon: "ti-alert",
-                    message: Locale.getLocaleInterface().broadcast_not_updated + " " + data["message"] + " " + data["errorId"]
-                }, {
-                    type: "warning",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
+            });
 
-        });
+        } else {
+            this.loadingSettings = false;
+            this.streamUrlDialogValid = false;
 
+            return;
+        }
 
     }
 
