@@ -1403,7 +1403,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.liveBroadcast.type = "ipCamera";
 
 
-        if (!this.liveBroadcast.name || this.liveBroadcast.name.length === 0 || /^\s*$/.test(this.liveBroadcast.name)){
+        if (!this.liveBroadcast.name || this.liveBroadcast.name.length === 0 || /^\s*$/.test(this.liveBroadcast.name) || this.liveBroadcast.name.includes(" ")){
 
             this.streamNameEmpty = true;
             return;
@@ -1527,7 +1527,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
 
-        if (!this.liveBroadcast.name || this.liveBroadcast.name.length === 0 || /^\s*$/.test(this.liveBroadcast.name)){
+        if (!this.liveBroadcast.name || this.liveBroadcast.name.length === 0 || /^\s*$/.test(this.liveBroadcast.name) || this.liveBroadcast.name.includes(" ")){
 
             this.streamNameEmpty = true;
             return;
@@ -1733,7 +1733,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.liveBroadcast.type = "liveStream"
 
-        if (!this.liveBroadcast.name || this.liveBroadcast.name.length === 0 || /^\s*$/.test(this.liveBroadcast.name)){
+        if (!this.liveBroadcast.name || this.liveBroadcast.name.length === 0 || /^\s*$/.test(this.liveBroadcast.name) || this.liveBroadcast.name.includes(" ")){
 
             this.streamNameEmpty = true;
             return;
@@ -2309,7 +2309,7 @@ export class CamSettinsDialogComponent {
         this.camera.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
         this.appName  = this.dialogRef.componentInstance.data.appName;
 
-        if (!this.camera.name  || this.camera.name.length === 0 || /^\s*$/.test(this.camera.name )){
+        if (!this.camera.name  || this.camera.name.length === 0 || /^\s*$/.test(this.camera.name ) || this.camera.name.includes(" ")){
 
             this.streamNameEmpty = true;
             return;
@@ -2568,7 +2568,7 @@ export class BroadcastEditComponent {
             }
         });
 
-        if (!this.liveStreamEditing.name || this.liveStreamEditing.name.length === 0 || /^\s*$/.test(this.liveStreamEditing.name)){
+        if (!this.liveStreamEditing.name || this.liveStreamEditing.name.length === 0 || /^\s*$/.test(this.liveStreamEditing.name) || this.liveStreamEditing.name.includes(" ")){
 
             this.streamNameEmpty = true;
             return;
@@ -2694,7 +2694,8 @@ export class StreamSourceEditComponent {
         this.streamSource.status = this.dialogRef.componentInstance.data.status;
         this.streamSource.streamUrl=this.dialogRef.componentInstance.data.streamUrl;
 
-        if (!this.streamSource.name || this.streamSource.name.length === 0 || /^\s*$/.test(this.streamSource.name)){
+
+        if (!this.streamSource.name || this.streamSource.name.length === 0 || /^\s*$/.test(this.streamSource.name)|| this.streamSource.name.includes(" ")){
 
             this.streamNameEmpty = true;
             return;
