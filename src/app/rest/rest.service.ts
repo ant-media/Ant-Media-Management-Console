@@ -49,6 +49,9 @@ export class LiveBroadcast {
     quality: string;
     speed: number;
     endPointList:Endpoint[];
+    hlsViewerCount: number = 0;
+    webRTCViewerCount : number = 0;
+    rtmpViewerCount : number = 0;
 }
 
 @Injectable()

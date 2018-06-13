@@ -379,7 +379,30 @@
 
                                                 </mat-cell>
 
+                                            </ng-container>
 
+                                            <ng-container matColumnDef="viewerCount">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header> Viewer Counts </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+
+                                                    <div *ngIf="row.hlsViewerCount > 0">
+                                                        HLS : {{row.hlsViewerCount}}
+                                                    </div>
+                                                    <div *ngIf="row.webRTCViewerCount > 0">
+                                                        WebRTC :  {{row.webRTCViewerCount}}
+                                                    </div>
+                                                    <div *ngIf="row.rtmpViewerCount > 0">
+                                                        RTMP :   {{row.rtmpViewerCount}}
+                                                    </div>
+
+                                                    <ng-container *ngIf="row.webRTCViewerCount == 0 &&row.hlsViewerCount == 0 &&row.rtmpViewerCount == 0 " >
+                                                       No viewer
+
+                                                    </ng-container>
+
+
+                                                </mat-cell>
 
                                             </ng-container>
 
@@ -593,7 +616,7 @@
                                                                 <span class="btn-label">
                                                                     <i class="ti-target"></i>
                                                                 </span>
-                                                                 <ng-container i18n="@@tableObjectDetectButton"></ng-container>
+                                                                <ng-container i18n="@@tableObjectDetectButton"></ng-container>
                                                             </button>
 
 
@@ -759,7 +782,7 @@
                                                 <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
-                                                    <button (click)="playVoD(row.vodName,row.type)"
+                                                    <button (click)="playVoD(row.vodId,row.type)"
                                                             class="btn btn-success btn-simple btn-magnify"
                                                             type="button">
                                                         <span class="btn-label">
@@ -767,6 +790,19 @@
                                                         </span>
                                                         <ng-container i18n="@@tablePlayButton">Play</ng-container>
                                                     </button>
+
+                                                    <button (click)="copyLiveEmbedCode(row.vodId)"
+                                                            data-toggle="tooltip" i18n-title
+                                                            title="Copy Live Embed Code to Clipboard"
+                                                            class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                            type="button"
+                                                            style="font-size: 1.1em">
+                                                            <span class="btn-label">
+                                                                <i class="ti-share"></i>
+                                                            </span>
+                                                        <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
+                                                    </button>
+
                                                     <button (click)="deleteVoD(row.vodName,row.vodId)" class="btn btn-simple btn-magnify btn-danger" type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-close"></i>

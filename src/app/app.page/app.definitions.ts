@@ -20,6 +20,9 @@ export declare interface BroadcastInfo {
     iframeSource: string;
     quality: string;
     speed: number;
+    hlsViewerCount: number;
+    webRTCViewerCount : number;
+    rtmpViewerCount : number;
 }
 
 export declare interface BroadcastInfoTable {

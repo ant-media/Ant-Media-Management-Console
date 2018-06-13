@@ -184,7 +184,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     ];
 
 
-    public displayedColumnsStreams = ['name', 'status', 'social_media', 'actions'];
+    public displayedColumnsStreams = ['name', 'status', 'viewerCount', 'social_media', 'actions'];
     public displayedColumnsVod = ['name', 'type', 'date', 'actions'];
     public displayedColumnsUserVod = ['name', 'date', 'actions'];
 
@@ -317,6 +317,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.appSettings = null;
         this.newLiveStreamActive = false;
         this.camera = new Camera("", "", "", "", "", "");
+
 
 
         this.timerId = window.setInterval(() => {
@@ -1001,12 +1002,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         var srcFile = null;
         if (type == "streamVod" || type == "uploadedVod") {
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamName;
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamName + '.mp4';
         }
         else if (type == "userVod") {
             var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
             var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + streamName;
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + streamName+ '.mp4';
         }
 
         if (srcFile != null) {
@@ -2437,6 +2438,8 @@ export class UploadVodDialogComponent {
             let formData: FormData = new FormData();
 
             formData.append('file', this.fileToUpload);
+
+            formData.append('file_info', this.fileToUpload.name);
 
             console.log("file upload" + this.fileToUpload.name);
 
