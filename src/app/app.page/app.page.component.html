@@ -382,20 +382,20 @@
                                             </ng-container>
 
                                             <ng-container matColumnDef="viewerCount">
-                                                <mat-header-cell *matHeaderCellDef mat-sort-header> Viewer Counts </mat-header-cell>
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header> HLS Viewers </mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
 
                                                     <div *ngIf="row.hlsViewerCount > 0">
-                                                        <i class="ti-stats-up " style="color:#10da3e;"> </i>
-                                                        HLS : {{row.hlsViewerCount}}
+                                                        <i class="ti-eye " style="color:#10da3e;"> </i>
+                                                        {{row.hlsViewerCount}}
                                                     </div>
                                                     <div *ngIf="row.webRTCViewerCount > 0">
-                                                        <i class="ti-stats-up " style="color:#10da3e;"> </i>
+                                                        <i class="ti-eye " style="color:#10da3e;"> </i>
                                                         WebRTC :  {{row.webRTCViewerCount}}
                                                     </div>
                                                     <div *ngIf="row.rtmpViewerCount > 0">
-                                                        <i class="ti-stats-up " style="color:#10da3e;"> </i>
+                                                        <i class="ti-eye" style="color:#10da3e;"> </i>
                                                         RTMP :   {{row.rtmpViewerCount}}
                                                     </div>
 
