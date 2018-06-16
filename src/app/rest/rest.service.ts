@@ -91,6 +91,10 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/detection/getList/'+offset+"/"+size+"?id="+streamId);
     }
 
+    public getObjectDetectedTotal(appName:string, streamId:string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/detection/getObjectDetectedTotal?id='+streamId);
+    }
+
     public getAppLiveStreams(appName:string, offset:Number, size:Number): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getList/'+offset+"/"+size);
     }

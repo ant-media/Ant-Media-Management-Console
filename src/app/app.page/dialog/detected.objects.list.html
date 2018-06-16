@@ -7,7 +7,7 @@
 
         <mat-cell *matCellDef="let row" style="padding:10px">
 
-            <img style="width: 100px;" [src]="getImageURL(row.imageId)">
+            <a [href]="getImageURL(row.imageId)" target="_blank"> <img style="width:30%;" [src]="getImageURL(row.imageId)"> </a>
             {{row.objectName}} - {{row.detectionTime | date:'medium'}}
 
         </mat-cell>
@@ -31,7 +31,7 @@
 
 
    <mat-paginator   
-    [length]="objectLenght"
+    [length]="detectedLenght"
     [pageSize]="pageSize"
     [pageSizeOptions]="pageSizeOptions"
     (page)="onDetectionPaginateChange($event)"

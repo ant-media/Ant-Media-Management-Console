@@ -23,7 +23,6 @@ import {
 } from '@angular/material';
 import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../../rest/rest.service';
 import {BroadcastInfo, BroadcastInfoTable} from "../app.definitions";
-declare var $: any;
 
 export class DetectedObject {
     objectName: String;
@@ -41,7 +40,7 @@ export class DetectedObject {
 
 export class DetectedObjectListDialog {
 
-    public objectLenght = 100 ;
+    public detectedLenght = 100;
     public pageSize = 5;
     public pageSizeOptions = [5, 10, 20];
     public detectedListOffset = 0;
@@ -67,19 +66,28 @@ export class DetectedObjectListDialog {
         };
 
             this.appName = data.appName;
-            this.getDetectionList(this.appName, data.streamId, this.detectedListOffset, this.pageSize); 
+            this.getDetectionList(this.appName, data.streamId, this.detectedListOffset, this.pageSize);
             
             this.timerId = window.setInterval(() => {
                 this.getDetectionList(this.appName, data.streamId, this.detectedListOffset, this.pageSize);
 
-            }, 5000); 
-            
+            }, 5000);
+
+            this.getObjectDetectedTotal(this.appName, data.streamId);
+
             this.dialogRef.afterClosed().subscribe(result => {
                 clearInterval(this.timerId);
             })
 
 
 
+    }
+
+    getObjectDetectedTotal(appName:string, streamId:string) {
+        this.restService.getObjectDetectedTotal(appName, streamId).subscribe(data =>
+        {
+            this.detectedLenght = parseInt(data.toString());
+        });
     }
 
     getDetectionList(appName:string, streamId:string, offset:number, batch:number) {
@@ -93,6 +101,10 @@ export class DetectedObjectListDialog {
                 this.dataSource = new MatTableDataSource(this.objectTableData.dataRows);
             });
     }
+
+
+
+
        onDetectionPaginateChange(event) {
 
         this.detectedListOffset = event.pageIndex * event.pageSize;
