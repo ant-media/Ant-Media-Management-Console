@@ -1400,15 +1400,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             //not valid form return directly
             return;
         }
-        this.newIPCameraAdding = true;
-        this.liveBroadcast.type = "ipCamera";
 
 
-        if (!this.liveBroadcast.name || this.liveBroadcast.name.length === 0 || /^\s*$/.test(this.liveBroadcast.name) || this.liveBroadcast.name.includes(" ")){
 
+        if (!this.restService.checkStreamName(this.liveBroadcast.name)){
             this.streamNameEmpty = true;
+
             return;
         }
+        this.newIPCameraAdding = true;
+        this.liveBroadcast.type = "ipCamera";
 
         this.restService.addStreamSource(this.appName, this.liveBroadcast)
             .subscribe(data => {
@@ -1517,7 +1518,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-
     addStreamSource(isValid: boolean): void {
 
         this.streamNameEmpty = false;
@@ -1528,7 +1528,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
 
-        if (!this.liveBroadcast.name || this.liveBroadcast.name.length === 0 || /^\s*$/.test(this.liveBroadcast.name) || this.liveBroadcast.name.includes(" ")){
+        if (!this.restService.checkStreamName(this.liveBroadcast.name)) {
 
             this.streamNameEmpty = true;
             return;
@@ -1734,7 +1734,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.liveBroadcast.type = "liveStream"
 
-        if (!this.liveBroadcast.name || this.liveBroadcast.name.length === 0 || /^\s*$/.test(this.liveBroadcast.name) || this.liveBroadcast.name.includes(" ")){
+        if (!this.restService.checkStreamName(this.liveBroadcast.name)){
 
             this.streamNameEmpty = true;
             return;
@@ -2294,7 +2294,7 @@ export class CamSettinsDialogComponent {
 
 
 
-        this.loadingSettings = true;
+
 
         console.log(this.dialogRef.componentInstance.data.status + this.dialogRef.componentInstance.data.id + this.dialogRef.componentInstance.data.name + this.dialogRef.componentInstance.data.url + this.dialogRef.componentInstance.data.username);
 
@@ -2310,11 +2310,12 @@ export class CamSettinsDialogComponent {
         this.camera.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
         this.appName  = this.dialogRef.componentInstance.data.appName;
 
-        if (!this.camera.name  || this.camera.name.length === 0 || /^\s*$/.test(this.camera.name ) || this.camera.name.includes(" ")){
+        if (!this.restService.checkStreamName(this.camera.name)){
 
             this.streamNameEmpty = true;
             return;
         }
+        this.loadingSettings = true;
 
         this.restService.editCameraInfo(this.camera, this.dialogRef.componentInstance.data.appName).subscribe(data => {
 
@@ -2562,7 +2563,7 @@ export class BroadcastEditComponent {
         this.liveStreamEditing = new LiveBroadcast();
         this.liveStreamEditing.name = this.dialogRef.componentInstance.data.name;
         this.liveStreamEditing.streamId = this.dialogRef.componentInstance.data.streamId;
-        this.liveStreamUpdating = true;
+
 
         var socialNetworks = [];
         this.shareEndpoint.forEach((value, index) => {
@@ -2571,11 +2572,12 @@ export class BroadcastEditComponent {
             }
         });
 
-        if (!this.liveStreamEditing.name || this.liveStreamEditing.name.length === 0 || /^\s*$/.test(this.liveStreamEditing.name) || this.liveStreamEditing.name.includes(" ")){
+        if (!this.restService.checkStreamName(this.liveStreamEditing.name)){
 
             this.streamNameEmpty = true;
             return;
         }
+        this.liveStreamUpdating = true;
 
         this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.liveStreamEditing,
             socialNetworks).subscribe(data => {
@@ -2628,6 +2630,7 @@ export class BroadcastEditComponent {
 
 export class StreamSourceEditComponent {
 
+    public app:AppPageComponent;
     public streamSource: LiveBroadcast;
     public streamUrlDialogValid = true;
     public loadingSettings = false;
@@ -2682,7 +2685,7 @@ export class StreamSourceEditComponent {
 
 
 
-        this.loadingSettings = true;
+
 
         console.log(this.dialogRef.componentInstance.data.status + this.dialogRef.componentInstance.data.id + this.dialogRef.componentInstance.data.name + this.dialogRef.componentInstance.data.url + this.dialogRef.componentInstance.data.username);
 
@@ -2698,11 +2701,13 @@ export class StreamSourceEditComponent {
         this.streamSource.streamUrl=this.dialogRef.componentInstance.data.streamUrl;
 
 
-        if (!this.streamSource.name || this.streamSource.name.length === 0 || /^\s*$/.test(this.streamSource.name)|| this.streamSource.name.includes(" ")){
+        if (!this.restService.checkStreamName(this.streamSource.name)){
 
             this.streamNameEmpty = true;
             return;
         }
+        this.loadingSettings = true;
+
 
         if(this.restService.checkStreamUrl(this.streamSource.streamUrl)){
 

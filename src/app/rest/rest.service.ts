@@ -439,5 +439,16 @@ export class RestService {
 
     }
 
+    public checkStreamName(name:string) {
+
+        if (!name || name.length === 0 || /^\s*$/.test(name) ){
+
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
 
 }
