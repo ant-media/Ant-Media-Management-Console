@@ -141,7 +141,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public liveBroadcastSharePeriscope: boolean;
     public newLiveStreamCreating = false;
     public newIPCameraAdding = false;
-    public newStreamSourceAdding = false
+    public newStreamSourceAdding = false;
     public newStreamSourceWarn = false;
     public discoveryStarted = false;
     public newSourceAdding = false;
