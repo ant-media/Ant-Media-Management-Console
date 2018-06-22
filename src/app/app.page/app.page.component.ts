@@ -995,19 +995,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    playVoD(streamName: string, type: string): void {
+    playVoD(vodId: string, type: string, streamId:string): void {
         // var container = document.getElementById("player");
         // install flowplayer into selected container
 
 
         var srcFile = null;
-        if (type == "streamVod" || type == "uploadedVod") {
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamName + '.mp4';
-        }
-        else if (type == "userVod") {
+        if (type == "uploadedVod") {
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4';
+        }else if (type == "streamVod"){
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamId + '.mp4';
+        }else if (type == "userVod") {
             var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
             var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + streamName+ '.mp4';
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodId+ '.mp4';
         }
 
         if (srcFile != null) {
