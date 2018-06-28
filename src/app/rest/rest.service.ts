@@ -3,7 +3,7 @@ import {Response} from '@angular/http';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {environment} from '../../environments/environment';
-import {AppSettings, SearchParam} from "../app.page/app.page.component";
+import {AppSettings, SearchParam, ServerSettings} from "../app.page/app.page.component";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
@@ -206,6 +206,9 @@ export class RestService {
     public getSettings(appName: string): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/getSettings/" + appName);
     }
+    public getServerSettings(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/getServerSettings/" );
+    }
 
     public checkDeviceAuthStatus(appName: string, serviceName:string): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/checkDeviceAuthStatus/" + serviceName, {});
@@ -215,6 +218,9 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + '/changeSettings/' + appName, appSettings);
     }
 
+    public changeServerSettings(serverSettings: ServerSettings ): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + '/changeServerSettings', serverSettings);
+    }
     public getDeviceAuthParameters(appName: string, networkName: string): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/getDeviceAuthParameters/" + networkName, {});
     }

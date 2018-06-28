@@ -97,6 +97,17 @@ export class AppSettings {
     }
 }
 
+export class ServerSettings {
+
+    constructor(public serverName: string,
+                public licenceKey: string,
+
+    ) {
+
+    }
+}
+
+
 export class SocialNetworkChannel {
     public type: string;
     public name: string;
@@ -177,7 +188,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public streamUrlValid = true;
     public streamNameEmpty=false;
 
-    public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
+    public appSettings: AppSettings;// = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
+    public serverSettings: ServerSettings;
     public listTypes = [
         new HLSListType('None', ''),
         new HLSListType('Event', 'event'),
@@ -414,6 +426,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
             this.getSettings();
+            this.getServerSettings();
+
 
 
             this.restService.isEnterpriseEdition().subscribe(data => {
@@ -1333,6 +1347,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.getSocialEndpoints();
     }
 
+    getServerSettings(): void {
+        this.restService.getServerSettings().subscribe(data => {
+            this.serverSettings = <ServerSettings>data;
+        });
+
+    }
+
 
     changeSettings(valid: boolean): void {
 
@@ -1369,6 +1390,47 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             }
         });
+
+
+
+    }
+
+    changeServerSettings(): void {
+
+        var serverSettigs = new ServerSettings(null,"11111-2222-3333-4444 ");
+
+
+        this.restService.changeServerSettings( serverSettigs).subscribe(data => {
+            if (data["success"] == true) {
+                $.notify({
+                    icon: "ti-save",
+                    message: Locale.getLocaleInterface().settings_saved
+                }, {
+                    type: "success",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else {
+                $.notify({
+                    icon: "ti-alert",
+                    message: Locale.getLocaleInterface().settings_not_saved
+                }, {
+                    type: 'warning',
+                    delay: 1900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+
+            }
+        });
+
+        this.getServerSettings();
     }
 
     newLiveStream(): void {
