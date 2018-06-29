@@ -18,10 +18,16 @@ declare var $:any;
     templateUrl: './server.settings.component.html'
 })
 
+
+
 export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
     public serverSettings: ServerSettings;
     public settingsReceived = false;
+    public licenseStatus = "invalid";
+    public licenseStatusReceiving = false;
+    public licenseInfo;
+
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
                 private restService: RestService,
@@ -37,6 +43,9 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
         this.serverSettings = new ServerSettings(null,"key");
         this.getServerSettings();
+        this.getLicenseStatus();
+
+
     }
 
     ngAfterViewInit() {
@@ -44,13 +53,33 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     }
 
 
+    getLicenseStatus(){
+
+        this.licenseStatusReceiving = false;
+        this.restService.getLicenseStatus( ).subscribe(data => {
+            if (data["success"] == true) {
+                this.licenseStatus = "valid";
+                this.licenseInfo= data["message"];
+
+
+            }
+            else {
+                this.licenseStatus = "invalid";
+
+
+            }
+        });
+
+
+
+    }
 
     changeServerSettings(isValid : boolean): void {
 
         if (!isValid) {
             return;
         }
-
+        this.licenseStatusReceiving = true;
         this.restService.changeServerSettings( this.serverSettings).subscribe(data => {
             if (data["success"] == true) {
                 $.notify({
@@ -80,6 +109,12 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
             }
         });
+
+        setTimeout(()=>{
+
+            this.getLicenseStatus();
+
+        },8000)
 
 
     }

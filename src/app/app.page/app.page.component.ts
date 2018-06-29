@@ -92,9 +92,7 @@ export class AppSettings {
                 public acceptOnlyStreamsInDataStore: boolean,
                 public vodFolder: string,
                 public objectDetectionEnabled: boolean
-    ) {
-
-    }
+    ) {}
 }
 
 export class ServerSettings {
@@ -102,9 +100,7 @@ export class ServerSettings {
     constructor(public serverName: string,
                 public licenceKey: string,
 
-    ) {
-
-    }
+    ) {}
 }
 
 

@@ -225,6 +225,10 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/getDeviceAuthParameters/" + networkName, {});
     }
 
+    public getLicenseStatus(): Observable<Object> {
+        return  this.http.get(REST_SERVICE_ROOT + '/getLicenceStatus');
+    }
+
     public getLiveClientsSize(): Observable<Object> {
         return  this.http.get(REST_SERVICE_ROOT + '/getLiveClientsSize');
     }
