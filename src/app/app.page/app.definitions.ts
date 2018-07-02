@@ -82,3 +82,7 @@ export declare interface VodInfoTable {
 export declare interface CameraInfoTable {
     list: CamStreamInfo[];
 }
+
+
+
+

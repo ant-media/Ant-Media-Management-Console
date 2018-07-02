@@ -5,6 +5,10 @@ import { REST_SERVICE_ROOT } from '../../rest/rest.service';
 
 import { RestService } from '../../rest/rest.service';
 import { Router } from '@angular/router';
+import {DataService} from "../../rest/data.service";
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import {Licence, ServerSettingsComponent} from "../../server.settings/server.settings.component";
 
 
 declare var $: any;
@@ -46,8 +50,14 @@ export class OverviewComponent implements OnInit {
     public appTableData: TableData;
     public units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     public timerId:any;
+    public licence : Licence;
 
-    constructor(/*private http: HttpClient,*/ private restService:RestService, private router:Router) { }
+
+
+    constructor(/*private http: HttpClient,*/ private restService:RestService, private router:Router, private dataService: ServerSettingsComponent) {
+
+
+    }
 
     niceBytes(x): string {
         let l = 0, n = parseInt(x, 10) || 0;
@@ -74,8 +84,23 @@ export class OverviewComponent implements OnInit {
             dataRows: [
             ]
         };
+
+
+
     }
     ngAfterViewInit() {
+
+
+        this.licence =  this.dataService.getLicenseStatus();
+
+        if(this.licence) {
+
+            console.log(this.licence.owner);
+        }else{
+
+            console.log ("invalid license");
+        }
+
         this.initCirclePercentage();
         this.updateCPULoad();
         this.getLiveClientsSize();
@@ -98,6 +123,7 @@ export class OverviewComponent implements OnInit {
         if (this.timerId) {
             clearInterval(this.timerId);
         }
+
     }
 
     updateCPULoad(): void {

@@ -22,6 +22,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ClipboardModule } from 'ngx-clipboard';
 import { Locale } from './locale/locale';
 import {AppPageComponent} from "./app.page/app.page.component";
+import {DataService} from "./rest/data.service";
 
 
 
@@ -34,25 +35,27 @@ import {AppPageComponent} from "./app.page/app.page.component";
         SidebarModule,
         NavbarModule,
         FooterModule,
-        ClipboardModule  
+        ClipboardModule
     ],
     declarations: [
         AppComponent,
         AdminLayoutComponent,
-        AuthLayoutComponent
+        AuthLayoutComponent,
+
     ],
     providers: [
         AppPageComponent,
         AuthService,
         RestService,
         Locale,
+        DataService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         //{provide: RequestOptions, useClass: CustomRequestOptions},
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
             multi: true
-          }
+        }
     ],
     bootstrap: [ AppComponent ]
 })

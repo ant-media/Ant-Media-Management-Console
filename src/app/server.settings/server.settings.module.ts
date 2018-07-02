@@ -5,6 +5,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import {ServerSettingsComponent} from './server.settings.component';
 import { ServerSettingsRoutes } from './server.setings.routing';
+import {DataService} from "../rest/data.service";
+
+
 
 @NgModule({
     imports: [
@@ -12,7 +15,8 @@ import { ServerSettingsRoutes } from './server.setings.routing';
         RouterModule.forChild(ServerSettingsRoutes),
         FormsModule
     ],
-    declarations: [ServerSettingsComponent ]
+    declarations: [ServerSettingsComponent ],
+    providers: [DataService],
 
 })
 

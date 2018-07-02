@@ -1,17 +1,4 @@
-import {
-    AfterViewInit,
-    ChangeDetectorRef,
-    Component,
-    EventEmitter,
-    Inject,
-    Input,
-    NgZone,
-    OnDestroy,
-    OnInit,
-    Output,
-    Renderer,
-    ViewChild
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, Renderer, ViewChild} from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -19,27 +6,9 @@ import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../rest
 import {AuthService} from '../rest/auth.service';
 import {ClipboardService} from 'ngx-clipboard';
 import {Locale} from "../locale/locale";
-import {
-    MAT_DIALOG_DATA,
-    MatDialog,
-    MatDialogRef,
-    MatPaginatorIntl,
-    MatSort,
-    MatTableDataSource,
-    PageEvent
-} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatPaginatorIntl, MatSort, MatTableDataSource, PageEvent} from '@angular/material';
 import "rxjs/add/operator/toPromise";
-import {
-    BroadcastInfo,
-    BroadcastInfoTable,
-    CameraInfoTable,
-    EncoderSettings,
-    Endpoint,
-    VideoServiceEndpoint,
-    VodInfo,
-    VodInfoTable
-} from './app.definitions';
-
+import {BroadcastInfo, BroadcastInfoTable, CameraInfoTable, EncoderSettings, Endpoint, VideoServiceEndpoint, VodInfo, VodInfoTable} from './app.definitions';
 import {DetectedObjectListDialog} from './dialog/detected.objects.list';
 
 declare var $: any;
