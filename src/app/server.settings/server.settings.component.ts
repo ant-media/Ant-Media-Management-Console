@@ -47,7 +47,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
     public serverSettings: ServerSettings;
     public settingsReceived = false;
-    public licenseStatus = "invalid";
+    public licenseStatus = "Getting license status";
     public licenseStatusReceiving = false;
     public currentLicence : Licence;
     private _messageReceived : string;
@@ -77,15 +77,12 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
         if (this.authService.isAuthenticated) {
 
-            setTimeout(() => {
 
                 this.timerId = window.setInterval(() => {
 
                     this.getLicenseStatus()
 
                 }, 6000);
-
-            }, 5000)
 
         }
     }

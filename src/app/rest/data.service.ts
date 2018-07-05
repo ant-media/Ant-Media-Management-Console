@@ -7,21 +7,20 @@ import { Subject } from 'rxjs';
 export class DataService {
 
 
-    myMethod$: Observable<any>;
-    private myMethodSubject = new Subject<any>();
+    data: Observable<any>;
+    private observeData = new Subject<any>();
 
 
     serviceData: string;
 
     constructor() {
 
-        this.myMethod$ = this.myMethodSubject.asObservable();
+        this.data = this.observeData.asObservable();
     }
 
     writeData(data) {
-        console.log(data); // I have data! Let's return it so subscribers can use it!
-        // we can do stuff with data if we want
-        this.myMethodSubject.next(data);
+        console.log(data);
+        this.observeData.next(data);
         this.serviceData = data;
 
 

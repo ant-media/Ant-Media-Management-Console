@@ -38,6 +38,9 @@
                                             <div class="col-sm-10" *ngIf="!licenseStatusReceiving && licenseStatus ==='invalid' ">
                                                 <p class="form-control-static text-left">  <i class="fa fa-circle text-muted" style="color: #98000d"></i> {{licenseStatus}}</p>
                                             </div>
+                                            <div class="col-sm-10" *ngIf="!licenseStatusReceiving && licenseStatus ==='Getting license status' ">
+                                                <p class="form-control-static text-left">  <i class="fa fa-spinner fa-pulse fa-1x fa-fw"  aria-hidden="true"></i> {{licenseStatus}}..</p>
+                                            </div>
 
                                             <div class="col-sm-10" *ngIf="!licenseStatusReceiving && licenseStatus ==='valid'">
                                                 <p class="form-control-static text-left">  <i class="ti-check " style="color:#199826;font-size: 1.1em"></i>
