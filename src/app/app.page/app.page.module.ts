@@ -70,7 +70,7 @@ export const AppPageRoutes: Routes = [
 
     entryComponents: [
         CamSettinsDialogComponent, AppPageComponent, UploadVodDialogComponent, BroadcastEditComponent,
-        DetectedObjectListDialog,StreamSourceEditComponent,
+        DetectedObjectListDialog,StreamSourceEditComponent
 
     ],
     bootstrap: [AppPageComponent],

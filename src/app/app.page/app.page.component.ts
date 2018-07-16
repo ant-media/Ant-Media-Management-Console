@@ -1,4 +1,17 @@
-import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, Renderer, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Inject,
+    Input,
+    NgZone,
+    OnDestroy,
+    OnInit,
+    Output,
+    Renderer,
+    ViewChild
+} from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -6,9 +19,27 @@ import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../rest
 import {AuthService} from '../rest/auth.service';
 import {ClipboardService} from 'ngx-clipboard';
 import {Locale} from "../locale/locale";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatPaginatorIntl, MatSort, MatTableDataSource, PageEvent} from '@angular/material';
+import {
+    MAT_DIALOG_DATA,
+    MatDialog,
+    MatDialogRef,
+    MatPaginatorIntl,
+    MatSort,
+    MatTableDataSource,
+    PageEvent
+} from '@angular/material';
 import "rxjs/add/operator/toPromise";
-import {BroadcastInfo, BroadcastInfoTable, CameraInfoTable, EncoderSettings, Endpoint, VideoServiceEndpoint, VodInfo, VodInfoTable} from './app.definitions';
+import {
+    BroadcastInfo,
+    BroadcastInfoTable,
+    CameraInfoTable,
+    EncoderSettings,
+    Endpoint,
+    VideoServiceEndpoint,
+    VodInfo,
+    VodInfoTable
+} from './app.definitions';
+
 import {DetectedObjectListDialog} from './dialog/detected.objects.list';
 
 declare var $: any;
@@ -61,17 +92,10 @@ export class AppSettings {
                 public acceptOnlyStreamsInDataStore: boolean,
                 public vodFolder: string,
                 public objectDetectionEnabled: boolean
-    ) {}
+    ) {
+
+    }
 }
-
-export class ServerSettings {
-
-    constructor(public serverName: string,
-                public licenceKey: string,
-
-    ) {}
-}
-
 
 export class SocialNetworkChannel {
     public type: string;
@@ -153,8 +177,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public streamUrlValid = true;
     public streamNameEmpty=false;
 
-    public appSettings: AppSettings;// = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
-    public serverSettings: ServerSettings;
+    public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
     public listTypes = [
         new HLSListType('None', ''),
         new HLSListType('Event', 'event'),
@@ -391,8 +414,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
             this.getSettings();
-            this.getServerSettings();
-
 
 
             this.restService.isEnterpriseEdition().subscribe(data => {
@@ -1312,13 +1333,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.getSocialEndpoints();
     }
 
-    getServerSettings(): void {
-        this.restService.getServerSettings().subscribe(data => {
-            this.serverSettings = <ServerSettings>data;
-        });
-
-    }
-
 
     changeSettings(valid: boolean): void {
 
@@ -1355,47 +1369,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             }
         });
-
-
-
-    }
-
-    changeServerSettings(): void {
-
-        var serverSettigs = new ServerSettings(null,"11111-2222-3333-4444 ");
-
-
-        this.restService.changeServerSettings( serverSettigs).subscribe(data => {
-            if (data["success"] == true) {
-                $.notify({
-                    icon: "ti-save",
-                    message: Locale.getLocaleInterface().settings_saved
-                }, {
-                    type: "success",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
-            else {
-                $.notify({
-                    icon: "ti-alert",
-                    message: Locale.getLocaleInterface().settings_not_saved
-                }, {
-                    type: 'warning',
-                    delay: 1900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-
-            }
-        });
-
-        this.getServerSettings();
     }
 
     newLiveStream(): void {

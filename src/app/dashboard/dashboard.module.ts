@@ -6,8 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OverviewComponent } from './overview/overview.component';
 import { DashboardRoutes } from './dashboard.routing';
 import { HttpClientModule } from '@angular/common/http';
-import {DataService} from "../rest/data.service";
-import {ServerSettingsComponent} from "../server.settings/server.settings.component";
+
 
 
 @NgModule({
@@ -18,8 +17,6 @@ import {ServerSettingsComponent} from "../server.settings/server.settings.compon
         HttpClientModule,
     ],
     declarations: [OverviewComponent],
-    providers: [DataService,ServerSettingsComponent],
-
 })
 
 export class DashboardModule {}

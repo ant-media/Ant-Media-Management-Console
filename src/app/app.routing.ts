@@ -3,7 +3,6 @@ import { Routes } from '@angular/router';
 import { AdminLayoutComponent } from './layouts/admin/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth/auth-layout.component';
 import { AuthService } from  './rest/auth.service';
-import {ServerSettingsModule} from "./server.settings/server.settings.module";
 
 export const AppRoutes: Routes = [{
         path: '',
@@ -16,10 +15,6 @@ export const AppRoutes: Routes = [{
         children: [{
             path: 'dashboard',
             loadChildren: './dashboard/dashboard.module#DashboardModule',
-            canActivate: [AuthService]
-        },{
-            path: 'serverSettings',
-            loadChildren: './server.settings/server.settings.module#ServerSettingsModule',
             canActivate: [AuthService]
         },{
             path: 'applications',
