@@ -785,7 +785,7 @@
                                                 <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
-                                                    <button (click)="playVoD(row.vodId,row.type,row.streamId)"
+                                                    <button (click)="playVoD(row.vodName ,row.type,row.vodId)"
                                                             class="btn btn-success btn-simple btn-magnify"
                                                             type="button">
                                                         <span class="btn-label">
@@ -806,7 +806,7 @@
                                                         <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
                                                     </button>
 
-                                                    <button (click)="deleteVoD(row.vodName,row.vodId)" class="btn btn-simple btn-magnify btn-danger" type="button">
+                                                    <button (click)="deleteVoD(row.vodName, row.vodId, row.type)" class="btn btn-simple btn-magnify btn-danger" type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-close"></i>
                                                         </span>
@@ -920,15 +920,20 @@
 
                                     <fieldset *ngIf="this.appName=='LiveApp'">
                                         <legend class="text-left" i18n="@@ObjectDetection">Object Detection</legend>
+
                                         <div class="form-group">
+                                            <label class="col-sm-2 control-label">Enable Object Detection</label>
+
                                             <div class="form-group text-center" *ngIf=!isEnterpriseEdition>
                                                 <p i18n="not Enterprise@@notEnterpriseEditionMessage">
                                                     This feature is enabled in
                                                     <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
                                                 </p>
                                             </div>
-                                            <div class="col-sm-12 text-left" *ngIf=isEnterpriseEdition>
-                                                <div class="radio col-sm-2">
+
+
+                                            <div class="col-sm-10 text-left" *ngIf=isEnterpriseEdition>
+                                                <div class="radio col-sm-3">
                                                     <input type="radio" name="objectDetection" id="objectDetection" [value]="false" [(ngModel)]="appSettings.objectDetectionEnabled">
                                                     <label for="objectDetection">
                                                         No
@@ -945,6 +950,7 @@
                                         </div>
 
                                     </fieldset>
+
 
                                     <fieldset>
                                         <legend class="text-left" i18n="@@VoDFolder">VoD Folder</legend>

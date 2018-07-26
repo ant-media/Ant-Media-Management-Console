@@ -31,5 +31,6 @@ export let Locale_English: LocaleInterface =
     live_streaming_not_enabled_message: "Live streaming is not enabled in your account. Please enable it.",
     streams_imported_successfully: "Streams are imported successfully",
     missing_configuration_parameter_for_stalker: "Configuration params are missing. Please contact system admin",
+    vod_deleted: "Vod file deleted successfully"
 
 }

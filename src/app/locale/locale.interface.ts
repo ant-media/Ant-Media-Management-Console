@@ -29,4 +29,5 @@ export interface LocaleInterface {
     live_streaming_not_enabled_message: string;
     streams_imported_successfully: string;
     missing_configuration_parameter_for_stalker: string;
+    vod_deleted: string;
 }

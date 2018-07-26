@@ -995,20 +995,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    playVoD(vodId: string, type: string, streamId:string): void {
+    playVoD(vodName: string, type: string, vodId:string): void {
         // var container = document.getElementById("player");
         // install flowplayer into selected container
 
 
         var srcFile = null;
         if (type == "uploadedVod") {
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4';
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4' ;
         }else if (type == "streamVod"){
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamId + '.mp4';
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName ;
         }else if (type == "userVod") {
             var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
             var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodId+ '.mp4';
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodName;
         }
 
         if (srcFile != null) {
@@ -1042,9 +1042,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     //file with extension
-    deleteVoD(fileName: string, vodId: number): void {
+    deleteVoD(fileName: string, vodId: number, type: string): void {
 
-        let VoDName = fileName.substring(0, fileName.lastIndexOf("."));
+
         swal({
             title: Locale.getLocaleInterface().are_you_sure,
             text: Locale.getLocaleInterface().wont_be_able_to_revert,
@@ -1055,8 +1055,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             confirmButtonText: 'Yes, delete it!'
         }).then(() => {
 
-            this.restService.deleteVoDFile(this.appName, VoDName, vodId).subscribe(data => {
+            this.restService.deleteVoDFile(this.appName, fileName, vodId, type).subscribe(data => {
                 if (data["success"] == true) {
+
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().vod_deleted
+                    }, {
+                        type: "success",
+                        delay: 900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+
 
                 }
                 else {

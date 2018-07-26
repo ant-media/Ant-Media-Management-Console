@@ -132,8 +132,8 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/broadcast/delete/'+streamId, {});
     }
 
-    public deleteVoDFile(appName: string, vodName:string,id:number) {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/broadcast/deleteVoDFile/'+vodName+'/'+id, {});
+    public deleteVoDFile(appName: string, vodName:string,id:number, type:string) {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/broadcast/deleteVoDFile/'+ vodName+'/'+id +'/'+ type, {});
 
     }
 
