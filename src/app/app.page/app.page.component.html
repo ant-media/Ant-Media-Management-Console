@@ -526,7 +526,8 @@
                                                             <ng-container i18n="@@tableDeleteButton"></ng-container>
                                                         </button>
 
-                                                        <button *ngIf="appSettings.objectDetectionEnabled==true && this.appName=='LiveApp'"                                                              (click)="showDetectedObject(row.streamId)"
+                                                        
+                                                        <button *ngIf="appSettings.objectDetectionEnabled==true"                                                              (click)="showDetectedObject(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-danger btn-xs "
                                                                 type="button" data-toggle="tooltip"
                                                                 i18n-title title="Object Detected" style="font-size: 1.1em">
@@ -534,7 +535,7 @@
                                                                 <i class="ti-target"></i>
                                                             </span>
                                                         </button>
-
+                                                        
 
 
                                                     </div>
@@ -611,7 +612,7 @@
 
 
 
-                                                            <button *ngIf="appSettings.objectDetectionEnabled==true && this.appName=='LiveApp'"
+                                                            <button *ngIf="appSettings.objectDetectionEnabled==true"
                                                                     (click)="showDetectedObject(row.streamId)"
                                                                     class="btn btn-simple btn-magnify btn-danger btn-xs "
                                                                     type="button" data-toggle="tooltip"
@@ -917,8 +918,8 @@
                                         </div>
 
                                     </fieldset>
-
-                                    <fieldset *ngIf="this.appName=='LiveApp'">
+                                <!--
+                                    <fieldset>
                                         <legend class="text-left" i18n="@@ObjectDetection">Object Detection</legend>
 
                                         <div class="form-group">
@@ -950,6 +951,7 @@
                                         </div>
 
                                     </fieldset>
+                                -->
 
 
                                     <fieldset>
