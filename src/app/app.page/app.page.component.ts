@@ -870,7 +870,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     showDetectedObject(streamId: string): void {
         let dialogRef = this.dialog.open(DetectedObjectListDialog, {
             width: '500px',
-            height: '500px',
+
             data: {
                 streamId: streamId,
                 appName: this.appName

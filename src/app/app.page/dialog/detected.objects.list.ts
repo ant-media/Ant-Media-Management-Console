@@ -29,7 +29,7 @@ export class DetectedObject {
     probability: Number;
     detectionTime: Number;
 }
- export class DetectedObjectTable {
+export class DetectedObjectTable {
     dataRows: DetectedObject[];
 }
 
@@ -55,34 +55,35 @@ export class DetectedObjectListDialog {
 
     public displayedColumnsStreams = ['image'];
 
+    public noDetectedObject :boolean;
+
     constructor(
         public dialogRef: MatDialogRef<DetectedObjectListDialog>, public restService: RestService,
-                    @Inject(MAT_DIALOG_DATA) public data: any) {
+        @Inject(MAT_DIALOG_DATA) public data: any) {
 
-            this.dataSource = new MatTableDataSource<DetectedObject>();
+        this.dataSource = new MatTableDataSource<DetectedObject>();
 
         this.objectTableData = {
             dataRows: [],
         };
 
-            this.appName = data.appName;
-            this.getDetectionList(this.appName, data.streamId, this.detectedListOffset, this.pageSize);
-            
-            this.timerId = window.setInterval(() => {
-                this.getDetectionList(this.appName, data.streamId, this.detectedListOffset, this.pageSize);
+        this.appName = data.appName;
+        this.getDetectionList(this.appName, data.streamId, this.detectedListOffset, this.pageSize);
 
-            }, 5000);
+        this.getObjectDetectedTotal(this.appName, data.streamId);
 
-            this.getObjectDetectedTotal(this.appName, data.streamId);
-
-            this.dialogRef.afterClosed().subscribe(result => {
-                clearInterval(this.timerId);
-            })
-
-
+        this.dialogRef.afterClosed().subscribe(result => {
+            clearInterval(this.timerId);
+        })
 
     }
 
+    ngOnInit() {
+        this.objectTableData = {
+            dataRows: []
+        };
+
+    }
     getObjectDetectedTotal(appName:string, streamId:string) {
         this.restService.getObjectDetectedTotal(appName, streamId).subscribe(data =>
         {
@@ -91,38 +92,42 @@ export class DetectedObjectListDialog {
     }
 
     getDetectionList(appName:string, streamId:string, offset:number, batch:number) {
-        this.restService.getDetectionList(appName, streamId, offset, batch).subscribe(data => 
-        {
-                this.objectTableData.dataRows = [];
-                for (var i in data) {
-                    this.objectTableData.dataRows.push(data[i]);
-                }
 
-                this.dataSource = new MatTableDataSource(this.objectTableData.dataRows);
-            });
+        this.noDetectedObject = false;
+        this.restService.getDetectionList(appName, streamId, offset, batch).subscribe(data =>
+        {
+
+            for (var i in data) {
+                this.objectTableData.dataRows.push(data[i]);
+            }
+            this.dataSource = new MatTableDataSource(this.objectTableData.dataRows);
+            console.log( " detected object number " + this.objectTableData.dataRows.length);
+            if(this.objectTableData.dataRows.length ==0){
+                this.noDetectedObject = true;
+            }
+        });
+
     }
 
 
-
-
-       onDetectionPaginateChange(event) {
+    onDetectionPaginateChange(event) {
 
         this.detectedListOffset = event.pageIndex * event.pageSize;
 
         this.pageSize = event.pageSize;
 
-         this.restService.getDetectionList(this.appName, this.data.streamId, this.detectedListOffset,  this.pageSize).subscribe(data => {
+        this.restService.getDetectionList(this.appName, this.data.streamId, this.detectedListOffset,  this.pageSize).subscribe(data => {
 
-                this.objectTableData.dataRows = [];
-                for (var i in data) {
-                    this.objectTableData.dataRows.push(data[i]);
-                }
+            this.objectTableData.dataRows = [];
+            for (var i in data) {
+                this.objectTableData.dataRows.push(data[i]);
+            }
 
-                this.dataSource = new MatTableDataSource(this.objectTableData.dataRows);
-            });
+            this.dataSource = new MatTableDataSource(this.objectTableData.dataRows);
+        });
 
- 
-}
+
+    }
 
 
     onNoClick(): void {

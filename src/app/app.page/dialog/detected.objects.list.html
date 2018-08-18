@@ -1,5 +1,6 @@
+<div *ngIf=!noDetectedObject>
 <h2 mat-dialog-title>Object Detection List</h2>
-<mat-table [dataSource]="dataSource" matSort>
+<mat-table [dataSource]="dataSource" matSort >
 
 
     <ng-container matColumnDef="image">
@@ -42,6 +43,12 @@
 </mat-paginator>
 -->
 
-<mat-dialog-actions>
-    <button mat-button mat-dialog-close>Close</button>
-</mat-dialog-actions>
+
+</div>
+<div *ngIf=noDetectedObject>
+  <h5>     No detected object for the stream!</h5>
+
+</div>
+
+<br>
+<button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="onNoClick()">Close</button>

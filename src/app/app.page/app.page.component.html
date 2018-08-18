@@ -527,7 +527,8 @@
                                                         </button>
 
                                                         
-                                                        <button *ngIf="appSettings.objectDetectionEnabled==true"                                                              (click)="showDetectedObject(row.streamId)"
+                                                        <button *ngIf="appSettings.objectDetectionEnabled==true"
+                                                                (click)="showDetectedObject(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-danger btn-xs "
                                                                 type="button" data-toggle="tooltip"
                                                                 i18n-title title="Object Detected" style="font-size: 1.1em">
@@ -918,7 +919,7 @@
                                         </div>
 
                                     </fieldset>
-                                <!--
+
                                     <fieldset>
                                         <legend class="text-left" i18n="@@ObjectDetection">Object Detection</legend>
 
@@ -951,7 +952,7 @@
                                         </div>
 
                                     </fieldset>
-                                -->
+
 
 
                                     <fieldset>
