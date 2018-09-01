@@ -8,8 +8,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {
     AppPageComponent,
     BroadcastEditComponent,
-    CamSettinsDialogComponent,
-    StreamSourceEditComponent
+    CamSettinsDialogComponent
 } from './app.page.component';
 import {ClipboardModule} from 'ngx-clipboard';
 import {
@@ -49,6 +48,7 @@ import {
 } from '@angular/material';
 import { DetectedObjectListDialog } from './dialog/detected.objects.list';
 import { UploadVodDialogComponent } from './dialog/upload-vod-dialog';
+import { StreamSourceEditComponent } from './dialog/stream.source.edit.component';
 
 
 export const AppPageRoutes: Routes = [
