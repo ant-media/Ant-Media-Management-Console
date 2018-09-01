@@ -1,4 +1,3 @@
-
 import { Component, Inject } from '@angular/core';
 import { Locale } from "../../locale/locale";
 import { RestService, LiveBroadcast } from '../../rest/rest.service';
