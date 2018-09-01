@@ -40,7 +40,8 @@ import {
     VodInfoTable
 } from './app.definitions';
 
-import {DetectedObjectListDialog} from './dialog/detected.objects.list';
+import { DetectedObjectListDialog } from './dialog/detected.objects.list';
+import { UploadVodDialogComponent } from './dialog/upload-vod-dialog';
 
 declare var $: any;
 declare var Chartist: any;
@@ -2410,117 +2411,6 @@ export class CamSettinsDialogComponent {
 
 
 @Component({
-    selector: 'upload-vod-dialog',
-    templateUrl: 'upload-vod-dialog.html',
-})
-
-
-export class UploadVodDialogComponent {
-
-    app: AppPageComponent;
-    uploading = false;
-    fileToUpload: File = null;
-    search: SearchParam;
-    fileselected = false;
-    fileName: string;
-    appName: string;
-
-    constructor(
-        public dialogRef: MatDialogRef<UploadVodDialogComponent>, public restService: RestService,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
-    }
-
-    onNoClick(): void {
-        this.dialogRef.close();
-    }
-
-    handleFileInput(files: FileList) {
-
-        this.fileToUpload = files.item(0);
-        this.fileselected = true;
-        this.fileName = this.fileToUpload.name.replace(/\s/g, '_');
-        console.log(this.fileName);
-
-    }
-
-
-    submitUpload() {
-
-
-        if (this.fileToUpload) {
-            this.uploading = true;
-
-            let formData: FormData = new FormData();
-
-            formData.append('file', this.fileToUpload);
-
-            formData.append('file_info', this.fileToUpload.name);
-
-            console.log("file upload" + this.fileToUpload.name);
-
-            if (!this.fileName || this.fileName.length == 0) {
-
-                this.fileName = this.fileToUpload.name.substring(0, this.fileToUpload.name.lastIndexOf("."));
-                ;
-            }
-
-            this.fileName = this.fileName.replace(/\s/g, '_');
-
-
-            this.restService.uploadVod(this.fileName, formData, this.dialogRef.componentInstance.data.appName).subscribe(data => {
-
-                if (data["success"] == true) {
-
-                    this.uploading = false;
-
-                    this.dialogRef.close();
-                    swal({
-                        type: "success",
-                        title: " File is successfully uploaded!",
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-success"
-
-                    });
-
-                } else if (data["message"] == "notMp4File") {
-
-                    this.uploading = false;
-                    swal({
-                        type: "error",
-                        title: "Only Mp4 files are accepted!",
-
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-error"
-
-                    });
-
-                } else {
-                    this.uploading = false;
-
-                    this.dialogRef.close();
-                    swal({
-                        type: "error",
-                        title: "An Error Occured!",
-
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-error"
-
-                    });
-
-
-                }
-
-            });
-
-        }
-
-
-    }
-
-}
-
-
-@Component({
     selector: 'broadcast-edit-dialog',
     templateUrl: 'broadcast-edit-dialog.html',
 })
@@ -2697,10 +2587,6 @@ export class StreamSourceEditComponent {
             return;
         }
 
-
-
-
-
         console.log(this.dialogRef.componentInstance.data.status + this.dialogRef.componentInstance.data.id + this.dialogRef.componentInstance.data.name + this.dialogRef.componentInstance.data.url + this.dialogRef.componentInstance.data.username);
 
 
@@ -2756,16 +2642,12 @@ export class StreamSourceEditComponent {
                         }
                     });
                 }
-
             });
 
         } else {
             this.loadingSettings = false;
             this.streamUrlDialogValid = false;
-
             return;
         }
-
     }
-
 }

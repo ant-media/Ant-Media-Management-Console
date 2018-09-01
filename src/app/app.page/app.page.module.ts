@@ -9,7 +9,6 @@ import {
     AppPageComponent,
     BroadcastEditComponent,
     CamSettinsDialogComponent,
-    UploadVodDialogComponent,
     StreamSourceEditComponent
 } from './app.page.component';
 import {ClipboardModule} from 'ngx-clipboard';
@@ -49,6 +48,7 @@ import {
     MatTooltipModule
 } from '@angular/material';
 import { DetectedObjectListDialog } from './dialog/detected.objects.list';
+import { UploadVodDialogComponent } from './dialog/upload-vod-dialog';
 
 
 export const AppPageRoutes: Routes = [

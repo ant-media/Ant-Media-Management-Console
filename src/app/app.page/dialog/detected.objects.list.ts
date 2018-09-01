@@ -1,16 +1,6 @@
 import {
-    AfterViewInit,
-    ChangeDetectorRef,
     Component,
-    EventEmitter,
-    Inject,
-    Input,
-    NgZone,
-    OnDestroy,
-    OnInit,
-    Output,
-    Renderer,
-    ViewChild
+    Inject
 } from '@angular/core';
 import {
     MAT_DIALOG_DATA,
@@ -22,7 +12,6 @@ import {
     PageEvent
 } from '@angular/material';
 import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../../rest/rest.service';
-import {BroadcastInfo, BroadcastInfoTable} from "../app.definitions";
 
 export class DetectedObject {
     objectName: String;
