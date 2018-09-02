@@ -3,7 +3,6 @@ import {
     ChangeDetectorRef,
     Component,
     EventEmitter,
-    Inject,
     Input,
     NgZone,
     OnDestroy,
@@ -12,13 +11,13 @@ import {
     Renderer,
     ViewChild
 } from '@angular/core';
-import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {HttpClient} from '@angular/common/http';
-import {ActivatedRoute, Router} from '@angular/router';
-import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../rest/rest.service';
-import {AuthService} from '../rest/auth.service';
-import {ClipboardService} from 'ngx-clipboard';
-import {Locale} from "../locale/locale";
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR } from '../rest/rest.service';
+import { AuthService } from '../rest/auth.service';
+import { ClipboardService } from 'ngx-clipboard';
+import { Locale } from "../locale/locale";
 import {
     MAT_DIALOG_DATA,
     MatDialog,
@@ -45,6 +44,7 @@ import { UploadVodDialogComponent } from './dialog/upload-vod-dialog';
 import { StreamSourceEditComponent } from './dialog/stream.source.edit.component';
 import { BroadcastEditComponent } from './dialog/broadcast.edit.dialog.component';
 import { CamSettingsDialogComponent } from './dialog/cam.settings.dialog.component';
+import { SocialMediaStatsComponent } from './dialog/social.media.stats.component';
 
 declare var $: any;
 declare var Chartist: any;
@@ -81,21 +81,21 @@ export class Camera {
 export class AppSettings {
 
     constructor(public mp4MuxingEnabled: boolean,
-                public addDateTimeToMp4FileName: boolean,
-                public hlsMuxingEnabled: boolean,
-                public hlsListSize: number,
-                public hlsTime: number,
-                public hlsPlayListType: string,
-                public facebookClientId: string,
-                public facebookClientSecret: string,
-                public youtubeClientId: string,
-                public youtubeClientSecret: string,
-                public periscopeClientId: string,
-                public periscopeClientSecret: string,
-                public encoderSettings: EncoderSettings[],
-                public acceptOnlyStreamsInDataStore: boolean,
-                public vodFolder: string,
-                public objectDetectionEnabled: boolean
+        public addDateTimeToMp4FileName: boolean,
+        public hlsMuxingEnabled: boolean,
+        public hlsListSize: number,
+        public hlsTime: number,
+        public hlsPlayListType: string,
+        public facebookClientId: string,
+        public facebookClientSecret: string,
+        public youtubeClientId: string,
+        public youtubeClientSecret: string,
+        public periscopeClientId: string,
+        public periscopeClientSecret: string,
+        public encoderSettings: EncoderSettings[],
+        public acceptOnlyStreamsInDataStore: boolean,
+        public vodFolder: string,
+        public objectDetectionEnabled: boolean
     ) {
 
     }
@@ -134,7 +134,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public gridTableData: CameraInfoTable;
     public vodTableData: VodInfoTable;
     public timerId: any;
-    public camereErrorTimerId:any;
+    public camereErrorTimerId: any;
     public checkAuthStatusTimerId: any;
     public newLiveStreamActive: boolean;
     public newIPCameraActive: boolean;
@@ -179,7 +179,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public shareEndpoint: boolean[];
     public videoServiceEndpoints: VideoServiceEndpoint[];
     public streamUrlValid = true;
-    public streamNameEmpty=false;
+    public streamNameEmpty = false;
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
     public listTypes = [
@@ -225,16 +225,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
-                private restService: RestService,
-                private clipBoardService: ClipboardService,
-                private renderer: Renderer,
-                public router: Router,
-                private zone: NgZone,
-                public dialog: MatDialog,
-                public sanitizer: DomSanitizer,
-                private cdr: ChangeDetectorRef,
-                private matpage: MatPaginatorIntl,
-                private authService: AuthService,
+        private restService: RestService,
+        private clipBoardService: ClipboardService,
+        private renderer: Renderer,
+        public router: Router,
+        private zone: NgZone,
+        public dialog: MatDialog,
+        public sanitizer: DomSanitizer,
+        private cdr: ChangeDetectorRef,
+        private matpage: MatPaginatorIntl,
+        private authService: AuthService,
 
 
     ) {
@@ -325,13 +325,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         this.timerId = window.setInterval(() => {
-            if(this.authService.isAuthenticated) {
-                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-                if(this.appName != "undefined"){
+            if (this.authService.isAuthenticated) {
+                if (this.appName != "undefined") {
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getVoDStreams();
                 }
             }
-            else{
+            else {
                 clearInterval(this.timerId);
             }
 
@@ -509,6 +509,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
+    showLiveComments(broadcast: LiveBroadcast): void {
+        this.dialog.open(SocialMediaStatsComponent, {
+            width: '90%',
+            data: {
+                appName: this.appName,
+                streamName: broadcast.name,
+                streamId: broadcast.streamId,
+                endpointList: broadcast.endPointList,
+            },
+            disableClose: true,
+        });
+    }
 
 
     openStreamSourceSettingsDialog(selected: LiveBroadcast): void {
@@ -547,7 +559,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 id: this.selectedBroadcast.streamId,
                 status: this.selectedBroadcast.status,
                 appName: this.appName,
-                streamUrl:this.selectedBroadcast.streamUrl,
+                streamUrl: this.selectedBroadcast.streamUrl,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
                 editBroadcastShareFacebook: this.editBroadcastShareFacebook,
@@ -563,6 +575,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.getAppLiveStreamsNumber();
 
         });
+    }
+
+    hasSocialEndpoint(broadcast: LiveBroadcast): boolean {
+        let hasEndpoint: boolean = false;
+
+        if (broadcast.endPointList) {
+            for (let item of broadcast.endPointList) {
+                if (item.endpointServiceId) {
+                    hasEndpoint = true;
+                    break;
+                }
+            };
+        }
+        return hasEndpoint;
     }
 
 
@@ -801,13 +827,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 icon: icon,
                 message: message
             }, {
-                type: type,
-                delay: delay,
-                placement: {
-                    from: 'top',
-                    align: 'right'
-                }
-            });
+                    type: type,
+                    delay: delay,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
 
         });
     }
@@ -837,31 +863,31 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 icon: icon,
                 message: message
             }, {
-                type: type,
-                delay: delay,
-                placement: {
-                    from: 'top',
-                    align: 'right'
-                }
-            });
+                    type: type,
+                    delay: delay,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
         });
     }
 
     checkAndPlayLive(videoUrl: string): void {
         this.http.get(videoUrl, { responseType: 'text' }).subscribe(data => {
-                console.log("loaded...");
-                $("#playerLoading").hide();
-                flowplayer('#player', {
-                    autoplay: true,
-                    clip: {
-                        sources: [{
-                            type: 'application/x-mpegurl',
-                            src: videoUrl
-                        }]
-                    }
-                });
+            console.log("loaded...");
+            $("#playerLoading").hide();
+            flowplayer('#player', {
+                autoplay: true,
+                clip: {
+                    sources: [{
+                        type: 'application/x-mpegurl',
+                        src: videoUrl
+                    }]
+                }
+            });
 
-            },
+        },
             error => {
                 console.log("error...");
                 setTimeout(() => {
@@ -999,17 +1025,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    playVoD(vodName: string, type: string, vodId:string): void {
+    playVoD(vodName: string, type: string, vodId: string): void {
         // var container = document.getElementById("player");
         // install flowplayer into selected container
 
 
         var srcFile = null;
         if (type == "uploadedVod") {
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4' ;
-        }else if (type == "streamVod"){
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName ;
-        }else if (type == "userVod") {
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4';
+        } else if (type == "streamVod") {
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName;
+        } else if (type == "userVod") {
             var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
             var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
             srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodName;
@@ -1066,13 +1092,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().vod_deleted
                     }, {
-                        type: "success",
-                        delay: 900,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                            type: "success",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
 
 
                 }
@@ -1092,13 +1118,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             icon: "ti-save",
             message: Locale.getLocaleInterface().vodFileNotDeleted
         }, {
-            type: "warning",
-            delay: 900,
-            placement: {
-                from: 'top',
-                align: 'right'
-            }
-        });
+                type: "warning",
+                delay: 900,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
     }
 
     editLiveBroadcast(stream: BroadcastInfo): void {
@@ -1156,39 +1182,39 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.restService.updateLiveStream(this.appName, this.liveStreamEditing,
             socialNetworks).subscribe(data => {
-            this.liveStreamUpdating = false;
-            console.log(data["success"]);
-            if (data["success"]) {
-                this.liveStreamEditing = null;
-                //update the rows
-                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-                this.getAppLiveStreamsNumber();
-                $.notify({
-                    icon: "ti-save",
-                    message: Locale.getLocaleInterface().broadcast_updated
-                }, {
-                    type: "success",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
-            else {
-                $.notify({
-                    icon: "ti-alert",
-                    message: Locale.getLocaleInterface().broadcast_not_updated + " " + data["message"] + " " + data["errorId"]
-                }, {
-                    type: "warning",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
-        });
+                this.liveStreamUpdating = false;
+                console.log(data["success"]);
+                if (data["success"]) {
+                    this.liveStreamEditing = null;
+                    //update the rows
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                    this.getAppLiveStreamsNumber();
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().broadcast_updated
+                    }, {
+                            type: "success",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                }
+                else {
+                    $.notify({
+                        icon: "ti-alert",
+                        message: Locale.getLocaleInterface().broadcast_not_updated + " " + data["message"] + " " + data["errorId"]
+                    }, {
+                            type: "warning",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                }
+            });
 
     }
 
@@ -1208,19 +1234,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 .subscribe(data => {
                     if (data["success"] == true) {
 
-                        this.restService.stopBroadcast(this.appName,streamId)
+                        this.restService.stopBroadcast(this.appName, streamId)
 
                         $.notify({
                             icon: "ti-save",
                             message: "Successfully deleted"
                         }, {
-                            type: "success",
-                            delay: 900,
-                            placement: {
-                                from: 'top',
-                                align: 'right'
-                            }
-                        });
+                                type: "success",
+                                delay: 900,
+                                placement: {
+                                    from: 'top',
+                                    align: 'right'
+                                }
+                            });
 
                     }
                     else {
@@ -1228,13 +1254,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             icon: "ti-save",
                             message: Locale.getLocaleInterface().broadcast_not_deleted
                         }, {
-                            type: "warning",
-                            delay: 900,
-                            placement: {
-                                from: 'top',
-                                align: 'right'
-                            }
-                        });
+                                type: "warning",
+                                delay: 900,
+                                placement: {
+                                    from: 'top',
+                                    align: 'right'
+                                }
+                            });
                     };
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
@@ -1363,26 +1389,26 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     icon: "ti-save",
                     message: Locale.getLocaleInterface().settings_saved
                 }, {
-                    type: "success",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
+                        type: "success",
+                        delay: 900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
             }
             else {
                 $.notify({
                     icon: "ti-alert",
                     message: Locale.getLocaleInterface().settings_not_saved
                 }, {
-                    type: 'warning',
-                    delay: 1900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
+                        type: 'warning',
+                        delay: 1900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
 
             }
         });
@@ -1421,7 +1447,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-        if (!this.restService.checkStreamName(this.liveBroadcast.name)){
+        if (!this.restService.checkStreamName(this.liveBroadcast.name)) {
             this.streamNameEmpty = true;
 
             return;
@@ -1443,13 +1469,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().new_broadcast_created
                     }, {
-                        type: "success",
-                        delay: 1000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                            type: "success",
+                            delay: 1000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
@@ -1467,13 +1493,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().new_broadcast_error
                     }, {
-                        type: "warning",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                            type: "warning",
+                            delay: 2000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
 
 
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
@@ -1496,13 +1522,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
 
-        setTimeout(()=>{
+        setTimeout(() => {
 
-            this.restService.getCameraError(this.appName , this.liveBroadcast.ipAddr) .subscribe(data => {
+            this.restService.getCameraError(this.appName, this.liveBroadcast.ipAddr).subscribe(data => {
 
-                console.log("stream ID :  "+this.liveBroadcast.ipAddr);
+                console.log("stream ID :  " + this.liveBroadcast.ipAddr);
 
-                if(data["message"] != null){
+                if (data["message"] != null) {
 
                     if (data["message"].includes("401")) {
 
@@ -1522,7 +1548,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 }
 
-                else{
+                else {
 
                     console.log("no  camera error")
                 }
@@ -1530,7 +1556,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.liveBroadcast.ipAddr = "";
             });
 
-        },8000)
+        }, 8000)
 
     }
 
@@ -1552,9 +1578,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        if(!this.restService.checkStreamUrl(this.liveBroadcast.streamUrl)){
+        if (!this.restService.checkStreamUrl(this.liveBroadcast.streamUrl)) {
             console.log("stream source address is not in correct format");
-            this.streamUrlValid=false;
+            this.streamUrlValid = false;
             return;
         }
         this.streamNameEmpty = false;
@@ -1572,18 +1598,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().new_broadcast_created
                     }, {
-                        type: "success",
-                        delay: 1000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                            type: "success",
+                            delay: 1000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
                     this.liveBroadcast.streamUrl = "";
-                    this.streamUrlValid=true;
+                    this.streamUrlValid = true;
                 }
                 else {
 
@@ -1593,13 +1619,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         icon: "ti-save",
                         message: "Error: Not added"
                     }, {
-                        type: "error",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                            type: "error",
+                            delay: 2000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
@@ -1752,7 +1778,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.liveBroadcast.type = "liveStream"
 
-        if (!this.restService.checkStreamName(this.liveBroadcast.name)){
+        if (!this.restService.checkStreamName(this.liveBroadcast.name)) {
 
             this.streamNameEmpty = true;
             return;
@@ -1778,13 +1804,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().new_broadcast_created
                     }, {
-                        type: "success",
-                        delay: 900,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                            type: "success",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.liveBroadcast.name = "";
                 }
@@ -1820,7 +1846,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-            }, );
+            });
         });
 
 
@@ -1952,14 +1978,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         $.notify({
             message: Locale.getLocaleInterface().publish_url_copied_to_clipboard
         }, {
-            type: "success",
-            delay: 400,
-            timer: 500,
-            placement: {
-                from: 'top',
-                align: 'right'
-            }
-        });
+                type: "success",
+                delay: 400,
+                timer: 500,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
 
     }
 
@@ -1977,14 +2003,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         $.notify({
             message: Locale.getLocaleInterface().embed_code_copied_to_clipboard
         }, {
-            type: "success",
-            delay: 400,
-            timer: 500,
-            placement: {
-                from: 'top',
-                align: 'right'
-            }
-        });
+                type: "success",
+                delay: 400,
+                timer: 500,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
     }
 
     getRtmpUrl(streamUrl: string): string {

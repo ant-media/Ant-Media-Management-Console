@@ -15,13 +15,9 @@ declare var swal: any;
     templateUrl: 'cam.settings.dialog.component.html',
 })
 
-
 export class CamSettingsDialogComponent {
     camera: LiveBroadcast;
     loadingSettings = false;
-    public editBroadcastShareYoutube: boolean;
-    public editBroadcastShareFacebook: boolean;
-    public editBroadcastSharePeriscope: boolean;
     public liveStreamEditing: LiveBroadcast;
     public shareEndpoint: boolean[];
     public videoServiceEndPoints: VideoServiceEndpoint[];

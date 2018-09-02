@@ -1,0 +1,48 @@
+<h1 mat-dialog-title>Social Media Stats</h1>
+
+<mat-grid-list cols="4" rowHeight="70px">
+    <ng-container *ngFor="let typeName of endpointTypes">
+        <mat-grid-tile>
+            <mat-grid-list cols="3" rowHeight="70px" style="width:100%">
+                <mat-grid-tile>
+                    <div class="text-center" style="font-size:1.8em">
+                        <ng-container [ngSwitch]="typeName">
+                            <i class="ti-facebook" style="color:#3b5998;" *ngSwitchCase="'facebook'"> </i>
+                            <i class="ti-youtube" style="color:#e52d27;" *ngSwitchCase="'youtube'"> </i>
+                            <i class="ti-twitter-alt" style="color:#55acee;" *ngSwitchCase="'periscope'"></i>
+                        </ng-container>
+                    </div>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="1">
+                    <span style="width:100%">
+                        <p style="font-size:12px;line-height: 12px;"> Comments: {{commentCount[typeName]}} </p>
+                        <p style="font-size:12px;line-height: 12px;"> Likes: {{likeCount[typeName]}} </p>
+                        <p style="font-size:12px;line-height: 12px;"> Views:{{viewCount[typeName]}} </p>
+                    </span>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+        </mat-grid-tile>
+    </ng-container>
+</mat-grid-list>
+
+
+<mat-dialog-content id="comment-list">
+    <b style="display:block;padding-top:24px;" *ngIf="comments.length > 0">Live Comments</b>
+    <mat-list>
+        <mat-list-item *ngFor="let comment of comments">
+            <img matListAvatar [src]="comment.from.picture">
+            <h3 matLine> {{comment.from.fullName}}
+                <ng-container [ngSwitch]="comment.origin">
+                    <i class="ti-facebook" style="color:#3b5998;" *ngSwitchCase="'FACEBOOK'"> </i>
+                    <i class="ti-youtube" style="color:#e52d27;" *ngSwitchCase="'YOUTUBE'"> </i>
+                    <i class="ti-twitter-alt" style="color:#55acee;" *ngSwitchCase="'PERISCOPE'"></i>
+                </ng-container>
+            </h3>
+            <p matLine> {{comment.message}} </p>
+        </mat-list-item>
+    </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions class="pull-right">
+    <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

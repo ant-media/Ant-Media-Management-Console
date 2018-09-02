@@ -49,6 +49,7 @@ import { UploadVodDialogComponent } from './dialog/upload-vod-dialog';
 import { StreamSourceEditComponent } from './dialog/stream.source.edit.component';
 import { BroadcastEditComponent } from './dialog/broadcast.edit.dialog.component';
 import { CamSettingsDialogComponent } from './dialog/cam.settings.dialog.component';
+import { SocialMediaStatsComponent } from './dialog/social.media.stats.component';
 
 
 export const AppPageRoutes: Routes = [
@@ -65,14 +66,25 @@ export const AppPageRoutes: Routes = [
 
 @NgModule({
 
-    declarations: [AppPageComponent, CamSettingsDialogComponent, UploadVodDialogComponent, BroadcastEditComponent,
-                    DetectedObjectListDialog, StreamSourceEditComponent],
+    declarations: [
+                    AppPageComponent, 
+                    CamSettingsDialogComponent, 
+                    UploadVodDialogComponent, 
+                    BroadcastEditComponent,
+                    DetectedObjectListDialog, 
+                    StreamSourceEditComponent,
+                    SocialMediaStatsComponent,
+                ],
 
     entryComponents: [
-        CamSettingsDialogComponent, AppPageComponent, UploadVodDialogComponent, BroadcastEditComponent,
-        DetectedObjectListDialog,StreamSourceEditComponent
-
-    ],
+                        CamSettingsDialogComponent,
+                        AppPageComponent, 
+                        UploadVodDialogComponent, 
+                        BroadcastEditComponent,
+                        DetectedObjectListDialog,
+                        StreamSourceEditComponent,
+                        SocialMediaStatsComponent,
+                    ],
     bootstrap: [AppPageComponent],
 
     imports: [
@@ -119,10 +131,6 @@ export const AppPageRoutes: Routes = [
         MatTabsModule,
         MatToolbarModule,
         MatTooltipModule
-
-
-
-
     ],
 
     exports: [MatCheckboxModule, MatDialogModule, MatFormFieldModule, MatInputModule,
