@@ -91,7 +91,8 @@ export class AppSettings {
                 public encoderSettings: EncoderSettings[],
                 public acceptOnlyStreamsInDataStore: boolean,
                 public vodFolder: string,
-                public objectDetectionEnabled: boolean
+                public objectDetectionEnabled: boolean,
+                public tokenControlEnabled:boolean
     ) {
 
     }
