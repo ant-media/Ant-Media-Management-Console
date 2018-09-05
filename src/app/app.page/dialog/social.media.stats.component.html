@@ -17,7 +17,7 @@
                     <span style="width:100%">
                         <p style="font-size:12px;line-height: 12px;"> Comments: {{commentCount[typeName]}} </p>
                         <p style="font-size:12px;line-height: 12px;"> Likes: {{likeCount[typeName]}} </p>
-                        <p style="font-size:12px;line-height: 12px;"> Views:{{viewCount[typeName]}} </p>
+                        <p style="font-size:12px;line-height: 12px;" *ngIf="viewCount[typeName] > 0"> Views:{{viewCount[typeName]}} </p>
                     </span>
                 </mat-grid-tile>
             </mat-grid-list>
