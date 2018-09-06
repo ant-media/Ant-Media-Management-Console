@@ -1,11 +1,11 @@
 
 <div >
     <td colspan="4" style="border-top:0px">
-        <form method="post" #f="ngForm" validate (ngSubmit)="editCamSettings(f.valid)">
+        <form method="post" #f="ngForm" validate (ngSubmit)="editSettings(f.valid)">
 
             <div class="card-content" style="padding-top:0px">
                 <h4 class="card-title text-left" i18n="@@editLiveStreamCardTitle">
-                    Edit Camera Settings
+                    Edit Stream Source
                 </h4>
                 <div class="form-group text-left">
                     <label i18n="@@newCamName">Name</label>
@@ -23,28 +23,19 @@
                 </div>
 
                 <div class="form-group text-left">
-                    <label i18n="@@newOnvifUrl">Onvif Url</label>
-                    <input type="text" name="onvifUrl" i18n-placeholder="@@onvif_url_place_holder" placeholder="Onvif url"
-                           class="form-control" [(ngModel)]="data.url" #onvifUrl="ngModel">
+                    <label i18n="@@newStreamUrl">Stream Url</label>
+                    <input type="text" name="streamUrl" i18n-placeholder="@@onvif_url_place_holder" placeholder="Stream Url"
+                           class="form-control" [(ngModel)]="data.streamUrl" #onvifUrl="ngModel" style="width: 400px">
+
+                    <small class="text-danger" *ngIf="!streamUrlDialogValid">
+                        Please write a valid stream URL
+                    </small>
+
+
 
                 </div>
 
-                <div class="form-group text-left">
-                    <label i18n="@@newUserName">Username</label>
-                    <input type="text" name="username" i18n-placeholder="@@username_place_holder" placeholder="Username"
-                           class="form-control" [(ngModel)]="data.username" #username="ngModel">
-
-                </div>
-
-                <div class="form-group text-left">
-                    <label i18n="@@newPassword">Password</label>
-                    <input type="text" name="password" i18n-placeholder="@@password_place_holder" placeholder="Password"
-                           class="form-control" [(ngModel)]="data.pass" #password="ngModel">
-
-                </div>
-
-
-                <div class="form-group text-left" *ngIf="data.videoServiceEndpoints.length>0">
+                <div class="form-group text-left" *ngIf="data.videoServiceEndpoints.length>0" >
                     <label class="col-sm-12" style="padding-left:0px" i18n="@@newLiveStreamSocialShare">Share</label>
 
                     <ng-container *ngFor="let endpoint of data.videoServiceEndpoints; let i = index">

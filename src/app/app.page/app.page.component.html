@@ -27,11 +27,6 @@
                         <div id="my-tab-content" class="tab-content text-center">
 
                             <div class="tab-pane active" id="livestreams">
-                                <!--
-                                <div class="text-right">
-                                    <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" (click)="newLiveStream()">New Live Stream</button>
-                                </div>
-                                -->
 
                                 <div>
 
@@ -61,18 +56,6 @@
 
                                     <br>
                                     <br>
-
-                                    <!--
-                                    <div class="col-sm-6 col-lg-2 " style="float: right">
-                                        <select id="selectBox"  class="selectpicker  " data-style="btn btn-danger btn-block"  title="Filter" data-size="7">
-                                            <option  value="liveStream">Live Stream</option>
-                                            <option  value="ipCamera">IP Camera</option>
-
-                                            <option  value="displayAll">Display All</option>
-
-                                        </select>
-                                    </div>
-                                    -->
                                 </div>
 
                                 <div class="card" *ngIf="newLiveStreamActive">
@@ -170,7 +153,7 @@
                                                 <small class="text-danger" *ngIf="noCamWarning">
                                                     No unregistered camera found, write camera URL manually!
                                                 </small>
-                                                <input required minlength="4" type="text" name="onvifURL"
+                                                <input type="text" name="onvifURL"
                                                        i18n-placeholder="@@onvifUrl_place_holder"
                                                        placeholder="Onvif Url" class="form-control"
                                                        [(ngModel)]="liveBroadcast.ipAddr" #onvifURL="ngModel">
@@ -403,7 +386,7 @@
                                                     </div>
 
                                                     <ng-container *ngIf="row.webRTCViewerCount == 0 &&row.hlsViewerCount == 0 &&row.rtmpViewerCount == 0 " >
-                                                        No viewer
+                                                       No viewer
 
                                                     </ng-container>
 
@@ -417,20 +400,17 @@
                                                 <mat-header-cell *matHeaderCellDef> Social Share</mat-header-cell>
                                                 <mat-cell *matCellDef="let row">
 
-                                                    <div *ngIf="!row.endPointList">
-                                                        <i class="ti-facebook " style="color:#dad9d2;"> </i>
-                                                        <i class="ti-youtube " style="color:#dad9d2;"> </i>
-                                                        <i class="ti-twitter-alt " style="color:#dad9d2;"></i>
-
-                                                    </div>
                                                     <ng-container *ngFor="let endpoint of row.endPointList" class="text-center">
                                                         <ng-container [ngSwitch]="endpoint.type">
-                                                            <i class="ti-facebook " style="color:#3b5998;" *ngSwitchCase="'facebook'"> </i>
-                                                            <i class="ti-youtube " style="color:#e52d27;" *ngSwitchCase="'youtube'"> </i>
-                                                            <i class="ti-twitter-alt " style="color:#55acee;" *ngSwitchCase="'periscope'"></i>
+                                                            <i class="ti-facebook" style="color:#3b5998;" *ngSwitchCase="'facebook'"> </i>
+                                                            <i class="ti-youtube" style="color:#e52d27;" *ngSwitchCase="'youtube'"> </i>
+                                                            <i class="ti-twitter-alt" style="color:#55acee;" *ngSwitchCase="'periscope'"></i>
                                                         </ng-container>
 
                                                     </ng-container>
+                                                    <div *ngIf="!row.endPointList">
+                                                        <i class="ti-minus big-icons" style="color:#dad9d2;"></i>
+                                                    </div>
                                                 </mat-cell>
                                             </ng-container>
 
@@ -440,12 +420,13 @@
                                                 <mat-cell *matCellDef="let row" class="text-right">
 
                                                     <div style="font-size: 1.1em">
+                                                         <!-- Play Button -->
                                                         <button *ngIf="row.status=='broadcasting' "
                                                                 data-toggle="tooltip" i18n-title title="Play Stream"
                                                                 (click)="playLive(row.streamId)"
-                                                                class="btn btn-success btn-simple btn-magnify btn-xs "
+                                                                class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
                                                                 type="button"
-                                                                style="font-size: 1.1em">
+                                                                >
                                                             <span class="btn-label">
                                                                 <i class="ti-control-play"></i>
                                                             </span>
@@ -453,12 +434,26 @@
 
                                                         </button>
 
+                                                        <!--  Social media stats Button -->
+                                                        <button *ngIf="row.status=='broadcasting' && hasSocialEndpoint(row)"
+                                                                data-toggle="tooltip" i18n-title title="Comments on Social Media"
+                                                                (click)="showLiveComments(row)"
+                                                                class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
+                                                                type="button"
+                                                                >
+                                                            <span class="btn-label">
+                                                                <i class="ti-stats-up"></i>
+                                                            </span>
+                                                            <ng-container i18n="@@tablePlayButton"></ng-container>
+
+                                                        </button>
+                                                        <!-- Edit Broadcast Button -->
                                                         <button *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
                                                                 (click)="openBroadcastEditDialog(row)" title="Edit"
                                                                 data-toggle="tooltip"
-                                                                class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button"
-                                                                style="font-size: 1.1em">
+                                                                >
                                                             <span class="btn-label">
                                                                 <i class="ti-pencil"></i>
                                                             </span>
@@ -469,9 +464,9 @@
 
                                                         <button *ngIf="row.type=='ipCamera'"
                                                                 (click)="openSettingsDialog(row)"
-                                                                class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button" data-toggle="tooltip" i18n-title
-                                                                title="Settings" style="font-size: 1.1em">
+                                                                title="Settings" >
                                                             <span class="btn-label" style="float: right;">
                                                                 <i class="ti-settings"></i>
                                                             </span>
@@ -479,12 +474,11 @@
                                                             <ng-container i18n="@@tableSettings"></ng-container>
                                                         </button>
 
-
                                                         <button *ngIf="row.type=='streamSource'"
                                                                 (click)="openStreamSourceSettingsDialog(row)"
-                                                                class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button" data-toggle="tooltip" i18n-title
-                                                                title="Settings" style="font-size: 1.1em">
+                                                                title="Settings" >
                                                             <span class="btn-label" style="float: right;">
                                                                 <i class="ti-settings"></i>
                                                             </span>
@@ -497,9 +491,9 @@
                                                         <button (click)="copyLiveEmbedCode(row.streamId)"
                                                                 data-toggle="tooltip" i18n-title
                                                                 title="Copy Live Embed Code to Clipboard"
-                                                                class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button"
-                                                                style="font-size: 1.1em">
+                                                                >
                                                             <span class="btn-label">
                                                                 <i class="ti-share"></i>
                                                             </span>
@@ -511,18 +505,18 @@
                                                                 (click)="copyPublishUrl(row.streamId)"
                                                                 data-toggle="tooltip"
                                                                 [title]="'Copy Publish URL to Clipboard : ' + getRtmpUrl(row.streamId)"
-                                                                class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button"
-                                                                style="font-size: 1.1em">
+                                                                >
                                                             <span class="btn-label">
                                                                 <i class="ti-clipboard"></i>
                                                             </span>
                                                             <ng-container i18n="@@copyPublishUrl"></ng-container>
                                                         </button>
                                                         <button (click)="deleteLiveBroadcast(row.streamId)"
-                                                                class="btn btn-simple btn-magnify btn-danger btn-xs "
+                                                                class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
                                                                 type="button" data-toggle="tooltip"
-                                                                i18n-title title="Delete" style="font-size: 1.1em">
+                                                                i18n-title title="Delete" >
                                                             <span class="btn-label">
                                                                 <i class="ti-close"></i>
                                                             </span>
@@ -543,8 +537,6 @@
 
 
                                                     </div>
-
-
                                                 </mat-cell>
 
                                             </ng-container>
@@ -955,7 +947,7 @@
                                         </div>
 
                                     </fieldset>
-
+                                <!--
                                     <fieldset>
                                         <legend class="text-left" i18n="@@ObjectDetection">Object Detection</legend>
 
@@ -988,7 +980,7 @@
                                         </div>
 
                                     </fieldset>
-
+                                -->
 
 
                                     <fieldset>

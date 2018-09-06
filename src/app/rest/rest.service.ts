@@ -66,9 +66,6 @@ export class AuthInterceptor implements HttpInterceptor{
     }
 }
 
-
-
-
 @Injectable()
 export class RestService {
     constructor(private http: HttpClient, private router: Router) {
@@ -278,12 +275,42 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/broadcast/uploadVoDFile/"+fileName,formData);
     }
 
-
-
     public createLiveStreamSocialNetworks(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Observable<Object> {
 
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/createWithSocial?socialNetworks=" + socialNetworks,
             liveBroadcast);
+    }
+
+    /**
+     * This method gets comments from social endpoint like facebook, youtube, ...
+     */
+    public getLiveComments(appName: string, streamId: string, serviceId:string, offset:number, batch:number): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName 
+                + "/rest/broadcast/getLiveComments/" + serviceId + "/"  + streamId + "/" + offset + "/" + batch );
+    }
+
+    /**
+     * This methods get live comments count from social endpoint like facebook, youtube,...
+     */
+    public getLiveCommentsCount(appName: string, streamId: string, serviceId:string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName 
+                + "/rest/broadcast/getLiveCommentsCount/" + serviceId + "/"  + streamId );
+    }
+
+    /**
+     * This methods get interactions(like, dislike, etc.) from social endpoint like facebook, youtube,...
+     */
+    public getInteraction(appName: string, streamId: string, serviceId:string) : Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName 
+                    + "/rest/broadcast/getInteraction/" + serviceId + "/"  + streamId );
+    }
+
+    /**
+     * This methods get live views count from social endpoint like facebook, youtube,...
+     */
+    public getLiveViewsCount(appName: string, streamId: string, serviceId:string) : Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName 
+                    + "/rest/broadcast/getLiveViewsCount/" + serviceId + "/"  + streamId );
     }
 
     public deleteIPCamera(appName: string, streamId:string): Observable<Object> {

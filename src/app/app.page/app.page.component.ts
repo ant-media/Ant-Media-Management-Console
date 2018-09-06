@@ -12,13 +12,13 @@ import {
     Renderer,
     ViewChild
 } from '@angular/core';
-import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {HttpClient} from '@angular/common/http';
-import {ActivatedRoute, Router} from '@angular/router';
-import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../rest/rest.service';
-import {AuthService} from '../rest/auth.service';
-import {ClipboardService} from 'ngx-clipboard';
-import {Locale} from "../locale/locale";
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR } from '../rest/rest.service';
+import { AuthService } from '../rest/auth.service';
+import { ClipboardService } from 'ngx-clipboard';
+import { Locale } from "../locale/locale";
 import {
     MAT_DIALOG_DATA,
     MatDialog,
@@ -40,7 +40,12 @@ import {
     VodInfoTable
 } from './app.definitions';
 
-import {DetectedObjectListDialog} from './dialog/detected.objects.list';
+import { DetectedObjectListDialog } from './dialog/detected.objects.list';
+import { UploadVodDialogComponent } from './dialog/upload-vod-dialog';
+import { StreamSourceEditComponent } from './dialog/stream.source.edit.component';
+import { BroadcastEditComponent } from './dialog/broadcast.edit.dialog.component';
+import { CamSettingsDialogComponent } from './dialog/cam.settings.dialog.component';
+import { SocialMediaStatsComponent } from './dialog/social.media.stats.component';
 
 declare var $: any;
 declare var Chartist: any;
@@ -222,16 +227,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
-                private restService: RestService,
-                private clipBoardService: ClipboardService,
-                private renderer: Renderer,
-                public router: Router,
-                private zone: NgZone,
-                public dialog: MatDialog,
-                public sanitizer: DomSanitizer,
-                private cdr: ChangeDetectorRef,
-                private matpage: MatPaginatorIntl,
-                private authService: AuthService,
+        private restService: RestService,
+        private clipBoardService: ClipboardService,
+        private renderer: Renderer,
+        public router: Router,
+        private zone: NgZone,
+        public dialog: MatDialog,
+        public sanitizer: DomSanitizer,
+        private cdr: ChangeDetectorRef,
+        private matpage: MatPaginatorIntl,
+        private authService: AuthService,
 
 
     ) {
@@ -506,6 +511,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
+    showLiveComments(broadcast: LiveBroadcast): void {
+        this.dialog.open(SocialMediaStatsComponent, {
+            width: '90%',
+            data: {
+                appName: this.appName,
+                streamName: broadcast.name,
+                streamId: broadcast.streamId,
+                endpointList: broadcast.endPointList,
+            },
+            disableClose: true,
+        });
+    }
 
 
     openStreamSourceSettingsDialog(selected: LiveBroadcast): void {
@@ -560,6 +577,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.getAppLiveStreamsNumber();
 
         });
+    }
+
+    hasSocialEndpoint(broadcast: LiveBroadcast): boolean {
+        let hasEndpoint: boolean = false;
+
+        if (broadcast.endPointList) {
+            for (let item of broadcast.endPointList) {
+                if (item.endpointServiceId) {
+                    hasEndpoint = true;
+                    break;
+                }
+            };
+        }
+        return hasEndpoint;
     }
 
 
@@ -871,7 +902,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     showDetectedObject(streamId: string): void {
         let dialogRef = this.dialog.open(DetectedObjectListDialog, {
             width: '500px',
-
+            height: '500px',
             data: {
                 streamId: streamId,
                 appName: this.appName
@@ -2213,560 +2244,4 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
         );
     }
-}
-
-
-
-/** Builds and returns a new User. */
-function createNewUser(id: number): UserData {
-    const name =
-        NAMES[Math.round(Math.random() * (NAMES.length - 1))] + ' ' +
-        NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) + '.';
-
-    return {
-        id: id.toString(),
-        name: name,
-        progress: Math.round(Math.random() * 100).toString(),
-        color: COLORS[Math.round(Math.random() * (COLORS.length - 1))]
-    };
-}
-
-/** Constants used to fill up our data base. */
-const COLORS = ['maroon', 'red', 'orange', 'yellow', 'olive', 'green', 'purple',
-    'fuchsia', 'lime', 'teal', 'aqua', 'blue', 'navy', 'black', 'gray'];
-const NAMES = ['Maia', 'Asher', 'Olivia', 'Atticus', 'Amelia', 'Jack',
-    'Charlotte', 'Theodore', 'Isla', 'Oliver', 'Isabella', 'Jasper',
-    'Cora', 'Levi', 'Violet', 'Arthur', 'Mia', 'Thomas', 'Elizabeth'];
-
-export interface UserData {
-    id: string;
-    name: string;
-    progress: string;
-    color: string;
-}
-
-@Component({
-    selector: 'dialog-overview-example-dialog',
-    templateUrl: 'cam-settings-dialog.html',
-})
-
-
-
-
-export class CamSettinsDialogComponent {
-    camera: LiveBroadcast;
-    app: AppPageComponent;
-    loadingSettings = false;
-    public editBroadcastShareYoutube: boolean;
-    public editBroadcastShareFacebook: boolean;
-    public editBroadcastSharePeriscope: boolean;
-    public liveStreamEditing: LiveBroadcast;
-    public shareEndpoint: boolean[];
-    public videoServiceEndPoints: VideoServiceEndpoint[];
-    public appName:string;
-    public streamNameEmpty = false;
-
-
-    constructor(
-        public dialogRef: MatDialogRef<CamSettinsDialogComponent>, public restService: RestService,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
-
-        this.shareEndpoint = [];
-
-        this.videoServiceEndPoints = data.videoServiceEndpoints;
-
-
-        let endpointList: Endpoint[] = data.endpointList;
-        this.videoServiceEndPoints.forEach((item, index) => {
-            let foundService: boolean = false;
-            for (var i  in endpointList) {
-                if (endpointList[i].endpointServiceId == item.id) {
-                    this.shareEndpoint.push(true);
-                    foundService = true;
-                    break;
-                }
-            }
-            if (foundService == false) {
-                this.shareEndpoint.push(false);
-            }
-        });
-    }
-
-    onNoClick(): void {
-        this.dialogRef.close();
-    }
-
-
-    cancelEditLiveStream(): void {
-        this.dialogRef.close();
-    }
-
-    editCamSettings(isValid: boolean) {
-
-        if (!isValid) {
-            return;
-        }
-
-
-
-
-
-        console.log(this.dialogRef.componentInstance.data.status + this.dialogRef.componentInstance.data.id + this.dialogRef.componentInstance.data.name + this.dialogRef.componentInstance.data.url + this.dialogRef.componentInstance.data.username);
-
-
-        this.camera = new LiveBroadcast();
-
-        this.camera.name = this.dialogRef.componentInstance.data.name;
-        this.camera.ipAddr = this.dialogRef.componentInstance.data.url;
-        this.camera.username = this.dialogRef.componentInstance.data.username;
-        this.camera.password = this.dialogRef.componentInstance.data.pass;
-        this.camera.streamId = this.dialogRef.componentInstance.data.id;
-        this.camera.status = this.dialogRef.componentInstance.data.status;
-        this.camera.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
-        this.appName  = this.dialogRef.componentInstance.data.appName;
-
-        if (!this.restService.checkStreamName(this.camera.name)){
-
-            this.streamNameEmpty = true;
-            return;
-        }
-        this.loadingSettings = true;
-
-        this.restService.editCameraInfo(this.camera, this.dialogRef.componentInstance.data.appName).subscribe(data => {
-
-            if (data["success"]) {
-
-                this.dialogRef.close();
-
-                $.notify({
-                    icon: "ti-save",
-                    message: Locale.getLocaleInterface().broadcast_updated
-                }, {
-                    type: "success",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
-            else {
-                $.notify({
-                    icon: "ti-alert",
-                    message: Locale.getLocaleInterface().broadcast_not_updated + " " + data["message"] + " " + data["errorId"]
-                }, {
-                    type: "warning",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
-
-        });
-
-
-
-        setTimeout(()=>{
-
-            this.restService.getCameraError(this.appName , this.camera.ipAddr ) .subscribe(data => {
-
-                console.log("stream ID :  "+this.camera.ipAddr );
-
-                if(data["message"] != null){
-
-                    if (data["message"].includes("401")) {
-
-                        swal({
-                            title: "Authorization Error",
-                            text: "Please Check Username and/or Password",
-                            type: 'error',
-
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-
-
-                        }).catch(function () {
-
-                        });
-                    }
-                }
-
-                else{
-
-                    console.log("no  camera error")
-                }
-
-                this.camera.ipAddr  = "";
-            });
-
-        },5000)
-
-
-    }
-
-}
-
-
-@Component({
-    selector: 'upload-vod-dialog',
-    templateUrl: 'upload-vod-dialog.html',
-})
-
-
-export class UploadVodDialogComponent {
-
-    app: AppPageComponent;
-    uploading = false;
-    fileToUpload: File = null;
-    search: SearchParam;
-    fileselected = false;
-    fileName: string;
-    appName: string;
-
-    constructor(
-        public dialogRef: MatDialogRef<UploadVodDialogComponent>, public restService: RestService,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
-    }
-
-    onNoClick(): void {
-        this.dialogRef.close();
-    }
-
-    handleFileInput(files: FileList) {
-
-        this.fileToUpload = files.item(0);
-        this.fileselected = true;
-        this.fileName = this.fileToUpload.name.replace(/\s/g, '_');
-        console.log(this.fileName);
-
-    }
-
-
-    submitUpload() {
-
-
-        if (this.fileToUpload) {
-            this.uploading = true;
-
-            let formData: FormData = new FormData();
-
-            formData.append('file', this.fileToUpload);
-
-            formData.append('file_info', this.fileToUpload.name);
-
-            console.log("file upload" + this.fileToUpload.name);
-
-            if (!this.fileName || this.fileName.length == 0) {
-
-                this.fileName = this.fileToUpload.name.substring(0, this.fileToUpload.name.lastIndexOf("."));
-                ;
-            }
-
-            this.fileName = this.fileName.replace(/\s/g, '_');
-
-
-            this.restService.uploadVod(this.fileName, formData, this.dialogRef.componentInstance.data.appName).subscribe(data => {
-
-                if (data["success"] == true) {
-
-                    this.uploading = false;
-
-                    this.dialogRef.close();
-                    swal({
-                        type: "success",
-                        title: " File is successfully uploaded!",
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-success"
-
-                    });
-
-                } else if (data["message"] == "notMp4File") {
-
-                    this.uploading = false;
-                    swal({
-                        type: "error",
-                        title: "Only Mp4 files are accepted!",
-
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-error"
-
-                    });
-
-                } else {
-                    this.uploading = false;
-
-                    this.dialogRef.close();
-                    swal({
-                        type: "error",
-                        title: "An Error Occured!",
-
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-error"
-
-                    });
-
-
-                }
-
-            });
-
-        }
-
-
-    }
-
-}
-
-
-@Component({
-    selector: 'broadcast-edit-dialog',
-    templateUrl: 'broadcast-edit-dialog.html',
-})
-
-
-export class BroadcastEditComponent {
-
-    app: AppPageComponent;
-    loading = false;
-    public liveStreamUpdating = false;
-    public editBroadcastShareYoutube: boolean;
-    public editBroadcastShareFacebook: boolean;
-    public editBroadcastSharePeriscope: boolean;
-    public liveStreamEditing: LiveBroadcast;
-    public shareEndpoint: boolean[];
-    public videoServiceEndPoints: VideoServiceEndpoint[];
-    public streamNameEmpty = false;
-
-
-    constructor(
-        public dialogRef: MatDialogRef<BroadcastEditComponent>, public restService: RestService,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
-        this.shareEndpoint = [];
-
-        this.videoServiceEndPoints = data.videoServiceEndpoints;
-
-
-        let endpointList: Endpoint[] = data.endpointList;
-        this.videoServiceEndPoints.forEach((item, index) => {
-            let foundService: boolean = false;
-            for (var i  in endpointList) {
-                if (endpointList[i].endpointServiceId == item.id) {
-                    this.shareEndpoint.push(true);
-                    foundService = true;
-                    break;
-                }
-            }
-            if (foundService == false) {
-                this.shareEndpoint.push(false);
-            }
-        });
-
-    }
-
-    onNoClick(): void {
-        this.dialogRef.close();
-    }
-
-    updateLiveStream(isValid: boolean): void {
-        if (!isValid) {
-            return;
-        }
-
-        this.liveStreamEditing = new LiveBroadcast();
-        this.liveStreamEditing.name = this.dialogRef.componentInstance.data.name;
-        this.liveStreamEditing.streamId = this.dialogRef.componentInstance.data.streamId;
-
-
-        var socialNetworks = [];
-        this.shareEndpoint.forEach((value, index) => {
-            if (value === true) {
-                socialNetworks.push(this.videoServiceEndPoints[index].id);
-            }
-        });
-
-        if (!this.restService.checkStreamName(this.liveStreamEditing.name)){
-
-            this.streamNameEmpty = true;
-            return;
-        }
-        this.liveStreamUpdating = true;
-
-        this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.liveStreamEditing,
-            socialNetworks).subscribe(data => {
-            this.liveStreamUpdating = false;
-            console.log(data["success"]);
-            if (data["success"]) {
-
-                this.dialogRef.close();
-
-                $.notify({
-                    icon: "ti-save",
-                    message: Locale.getLocaleInterface().broadcast_updated
-                }, {
-                    type: "success",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
-            else {
-                $.notify({
-                    icon: "ti-alert",
-                    message: Locale.getLocaleInterface().broadcast_not_updated + " " + data["message"] + " " + data["errorId"]
-                }, {
-                    type: "warning",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
-        });
-    }
-
-    cancelEditLiveStream(): void {
-        this.dialogRef.close();
-    }
-
-}
-
-
-@Component({
-    selector: 'streamSource-edit-dialog',
-    templateUrl: 'streamSource-settings-dialog.html',
-})
-
-
-export class StreamSourceEditComponent {
-
-    public app:AppPageComponent;
-    public streamSource: LiveBroadcast;
-    public streamUrlDialogValid = true;
-    public loadingSettings = false;
-    public editBroadcastShareYoutube: boolean;
-    public editBroadcastShareFacebook: boolean;
-    public editBroadcastSharePeriscope: boolean;
-    public liveStreamEditing: LiveBroadcast;
-    public shareEndpoint: boolean[];
-    public videoServiceEndPoints: VideoServiceEndpoint[];
-    public streamNameEmpty = false;
-
-
-    constructor(
-        public dialogRef: MatDialogRef<CamSettinsDialogComponent>, public restService: RestService,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
-
-        this.shareEndpoint = [];
-        this.videoServiceEndPoints = data.videoServiceEndpoints;
-
-        let endpointList: Endpoint[] = data.endpointList;
-        this.videoServiceEndPoints.forEach((item, index) => {
-            let foundService: boolean = false;
-            for (var i  in endpointList) {
-                if (endpointList[i].endpointServiceId == item.id) {
-                    this.shareEndpoint.push(true);
-                    foundService = true;
-                    break;
-                }
-            }
-            if (foundService == false) {
-                this.shareEndpoint.push(false);
-            }
-        });
-    }
-
-    onNoClick(): void {
-        this.dialogRef.close();
-    }
-
-
-    cancelEditLiveStream(): void {
-        this.dialogRef.close();
-    }
-
-    editSettings(isValid: boolean) {
-
-        this.streamUrlDialogValid = true;
-
-        if (!isValid) {
-            return;
-        }
-
-
-
-
-
-        console.log(this.dialogRef.componentInstance.data.status + this.dialogRef.componentInstance.data.id + this.dialogRef.componentInstance.data.name + this.dialogRef.componentInstance.data.url + this.dialogRef.componentInstance.data.username);
-
-
-        this.streamSource = new LiveBroadcast();
-
-        this.streamSource.name = this.dialogRef.componentInstance.data.name;
-        this.streamSource.ipAddr = this.dialogRef.componentInstance.data.url;
-        this.streamSource.username = this.dialogRef.componentInstance.data.username;
-        this.streamSource.password = this.dialogRef.componentInstance.data.pass;
-        this.streamSource.streamId = this.dialogRef.componentInstance.data.id;
-        this.streamSource.status = this.dialogRef.componentInstance.data.status;
-        this.streamSource.streamUrl=this.dialogRef.componentInstance.data.streamUrl;
-
-
-        if (!this.restService.checkStreamName(this.streamSource.name)){
-
-            this.streamNameEmpty = true;
-            return;
-        }
-        this.loadingSettings = true;
-
-
-        if(this.restService.checkStreamUrl(this.streamSource.streamUrl)){
-
-            this.restService.editCameraInfo(this.streamSource, this.dialogRef.componentInstance.data.appName).subscribe(data => {
-
-                if (data["success"]) {
-
-                    this.dialogRef.close();
-
-                    $.notify({
-                        icon: "ti-save",
-                        message: Locale.getLocaleInterface().broadcast_updated
-                    }, {
-                        type: "success",
-                        delay: 900,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
-                }
-                else {
-                    $.notify({
-                        icon: "ti-alert",
-                        message: Locale.getLocaleInterface().broadcast_not_updated + " " + data["message"] + " " + data["errorId"]
-                    }, {
-                        type: "warning",
-                        delay: 900,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
-                }
-
-            });
-
-        } else {
-            this.loadingSettings = false;
-            this.streamUrlDialogValid = false;
-
-            return;
-        }
-
-    }
-
 }

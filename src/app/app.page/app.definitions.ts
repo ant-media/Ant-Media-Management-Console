@@ -2,6 +2,60 @@ export declare interface Endpoint {
     type: string;
     endpointServiceId: string;
 }
+export declare interface User {
+	
+	/**
+	 * Email of the user
+	 */
+	email:string;
+
+	/**
+	 * Type of the user
+	 */
+	userType:String;
+
+	/**
+	 * Name of the user
+	 */
+	fullName:string;
+	
+	/**
+	 * URL of the picture if exists
+	 */
+	picture:string;
+	
+	/**
+	 * ID of the user
+	 */
+    id:string;
+}
+
+export declare interface LiveComment {
+    /**
+	 * id of the comment
+	 */
+	id:string;
+	
+	/**
+	 * Content of the comment
+	 */
+	message:string;
+	
+	/**
+	 * User who write this comment
+	 */
+	from:User;
+
+	/**
+	 * Origin of the comment
+	 */
+	origin:string;
+	
+	/**
+	 * Timestamp of the comment
+	 */
+	timestamp:number;
+}
 
 
 export declare interface BroadcastInfo {
