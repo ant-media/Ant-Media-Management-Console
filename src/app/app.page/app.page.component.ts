@@ -483,7 +483,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.selectedBroadcast = selected;
 
-        let dialogRef = this.dialog.open(CamSettinsDialogComponent, {
+        let dialogRef = this.dialog.open(CamSettingsDialogComponent, {
             width: '300px',
             data: {
                 name: this.selectedBroadcast.name,
