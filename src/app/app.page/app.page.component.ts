@@ -2015,6 +2015,29 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
+    copyVoDEmbedCode(name: string): void {
+
+        var lastSlashIndex = name.lastIndexOf(".mp4");
+        var VoDName = name.substring(0, lastSlashIndex);
+
+        let embedCode = '<iframe width="560" height="315" src="'
+            + HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + VoDName
+            + '" frameborder="0" allowfullscreen></iframe>';
+
+        this.clipBoardService.copyFromContent(embedCode);
+        $.notify({
+            message: Locale.getLocaleInterface().embed_code_copied_to_clipboard
+        }, {
+            type: "success",
+            delay: 400,
+            timer: 500,
+            placement: {
+                from: 'top',
+                align: 'right'
+            }
+        });
+    }
+
     getRtmpUrl(streamUrl: string): string {
         return "rtmp://" + SERVER_ADDR + "/" + this.appName + "/" + streamUrl;
     }
