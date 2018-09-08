@@ -115,6 +115,12 @@ export class SearchParam {
     public endDate: number;
 }
 
+export class Token {
+    public tokenId: string;
+    public streamId: string;
+    public expireDate: number;
+}
+
 @Component({
     selector: 'manage-app-cmp',
     moduleId: module.id,
@@ -184,6 +190,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public streamNameEmpty=false;
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
+    public token:Token;
     public listTypes = [
         new HLSListType('None', ''),
         new HLSListType('Event', 'event'),
@@ -227,16 +234,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
-        private restService: RestService,
-        private clipBoardService: ClipboardService,
-        private renderer: Renderer,
-        public router: Router,
-        private zone: NgZone,
-        public dialog: MatDialog,
-        public sanitizer: DomSanitizer,
-        private cdr: ChangeDetectorRef,
-        private matpage: MatPaginatorIntl,
-        private authService: AuthService,
+                private restService: RestService,
+                private clipBoardService: ClipboardService,
+                private renderer: Renderer,
+                public router: Router,
+                private zone: NgZone,
+                public dialog: MatDialog,
+                public sanitizer: DomSanitizer,
+                private cdr: ChangeDetectorRef,
+                private matpage: MatPaginatorIntl,
+                private authService: AuthService,
 
 
     ) {
@@ -321,6 +328,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.liveBroadcastSharePeriscope = false;
         this.searchParam = new SearchParam();
         this.appSettings = null;
+        this.token = null;
         this.newLiveStreamActive = false;
         this.camera = new Camera("", "", "", "", "", "");
 
@@ -915,7 +923,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     playLive(streamId: string): void {
 
-        var id, name, srcFile, iframeSource;
+        var id, name, srcFile, iframeSource, token;
 
         var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
 
@@ -949,7 +957,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&autoplay=true";
 
-
+            console.log("iframe source : " + iframeSource);
             var $iframe = $('#' + streamId);
 
             $iframe.prop('src', iframeSource);
@@ -958,6 +966,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }, 1500);
 
 
+        console.log("play stream id" + streamId);
+        console.log("token " + token);
 
 
     }
@@ -1376,6 +1386,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
         this.getSocialEndpoints();
+    }
+
+    getToken(streamId:string): string {
+        this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
+            this.token = <Token>data;
+        });
+        return this.token.tokenId;
     }
 
 

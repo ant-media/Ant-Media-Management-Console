@@ -313,6 +313,14 @@ export class RestService {
                     + "/rest/broadcast/getLiveViewsCount/" + serviceId + "/"  + streamId );
     }
 
+    /**
+     * This methods get live views count from social endpoint like facebook, youtube,...
+     */
+    public getToken(appName: string, streamId: string, expireDate:number) : Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
+            + "/rest/broadcast/getToken?id=" + streamId + "&expireDate="  + expireDate );
+    }
+
     public deleteIPCamera(appName: string, streamId:string): Observable<Object> {
 
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/deleteCamera?ipAddr=' + streamId, {});
@@ -347,7 +355,7 @@ export class RestService {
 
     moveLeft(camera: LiveBroadcast,appName: string): Observable<Object> {
 
-        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + "/request?_path=" + appName + '/rest/streamSource/moveLeft?id=' + camera.streamId;
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/moveLeft?id=' + camera.streamId;
         console.log('URL ' + streamInfoUrl);
 
         return this.http.get(streamInfoUrl);
