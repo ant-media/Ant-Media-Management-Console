@@ -386,7 +386,7 @@
                                                     </div>
 
                                                     <ng-container *ngIf="row.webRTCViewerCount == 0 &&row.hlsViewerCount == 0 &&row.rtmpViewerCount == 0 " >
-                                                       No viewer
+                                                        No viewer
 
                                                     </ng-container>
 
@@ -420,13 +420,13 @@
                                                 <mat-cell *matCellDef="let row" class="text-right">
 
                                                     <div style="font-size: 1.1em">
-                                                         <!-- Play Button -->
+                                                        <!-- Play Button -->
                                                         <button *ngIf="row.status=='broadcasting' "
                                                                 data-toggle="tooltip" i18n-title title="Play Stream"
                                                                 (click)="playLive(row.streamId)"
                                                                 class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
                                                                 type="button"
-                                                                >
+                                                        >
                                                             <span class="btn-label">
                                                                 <i class="ti-control-play"></i>
                                                             </span>
@@ -440,7 +440,7 @@
                                                                 (click)="showLiveComments(row)"
                                                                 class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
                                                                 type="button"
-                                                                >
+                                                        >
                                                             <span class="btn-label">
                                                                 <i class="ti-stats-up"></i>
                                                             </span>
@@ -453,7 +453,7 @@
                                                                 data-toggle="tooltip"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button"
-                                                                >
+                                                        >
                                                             <span class="btn-label">
                                                                 <i class="ti-pencil"></i>
                                                             </span>
@@ -493,7 +493,7 @@
                                                                 title="Copy Live Embed Code to Clipboard"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button"
-                                                                >
+                                                        >
                                                             <span class="btn-label">
                                                                 <i class="ti-share"></i>
                                                             </span>
@@ -507,7 +507,7 @@
                                                                 [title]="'Copy Publish URL to Clipboard : ' + getRtmpUrl(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button"
-                                                                >
+                                                        >
                                                             <span class="btn-label">
                                                                 <i class="ti-clipboard"></i>
                                                             </span>
@@ -920,7 +920,10 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">One-Time Token</label>
+                                            <label class="col-sm-2 control-label"
+                                                   matTooltip="Token is required for publishing and playing.
+                                                   You need to create token and provide for these operations. Use 'getToken' rest service for that. ">
+                                                One-Time Token</label>
 
                                             <div class="form-group text-center" *ngIf=!isEnterpriseEdition>
                                                 <p i18n="not Enterprise@@notEnterpriseEditionMessage">
