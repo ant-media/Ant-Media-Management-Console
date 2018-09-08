@@ -119,6 +119,7 @@ export class Token {
     public tokenId: string;
     public streamId: string;
     public expireDate: number;
+    public type:string;
 }
 
 @Component({
@@ -926,7 +927,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         var id, name, srcFile, iframeSource, token;
 
         var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
-
+        if(this.appSettings.tokenControlEnabled){
+            this.getToken(streamId);
+        }
 
         console.log(htmlCode);
 
@@ -955,7 +958,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         setTimeout(() => {
 
 
-            iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&autoplay=true";
+            iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&token=" + this.token.tokenId +"&autoplay=true";
 
             console.log("iframe source : " + iframeSource);
             var $iframe = $('#' + streamId);
@@ -1037,50 +1040,57 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    playVoD(vodName: string, type: string, vodId:string): void {
+    playVoD(vodName: string, type: string, vodId:string, streamId:string): void {
         // var container = document.getElementById("player");
         // install flowplayer into selected container
 
 
-        var srcFile = null;
-        if (type == "uploadedVod") {
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4' ;
-        }else if (type == "streamVod"){
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName ;
-        }else if (type == "userVod") {
-            var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
-            var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodName;
+        if(this.appSettings.tokenControlEnabled){
+            this.getToken(streamId);
         }
 
-        if (srcFile != null) {
-            swal({
-                html: '<div id="player"></div>',
-                showConfirmButton: false,
-                width: '800px',
-                animation: false,
-                onOpen: function () {
+        setTimeout(() => {
 
-                    flowplayer('#player', {
-                        autoplay: true,
-                        clip: {
-                            sources: [{
-                                type: 'video/mp4',
-                                src: srcFile
+
+            var srcFile = null;
+            if (type == "uploadedVod") {
+                srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4?token=' + this.token.tokenId  ;
+            }else if (type == "streamVod"){
+                srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName + '?token=' + this.token.tokenId;
+            }else if (type == "userVod") {
+                var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
+                var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
+                srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodName + '?token=' + this.token.tokenId;
+            }
+
+            if (srcFile != null) {
+                swal({
+                    html: '<div id="player"></div>',
+                    showConfirmButton: false,
+                    width: '800px',
+                    animation: false,
+                    onOpen: function () {
+
+                        flowplayer('#player', {
+                            autoplay: true,
+                            clip: {
+                                sources: [{
+                                    type: 'video/mp4',
+                                    src: srcFile
+                                }
+                                ]
                             }
-                            ]
-                        }
-                    });
-                },
-                onClose: function () {
-                    flowplayer("#player").shutdown();
-                }
-            });
-        }
-        else {
-            console.error("Undefined type");
-        }
-
+                        });
+                    },
+                    onClose: function () {
+                        flowplayer("#player").shutdown();
+                    }
+                });
+            }
+            else {
+                console.error("Undefined type");
+            }
+        }, 500);
     }
 
     //file with extension
@@ -1388,11 +1398,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.getSocialEndpoints();
     }
 
-    getToken(streamId:string): string {
+    getToken(streamId:string): void {
+
         this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
             this.token = <Token>data;
         });
-        return this.token.tokenId;
+
     }
 
 
