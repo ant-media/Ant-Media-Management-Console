@@ -3,7 +3,6 @@ import {
     ChangeDetectorRef,
     Component,
     EventEmitter,
-    Inject,
     Input,
     NgZone,
     OnDestroy,
@@ -12,40 +11,31 @@ import {
     Renderer,
     ViewChild
 } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR } from '../rest/rest.service';
-import { AuthService } from '../rest/auth.service';
-import { ClipboardService } from 'ngx-clipboard';
-import { Locale } from "../locale/locale";
-import {
-    MAT_DIALOG_DATA,
-    MatDialog,
-    MatDialogRef,
-    MatPaginatorIntl,
-    MatSort,
-    MatTableDataSource,
-    PageEvent
-} from '@angular/material';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {HttpClient} from '@angular/common/http';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../rest/rest.service';
+import {AuthService} from '../rest/auth.service';
+import {ClipboardService} from 'ngx-clipboard';
+import {Locale} from "../locale/locale";
+import {MatDialog, MatPaginatorIntl, MatSort, MatTableDataSource, PageEvent} from '@angular/material';
 import "rxjs/add/operator/toPromise";
 import {
     BroadcastInfo,
     BroadcastInfoTable,
     CameraInfoTable,
     EncoderSettings,
-    Endpoint,
     VideoServiceEndpoint,
     VodInfo,
     VodInfoTable
 } from './app.definitions';
 
-import { DetectedObjectListDialog } from './dialog/detected.objects.list';
-import { UploadVodDialogComponent } from './dialog/upload-vod-dialog';
-import { StreamSourceEditComponent } from './dialog/stream.source.edit.component';
-import { BroadcastEditComponent } from './dialog/broadcast.edit.dialog.component';
-import { CamSettingsDialogComponent } from './dialog/cam.settings.dialog.component';
-import { SocialMediaStatsComponent } from './dialog/social.media.stats.component';
+import {DetectedObjectListDialog} from './dialog/detected.objects.list';
+import {UploadVodDialogComponent} from './dialog/upload-vod-dialog';
+import {StreamSourceEditComponent} from './dialog/stream.source.edit.component';
+import {BroadcastEditComponent} from './dialog/broadcast.edit.dialog.component';
+import {CamSettingsDialogComponent} from './dialog/cam.settings.dialog.component';
+import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 
 declare var $: any;
 declare var Chartist: any;
@@ -433,7 +423,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
-            })
+            });
 
 
             this.getAppLiveStreamsNumber();
@@ -597,7 +587,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     hasEndpoint = true;
                     break;
                 }
-            };
+            }
         }
         return hasEndpoint;
     }
@@ -924,53 +914,108 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     playLive(streamId: string): void {
 
-        var id, name, srcFile, iframeSource, token;
-
-        var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
-        if(this.appSettings.tokenControlEnabled){
-            this.getToken(streamId);
-        }
-
-        console.log(htmlCode);
 
 
-        swal({
-            html: htmlCode,
-            showConfirmButton: false,
-            width: '800px',
-            height: '400px',
-            padding: 10,
-            animation: false,
-            showCloseButton: true,
-            onOpen: () => {
+        /*
+               if(this.appSettings.tokenControlEnabled){
+                   this.getToken(streamId);
+               }
 
-            },
-            onClose: function () {
+               if(this.isEnterpriseEdition){
+                   streamId = streamId + "_adaptive";
+               }
+
+               setTimeout(() => {
 
 
-                var ifr = document.getElementById(streamId);
-                ifr.parentNode.removeChild(ifr);
+                              var srcFile, type = null;
+                              if (this.appSettings.tokenControlEnabled) {
+                                  srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamId + '.m3u8?token=' + this.token.tokenId  ;
+                              }else {
+                                  srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamId + '.m3u8';
+                              }
+                              console.log ("srcUrl :" + srcFile);
+                              if (srcFile != null) {
+                                  swal({
+                                      html: '<div id="player"></div>',
+                                      showConfirmButton: false,
+                                      width: '800px',
+                                      animation: false,
+                                      onOpen: function () {
 
-            }
-        }).then(function () { }, function () { });
+                                          flowplayer('#player', {
+                                              autoplay: true,
+                                              clip: {
+                                                  sources: [{
+                                                      type: 'application/x-mpegurl',
+                                                      src: srcFile
+                                                  }
+                                                  ]
+                                              }
+                                          });
+                                      },
+                                      onClose: function () {
+                                          flowplayer("#player").shutdown();
+                                      }
+                                  });
+                              }
+                              else {
+                                  console.error("Undefined type");
+                              }
+                          }, 800);
+
+                   */
+
+                   var id, name, srcFile, iframeSource, token;
+
+                   var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
+                   if(this.appSettings.tokenControlEnabled){
+                       this.getToken(streamId);
+                   }
+
+                   console.log(htmlCode);
 
 
-        setTimeout(() => {
+                   swal({
+                       html: htmlCode,
+                       showConfirmButton: false,
+                       width: '800px',
+                       height: '400px',
+                       padding: 10,
+                       animation: false,
+                       showCloseButton: true,
+                       onOpen: () => {
+
+                       },
+                       onClose: function () {
 
 
-            iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&token=" + this.token.tokenId +"&autoplay=true";
+                           var ifr = document.getElementById(streamId);
+                           ifr.parentNode.removeChild(ifr);
 
-            console.log("iframe source : " + iframeSource);
-            var $iframe = $('#' + streamId);
-
-            $iframe.prop('src', iframeSource);
-
-
-        }, 1500);
+                       }
+                   }).then(function () { }, function () { });
 
 
-        console.log("play stream id" + streamId);
-        console.log("token " + token);
+                   setTimeout(() => {
+
+                    if(this.appSettings.tokenControlEnabled){
+                        iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&token=" + this.token.tokenId +"&autoplay=true";
+                    }
+                    else{
+
+                        iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true";
+
+                    }
+
+                       console.log("iframe source : " + iframeSource);
+                       var $iframe = $('#' + streamId);
+
+                       $iframe.prop('src', iframeSource);
+
+
+                   }, 1000);
+
 
 
     }
@@ -1126,7 +1171,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
                 else {
                     this.showVoDFileNotDeleted();
-                };
+                }
                 this.getVoDStreams();
             });
 
@@ -1256,7 +1301,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 .subscribe(data => {
                     if (data["success"] == true) {
 
-                        this.restService.stopBroadcast(this.appName,streamId)
+                        this.restService.stopBroadcast(this.appName,streamId);
 
                         $.notify({
                             icon: "ti-save",
@@ -1283,7 +1328,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 align: 'right'
                             }
                         });
-                    };
+                    }
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
@@ -1399,7 +1444,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getToken(streamId:string): void {
-
+        this.token=null;
         this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
             this.token = <Token>data;
         });
@@ -1806,7 +1851,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        this.liveBroadcast.type = "liveStream"
+        this.liveBroadcast.type = "liveStream";
 
         if (!this.restService.checkStreamName(this.liveBroadcast.name)){
 
@@ -1969,8 +2014,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             } else if (this.isEnterpriseEdition == true && data['errorId'] == ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID) {
 
-                message = Locale.getLocaleInterface().ketNotdefined;;
-
+                message = Locale.getLocaleInterface().ketNotdefined;
                 typem = 'error';
                 this.gettingDeviceParameters = false;
                 swal({

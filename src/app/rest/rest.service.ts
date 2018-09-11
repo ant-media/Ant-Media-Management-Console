@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {Response} from '@angular/http';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
-import {environment} from '../../environments/environment';
 import {AppSettings, SearchParam} from "../app.page/app.page.component";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -317,8 +316,13 @@ export class RestService {
      * This methods get live views count from social endpoint like facebook, youtube,...
      */
     public getToken(appName: string, streamId: string, expireDate:number) : Observable<Object>{
+        console.log("stream id in rest service" + streamId);
+        var url = REST_SERVICE_ROOT + "/request?_path=" + appName
+            + '/rest/broadcast/getToken&id=' + streamId + '&expireDate='  + expireDate + '&type=play';
+
+        console.log("url in rest service : " + url);
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
-            + "/rest/broadcast/getToken?id=" + streamId + "&expireDate="  + expireDate );
+            + "/rest/broadcast/getToken&id=" + streamId + "&expireDate="  + expireDate + "&type=play" );
     }
 
     public deleteIPCamera(appName: string, streamId:string): Observable<Object> {
@@ -463,7 +467,7 @@ export class RestService {
 
         if(ipAddr.split(".").length == 4){
             if(!this.validateIPaddress(ipAddr)){
-                console.log("not valid IP")
+                console.log("not valid IP");
                 streamUrlControl=false;
 
                 return;
