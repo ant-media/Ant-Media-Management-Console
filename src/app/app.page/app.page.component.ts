@@ -966,55 +966,55 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                    */
 
-                   var id, name, srcFile, iframeSource, token;
+        var id, name, srcFile, iframeSource, token;
 
-                   var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
-                   if(this.appSettings.tokenControlEnabled){
-                       this.getToken(streamId);
-                   }
+        var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
+        if(this.appSettings.tokenControlEnabled){
+            this.getToken(streamId);
+        }
 
-                   console.log(htmlCode);
-
-
-                   swal({
-                       html: htmlCode,
-                       showConfirmButton: false,
-                       width: '800px',
-                       height: '400px',
-                       padding: 10,
-                       animation: false,
-                       showCloseButton: true,
-                       onOpen: () => {
-
-                       },
-                       onClose: function () {
+        console.log(htmlCode);
 
 
-                           var ifr = document.getElementById(streamId);
-                           ifr.parentNode.removeChild(ifr);
+        swal({
+            html: htmlCode,
+            showConfirmButton: false,
+            width: '800px',
+            height: '400px',
+            padding: 10,
+            animation: false,
+            showCloseButton: true,
+            onOpen: () => {
 
-                       }
-                   }).then(function () { }, function () { });
-
-
-                   setTimeout(() => {
-
-                    if(this.appSettings.tokenControlEnabled){
-                        iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&token=" + this.token.tokenId +"&autoplay=true";
-                    }
-                    else{
-
-                        iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true";
-
-                    }
-
-                       console.log("iframe source : " + iframeSource);
-                       var $iframe = $('#' + streamId);
-
-                       $iframe.prop('src', iframeSource);
+            },
+            onClose: function () {
 
 
-                   }, 1000);
+                var ifr = document.getElementById(streamId);
+                ifr.parentNode.removeChild(ifr);
+
+            }
+        }).then(function () { }, function () { });
+
+
+        setTimeout(() => {
+
+            if(this.appSettings.tokenControlEnabled){
+                iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&token=" + this.token.tokenId +"&autoplay=true";
+            }
+            else{
+
+                iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true";
+
+            }
+
+            console.log("iframe source : " + iframeSource);
+            var $iframe = $('#' + streamId);
+
+            $iframe.prop('src', iframeSource);
+
+
+        }, 1000);
 
 
 
@@ -1086,6 +1086,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     playVoD(vodName: string, type: string, vodId:string, streamId:string): void {
+
         // var container = document.getElementById("player");
         // install flowplayer into selected container
 
@@ -1098,16 +1099,29 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
             var srcFile = null;
-            if (type == "uploadedVod") {
-                srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4?token=' + this.token.tokenId  ;
-            }else if (type == "streamVod"){
-                srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName + '?token=' + this.token.tokenId;
-            }else if (type == "userVod") {
-                var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
-                var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
-                srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodName + '?token=' + this.token.tokenId;
-            }
 
+            if(!this.appSettings.tokenControlEnabled){
+                if (type == "uploadedVod") {
+                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4'  ;
+                }else if (type == "streamVod"){
+                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName;
+                }else if (type == "userVod") {
+                    var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
+                    var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
+                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodName;
+                }
+
+            }else{
+                if (type == "uploadedVod") {
+                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4?token=' + this.token.tokenId  ;
+                }else if (type == "streamVod"){
+                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName + '?token=' + this.token.tokenId;
+                }else if (type == "userVod") {
+                    var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
+                    var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
+                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodName + '?token=' + this.token.tokenId;
+                }
+            }
             if (srcFile != null) {
                 swal({
                     html: '<div id="player"></div>',
