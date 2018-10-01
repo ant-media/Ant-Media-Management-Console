@@ -36,8 +36,13 @@ export const ROUTES: RouteInfo[] = [{
     icontype: 'ti-package',
     children: [
     ]
-}
-    , {
+}, {
+    path: '/cluster',
+    title: 'Cluster',
+    type: 'link',
+    icontype: 'ti-layout-grid3',
+
+}, {
     path: '/settings',
     title: 'Settings',
     type: 'link',

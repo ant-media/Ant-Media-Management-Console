@@ -27,6 +27,7 @@ export interface LocaleInterface {
     error_occured: string;
     authentication_timeout_message: string;
     live_streaming_not_enabled_message: string;
+    cluster: string;
     streams_imported_successfully: string;
     missing_configuration_parameter_for_stalker: string;
     vod_deleted: string;
