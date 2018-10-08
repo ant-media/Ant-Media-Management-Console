@@ -32,5 +32,6 @@ export let Locale_Turkish: LocaleInterface =
     live_streaming_not_enabled_message: "Canlı Yayın özelliği hesabınızda etkin değil. Lütfen ilgili servis üzerinden etkinleştirin",
     streams_imported_successfully: "Yayınlar başarıyla aktarıldı",
     missing_configuration_parameter_for_stalker: "Konfigurasyon parametreleri girilmemiş. Lütfen sistem yönetici ile görüşünüz.",
-    vod_deleted: "Vod başarıyla silindi."
+    vod_deleted: "Vod başarıyla silindi.",
+    cluster: "Cluster",
 }

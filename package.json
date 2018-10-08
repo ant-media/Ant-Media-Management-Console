@@ -63,7 +63,6 @@
     "nouislider": "^9.2.0",
     "rxjs": "^5.5.2",
     "twitter-bootstrap-wizard": "^1.2.0",
-    "typescript": "2.6.2",
     "web-animations-js": "^2.2.2",
     "zone.js": "^0.8.4"
   },
@@ -84,9 +83,10 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "karma-coverage-istanbul-reporter": "^1.2.1",
     "protractor": "~5.1.2",
     "ts-node": "~3.0.4",
     "tslint": "~5.3.2",
-    "typescript": "2.7.0"
+    "typescript": "^2.4.2"
   }
 }
