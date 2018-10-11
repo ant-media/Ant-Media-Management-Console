@@ -83,18 +83,25 @@ export class StreamSourceEditComponent {
         this.streamSource.status = this.dialogRef.componentInstance.data.status;
         this.streamSource.streamUrl=this.dialogRef.componentInstance.data.streamUrl;
 
-
+        
         if (!this.restService.checkStreamName(this.streamSource.name)){
 
             this.streamNameEmpty = true;
             return;
         }
         this.loadingSettings = true;
-
+        
+        var socialNetworks = [];
+        this.shareEndpoint.forEach((value, index) => {
+            if (value === true) {
+                socialNetworks.push(this.videoServiceEndPoints[index].id);
+            }
+        });
+        
 
         if(this.restService.checkStreamUrl(this.streamSource.streamUrl)){
 
-            this.restService.editCameraInfo(this.streamSource, this.dialogRef.componentInstance.data.appName).subscribe(data => {
+            this.restService.editCameraInfo(this.streamSource, this.dialogRef.componentInstance.data.appName, socialNetworks).subscribe(data => {
 
                 if (data["success"]) {
 

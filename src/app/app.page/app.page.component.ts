@@ -1519,6 +1519,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     newStreamSource(): void {
+        this.shareEndpoint = [];
         this.newLiveStreamActive = false;
         this.newIPCameraActive = false;
         this.newStreamSourceActive = true;
@@ -1544,7 +1545,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraAdding = true;
         this.liveBroadcast.type = "ipCamera";
 
-        this.restService.addStreamSource(this.appName, this.liveBroadcast)
+        
+        var socialNetworks = [];
+        this.restService.addStreamSource(this.appName, this.liveBroadcast, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
@@ -1676,7 +1679,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newStreamSourceAdding = true;
         this.liveBroadcast.type = "streamSource";
 
-        this.restService.addStreamSource(this.appName, this.liveBroadcast)
+        var socialNetworks = [];
+        this.shareEndpoint.forEach((value, index) => {
+            if (value === true) {
+                socialNetworks.push(this.videoServiceEndpoints[index].id);
+            }
+        });
+        
+        this.restService.addStreamSource(this.appName, this.liveBroadcast, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
@@ -1699,6 +1709,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     this.liveBroadcast.streamUrl = "";
                     this.streamUrlValid=true;
+                    
+             
                 }
                 else {
 

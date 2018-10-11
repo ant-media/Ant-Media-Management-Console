@@ -238,6 +238,32 @@
                                                     Please write a valid stream URL
                                                 </small>
                                             </div>
+                                            
+                                            <div class="form-group text-left" *ngIf="videoServiceEndpoints.length>0">
+                                                <label  class="col-sm-12" style="padding-left:0px" i18n="@@newLiveStreamSocialShare">Share</label>
+                                                <ng-container *ngFor="let endpoint of videoServiceEndpoints; let i = index">
+
+                                                    <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
+
+                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
+                                                        <label [for]="endpoint.id">
+                                                            <ng-container [ngSwitch]="endpoint.serviceName">
+                                                                <ng-container *ngSwitchCase="'facebook'">
+                                                                    <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>
+                                                                </ng-container>
+                                                                <ng-container *ngSwitchCase="'youtube'">
+                                                                    <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>
+                                                                </ng-container>
+                                                                <ng-container *ngSwitchCase="'periscope'">
+                                                                    <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>
+                                                                </ng-container>
+                                                            </ng-container>
+                                                            {{endpoint.accountName}}
+                                                        </label>
+
+                                                    </div>
+                                                </ng-container>
+                                            </div>
 
                                             <div class="form-group text-center">
 
