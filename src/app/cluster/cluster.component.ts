@@ -51,7 +51,8 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
     public nodeTableData: ClusterInfoTable;
     public timerId: any;
  
-    public nodeColumns = ['nodeId', 'nodeIp', 'status', 'actions'];
+    //public nodeColumns = ['nodeId', 'nodeIp', 'status', 'lastUpdateTime', 'inTheCluster', 'actions'];
+    public nodeColumns = ['nodeIp', 'lastUpdateTime', 'inTheCluster', 'actions'];
 
     public dataSourceNode: MatTableDataSource<ClusterNodeInfo>;
 
@@ -140,7 +141,6 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
         	this.nodeLength = this.nodeTableData.dataRows.length;
         	this.updateTable();
         });
-		console.log('deneme:'+this.nodeTableData);
     }
 
     openNodeEditDialog(nodeId: string): void {
@@ -315,7 +315,7 @@ export class CreateNodeComponent {
         public clusterRestService: ClusterRestService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
     	
-    	this.node = {id:'', ip:'', status: ''};
+    	this.node = {id:'', ip:'', status: '', lastUpdateTime: "", inTheCluster: ""};
     }
 
     cancel(): void {

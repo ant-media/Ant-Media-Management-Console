@@ -27,7 +27,7 @@
 
                                         <mat-table [dataSource]="dataSourceNode">
 
-                                            <ng-container matColumnDef="nodeId">
+                                            <!-- >ng-container matColumnDef="nodeId">
                                                 <mat-header-cell *matHeaderCellDef> Node ID </mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
@@ -38,7 +38,7 @@
 
                                                 </mat-cell>
 
-                                            </ng-container>
+                                            </ng-container  -->
 
                                             <ng-container matColumnDef="nodeIp">
                                                 <mat-header-cell *matHeaderCellDef> Node IP </mat-header-cell>
@@ -49,11 +49,29 @@
                                                 </mat-cell>
                                             </ng-container>
 
-                                            <ng-container matColumnDef="status">
+											
+                                            <!--  >ng-container matColumnDef="status">
                                                 <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
                                                     {{row.status}}
+
+                                                </mat-cell>
+                                            </ng-container  -->
+                                            
+                                            <ng-container matColumnDef="lastUpdateTime">
+                                                <mat-header-cell *matHeaderCellDef> Last Update </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+                                                	{{row.lastUpdateTime | date:'yyyy-MM-dd HH:mm:ss'}}
+                                                </mat-cell>
+                                            </ng-container>
+                                            
+                                            <ng-container matColumnDef="inTheCluster">
+                                                <mat-header-cell *matHeaderCellDef> Alive </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+                                                    {{row.inTheCluster}}
 
                                                 </mat-cell>
                                             </ng-container>
@@ -63,15 +81,15 @@
 
                                                 <mat-cell *matCellDef="let row">
 
-
-                                                    <button (click)="openNodeEditDialog(row.id)"
+													
+                                                    <!-- button (click)="openNodeEditDialog(row.id)"
                                                             class="btn btn-success btn-simple btn-magnify"
                                                             type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-pencil"></i>
                                                         </span>
                                                         <ng-container i18n="@@editNodeButton">Edit</ng-container>
-                                                    </button>
+                                                    </button -->
                                                     <button (click)="deleteNode(row.id)" class="btn btn-simple btn-magnify btn-danger" type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-close"></i>
