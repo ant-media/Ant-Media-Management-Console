@@ -67,6 +67,22 @@
                                                 </mat-cell>
                                             </ng-container>
                                             
+                                            <ng-container matColumnDef="cpu">
+                                                <mat-header-cell *matHeaderCellDef> CPU Usage (%) </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+                                                	{{row.cpu}}
+                                                </mat-cell>
+                                            </ng-container>
+                                            
+                                            <ng-container matColumnDef="memory">
+                                                <mat-header-cell *matHeaderCellDef> Memory Usage (MB) </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+                                                	{{row.memory}}
+                                                </mat-cell>
+                                            </ng-container>
+                                            
                                             <ng-container matColumnDef="inTheCluster">
                                                 <mat-header-cell *matHeaderCellDef> Alive </mat-header-cell>
 

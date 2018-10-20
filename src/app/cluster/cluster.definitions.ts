@@ -4,6 +4,8 @@ export declare interface ClusterNode {
     status: string;
     lastUpdateTime: string;
     inTheCluster: string;
+    memory: string;
+    cpu: string;
 }
 
 export declare interface ClusterNodeInfo {
@@ -12,6 +14,8 @@ export declare interface ClusterNodeInfo {
     status: string;
     lastUpdateTime: string;
     inTheCluster: string;
+    memory: string;
+    cpu: string;
 }
 
 export declare interface ClusterInfoTable {
