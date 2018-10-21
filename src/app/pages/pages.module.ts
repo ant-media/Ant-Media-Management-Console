@@ -25,11 +25,13 @@ import { AuthInterceptor} from '../rest/rest.service';
         LockComponent,
         EqualValidator
     ],
+    
     providers: [{
         provide: HTTP_INTERCEPTORS,
         useClass: AuthInterceptor,
         multi: true
       }]
+      
 })
 
 export class PagesModule {}

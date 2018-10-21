@@ -22,10 +22,12 @@ export class WizardComponent implements OnInit{
         if (input.files && input.files[0]) {
             var reader = new FileReader();
 
-            reader.onload = function (e:FileReaderEvent) {
+            /* Commenting out because it's not used
+            reader.onload = function (e:FileReaderProgressEvent) {
                 $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
             }
             reader.readAsDataURL(input.files[0]);
+            */
         }
     }
     onFinishWizard(){

@@ -1,8 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-//import * as Chartist from 'chartist';
-import { HttpClient } from '@angular/common/http';
-import { REST_SERVICE_ROOT } from '../../rest/rest.service';
-
 import { RestService } from '../../rest/rest.service';
 import { Router } from '@angular/router';
 

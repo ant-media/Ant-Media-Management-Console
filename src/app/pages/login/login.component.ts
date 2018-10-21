@@ -1,10 +1,7 @@
 import { Component, OnInit, ElementRef, LOCALE_ID, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { AuthService} from '../../rest/auth.service';
 import { User} from '../../rest/rest.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { REST_SERVICE_ROOT } from '../../rest/rest.service';
 
 declare var $:any;
 
@@ -29,7 +26,7 @@ export class LoginComponent implements OnInit{
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
 
-    constructor(private authService: AuthService, private element : ElementRef, private auth: AuthService, private http:HttpClient, private router: Router) {
+    constructor(private element : ElementRef, private auth: AuthService, private router: Router) {
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
         this.showYouCanLogin = false;
@@ -96,7 +93,7 @@ export class LoginComponent implements OnInit{
         this.auth.login(this.email, this.password).subscribe(data =>{
          
             if (data["success"] == true) {
-                this.authService.isAuthenticated = data["success"];
+                this.auth.isAuthenticated = data["success"];
                 localStorage.setItem("authenticated", "true");
                 this.router.navigateByUrl("/dashboard");
             }
