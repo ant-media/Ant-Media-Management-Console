@@ -18,19 +18,10 @@ export class User {
     constructor(public email: string, public password: string) { }
 }
 
+let SERVER_ADDR = location.hostname;
 
-export const SERVER_ADDR = location.hostname;
 export var HTTP_SERVER_ROOT;
-
-if (location.port == "4200") {
-    HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/";
-}
-else {
-    HTTP_SERVER_ROOT = "//" + location.hostname + ":" + location.port + "/";
-}
-
-
-export const REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
+export var REST_SERVICE_ROOT;
 
 export class LiveBroadcast {
     name: string;
@@ -67,7 +58,28 @@ export class AuthInterceptor implements HttpInterceptor{
 
 @Injectable()
 export class RestService {
-    constructor(private http: HttpClient, private router: Router) {
+    constructor(private http: HttpClient, private router: Router) 
+    {
+        HTTP_SERVER_ROOT = "//" + location.hostname + ":" + location.port + "/";
+        REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
+        if (location.port == "4200") 
+        {
+            //if it is angular development
+            HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/";
+            REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
+        }
+        else if (!location.protocol.startsWith("https")) 
+        {
+            //protocol is not https, check that https is available
+            let url = "https://" + location.hostname + ":5443/";
+            this.http.head(url).subscribe(data => {
+                HTTP_SERVER_ROOT = url;
+                REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
+            },
+            error => {
+                console.log("No https avaiable");
+            });
+        } 
     }
 
     public getCPULoad(): Observable<Object> {
@@ -325,6 +337,14 @@ export class RestService {
             + "/rest/broadcast/getToken&id=" + streamId + "&expireDate="  + expireDate + "&type=play" );
     }
 
+    public getRtmpUrl(appName:string, streamId:string): string {
+       return "rtmp://" + SERVER_ADDR + "/" + appName + "/" + streamId;
+    }
+
+    public getText(Url: string): Observable<Object> {
+        return this.http.get(Url, { responseType: 'text' });
+    }
+
     public deleteIPCamera(appName: string, streamId:string): Observable<Object> {
 
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/deleteCamera?ipAddr=' + streamId, {});
@@ -488,6 +508,8 @@ export class RestService {
             return true;
         }
     }
+
+    
 
 
 }
