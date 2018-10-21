@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, AfterViewChecked, AfterContentInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { REST_SERVICE_ROOT, HTTP_SERVER_ROOT, RestService } from '../rest/rest.service';
+import { RestService } from '../rest/rest.service';
 
 
 declare var $: any;

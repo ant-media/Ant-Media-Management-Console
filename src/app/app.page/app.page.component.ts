@@ -14,7 +14,7 @@ import {
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
-import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../rest/rest.service';
+import {HTTP_SERVER_ROOT, LiveBroadcast, RestService} from '../rest/rest.service';
 import {AuthService} from '../rest/auth.service';
 import {ClipboardService} from 'ngx-clipboard';
 import {Locale} from "../locale/locale";
@@ -224,7 +224,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild(MatSort) sort: MatSort;
 
 
-    constructor(private http: HttpClient, private route: ActivatedRoute,
+    constructor(private route: ActivatedRoute,
                 private restService: RestService,
                 private clipBoardService: ClipboardService,
                 private renderer: Renderer,
@@ -875,7 +875,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     checkAndPlayLive(videoUrl: string): void {
-        this.http.get(videoUrl, { responseType: 'text' }).subscribe(data => {
+        this.restService.getText(videoUrl).subscribe(data => {
                 console.log("loaded...");
                 $("#playerLoading").hide();
                 flowplayer('#player', {
@@ -2125,7 +2125,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getRtmpUrl(streamUrl: string): string {
-        return "rtmp://" + SERVER_ADDR + "/" + this.appName + "/" + streamUrl;
+        return this.restService.getRtmpUrl(this.appName, streamUrl);
     }
 
     revokeSocialMediaAuth(endpointId: string): void {
