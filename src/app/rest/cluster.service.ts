@@ -3,26 +3,13 @@ import {Response} from '@angular/http';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {environment} from '../../environments/environment';
-import {AppSettings, SearchParam} from "../app.page/app.page.component";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
-import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {ClusterNodeInfo} from '../cluster/cluster.definitions'
+import {REST_SERVICE_ROOT} from './rest.service';
 
-
-export const SERVER_ADDR = location.hostname;
-export var HTTP_SERVER_ROOT;
-
-if (environment.production) {
-    HTTP_SERVER_ROOT = "//" + location.hostname + ":" + location.port + "/";
-}
-else {
-    HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/";
-}
-
-
-export const REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest/cluster";
 
 @Injectable()
 export class ClusterRestService {
@@ -38,21 +25,24 @@ export class ClusterRestService {
         return Observable.throw(error || 'Server error');
     }
 
+    private getRestServiceRoot():string {
+        return REST_SERVICE_ROOT + "/cluster";
+    }
 
     public getClusterNodes(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/nodes');
+        return this.http.get(this.getRestServiceRoot() + '/nodes');
     }
 
     public updateClusterNodes(node: ClusterNodeInfo): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + '/updateNode/'+ node.id, node);
+        return this.http.post(this.getRestServiceRoot() + '/updateNode/'+ node.id, node);
     }
 
     public addClusterNodes(node: ClusterNodeInfo): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + '/nodes', node);
+        return this.http.post(this.getRestServiceRoot() + '/nodes', node);
     }
 
     public deleteClusterNodes(node: ClusterNodeInfo): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/deleteNode/'+ node.id);
+        return this.http.get(this.getRestServiceRoot() + '/deleteNode/'+ node.id);
     }
 
 
