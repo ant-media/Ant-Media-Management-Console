@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
-import {HTTP_SERVER_ROOT, ClusterRestService, SERVER_ADDR} from '../rest/cluster.service';
+import {ClusterRestService} from '../rest/cluster.service';
 import {Locale} from "../locale/locale";
 import {
     MAT_DIALOG_DATA,
