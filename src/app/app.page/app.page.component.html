@@ -896,13 +896,7 @@
                                         <legend class="text-left" i18n="@@Security">Security</legend>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Stream Publishing</label>
-                                            <div class="form-group text-center" *ngIf=!isEnterpriseEdition>
-                                                <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                    This feature is enabled in
-                                                    <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
-                                                </p>
-                                            </div>
-                                            <div class="col-sm-10 text-left" *ngIf=isEnterpriseEdition>
+                                            <div class="col-sm-10 text-left">
                                                 <div class="radio col-sm-3">
                                                     <input type="radio" name="acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" [value]="false" [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore">
                                                     <label for="acceptOnlyStreamsInDataStore">
