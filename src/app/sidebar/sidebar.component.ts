@@ -60,6 +60,7 @@ export const ROUTES: RouteInfo[] = [{
 export class SidebarComponent implements AfterViewInit {
     public menuItems: any[];
     public static apps: string[];
+    public isClusterMode = false;
 
     constructor(private http: HttpClient, private restService: RestService) { }
 
@@ -97,6 +98,10 @@ export class SidebarComponent implements AfterViewInit {
                 SidebarComponent.apps.push(data['applications'][i]);
 
             }
+        });
+        
+        this.restService.isInClusterMode().subscribe(data => {
+            this.isClusterMode = data['success'];
         });
 
 

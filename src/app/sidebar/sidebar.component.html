@@ -129,7 +129,7 @@
                 </ul>
             </div>
         </li>
-        <li routerLinkActive="active">
+        <li *ngIf="isClusterMode" routerLinkActive="active">
             <a routerLink="/cluster">
                 <i class="ti-layout-grid3"></i>
                 <p i18n="@@clusterMenuItem">Cluster</p>

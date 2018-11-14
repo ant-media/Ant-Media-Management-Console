@@ -508,7 +508,9 @@ export class RestService {
         }
     }
 
-    
+    public isInClusterMode(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/isInClusterMode");
+    }
 
 
 }
