@@ -151,8 +151,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public newSourceAdding = false;
     public isEnterpriseEdition = false;
 
-    public
-    gettingDeviceParameters = false;
+    public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
 
     public camera: Camera;
@@ -1443,14 +1442,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getToken(streamId:string): void {
+        this.token = null;
 
         this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
             this.token = <Token>data;
-
-            this.tokenData = new Observable(  observer =>{
-
-                observer.next(<Token>data);
-            });
         });
 
     }
