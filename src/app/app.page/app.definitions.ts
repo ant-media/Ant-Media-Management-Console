@@ -77,6 +77,7 @@ export declare interface BroadcastInfo {
     hlsViewerCount: number;
     webRTCViewerCount : number;
     rtmpViewerCount : number;
+    mp4Enabled : number;
 }
 
 export declare interface BroadcastInfoTable {

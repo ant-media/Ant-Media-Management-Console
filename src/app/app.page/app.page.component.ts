@@ -12,7 +12,6 @@ import {
     ViewChild
 } from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HTTP_SERVER_ROOT, LiveBroadcast, RestService} from '../rest/rest.service';
 import {AuthService} from '../rest/auth.service';
@@ -29,7 +28,6 @@ import {
     VodInfo,
     VodInfoTable
 } from './app.definitions';
-
 import {DetectedObjectListDialog} from './dialog/detected.objects.list';
 import {UploadVodDialogComponent} from './dialog/upload-vod-dialog';
 import {StreamSourceEditComponent} from './dialog/stream.source.edit.component';
@@ -219,8 +217,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     @Output()
     pageChange: EventEmitter<PageEvent>;
 
-
-    // @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
 
@@ -901,7 +897,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     showDetectedObject(streamId: string): void {
         let dialogRef = this.dialog.open(DetectedObjectListDialog, {
             width: '500px',
-            height: '500px',
             data: {
                 streamId: streamId,
                 appName: this.appName
@@ -1087,12 +1082,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     playVoD(vodName: string, type: string, vodId:string, streamId:string): void {
 
-        // var container = document.getElementById("player");
-        // install flowplayer into selected container
+        var lastSlashIndex = vodName.lastIndexOf(".mp4");
+        var  VoDName = vodName.substring(0, lastSlashIndex);
 
 
         if(this.appSettings.tokenControlEnabled){
-            this.getToken(streamId);
+            if(type == "uploadedVod" ){
+
+                this.getToken(vodId);
+            }
+            else if (type == "streamVod" ) {
+                this.getToken(streamId);
+            }
+            else if (type == "userVod" ) {
+                this.getToken(VoDName);
+            }
         }
 
         setTimeout(() => {
@@ -1108,7 +1112,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }else if (type == "userVod") {
                     var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
                     var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
-                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodName;
+                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams' + folderName + '/' + vodName;
                 }
 
             }else{
@@ -1119,7 +1123,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }else if (type == "userVod") {
                     var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
                     var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
-                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodName + '?token=' + this.token.tokenId;
+                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams' + folderName + '/' + vodName + '?token=' + this.token.tokenId;
                 }
             }
             if (srcFile != null) {
@@ -2101,10 +2105,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-    copyVoDEmbedCode(name: string): void {
+    copyVoDEmbedCode(name: string, type: string, vodId: string): void {
+
+        var Index = this.appSettings.vodFolder.lastIndexOf("/");
+        var folderName = this.appSettings.vodFolder.substring(Index);
 
         var lastSlashIndex = name.lastIndexOf(".mp4");
-        var VoDName = name.substring(0, lastSlashIndex);
+        var  VoDName = name.substring(0, lastSlashIndex);
+
+        if(type == "uploadedVod"){
+            VoDName = vodId ;
+        }
+        else if(type == "userVod"){
+            VoDName = folderName + "/" + VoDName ;
+        }
+
 
         let embedCode = '<iframe width="560" height="315" src="'
             + HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + VoDName
