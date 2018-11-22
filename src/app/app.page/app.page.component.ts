@@ -1084,20 +1084,23 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         var lastSlashIndex = vodName.lastIndexOf(".mp4");
         var  VoDName = vodName.substring(0, lastSlashIndex);
-
+        var tokenParam;
 
         if(this.appSettings.tokenControlEnabled){
             if(type == "uploadedVod" ){
-
-                this.getToken(vodId);
+                tokenParam = vodId;
             }
             else if (type == "streamVod" ) {
-                this.getToken(streamId);
+                tokenParam = streamId;
             }
             else if (type == "userVod" ) {
-                this.getToken(VoDName);
+                tokenParam = VoDName;
+            }
+            if (tokenParam != null ){
+                this.getToken(tokenParam);
             }
         }
+
 
         setTimeout(() => {
 
