@@ -61,12 +61,12 @@ export class RestService {
     constructor(private http: HttpClient, private router: Router) 
     {
         HTTP_SERVER_ROOT = "//" + location.hostname + ":" + location.port + "/";
-        REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
+        REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest";
         if (location.port == "4200") 
         {
             //if it is angular development
             HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/";
-            REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
+            REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest";
         }
         else if (!location.protocol.startsWith("https")) 
         {
@@ -74,7 +74,7 @@ export class RestService {
             let url = "https://" + location.hostname + ":5443/";
             this.http.head(url).subscribe(data => {
                 HTTP_SERVER_ROOT = url;
-                REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "ConsoleApp/rest";
+                REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest";
             },
             error => {
                 console.log("No https avaiable");
