@@ -1,0 +1,31 @@
+<h1 mat-dialog-title>WebRTC Client Statistics for {{streamId}}</h1>
+
+<mat-dialog-content id="webrtc-stats">
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="card">
+				<div class="card-header">
+					<h4 class="card-title">Bitrate vs Clients</h4>
+				</div>
+				<div class="card-content">
+					<div id="bitrateChart"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card">
+				<div class="card-header">
+					<h4 class="card-title">Media Send Period vs Clients</h4>
+				</div>
+				<div class="card-content">
+					<div id="mediaSendPeriodChart"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</mat-dialog-content>
+<mat-dialog-actions class="pull-right">
+<button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

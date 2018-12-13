@@ -513,5 +513,7 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/isInClusterMode");
     }
 
-
+    public getWebRTCStats(appName:string, streamId:string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getWebRTCClientStats/'+streamId);
+    }
 }
