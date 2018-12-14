@@ -377,7 +377,7 @@
                                                         HLS :  {{row.hlsViewerCount}}
                                                     </div>
                                                     <div *ngIf="row.webRTCViewerCount > 0">
-                                                        <i class="ti-eye " style="color:#199826;font-size: 1.1em"> </i>
+                                                        <i class="ti-eye " style="color:#199826;font-size: 1.1em" (click)="webrtcStats(row)"> </i>
                                                         WebRTC :  {{row.webRTCViewerCount}}
                                                     </div>
                                                     <div *ngIf="row.rtmpViewerCount > 0">
