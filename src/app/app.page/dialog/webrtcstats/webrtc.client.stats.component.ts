@@ -1,9 +1,9 @@
-import { Component, Inject } from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import * as Chartist from 'chartist';
 import * as legend from 'chartist-plugin-legend';
-import { RestService, LiveBroadcast } from '../../../rest/rest.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { WebRTCClientStat,} from '../../app.definitions';
+import {RestService} from '../../../rest/rest.service';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {WebRTCClientStat,} from '../../app.definitions';
 
 
 declare var $: any;
@@ -21,8 +21,8 @@ export class WebRTCClientStatsComponent {
     public streamId: string;
     public timerId: number;
     public stats: WebRTCClientStat[];
-    public bitrateChart: Chartist.Bar;
-    public mediaPeriodChart: Chartist.Bar;
+    public bitrateChart: any;
+    public mediaPeriodChart: any;
     
     public sss: string;
     
@@ -124,16 +124,21 @@ export class WebRTCClientStatsComponent {
         var videoFrameSendPeriods = [];
         var audioFrameSendPeriods = [];
         var labels = [];
-        this.stats = [];    
-        
+        this.stats = [];
+        var label:number;
+        label = 1;
+
         for (var i in data) {
-            
+
+
             this.stats.push(data[i]);
             measuredBitrates.push(data[i].measuredBitrate);
             sendBitrates.push(data[i].sendBitrate);
             videoFrameSendPeriods.push(data[i].videoFrameSendPeriod);
             audioFrameSendPeriods.push(data[i].audioFrameSendPeriod);
-            labels.push(i);
+
+            labels.push(label);
+            label++
         }
         
         var bitrateChartData = {
