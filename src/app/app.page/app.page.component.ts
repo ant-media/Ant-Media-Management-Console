@@ -35,6 +35,7 @@ import {StreamSourceEditComponent} from './dialog/stream.source.edit.component';
 import {BroadcastEditComponent} from './dialog/broadcast.edit.dialog.component';
 import {CamSettingsDialogComponent} from './dialog/cam.settings.dialog.component';
 import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
+import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
 import {Observable} from "rxjs";
 import "rxjs/add/observable/of";
 
@@ -2385,5 +2386,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 console.log('!!!Error!!! ' + error);
             },
         );
+    }
+    
+    webrtcStats(broadcast : LiveBroadcast) {
+        this.dialog.open(WebRTCClientStatsComponent, {
+            width: '90%',
+            data: {
+                appName: this.appName,
+                streamName: broadcast.name,
+                streamId: broadcast.streamId,
+            },
+            disableClose: true,
+        });
     }
 }

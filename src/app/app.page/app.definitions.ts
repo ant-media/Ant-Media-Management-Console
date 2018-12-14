@@ -137,3 +137,12 @@ export declare interface VodInfoTable {
 export declare interface CameraInfoTable {
     list: CamStreamInfo[];
 }
+
+export declare interface WebRTCClientStat {
+    measuredBitrate: number;
+    sendBitrate: number;
+    videoFrameSendPeriod: number;
+    audioFrameSendPeriod: number;
+    videoThreadCheckInterval: number;
+    audioThreadCheckInterval: number;
+}
