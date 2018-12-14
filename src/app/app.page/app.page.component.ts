@@ -88,7 +88,8 @@ export class AppSettings {
                 public acceptOnlyStreamsInDataStore: boolean,
                 public vodFolder: string,
                 public objectDetectionEnabled: boolean,
-                public tokenControlEnabled:boolean
+                public tokenControlEnabled:boolean,
+                public webRTCEnabled:boolean
     ) {
 
     }
@@ -249,6 +250,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit() {
 
+        this.getSettings();
+
         //  Init Bootstrap Select Picker
         if ($(".selectpicker").length != 0) {
             $(".selectpicker").selectpicker({
@@ -271,7 +274,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 close: 'fa fa-remove'
             }
         });
-
 
         var self = this;
 
@@ -296,7 +298,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.gridTableData = {
             list: []
         };
-
 
         this.vodTableData = {
             dataRows: []
@@ -323,17 +324,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newLiveStreamActive = false;
         this.camera = new Camera("", "", "", "", "", "");
 
+        this.getInitParams();
 
 
         this.timerId = window.setInterval(() => {
             if(this.authService.isAuthenticated) {
-                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                 if(this.appName != "undefined"){
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getVoDStreams();
                 }
-            }
-            else{
-                clearInterval(this.timerId);
+                else{
+                    console.log("getting initParams")
+                    this.getInitParams();
+                    clearInterval(this.timerId);
+                }
+
             }
 
         }, 5000);
@@ -389,14 +394,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-
     ngAfterViewInit() {
 
         this.timerId = null;
-
-
         this.cdr.detectChanges();
 
+    }
+
+    getInitParams (){
         this.sub = this.route.params.subscribe(params => {
             this.appName = params['appname']; // (+) converts string 'id' to a number
 
@@ -408,28 +413,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     for (var i in data['applications']) {
                         //console.log(data['applications'][i]);
                         this.router.navigateByUrl("/applications/" + data['applications'][i]);
-
                         break;
                     }
                 });
-
-
                 return;
             }
 
-
             this.getSettings();
-
 
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
             });
 
-
             this.getAppLiveStreamsNumber();
             this.getVoDStreams();
             this.getAppLiveStreams(0, this.pageSize);
-
         });
 
     }
@@ -763,7 +761,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.restService.getTotalVodNumber(this.appName).subscribe(data => {
             this.vodLength = data;
-            console.log("vod table length: " + this.vodLength);
         });
 
 
@@ -918,48 +915,87 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
         var iframeSource;
+        var width = "800px"
 
         var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
 
-        this.openLivePlayer(htmlCode, streamId);
-
         iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true";
+
+        if(this.appSettings.webRTCEnabled){
+
+            console.log("****** webRTC Enabled")
+
+            iframeSource = HTTP_SERVER_ROOT + this.appName + "/play_embed.html?name=" + streamId;
+            htmlCode = '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:400px"  ></iframe>';
+            width = "640px"
+        }
+        this.openLivePlayer(htmlCode, streamId, width);
+
 
         var $iframe = $('#' + streamId);
 
         $iframe.prop('src', iframeSource);
 
+
+
+        /*
+
+                setTimeout(() => {
+
+
+                    var cont = $iframe.contents().find("remoteVideo").height();
+
+                    var height = $( "remoteVideo" ).height()
+
+                    console.log("******video hight:" + height);
+                    $iframe .css('height',height  + "px");
+
+                }, 1500);
+
+
+        */
+
+
+
     }
+
+
 
     playLiveToken(streamId: string): void {
 
-        var  iframeSource;
-
+        var iframeSource;
+        var width = "800px";
         var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
 
         this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
             this.token = <Token>data;
 
-            this.openLivePlayer(htmlCode, streamId);
-
             iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&token=" + this.token.tokenId +"&autoplay=true";
+
+            if(this.appSettings.webRTCEnabled){
+
+                iframeSource = HTTP_SERVER_ROOT + this.appName + "/play_embed.html?name=" + streamId + "&token=" + this.token.tokenId;
+                htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px"></iframe>';
+                width = "640px"
+            }
+
+            this.openLivePlayer(htmlCode, streamId, width);
+
 
             var $iframe = $('#' + streamId);
 
             $iframe.prop('src', iframeSource);
         });
 
-
     }
 
-    openLivePlayer(htmlCode:string, streamId: string):void {
+    openLivePlayer(htmlCode:string, streamId: string, width: string):void {
 
         swal({
             html: htmlCode,
             showConfirmButton: false,
-            width: '800px',
-            height: '400px',
-            padding: 10,
+            width: width,
+            padding:"10px" ,
             animation: false,
             showCloseButton: true,
             onOpen: () => {

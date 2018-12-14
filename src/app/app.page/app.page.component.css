@@ -1,3 +1,14 @@
 html, body {
-    height: 100%;
+    height: auto;
+    overflow: auto
+}
+.frame {
+    display: block;
+    width: 600px;
+    height: 100vh;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0 none;
+    box-sizing: border-box;
 }
