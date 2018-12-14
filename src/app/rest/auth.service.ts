@@ -1,14 +1,13 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { CanActivate, Router } from '@angular/router';
-import { RestService, User } from './rest.service';
-
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import {CanActivate, Router} from '@angular/router';
+import {RestService, User} from './rest.service';
 
 
 @Injectable()
 export class AuthService implements CanActivate {
 
-  public isAuthenticated: boolean = true;
+  public isAuthenticated: boolean = false;
 
   constructor(private restService: RestService, private router: Router) {
     setInterval(() => {
