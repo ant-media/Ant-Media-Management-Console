@@ -335,7 +335,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getVoDStreams();
                 }
                 else{
-                    console.log("getting initParams")
                     this.getInitParams();
                     clearInterval(this.timerId);
                 }
@@ -923,9 +922,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true";
 
         if(this.appSettings.webRTCEnabled){
-
-            console.log("****** webRTC Enabled")
-
             iframeSource = HTTP_SERVER_ROOT + this.appName + "/play_embed.html?name=" + streamId;
             htmlCode = '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:400px"  ></iframe>';
             width = "640px"
@@ -937,29 +933,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         $iframe.prop('src', iframeSource);
 
-
-
-        /*
-
-                setTimeout(() => {
-
-
-                    var cont = $iframe.contents().find("remoteVideo").height();
-
-                    var height = $( "remoteVideo" ).height()
-
-                    console.log("******video hight:" + height);
-                    $iframe .css('height',height  + "px");
-
-                }, 1500);
-
-
-        */
-
-
-
     }
-
 
 
     playLiveToken(streamId: string): void {
@@ -2387,7 +2361,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
         );
     }
-    
+
     webrtcStats(broadcast : LiveBroadcast) {
         this.dialog.open(WebRTCClientStatsComponent, {
             width: '90%',

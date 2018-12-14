@@ -760,16 +760,7 @@
                                                 <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
-                                                    <!--
 
-                                                    <p *ngIf="row.streamName != 'null' || row.streamName.length != 0" >
-                                                        {{row.streamName}}
-                                                    </p>
-
-                                                    <p *ngIf="!row.streamName || row.streamName.length == 0" >
-                                                        {{row.vodName}}
-                                                    </p>
-                                                    -->
                                                     <ng-container [ngSwitch]="row.type">
                                                         <i *ngSwitchCase="'streamVod'"> {{row.streamName}}</i>
                                                         <i *ngSwitchCase="'uploadedVod'">{{row.vodName}} </i>
@@ -777,9 +768,7 @@
                                                     </ng-container>
 
 
-
                                                 </mat-cell>
-
 
                                             </ng-container>
 
