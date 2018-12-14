@@ -32,7 +32,6 @@
     "@angular/router": "5.2.4",
     "@ngui/map": "0.20.2",
     "@ngui/ngui": "0.15.2",
-    "@types/chartist": "^0.9.43",
     "@types/googlemaps": "3.26.14",
     "angular2-notifications": "0.9.7",
     "bootstrap": "3.3.7",
