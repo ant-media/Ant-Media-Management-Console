@@ -1,8 +1,8 @@
-import { Component, OnInit, Renderer, ViewChild, ElementRef, Directive } from '@angular/core';
-import { ROUTES } from '../.././sidebar/sidebar.component';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { Locale } from 'app/locale/locale';
+import {Component, ElementRef, OnInit, Renderer, ViewChild} from '@angular/core';
+import {ROUTES} from '../.././sidebar/sidebar.component';
+import {Router} from '@angular/router';
+import {Location} from '@angular/common';
+import {Locale} from 'app/locale/locale';
 
 var misc:any ={
     navbar_menu_visible: 0,
@@ -121,6 +121,10 @@ export class NavbarComponent implements OnInit{
                 }
                 if (first_child == "cluster") {
                     return Locale.getLocaleInterface().cluster;
+                }
+
+                if (first_child == "serverSettings") {
+                    return "Server Settings";
                 }
                 /*
                 var children_from_url = titlee.split("/")[1];

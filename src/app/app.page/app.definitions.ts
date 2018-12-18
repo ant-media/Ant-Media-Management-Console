@@ -3,7 +3,7 @@ export declare interface Endpoint {
     endpointServiceId: string;
 }
 export declare interface User {
-	
+
 	/**
 	 * Email of the user
 	 */
@@ -18,12 +18,12 @@ export declare interface User {
 	 * Name of the user
 	 */
 	fullName:string;
-	
+
 	/**
 	 * URL of the picture if exists
 	 */
 	picture:string;
-	
+
 	/**
 	 * ID of the user
 	 */
@@ -35,12 +35,12 @@ export declare interface LiveComment {
 	 * id of the comment
 	 */
 	id:string;
-	
+
 	/**
 	 * Content of the comment
 	 */
 	message:string;
-	
+
 	/**
 	 * User who write this comment
 	 */
@@ -50,7 +50,7 @@ export declare interface LiveComment {
 	 * Origin of the comment
 	 */
 	origin:string;
-	
+
 	/**
 	 * Timestamp of the comment
 	 */

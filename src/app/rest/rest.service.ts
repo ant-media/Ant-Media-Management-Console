@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
-import {AppSettings, SearchParam} from "../app.page/app.page.component";
+import {AppSettings, SearchParam, ServerSettings} from "../app.page/app.page.component";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
@@ -58,17 +58,17 @@ export class AuthInterceptor implements HttpInterceptor{
 
 @Injectable()
 export class RestService {
-    constructor(private http: HttpClient, private router: Router) 
+    constructor(private http: HttpClient, private router: Router)
     {
         HTTP_SERVER_ROOT = "//" + location.hostname + ":" + location.port + "/";
         REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest";
-        if (location.port == "4200") 
+        if (location.port == "4200")
         {
             //if it is angular development
             HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/";
             REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest";
         }
-        else if (!location.protocol.startsWith("https")) 
+        else if (!location.protocol.startsWith("https"))
         {
             //protocol is not https, check that https is available
             let url = "https://" + location.hostname + ":5443/";
@@ -79,7 +79,7 @@ export class RestService {
             error => {
                 console.log("No https avaiable");
             });
-        } 
+        }
     }
 
     public getCPULoad(): Observable<Object> {
@@ -214,6 +214,9 @@ export class RestService {
     public getSettings(appName: string): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/getSettings/" + appName);
     }
+    public getServerSettings(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/getServerSettings/" );
+    }
 
     public checkDeviceAuthStatus(appName: string, serviceName:string): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/checkDeviceAuthStatus/" + serviceName, {});
@@ -223,8 +226,15 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + '/changeSettings/' + appName, appSettings);
     }
 
+    public changeServerSettings(serverSettings: ServerSettings ): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + '/changeServerSettings', serverSettings);
+    }
     public getDeviceAuthParameters(appName: string, networkName: string): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/broadcast/getDeviceAuthParameters/" + networkName, {});
+    }
+
+    public getLicenseStatus(): Observable<Object> {
+        return  this.http.get(REST_SERVICE_ROOT + '/getLicenceStatus');
     }
 
     public getLiveClientsSize(): Observable<Object> {
@@ -296,7 +306,7 @@ export class RestService {
      * This method gets comments from social endpoint like facebook, youtube, ...
      */
     public getLiveComments(appName: string, streamId: string, serviceId:string, offset:number, batch:number): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName 
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
                 + "/rest/broadcast/getLiveComments/" + serviceId + "/"  + streamId + "/" + offset + "/" + batch );
     }
 
@@ -304,7 +314,7 @@ export class RestService {
      * This methods get live comments count from social endpoint like facebook, youtube,...
      */
     public getLiveCommentsCount(appName: string, streamId: string, serviceId:string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName 
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
                 + "/rest/broadcast/getLiveCommentsCount/" + serviceId + "/"  + streamId );
     }
 
@@ -312,7 +322,7 @@ export class RestService {
      * This methods get interactions(like, dislike, etc.) from social endpoint like facebook, youtube,...
      */
     public getInteraction(appName: string, streamId: string, serviceId:string) : Observable<Object>{
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName 
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
                     + "/rest/broadcast/getInteraction/" + serviceId + "/"  + streamId );
     }
 
@@ -320,7 +330,7 @@ export class RestService {
      * This methods get live views count from social endpoint like facebook, youtube,...
      */
     public getLiveViewsCount(appName: string, streamId: string, serviceId:string) : Observable<Object>{
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName 
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
                     + "/rest/broadcast/getLiveViewsCount/" + serviceId + "/"  + streamId );
     }
 

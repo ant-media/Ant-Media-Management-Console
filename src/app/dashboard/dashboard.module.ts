@@ -1,12 +1,13 @@
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {NgModule} from '@angular/core';
+import {RouterModule} from '@angular/router';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 
-import { OverviewComponent } from './overview/overview.component';
-import { DashboardRoutes } from './dashboard.routing';
-import { HttpClientModule } from '@angular/common/http';
-
+import {OverviewComponent} from './overview/overview.component';
+import {DashboardRoutes} from './dashboard.routing';
+import {HttpClientModule} from '@angular/common/http';
+import {DataService} from "../rest/data.service";
+import {ServerSettingsComponent} from "../server.settings/server.settings.component";
 
 
 @NgModule({
@@ -17,6 +18,8 @@ import { HttpClientModule } from '@angular/common/http';
         HttpClientModule,
     ],
     declarations: [OverviewComponent],
+    providers: [DataService,ServerSettingsComponent],
+
 })
 
 export class DashboardModule {}

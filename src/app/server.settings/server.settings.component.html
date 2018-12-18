@@ -1,0 +1,108 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-sm-12">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="nav-tabs-navigation">
+                            <div class="nav-tabs-wrapper">
+                                <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                                    <li class="active">
+                                        <a href="#licence" data-toggle="tab" i18n="licence key settings licence | @@LicenceTabHeader">License </a>
+                                    </li>
+                                    <li>
+                                        <a href="#log" data-toggle="tab" i18n="log settings |log@@LogTabHeader">Log</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="my-tab-content" class="tab-content text-center">
+
+                            <div class="tab-pane active" id="licence" *ngIf="settingsReceived">
+
+                                <form method="post" #f="ngForm" (ngSubmit)="changeServerSettings(f.valid)" class="form-horizontal">
+
+
+
+                                    <fieldset>
+                                        <legend class="text-left">License Management</legend>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">License Status</label>
+
+                                            <div class="col-sm-10" *ngIf="licenseStatusReceiving">
+                                                <p class="form-control-static text-left"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw"  aria-hidden="true"></i> Please wait..</p>
+                                            </div>
+
+                                            <div class="col-sm-10" *ngIf="!licenseStatusReceiving && licenseStatus ==='invalid' ">
+                                                <p class="form-control-static text-left">  <i class="fa fa-circle text-muted" style="color: #98000d"></i> {{licenseStatus}}</p>
+                                            </div>
+                                            <div class="col-sm-10" *ngIf="!licenseStatusReceiving && licenseStatus ==='Getting license status' ">
+                                                <p class="form-control-static text-left">  <i class="fa fa-spinner fa-pulse fa-1x fa-fw"  aria-hidden="true"></i> {{licenseStatus}}..</p>
+                                            </div>
+
+                                            <div class="col-sm-10" *ngIf="!licenseStatusReceiving && licenseStatus ==='valid'">
+                                                <p class="form-control-static text-left">  <i class="ti-check " style="color:#199826;font-size: 1.1em"></i>
+                                                   Owner : {{currentLicence.owner}} | Until :  {{currentLicence.endDate}} {{_messageReceived}}</p>
+                                            </div>
+
+
+
+                                        </div>
+
+                                    </fieldset>
+
+                                    <fieldset>
+                                        <div class="form-group" >
+                                            <label class="col-sm-2 control-label">Submit License Key</label>
+                                            <div class="col-sm-10 text-left" >
+
+                                                <input type="text" required minlength="1" name="licenseKey"
+                                                       placeholder="Write your license key"
+                                                       class="form-control"
+                                                       [(ngModel)]="serverSettings.licenceKey"
+                                                       #licenseKey="ngModel">
+                                                <small [hidden]="licenseKey.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
+                                                    License key should be at least 4 characters.
+                                                </small>
+
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset>
+                                        <div class="form-group text-center">
+                                            <button type="submit" class="btn btn-fill btn-info" i18n="@@saveForm">Save</button>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+
+
+
+                            <div class="tab-pane container-fluid" id="log">
+
+                                log settings
+
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+</div>
