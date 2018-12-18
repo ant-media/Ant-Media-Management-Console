@@ -250,8 +250,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit() {
-
-        this.getSettings();
+        this.timerId = null;
 
         //  Init Bootstrap Select Picker
         if ($(".selectpicker").length != 0) {
@@ -328,17 +327,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.getInitParams();
 
 
+        //this timer gets the related information according to active application
+        //so that it checks appname whether it is undefined
         this.timerId = window.setInterval(() => {
             if(this.authService.isAuthenticated) {
                 if(this.appName != "undefined"){
+
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getVoDStreams();
+                    this.getAppLiveStreamsNumber();
                 }
-                else{
-                    this.getInitParams();
-                    clearInterval(this.timerId);
-                }
-
             }
 
         }, 5000);
@@ -395,17 +393,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngAfterViewInit() {
-
-        this.timerId = null;
         this.cdr.detectChanges();
 
     }
 
     getInitParams (){
         this.sub = this.route.params.subscribe(params => {
+            //this method is called whenever app changes
+
             this.appName = params['appname']; // (+) converts string 'id' to a number
 
             if (typeof this.appName == "undefined") {
+
                 this.restService.getApplications().subscribe(data => {
 
                     //second element is the Applications. It is not safe to make static binding.
@@ -774,8 +773,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     clearTimer() {
-
         if (this.timerId) {
+            console.log("clearing interval: " + this.timerId);
             clearInterval(this.timerId);
         }
 
@@ -783,10 +782,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnDestroy() {
         this.sub.unsubscribe();
-        if (this.timerId) {
-            clearInterval(this.timerId);
-        }
-
+        this.clearTimer();
     }
 
     getVoD(): void {
