@@ -90,7 +90,8 @@ export class AppSettings {
                 public vodFolder: string,
                 public objectDetectionEnabled: boolean,
                 public tokenControlEnabled:boolean,
-                public webRTCEnabled:boolean
+                public webRTCEnabled:boolean,
+                public webRTCFrameRate:number
     ) {
 
     }
