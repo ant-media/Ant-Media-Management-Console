@@ -7,7 +7,14 @@ import {RestService, User} from './rest.service';
 @Injectable()
 export class AuthService implements CanActivate {
 
-  public isAuthenticated: boolean = false;
+  /**
+   * isAuthenticated is called in every 5 seconds to check if it's authenticated.
+   * If it's unauthenticated, it natigates to login
+   * It's true by default. Here is the explanation.
+   * When page is refreshed, authenticated user is navigating to login
+   * because it's not updated yet. 
+   */
+  public isAuthenticated: boolean = true;
 
   constructor(private restService: RestService, private router: Router) {
     setInterval(() => {
@@ -47,8 +54,9 @@ export class AuthService implements CanActivate {
       this.restService.isAuthenticated().subscribe(data => {
 
         this.isAuthenticated = data["success"];
-        console.log("authenticated --> " + data["success"]);
+        
         if (!this.isAuthenticated) {
+          console.debug("Not authenticated navigating to login ");
           this.router.navigateByUrl('/pages/login');
         }
         if(this.router.url=="/pages/login"){
@@ -66,9 +74,8 @@ export class AuthService implements CanActivate {
   }
 
   canActivate(): boolean {
-    /*
-    
-    */
+    console.debug("AuthService: is authenticated: " + this.isAuthenticated
+                  + " local storage: " + localStorage.getItem('authenticated'));
 
     if (localStorage.getItem('authenticated') && this.isAuthenticated) {
 
@@ -90,6 +97,7 @@ export class AuthService implements CanActivate {
       return true;
     }
     else {
+      console.debug("AuthService navigating login")
       this.router.navigateByUrl('/pages/login');
       this.isAuthenticated = false;
       return false;
