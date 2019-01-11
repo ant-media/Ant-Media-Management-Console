@@ -6,6 +6,7 @@ import {RestService} from "../rest/rest.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {DataService} from "../rest/data.service";
+
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
@@ -15,8 +16,8 @@ declare var swal: any;
 
 export class Licence {
     licenceId: string;
-    startDate: string;
-    endDate: string;
+    startDate: number;
+    endDate: number;
     type: string;
     licenceCount: string;
     owner: string;}
@@ -71,16 +72,6 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
     ngAfterViewInit() {
 
-        if (this.authService.isAuthenticated) {
-
-
-                this.timerId = window.setInterval(() => {
-
-                    this.getLicenseStatus()
-
-                }, 6000);
-
-        }
     }
 
     ngOnDestroy() {
@@ -92,8 +83,9 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
     public getLicenseStatus(){
 
-        this.licenseStatusReceiving = false;
-        this.restService.getLicenseStatus( ).subscribe(data => {
+        this.licenseStatusReceiving = true;
+        this.restService.getLicenseStatus(this.serverSettings.licenceKey ).subscribe(data => {
+            this.licenseStatusReceiving = false;
             if (data != null) {
                 this.licenseStatus = "valid";
                 this.currentLicence= <Licence>data;
@@ -105,7 +97,8 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
                 this.licenseStatus = "invalid";
                 console.log("invalid license")
 
-                if (this.displayWarning) {
+
+                if (this.authService.licenceWarningDisplay) {
 
                     swal({
                         title: "Invalid License",
@@ -127,7 +120,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
             }
 
-            this.displayWarning = false;
+            this.authService.licenceWarningDisplay = false;
         });
 
         return this.currentLicence;
@@ -139,7 +132,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
         if (!isValid) {
             return;
         }
-        this.licenseStatusReceiving = true;
+        // this.licenseStatusReceiving = true;
         this.restService.changeServerSettings( this.serverSettings).subscribe(data => {
             if (data["success"] == true) {
                 $.notify({
@@ -153,6 +146,8 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
                         align: 'right'
                     }
                 });
+
+                this.authService.serverSettings = this.serverSettings;
             }
             else {
                 $.notify({
@@ -168,13 +163,10 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
                 });
 
             }
-        });
-
-        setTimeout(()=>{
-
+            this.authService.licenceWarningDisplay = true;
             this.getLicenseStatus();
 
-        },9000)
+        });
 
 
     }
@@ -184,6 +176,8 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
             this.serverSettings = <ServerSettings>data;
 
             console.log(data);
+
+            this.getLicenseStatus()
 
         });
         this.settingsReceived = true;

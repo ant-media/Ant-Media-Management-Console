@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
-import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {DatePipe, HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -47,6 +47,7 @@ import {DataService} from "./rest/data.service";
         ClusterRestService,
         Locale,
         DataService,
+        DatePipe,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         //{provide: RequestOptions, useClass: CustomRequestOptions},
         {

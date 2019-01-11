@@ -3,11 +3,15 @@ import {RestService} from '../../rest/rest.service';
 import {Router} from '@angular/router';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import {Licence, ServerSettingsComponent} from "../../server.settings/server.settings.component";
+import {Licence} from "../../server.settings/server.settings.component";
+import {AuthService} from "../../rest/auth.service";
+import {ServerSettings} from "../../app.page/app.page.component";
 
 
 declare var $: any;
 declare var Chartist: any;
+declare var swal: any;
+
 
 declare interface AppInfo {
     name: string;
@@ -46,10 +50,11 @@ export class OverviewComponent implements OnInit {
     public units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     public timerId:any;
     public licence : Licence;
+    public serverSettings : ServerSettings;
 
 
 
-    constructor(/*private http: HttpClient,*/ private restService:RestService, private router:Router, private dataService: ServerSettingsComponent) {
+    constructor(/*private http: HttpClient,*/private auth: AuthService, private restService:RestService, private router:Router, private authService: AuthService) {
 
 
     }
@@ -85,17 +90,6 @@ export class OverviewComponent implements OnInit {
     }
     ngAfterViewInit() {
 
-
-        this.licence =  this.dataService.getLicenseStatus();
-
-        if(this.licence) {
-
-            console.log(this.licence.owner);
-        }else{
-
-            console.log ("invalid license");
-        }
-
         this.initCirclePercentage();
         this.updateCPULoad();
         this.getLiveClientsSize();
@@ -111,6 +105,10 @@ export class OverviewComponent implements OnInit {
             this.getJVMMemoryInfo();
             this.getApplicationsInfo();
         }, 5000);
+
+        this.auth.initLicenseCheck();
+
+
     }
 
     ngOnDestroy() {

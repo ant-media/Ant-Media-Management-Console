@@ -120,7 +120,7 @@ export class Token {
     public expireDate: number;
     public type: string;
 }
-
+ 
 @Component({
     selector: 'manage-app-cmp',
     moduleId: module.id,
@@ -1411,6 +1411,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             for (var i in data) {
                 options[data[i]["id"]] = data[i]["name"];
             }
+
             this.userFBPagesLoading = false;
             this.showChannelChooserDialog(options, endpointId, type);
 
