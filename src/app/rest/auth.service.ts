@@ -1,4 +1,4 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {CanActivate, Router} from '@angular/router';
 import {RestService, User} from './rest.service';
@@ -13,9 +13,16 @@ declare var swal: any;
 
 
 @Injectable()
-export class AuthService implements CanActivate, OnInit {
+export class AuthService implements CanActivate {
 
-    public isAuthenticated: boolean = false;
+  /**
+   * isAuthenticated is called in every 5 seconds to check if it's authenticated.
+   * If it's unauthenticated, it natigates to login
+   * It's true by default. Here is the explanation.
+   * When page is refreshed, authenticated user is navigating to login
+   * because it's not updated yet.
+   */
+  public isAuthenticated: boolean = true;
 
     public serverSettings: ServerSettings;
 
@@ -37,12 +44,7 @@ export class AuthService implements CanActivate, OnInit {
 
         }, 5000, );
 
-    }
-
-    ngOnInit() {
-        console.log('ngOnInit fired');
-    }
-
+  }
 
     test(): string {
         console.log("constructor in auth service");
@@ -72,50 +74,83 @@ export class AuthService implements CanActivate, OnInit {
 
     }
 
-    login(email: string, password: string): Observable<Object> {
+  login(email: string, password: string): Observable<Object> {
 
-        let user = new User(email, password);
+    let user = new User(email, password);
 
-        return this.restService.authenticateUser(user);
+    return this.restService.authenticateUser(user);
+  }
+
+  changeUserPassword(email: string, password: string, newPassword: string): Observable<Object> {
+    let user = new User(email, password);
+    user.newPassword = newPassword;
+    return this.restService.changePassword(user);
+  }
+
+  isFirstLogin(): Observable<Object> {
+    return this.restService.isFirstLogin();
+  }
+
+  createFirstAccount(user: User): Observable<Object> {
+    return this.restService.createFirstAccount(user);
+  }
+
+  checkServerIsAuthenticated(): void {
+
+    if (localStorage.getItem('authenticated')) {
+      this.restService.isAuthenticated().subscribe(data => {
+
+        this.isAuthenticated = data["success"];
+
+        if (!this.isAuthenticated) {
+          console.debug("Not authenticated navigating to login ");
+          this.router.navigateByUrl('/pages/login');
+        }
+        if(this.router.url=="/pages/login"){
+                  this.router.navigateByUrl('/dashboard/overview');
+        }
+      },
+        error => {
+          this.isAuthenticated = false;
+          this.router.navigateByUrl('/pages/login');
+        });
     }
-
-    changeUserPassword(email: string, password: string, newPassword: string): Observable<Object> {
-        let user = new User(email, password);
-        user.newPassword = newPassword;
-        return this.restService.changePassword(user);
+    else{
+        this.isAuthenticated = false;
     }
+  }
 
-    isFirstLogin(): Observable<Object> {
-        return this.restService.isFirstLogin();
-    }
+  canActivate(): boolean {
+    console.debug("AuthService: is authenticated: " + this.isAuthenticated
+                  + " local storage: " + localStorage.getItem('authenticated'));
 
-    createFirstAccount(user: User): Observable<Object> {
-        return this.restService.createFirstAccount(user);
-    }
+    if (localStorage.getItem('authenticated') && this.isAuthenticated) {
 
-    checkServerIsAuthenticated(): void {
+        this.restService.isAuthenticated().subscribe(data => {
 
-        if (localStorage.getItem('authenticated')) {
-            this.restService.isAuthenticated().subscribe(data => {
+                this.isAuthenticated = data["success"];
 
-                    this.isAuthenticated = data["success"];
-                    console.log("authenticated --> " + data["success"]);
-                    if (!this.isAuthenticated) {
-                        this.router.navigateByUrl('/pages/login');
-                    }
-                    if(this.router.url=="/pages/login"){
-                        this.router.navigateByUrl('/dashboard/overview');
-                    }
-                },
-                error => {
-                    this.isAuthenticated = false;
+                if (!this.isAuthenticated) {
                     this.router.navigateByUrl('/pages/login');
-                });
-        }
-        else{
-            this.isAuthenticated = false;
-        }
+                }
+                if(this.router.url=="/pages/login"){
+                    this.router.navigateByUrl('/dashboard/overview');
+                }
+            },
+            error => {
+                this.isAuthenticated = false;
+                this.router.navigateByUrl('/pages/login');
+            });
+      return true;
     }
+    else {
+      console.debug("AuthService navigating login")
+      this.router.navigateByUrl('/pages/login');
+      this.isAuthenticated = false;
+      return false;
+    }
+
+  }
 
     getServerSettings (){
 
@@ -211,36 +246,5 @@ export class AuthService implements CanActivate, OnInit {
         return Math.round((secondDate-firstDate)/(1000*60*60*24));
     }
 
-    canActivate(): boolean {
-        /*
-
-        */
-
-        if (localStorage.getItem('authenticated') && this.isAuthenticated) {
-
-            this.restService.isAuthenticated().subscribe(data => {
-
-                    this.isAuthenticated = data["success"];
-
-                    if (!this.isAuthenticated) {
-                        this.router.navigateByUrl('/pages/login');
-                    }
-                    if(this.router.url=="/pages/login"){
-                        this.router.navigateByUrl('/dashboard/overview');
-                    }
-                },
-                error => {
-                    this.isAuthenticated = false;
-                    this.router.navigateByUrl('/pages/login');
-                });
-            return true;
-        }
-        else {
-            this.router.navigateByUrl('/pages/login');
-            this.isAuthenticated = false;
-            return false;
-        }
-
-    }
 
 }
