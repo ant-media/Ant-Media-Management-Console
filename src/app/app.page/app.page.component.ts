@@ -12,14 +12,14 @@ import {
     ViewChild
 } from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
-import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../rest/rest.service';
+import {HTTP_SERVER_ROOT, LiveBroadcast, RestService} from '../rest/rest.service';
 import {AuthService} from '../rest/auth.service';
 import {ClipboardService} from 'ngx-clipboard';
 import {Locale} from "../locale/locale";
 import {MatDialog, MatPaginatorIntl, MatSort, MatTableDataSource, PageEvent} from '@angular/material';
 import "rxjs/add/operator/toPromise";
+
 import {
     BroadcastInfo,
     BroadcastInfoTable,
@@ -29,13 +29,15 @@ import {
     VodInfo,
     VodInfoTable
 } from './app.definitions';
-
 import {DetectedObjectListDialog} from './dialog/detected.objects.list';
 import {UploadVodDialogComponent} from './dialog/upload-vod-dialog';
 import {StreamSourceEditComponent} from './dialog/stream.source.edit.component';
 import {BroadcastEditComponent} from './dialog/broadcast.edit.dialog.component';
 import {CamSettingsDialogComponent} from './dialog/cam.settings.dialog.component';
 import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
+import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
+import {Observable} from "rxjs";
+import "rxjs/add/observable/of";
 
 declare var $: any;
 declare var Chartist: any;
@@ -87,7 +89,9 @@ export class AppSettings {
                 public acceptOnlyStreamsInDataStore: boolean,
                 public vodFolder: string,
                 public objectDetectionEnabled: boolean,
-                public tokenControlEnabled:boolean
+                public tokenControlEnabled:boolean,
+                public webRTCEnabled:boolean,
+                public webRTCFrameRate:number
     ) {
 
     }
@@ -212,6 +216,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     public importingLiveStreams = false;
     public importingVoDStreams = false;
+    private tokenData: Observable<Token>;
     // MatPaginator Output
 
     @Input() pageEvent: PageEvent;
@@ -219,12 +224,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     @Output()
     pageChange: EventEmitter<PageEvent>;
 
-
-    // @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
 
-    constructor(private http: HttpClient, private route: ActivatedRoute,
+    constructor(private route: ActivatedRoute,
                 private restService: RestService,
                 private clipBoardService: ClipboardService,
                 private renderer: Renderer,
@@ -248,6 +251,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit() {
+        this.timerId = null;
 
         //  Init Bootstrap Select Picker
         if ($(".selectpicker").length != 0) {
@@ -272,7 +276,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
 
-
         var self = this;
 
         this.zone.run(() => {
@@ -296,7 +299,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.gridTableData = {
             list: []
         };
-
 
         this.vodTableData = {
             dataRows: []
@@ -323,17 +325,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newLiveStreamActive = false;
         this.camera = new Camera("", "", "", "", "", "");
 
+        this.getInitParams();
 
 
+        //this timer gets the related information according to active application
+        //so that it checks appname whether it is undefined
         this.timerId = window.setInterval(() => {
             if(this.authService.isAuthenticated) {
-                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                 if(this.appName != "undefined"){
+
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getVoDStreams();
+                    this.getAppLiveStreamsNumber();
                 }
-            }
-            else{
-                clearInterval(this.timerId);
             }
 
         }, 5000);
@@ -389,18 +393,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-
     ngAfterViewInit() {
-
-        this.timerId = null;
-
-
         this.cdr.detectChanges();
 
+    }
+
+    getInitParams (){
         this.sub = this.route.params.subscribe(params => {
+            //this method is called whenever app changes
+
             this.appName = params['appname']; // (+) converts string 'id' to a number
 
             if (typeof this.appName == "undefined") {
+
                 this.restService.getApplications().subscribe(data => {
 
                     //second element is the Applications. It is not safe to make static binding.
@@ -408,28 +413,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     for (var i in data['applications']) {
                         //console.log(data['applications'][i]);
                         this.router.navigateByUrl("/applications/" + data['applications'][i]);
-
                         break;
                     }
                 });
-
-
                 return;
             }
 
-
             this.getSettings();
-
 
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
             });
 
-
             this.getAppLiveStreamsNumber();
             this.getVoDStreams();
             this.getAppLiveStreams(0, this.pageSize);
-
         });
 
     }
@@ -763,7 +761,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.restService.getTotalVodNumber(this.appName).subscribe(data => {
             this.vodLength = data;
-            console.log("vod table length: " + this.vodLength);
         });
 
 
@@ -777,8 +774,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     clearTimer() {
-
         if (this.timerId) {
+            console.log("clearing interval: " + this.timerId);
             clearInterval(this.timerId);
         }
 
@@ -786,10 +783,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnDestroy() {
         this.sub.unsubscribe();
-        if (this.timerId) {
-            clearInterval(this.timerId);
-        }
-
+        this.clearTimer();
     }
 
     getVoD(): void {
@@ -875,7 +869,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     checkAndPlayLive(videoUrl: string): void {
-        this.http.get(videoUrl, { responseType: 'text' }).subscribe(data => {
+        this.restService.getText(videoUrl).subscribe(data => {
                 console.log("loaded...");
                 $("#playerLoading").hide();
                 flowplayer('#player', {
@@ -901,7 +895,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     showDetectedObject(streamId: string): void {
         let dialogRef = this.dialog.open(DetectedObjectListDialog, {
             width: '500px',
-            height: '500px',
             data: {
                 streamId: streamId,
                 appName: this.appName
@@ -914,74 +907,67 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     playLive(streamId: string): void {
 
-
-
-        /*
-               if(this.appSettings.tokenControlEnabled){
-                   this.getToken(streamId);
-               }
-
-               if(this.isEnterpriseEdition){
-                   streamId = streamId + "_adaptive";
-               }
-
-               setTimeout(() => {
-
-
-                              var srcFile, type = null;
-                              if (this.appSettings.tokenControlEnabled) {
-                                  srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamId + '.m3u8?token=' + this.token.tokenId  ;
-                              }else {
-                                  srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + streamId + '.m3u8';
-                              }
-                              console.log ("srcUrl :" + srcFile);
-                              if (srcFile != null) {
-                                  swal({
-                                      html: '<div id="player"></div>',
-                                      showConfirmButton: false,
-                                      width: '800px',
-                                      animation: false,
-                                      onOpen: function () {
-
-                                          flowplayer('#player', {
-                                              autoplay: true,
-                                              clip: {
-                                                  sources: [{
-                                                      type: 'application/x-mpegurl',
-                                                      src: srcFile
-                                                  }
-                                                  ]
-                                              }
-                                          });
-                                      },
-                                      onClose: function () {
-                                          flowplayer("#player").shutdown();
-                                      }
-                                  });
-                              }
-                              else {
-                                  console.error("Undefined type");
-                              }
-                          }, 800);
-
-                   */
-
-        var id, name, srcFile, iframeSource, token;
+        if(this.appSettings.tokenControlEnabled){
+            this.playLiveToken(streamId);
+            return;
+        }
+        var iframeSource;
+        var width = "800px"
 
         var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
-        if(this.appSettings.tokenControlEnabled){
-            this.getToken(streamId);
+
+        iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true";
+
+        if(this.appSettings.webRTCEnabled){
+            iframeSource = HTTP_SERVER_ROOT + this.appName + "/play_embed.html?name=" + streamId;
+            htmlCode = '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:400px"  ></iframe>';
+            width = "640px"
         }
+        this.openLivePlayer(htmlCode, streamId, width);
 
-        console.log(htmlCode);
 
+        var $iframe = $('#' + streamId);
+
+        $iframe.prop('src', iframeSource);
+
+    }
+
+
+    playLiveToken(streamId: string): void {
+
+        var iframeSource;
+        var width = "800px";
+        var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
+
+        this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
+            this.token = <Token>data;
+
+            iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&token=" + this.token.tokenId +"&autoplay=true";
+
+            if(this.appSettings.webRTCEnabled){
+
+                iframeSource = HTTP_SERVER_ROOT + this.appName + "/play_embed.html?name=" + streamId + "&token=" + this.token.tokenId;
+                htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px"></iframe>';
+                width = "640px"
+            }
+
+            this.openLivePlayer(htmlCode, streamId, width);
+
+
+            var $iframe = $('#' + streamId);
+
+            $iframe.prop('src', iframeSource);
+        });
+
+    }
+
+    openLivePlayer(htmlCode:string, streamId: string, width: string):void {
 
         swal({
             html: htmlCode,
             showConfirmButton: false,
-            width: '800px',
-            height: '400px',
-            padding: 10,
+            width: width,
+            padding:"10px" ,
             animation: false,
             showCloseButton: true,
             onOpen: () => {
@@ -997,28 +983,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }).then(function () { }, function () { });
 
 
-        setTimeout(() => {
-
-            if(this.appSettings.tokenControlEnabled){
-                iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&token=" + this.token.tokenId +"&autoplay=true";
-            }
-            else{
-
-                iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true";
-
-            }
-
-            console.log("iframe source : " + iframeSource);
-            var $iframe = $('#' + streamId);
-
-            $iframe.prop('src', iframeSource);
-
-
-        }, 1000);
-
-
 
     }
+
 
 
     openGridPlayers(index: number, size: number): void {
@@ -1087,72 +1054,97 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     playVoD(vodName: string, type: string, vodId:string, streamId:string): void {
 
-        // var container = document.getElementById("player");
-        // install flowplayer into selected container
-
-
         if(this.appSettings.tokenControlEnabled){
-            this.getToken(streamId);
+            this.playVoDToken(vodName, type, vodId, streamId);
+            return;
+
         }
 
-        setTimeout(() => {
+        var srcFile = null;
 
+        if (type == "uploadedVod") {
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4'  ;
+        }else if (type == "streamVod"){
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName;
+        }else if (type == "userVod") {
+            var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
+            var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams' + folderName + '/' + vodName;
+        }
 
-            var srcFile = null;
+        if (srcFile != null) {
 
-            if(!this.appSettings.tokenControlEnabled){
-                if (type == "uploadedVod") {
-                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4'  ;
-                }else if (type == "streamVod"){
-                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName;
-                }else if (type == "userVod") {
-                    var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
-                    var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
-                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodName;
-                }
+            this.openVoDPlayer(srcFile);
+        }
+        else {
+            console.error("Undefined type");
+        }
 
-            }else{
-                if (type == "uploadedVod") {
-                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4?token=' + this.token.tokenId  ;
-                }else if (type == "streamVod"){
-                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName + '?token=' + this.token.tokenId;
-                }else if (type == "userVod") {
-                    var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
-                    var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
-                    srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + folderName + '/' + vodName + '?token=' + this.token.tokenId;
-                }
-            }
-            if (srcFile != null) {
-                swal({
-                    html: '<div id="player"></div>',
-                    showConfirmButton: false,
-                    width: '800px',
-                    animation: false,
-                    onOpen: function () {
-
-                        flowplayer('#player', {
-                            autoplay: true,
-                            clip: {
-                                sources: [{
-                                    type: 'video/mp4',
-                                    src: srcFile
-                                }
-                                ]
-                            }
-                        });
-                    },
-                    onClose: function () {
-                        flowplayer("#player").shutdown();
-                    }
-                });
-            }
-            else {
-                console.error("Undefined type");
-            }
-        }, 500);
     }
 
-    //file with extension
+    openVoDPlayer (url:string): void {
+
+        swal({
+            html: '<div id="player"></div>',
+            showConfirmButton: false,
+            width: '800px',
+            animation: false,
+            onOpen: function () {
+
+                flowplayer('#player', {
+                    autoplay: true,
+                    clip: {
+                        sources: [{
+                            type: 'video/mp4',
+                            src: url
+                        }
+                        ]
+                    }
+                });
+            },
+            onClose: function () {
+                flowplayer("#player").shutdown();
+            }
+        });
+    }
+
+    playVoDToken(name: string, type: string, vodId:string, streamId:string):void{
+        let tokenParam;
+        let source;
+
+        let lastSlashIndex = name.lastIndexOf(".mp4");
+        let  VoDName = name.substring(0, lastSlashIndex);
+
+        if(type == "uploadedVod" ){
+            tokenParam = vodId;
+            source = vodId;
+        }
+        else if (type == "streamVod" ) {
+            tokenParam = streamId;
+            source = VoDName;
+        }
+        else if (type == "userVod" ) {
+            tokenParam = VoDName;
+            var index = this.appSettings.vodFolder.lastIndexOf("/");
+            var folderName = this.appSettings.vodFolder.substring(index);
+            source =  folderName + '/' + VoDName ;
+        }
+
+        if (tokenParam != null ){
+
+            this.restService.getToken (this.appName, tokenParam, 0).subscribe(data => {
+                this.token = <Token>data;
+                var srcFile = null;
+                srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + source + '.mp4?token=' + this.token.tokenId  ;
+
+                if(srcFile != null) {
+                    this.openVoDPlayer(srcFile);
+                }
+            });
+        }
+
+    }
+
     deleteVoD(fileName: string, vodId: number, type: string): void {
 
 
@@ -1458,12 +1450,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getToken(streamId:string): void {
-        this.token=null;
+        this.token = null;
+
         this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
             this.token = <Token>data;
         });
 
     }
+
 
 
     changeSettings(valid: boolean): void {
@@ -2113,10 +2107,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-    copyVoDEmbedCode(name: string): void {
+    copyVoDEmbedCode(name: string, type: string, vodId: string): void {
+
+        var Index = this.appSettings.vodFolder.lastIndexOf("/");
+        var folderName = this.appSettings.vodFolder.substring(Index);
 
         var lastSlashIndex = name.lastIndexOf(".mp4");
-        var VoDName = name.substring(0, lastSlashIndex);
+        var  VoDName = name.substring(0, lastSlashIndex);
+
+        if(type == "uploadedVod"){
+            VoDName = vodId ;
+        }
+        else if(type == "userVod"){
+            VoDName = folderName + "/" + VoDName ;
+        }
+
 
         let embedCode = '<iframe width="560" height="315" src="'
             + HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + VoDName
@@ -2137,7 +2142,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getRtmpUrl(streamUrl: string): string {
-        return "rtmp://" + SERVER_ADDR + "/" + this.appName + "/" + streamUrl;
+        return this.restService.getRtmpUrl(this.appName, streamUrl);
     }
 
     revokeSocialMediaAuth(endpointId: string): void {
@@ -2364,5 +2369,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 console.log('!!!Error!!! ' + error);
             },
         );
+    }
+
+    webrtcStats(broadcast : LiveBroadcast) {
+        this.dialog.open(WebRTCClientStatsComponent, {
+            width: '90%',
+            data: {
+                appName: this.appName,
+                streamName: broadcast.name,
+                streamId: broadcast.streamId,
+            },
+            disableClose: true,
+        });
     }
 }

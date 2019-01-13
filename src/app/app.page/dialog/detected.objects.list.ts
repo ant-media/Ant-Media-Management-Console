@@ -11,7 +11,7 @@ import {
     MatTableDataSource,
     PageEvent
 } from '@angular/material';
-import {HTTP_SERVER_ROOT, LiveBroadcast, RestService, SERVER_ADDR} from '../../rest/rest.service';
+import {HTTP_SERVER_ROOT, RestService} from '../../rest/rest.service';
 
 export class DetectedObject {
     objectName: String;

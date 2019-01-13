@@ -77,6 +77,7 @@ export declare interface BroadcastInfo {
     hlsViewerCount: number;
     webRTCViewerCount : number;
     rtmpViewerCount : number;
+    mp4Enabled : number;
 }
 
 export declare interface BroadcastInfoTable {
@@ -135,4 +136,13 @@ export declare interface VodInfoTable {
 
 export declare interface CameraInfoTable {
     list: CamStreamInfo[];
+}
+
+export declare interface WebRTCClientStat {
+    measuredBitrate: number;
+    sendBitrate: number;
+    videoFrameSendPeriod: number;
+    audioFrameSendPeriod: number;
+    videoThreadCheckInterval: number;
+    audioThreadCheckInterval: number;
 }
