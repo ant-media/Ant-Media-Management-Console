@@ -86,7 +86,8 @@ export class CamSettingsDialogComponent {
         }
         this.loadingSettings = true;
 
-        this.restService.editCameraInfo(this.camera, this.dialogRef.componentInstance.data.appName).subscribe(data => {
+        var socialNetworks = [];
+        this.restService.editCameraInfo(this.camera, this.dialogRef.componentInstance.data.appName, socialNetworks).subscribe(data => {
 
             if (data["success"]) {
 

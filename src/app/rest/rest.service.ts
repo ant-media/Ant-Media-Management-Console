@@ -350,9 +350,9 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/deleteCamera?ipAddr=' + streamId, {});
     }
 
-    public addStreamSource(appName: string, stream: LiveBroadcast): Observable<Object> {
+    public addStreamSource(appName: string, stream: LiveBroadcast, socialNetworks:string): Observable<Object> {
 
-        let url = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/addStreamSource';
+        let url = REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/streamSource/addStreamSource?socialNetworks="+socialNetworks;
 
 
         return this.http.post(url, stream);
@@ -413,9 +413,9 @@ export class RestService {
 
     }
 
-    editCameraInfo(camera: LiveBroadcast,appName: string):Observable<Object> {
+    editCameraInfo(camera: LiveBroadcast,appName: string, socialNetworks):Observable<Object> {
 
-        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/streamSource/updateCamInfo';
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/streamSource/updateCamInfo?socialNetworks="+socialNetworks;
         console.log('URL ' + streamInfoUrl);
 
         return this.http.post(streamInfoUrl,camera);
