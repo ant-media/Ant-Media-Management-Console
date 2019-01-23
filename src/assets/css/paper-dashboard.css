@@ -6739,6 +6739,7 @@ a.dropdown-toggle[aria-expanded="true"] .caret {
   height: 40px;
   -webkit-box-shadow: none;
   box-shadow: none;
+  width: auto;
 }
 .form-control:focus {
   border: 1px solid #e8e7e3;
@@ -8977,7 +8978,8 @@ form label.radio, form label.checkbox {
   margin-left: -20px;
   border-radius: 3px;
   opacity: .50;
-  background-color: #66615b;
+  box-sizing: border-box;
+  background-color: green;
   transition: opacity 0.2s linear;
 }
 
@@ -8986,8 +8988,10 @@ form label.radio, form label.checkbox {
   position: absolute;
   width: 19px;
   height: 19px;
+  box-sizing: border-box;
   left: 0;
   top: -2px;
+  border-radius: 3px;
   text-align: center;
   margin-left: -20px;
   font-size: 16px;
