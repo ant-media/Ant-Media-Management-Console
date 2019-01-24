@@ -6739,7 +6739,7 @@ a.dropdown-toggle[aria-expanded="true"] .caret {
   height: 40px;
   -webkit-box-shadow: none;
   box-shadow: none;
-  width: auto;
+  width: 100%;
 }
 .form-control:focus {
   border: 1px solid #e8e7e3;

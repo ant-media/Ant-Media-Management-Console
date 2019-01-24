@@ -880,7 +880,7 @@
                                         <legend class="text-left">Muxing</legend>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">MP4</label>
-                                            <div class="col-sm-4 text-left">
+                                            <div class="col-sm-3 text-left">
                                                 <div class="checkbox">
                                                     <input id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox" [(ngModel)]="appSettings.mp4MuxingEnabled">
                                                     <label for="mp4MuxingEnabled" i18n="@@enableMP4Recording">
@@ -888,7 +888,7 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-4 text-left">
+                                            <div class="col-sm-3 text-left">
                                                 <div class="checkbox">
                                                     <input id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox" [(ngModel)]="appSettings.addDateTimeToMp4FileName">
                                                     <label for="addDateTimeToMp4FileName" i18n="@@addDateTimeToMP4Recordings">
@@ -901,7 +901,7 @@
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">HLS</label>
-                                            <div class="col-sm-10 text-left">
+                                            <div class="col-sm-3 text-left">
                                                 <div class="checkbox">
                                                     <input id="hlsMuxingEnabled" name="hlsMuxingEnabled" type="checkbox" [(ngModel)]="appSettings.hlsMuxingEnabled">
                                                     <label for="hlsMuxingEnabled" i18n="@@enableHLSLiveStreaming">
@@ -1023,7 +1023,7 @@
                                         <legend class="text-left" i18n="@@VoDFolder">VoD Folder</legend>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Folder Path</label>
-                                            <div class="col-sm-10 text-left">
+                                            <div class="col-sm-3 text-left">
 
                                                 <input type="text" name="vodFolderPath"
                                                        placeholder="Write full path of VoD folder"
@@ -1068,7 +1068,7 @@
                                         <legend class="text-left">Adaptive Streaming</legend>
                                         <div class="form-group" *ngIf=isEnterpriseEdition>
                                             <label class="col-sm-2 control-label">WebRTC Frame Rate</label>
-                                            <div class="col-sm-10 text-left">
+                                            <div class="col-sm-3 text-left">
                                                 <input type="number" [name]="webRTCFrameRate" class="form-control" required #webRTCFrameRate="ngModel" [(ngModel)]="appSettings.webRTCFrameRate">
                                             </div>
                                         </div>
