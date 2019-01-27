@@ -261,6 +261,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
         }
 
+
         $('.datepicker').datetimepicker({
             format: 'YYYY-MM-DD', //use this format if you want the 12hours timpiecker with AM/PM toggle
             icons: {
