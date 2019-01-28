@@ -892,7 +892,7 @@
                                         </div>
 
                                         <div class="text-left col-sm-12 col-md-12">
-                                            <button class="btn btn-default" i18n="@@addNewStream" type="button" (click)="addNewStream()">
+                                            <button class="btn btn-default" i18n="@@addNewStream" type="button"  (click)="addNewStream()">
                                             Add New Stream
                                         </button>
                                         </div>
@@ -902,7 +902,7 @@
                                         </fieldset>
                                             </div>
 
-                                        <div class="col-sm-12 col-md-12">
+                                        <div class="col-sm-12 col-md-12" *ngIf="0<appSettings.encoderSettings.length">
                                             <fieldset>
                                                 <legend class="text-left">Adaptive Streaming</legend>
                                                 <div class="form-group" *ngIf=isEnterpriseEdition>
@@ -922,7 +922,7 @@
 
 
                                                     <div class="col-sm-12 col-md-3 text-left">
-                                                        <input type="number" [name]="webRTCFrameRate" class="form-control" required #webRTCFrameRate="ngModel" [(ngModel)]="appSettings.webRTCFrameRate">
+                                                        <input type="number" [name]="webRTCFrameRate" class="form-control" maxlength="30" value="20"  minlength="5" required #webRTCFrameRate="ngModel" [(ngModel)]="appSettings.webRTCFrameRate">
                                                     </div>
 
                                                         </div>
@@ -1053,6 +1053,7 @@
                                               </fieldset>
                                           </div>
 
+                                            <!--
                                               <div class="col-sm-12 col-md-12">
                                                   <fieldset>
                                                       <legend class="text-left" i18n="@@Security">Security</legend>
@@ -1100,6 +1101,7 @@
 
                                                   </fieldset>
                                               </div>
+                                              -->
 
                                           </div>
 
@@ -1178,6 +1180,7 @@
                                               </div>
 
 
+                                              <!--
                                           <div class="col-sm-12 col-md-12">
                                               <fieldset>
                                                   <legend class="text-left" i18n="@@SocialSharing">Social Streaming</legend>
@@ -1268,7 +1271,7 @@
                                                       </div>
 
 
-                                                      <!--
+
                                                       <div class="row"
                                                            *ngFor="let endpoint of videoServiceEndpoints; let i = index">
 
@@ -1338,7 +1341,7 @@
                                                           </a>
                                                       </div>
 
-     -->
+
                                                 </div>
 
 
@@ -1348,7 +1351,7 @@
 
 
 
-                                        <!--
+
 
                                         <div class="col-sm-12 col-md-6">
                                     <fieldset>
@@ -1413,9 +1416,9 @@
 
                                     </fieldset>
                                         </div>
--->
 
-                                        <!--
+
+
                                        <div class="col-sm-12 col-md-6">
                                    <fieldset>
                                        <legend class="text-left" i18n="@@VoDFolder">Ministra TV Platform</legend>
@@ -1446,7 +1449,7 @@
 
                                    </fieldset>
                                        </div>
--->
+
 
 
 
@@ -1497,9 +1500,9 @@
 
                                            </fieldset>
                                        </div>
+                                       -->
 
-                                        </div>
-
+                                          </div>
 
 
                                         <div class="col-sm-12 col-md-12">
