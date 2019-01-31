@@ -1051,6 +1051,38 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
+    downloadFile(vodName: string, type: string, vodId:string, streamId:string): void {
+
+        if(this.appSettings.tokenControlEnabled){
+            this.playVoDToken(vodName, type, vodId, streamId);
+            return;
+        }
+
+        var srcFile = null;
+        var vodUrlName = null;
+
+        if (type == "uploadedVod") {
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4'  ;
+            vodUrlName = vodId ;
+        }else if (type == "streamVod"){
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName;
+            vodUrlName = vodName ;
+        }else if (type == "userVod") {
+            var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
+            var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams' + folderName + '/' + vodName;
+            vodUrlName = vodName ;
+        }
+
+        const link = document.createElement("a");
+        link.download = vodUrlName;
+        document.body.appendChild(link);
+        link.href = srcFile;
+        link.target = '_blank';
+        link.click();
+    }
+
+
 
     playVoD(vodName: string, type: string, vodId:string, streamId:string): void {
 
