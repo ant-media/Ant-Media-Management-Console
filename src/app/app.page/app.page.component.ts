@@ -1053,11 +1053,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     downloadFile(vodName: string, type: string, vodId:string, streamId:string): void {
 
-        if(this.appSettings.tokenControlEnabled){
-            this.playVoDToken(vodName, type, vodId, streamId);
-            return;
-        }
-
         var srcFile = null;
         var vodUrlName = null;
 
