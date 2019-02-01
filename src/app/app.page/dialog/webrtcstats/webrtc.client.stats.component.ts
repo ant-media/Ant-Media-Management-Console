@@ -23,6 +23,11 @@ export class WebRTCClientStatsComponent {
     public stats: WebRTCClientStat[];
     public bitrateChart: any;
     public mediaPeriodChart: any;
+
+    public webrtcLenght = 0;
+    public pageSize = 5;
+    public pageSizeOptions = [5, 10, 20];
+    public webrtcListOffset = 0;
     
     public sss: string;
     
@@ -34,6 +39,8 @@ export class WebRTCClientStatsComponent {
         this.streamId = data.streamId;
         this.appName = data.appName;
         this.stats = [];
+
+        this.getWebRTCStatsTotal(this.appName, this.streamId);
         
         this.getStats();
         
@@ -52,11 +59,37 @@ export class WebRTCClientStatsComponent {
             clearInterval(this.timerId);
         });
     }
-    
+
     getStats(): void {
-        this.restService.getWebRTCStats(this.appName, this.streamId).subscribe(data => {
+        this.restService.getWebRTCStatsList(this.appName, this.streamId, this.webrtcListOffset, this.pageSize).subscribe(data => {
             this.update(data);
         });
+    }
+
+    getWebRTCStatsTotal(appName:string, streamId:string) {
+        this.restService.getWebRTCStats(appName, streamId).subscribe(data =>
+        {
+            for (var i in data) {
+                this.webrtcLenght++;
+            }
+        });
+    }
+
+
+
+    onWebRtcPaginateChange(event) {
+
+        this.webrtcListOffset = event.pageIndex * event.pageSize;
+
+        this.pageSize = event.pageSize;
+
+        this.restService.getWebRTCStatsList(this.appName, this.data.streamId, this.webrtcListOffset,  this.pageSize).subscribe(data => {
+
+            this.update(data);
+
+        });
+
+
     }
     
     ngAfterViewInit() {
