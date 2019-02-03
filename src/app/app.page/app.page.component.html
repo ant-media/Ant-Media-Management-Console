@@ -841,6 +841,21 @@
                                                         <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
                                                     </button>
 
+
+                                                    <a (click)="downloadFile(row.vodName ,row.type,row.vodId, row.streamId)" download>
+                                                    <button
+                                                            data-toggle="tooltip" i18n-title
+                                                            title="VoD Donwloading"
+                                                            class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                            type="button"
+                                                            style="font-size: 1.1em" >
+                                                            <span class="btn-label">
+                                                                <i class="ti-download"></i>
+                                                            </span>
+                                                        <ng-container i18n="@@tableDownloadButton">Download</ng-container>
+                                                    </button>
+                                                        </a>
+
                                                     <button (click)="deleteVoD(row.vodName, row.vodId, row.type)" class="btn btn-simple btn-magnify btn-danger" type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-close"></i>
