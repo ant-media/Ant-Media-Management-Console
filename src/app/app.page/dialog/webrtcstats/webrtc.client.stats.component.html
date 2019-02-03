@@ -25,6 +25,13 @@
 		</div>
 	</div>
 </div>
+	<mat-paginator
+			[length]="webrtcLenght"
+			[pageSize]="pageSize"
+			[pageSizeOptions]="pageSizeOptions"
+			(page)="onWebRtcPaginateChange($event)"
+	>
+	</mat-paginator>
 </mat-dialog-content>
 <mat-dialog-actions class="pull-right">
 <button mat-button mat-dialog-close>Close</button>
