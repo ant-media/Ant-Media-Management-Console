@@ -12,7 +12,7 @@ declare var swal: any;
 @Component({
     selector: 'webrct-client-stats-component',
     templateUrl: './webrtc.client.stats.component.html',
-    styles: ['./webrtc.client.stats.component.css']
+    styleUrls: ['./webrtc.client.stats.component.css']
 })
 
 export class WebRTCClientStatsComponent {
@@ -28,31 +28,30 @@ export class WebRTCClientStatsComponent {
     public pageSize = 5;
     public pageSizeOptions = [5, 10, 20];
     public webrtcListOffset = 0;
-    
+
     public sss: string;
-    
+
     constructor(
-            public dialogRef: MatDialogRef<WebRTCClientStatsComponent>, public restService: RestService,
-            @Inject(MAT_DIALOG_DATA) public data: any) {
-        
+        public dialogRef: MatDialogRef<WebRTCClientStatsComponent>, public restService: RestService,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
+
         this.streamName = data.streamName;
         this.streamId = data.streamId;
         this.appName = data.appName;
         this.stats = [];
 
         this.getWebRTCStatsTotal(this.appName, this.streamId);
-        
+
         this.getStats();
-        
-        
-        
-        
+
+
         //call get comments and interaction periodically
         this.timerId = window.setInterval(() => {
             //add new comments to list and update the interaction
             this.getStats();
+            this.getWebRTCStatsTotal(this.appName, this.streamId);
         }, 2000);
-        
+
         //close the timer when dialog closes
         this.dialogRef.afterClosed().subscribe(result => {
             console.debug("closed dialog");
@@ -69,6 +68,7 @@ export class WebRTCClientStatsComponent {
     getWebRTCStatsTotal(appName:string, streamId:string) {
         this.restService.getWebRTCStats(appName, streamId).subscribe(data =>
         {
+            this.webrtcLenght = null;
             for (var i in data) {
                 this.webrtcLenght++;
             }
@@ -91,66 +91,57 @@ export class WebRTCClientStatsComponent {
 
 
     }
-    
+
     ngAfterViewInit() {
         var bitrateChartData = {
-                series: [
-                         {"name":"measured", "data":[]},
-                         {"name":"send", "data":[]},
-                         ]
+            series: [
+                {"name": "measured", "data": []},
+                {"name": "send", "data": []},
+            ]
         };
-        
+
         var sendPeriodChartData = {
-                series: [
-                         {"name":"Video", "data":[]},
-                         {"name":"Audio", "data":[]},
-                         ]
+            series: [
+                {"name": "Video", "data": []},
+                {"name": "Audio", "data": []},
+            ]
         };
-        
         var bitrateOptions = {
-                seriesBarDistance: 0,
-                axisX: {
-                    showGrid: false
-                },
-                axisY: {
-                    labelInterpolationFnc: function(value) {
-                        return (value / 1000) + 'k';
-                      }
-                },
-                height: "250px",
-                plugins: [legend()]
+
+            axisY: {
+                labelInterpolationFnc: function (value) {
+                    return (value / 1000) + 'k';
+                }
+            },
+
+            axisX: {
+                labelInterpolationFnc: function (value) {
+                    return 'Client ' + value;
+                }
+            },
+
+
+            height: "250px",
+            plugins: [legend()]
         };
-        
+
         var sendPeriodOptions = {
-                seriesBarDistance: 0,
-                axisX: {
-                    showGrid: false
-                },
-                height: "250px",
-                plugins: [legend()]
+
+            low: 0,
+            axisX: {
+                labelInterpolationFnc: function (value) {
+                    return 'Client ' + value;
+                }
+            },
+
+            height: "250px",
+            plugins: [legend()]
         };
-        
-        this.bitrateChart = new Chartist.Bar('#bitrateChart', bitrateChartData, bitrateOptions).on('draw', function(data) {
-            if(data.type === 'bar') {
-                var w = data.chartRect.width()/data.axisX.ticks.length*0.9;
-                data.element.attr({
-                  style: 'stroke-width: '+w+'px'
-                });
-              }
-            });
-        
-        this.mediaPeriodChart = new Chartist.Bar('#mediaSendPeriodChart', sendPeriodChartData, sendPeriodOptions).on('draw', function(data) {
-            if(data.type === 'bar') {
-                var w = data.chartRect.width()/data.axisX.ticks.length*0.9;
-                data.element.attr({
-                  style: 'stroke-width: '+w+'px'
-                });
-              }
-            });
-        
-        
+        this.bitrateChart = new Chartist.Bar('#bitrateChart', bitrateChartData, bitrateOptions);
+
+        this.mediaPeriodChart = new Chartist.Line('#mediaSendPeriodChart', sendPeriodChartData, sendPeriodOptions);
     }
-    
+
     update(data) {
         var measuredBitrates = [];
         var sendBitrates = [];
@@ -173,24 +164,24 @@ export class WebRTCClientStatsComponent {
             labels.push(label);
             label++
         }
-        
+
         var bitrateChartData = {
-                labels: labels,
-                series: [
-                         {"name":"measured", "data":measuredBitrates},
-                         {"name":"send", "data":sendBitrates},
-                         ]
+            labels: labels,
+            series: [
+                {"name": "measured", "data": measuredBitrates},
+                {"name": "send", "data": sendBitrates},
+            ]
         };
-        
+
         var sendPeriodChartData = {
-                labels: labels,
-                series: [
-                         {"name":"Video", "data":videoFrameSendPeriods},
-                         {"name":"Audio", "data":audioFrameSendPeriods},
-                         ]
+            labels: labels,
+            series: [
+                {"name": "Video", "data": videoFrameSendPeriods},
+                {"name": "Audio", "data": audioFrameSendPeriods},
+            ]
         };
-        
-        
+
+
         this.bitrateChart.update(bitrateChartData);
         this.mediaPeriodChart.update(sendPeriodChartData);
     }
