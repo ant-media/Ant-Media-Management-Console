@@ -916,12 +916,12 @@
 
                                                         <div style="padding-left: 0px;" class="col-sm-12 col-md-12 text-left">
 
-                                                            <div class="col-sm-12 col-md-3 text-left">
+                                                            <div class="col-sm-12 col-md-4 text-left">
                                                     <label class="control-label">WebRTC Frame Rate</label>
                                                             </div>
 
 
-                                                    <div class="col-sm-12 col-md-3 text-left">
+                                                    <div class="col-sm-12 col-md-4 text-left">
                                                         <input type="number" [name]="webRTCFrameRate" class="form-control" maxlength="30" value="20"  minlength="5" required #webRTCFrameRate="ngModel" [(ngModel)]="appSettings.webRTCFrameRate">
                                                     </div>
 
@@ -938,20 +938,18 @@
                                                     <div class="col-sm-12 col-md-12">
 
 
-                                                        <div class="col-sm-3 text-left">
-                                                            <span class="help-block" i18n="@@ResolutionHeight">Video Resolution</span>
+                                                        <div class="col-sm-4 text-left">
+                                                            <span class="help-block" i18n="@@ResolutionHeight">Resolution</span>
                                                         </div>
-                                                        <div class="col-sm-3 text-left">
-                                                            <span class="help-block" i18n="@@ResolutionHeight">Video Bitrate(bps)</span>
+                                                        <div class="col-sm-4 text-left">
+                                                            <span class="help-block" i18n="@@ResolutionHeight">Bitrate(Kbps)</span>
                                                         </div>
-                                                        <div class="col-sm-3 text-left">
-                                                            <span class="help-block" i18n="@@ResolutionHeight">Audio Bitrate(bps)</span>
-                                                        </div>
+
 
                                                         <ng-container *ngIf="appSettings.encoderSettings">
                                                             <div class="row" style="margin-bottom: 20px;" *ngFor="let encoderSetting of appSettings.encoderSettings; let i = index">
                                                                 <div class="col-sm-12 col-md-12 text-left">
-                                                                <div class="col-sm-3 text-left">
+                                                                <div class="col-sm-4 text-left">
 
 
                                                                     <!--
@@ -972,18 +970,38 @@
                                                                             <li><a href="#paper">144p</a></li>
                                                                         </ul>
                                                                     </div>
+                                                                     <input type="number" [name]="'resolutionHeight'+i" class="form-control" [(ngModel)]="encoderSetting.height">
                                                                     -->
 
 
-                                                                     <input type="number" [name]="'resolutionHeight'+i" class="form-control" [(ngModel)]="encoderSetting.height">
+                                                                    <select name="cities" class="dropdown-toggle form-control  selectpicker" data-title="Single Select" data-style="btn-default btn-block" >
+                                                                        <option value="1080p">1080p</option>
+                                                                        <option value="720p">720p</option>
+                                                                        <option value="480p">480p</option>
+                                                                        <option value="360p">360p</option>
+
+                                                                    </select>
+
+
 
                                                                 </div>
-                                                                <div class="col-sm-3 text-left">
+                                                                <div class="col-sm-4 text-left">
 
-                                                                   <input type="number" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate">
+
+                                                                    <select name="cities" class="dropdown-toggle form-control  selectpicker" data-title="Single Select" data-style="btn-default btn-block" >
+                                                                        <option value="6000">Great(6.000)</option>
+                                                                        <option value="720p">Fine(2.500)</option>
+                                                                        <option value="480p">Great(2.000)</option>
+                                                                        <option value="360p">Mean(400)</option>
+
+                                                                    </select>
+
+
 
 
                                                                     <!--
+
+                                                                    <input type="number" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate">
                                                                     <div class="dropdown">
                                                                         <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
                                                                             <label for="addDateTimeToMp4FileName"    [(ngModel)]="encoderSetting.videoBitrate" i18n="@@addDateTimeToMP4Recordings">
@@ -1004,30 +1022,31 @@
                                                                     -->
 
                                                                </div>
-                                                               <div class="col-sm-3 text-left">
-                                                                     <input type="number" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate">
+
+                                                                    <!--     <div class="col-sm-3 text-left">
+                                                                             <input type="number" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate">
 
 
-                                                                   <!--   <div class="dropdown">
-                                                                          <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
-                                                                              <label for="addDateTimeToMp4FileName"    [(ngModel)]="encoderSetting.videoBitrate" i18n="@@addDateTimeToMP4Recordings">
-                                                                                  Choose
-                                                                              </label>
+                                                                            <div class="dropdown">
+                                                                                  <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
+                                                                                      <label for="addDateTimeToMp4FileName"    [(ngModel)]="encoderSetting.videoBitrate" i18n="@@addDateTimeToMP4Recordings">
+                                                                                          Choose
+                                                                                      </label>
 
 
-                                                                              <b class="caret"></b>
-                                                                          </a>
-                                                                          <ul class="dropdown-menu">
-                                                                              <li><a href="#paper">1080p</a></li>
-                                                                              <li><a href="#paper">720p</a></li>
-                                                                              <li><a href="#paper">480p</a></li>
-                                                                              <li><a href="#paper">360p</a></li>
-                                                                              <li><a href="#paper">144p</a></li>
-                                                                          </ul>
-                                                                      </div>
-                                                                      -->
+                                                                                      <b class="caret"></b>
+                                                                                  </a>
+                                                                                  <ul class="dropdown-menu">
+                                                                                      <li><a href="#paper">1080p</a></li>
+                                                                                      <li><a href="#paper">720p</a></li>
+                                                                                      <li><a href="#paper">480p</a></li>
+                                                                                      <li><a href="#paper">360p</a></li>
+                                                                                      <li><a href="#paper">144p</a></li>
+                                                                                  </ul>
+                                                                              </div>
+                                                                              -->
 
-                                                                  </div>
+
 
                                                                       <div class="col-sm-1 text-left">
                                                                   <button type="button" class="btn btn-icon btn-simple btn-danger btn-minus" (click)="deleteStream(i)">
