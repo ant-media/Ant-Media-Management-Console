@@ -516,4 +516,8 @@ export class RestService {
     public getWebRTCStats(appName:string, streamId:string): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getWebRTCClientStats/'+streamId);
     }
+
+    public getWebRTCStatsList(appName:string, streamId:string, offset:Number, size:Number): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getWebRTCClientStatsList/'+offset+"/"+size+"/"+streamId);
+    }
 }

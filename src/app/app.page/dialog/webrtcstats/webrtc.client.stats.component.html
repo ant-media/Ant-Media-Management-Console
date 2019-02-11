@@ -24,6 +24,13 @@
 			</div>
 		</div>
 	</div>
+	<mat-paginator
+			[length]="webrtcLenght"
+			[pageSize]="pageSize"
+			[pageSizeOptions]="pageSizeOptions"
+			(page)="onWebRtcPaginateChange($event)"
+	>
+	</mat-paginator>
 </div>
 </mat-dialog-content>
 <mat-dialog-actions class="pull-right">
