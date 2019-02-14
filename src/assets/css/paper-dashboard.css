@@ -14,6 +14,15 @@
 */
 /*      light colors - used for select dropdown         */
 /*           Social buttons            */
+
+
+@media (max-width: 950px) {
+    .row-mobile {
+        display: table;
+        margin: auto;
+    }
+}
+
 .ct-blue {
   stroke: #7A9E9F !important;
 }
@@ -8960,44 +8969,13 @@ form label.radio, form label.checkbox {
   margin-bottom: 12px;
 }
 
-.checkbox label {
-  display: inline-block;
-  vertical-align: middle;
-  position: relative;
-  padding-left: 10px;
-}
-
-.checkbox label::before {
-  content: "";
-  display: inline-block;
-  position: absolute;
-  width: 19px;
-  height: 19px;
-  left: 0;
-  margin-left: -20px;
-  border-radius: 3px;
-  opacity: .50;
-  background-color: #66615b;
-  transition: opacity 0.2s linear;
-}
-
-.checkbox label::after {
-  display: inline-block;
-  position: absolute;
-  width: 19px;
-  height: 19px;
-  left: 0;
-  top: -2px;
-  text-align: center;
-  margin-left: -20px;
-  font-size: 16px;
-  color: #FFFFFF;
-}
 
 .checkbox input[type="checkbox"],
 .radio input[type="radio"] {
-  opacity: 0;
-  z-index: 1;
+    margin-left: 20px;
+  border-radius: 3px;
+  background-color: #66615b;
+  transition: opacity 0.2s linear;
   cursor: pointer;
   width: 19px;
   height: 19px;

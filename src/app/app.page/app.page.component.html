@@ -88,14 +88,15 @@
 
                                                     <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
 
-                                                        <input [(ngModel)]="shareEndpoint[i]" [id]="endpoint.id" [name]="endpoint.id" type="checkbox">
                                                         <label [for]="endpoint.id">
                                                             <ng-container [ngSwitch]="endpoint.serviceName">
                                                                 <ng-container *ngSwitchCase="'facebook'">
-                                                                    <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>
+                                                                    <i class="ti-facebook"
+                                                                       style="color:#3b5998">&nbsp;</i>
                                                                 </ng-container>
                                                                 <ng-container *ngSwitchCase="'youtube'">
-                                                                    <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>
+                                                                    <i class="ti-youtube"
+                                                                       style="color:#e52d27">&nbsp;</i>
                                                                 </ng-container>
                                                                 <ng-container *ngSwitchCase="'periscope'">
                                                                     <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>
@@ -103,6 +104,9 @@
                                                             </ng-container>
                                                             {{endpoint.accountName}}
                                                         </label>
+
+                                                        <input [(ngModel)]="shareEndpoint[i]" [id]="endpoint.id" [name]="endpoint.id" type="checkbox">
+
 
                                                     </div>
                                                 </ng-container>
@@ -247,14 +251,15 @@
 
                                                     <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
 
-                                                        <input [(ngModel)]="shareEndpoint[i]" [id]="endpoint.id" [name]="endpoint.id" type="checkbox">
                                                         <label [for]="endpoint.id">
                                                             <ng-container [ngSwitch]="endpoint.serviceName">
                                                                 <ng-container *ngSwitchCase="'facebook'">
-                                                                    <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>
+                                                                    <i class="ti-facebook"
+                                                                       style="color:#3b5998">&nbsp;</i>
                                                                 </ng-container>
                                                                 <ng-container *ngSwitchCase="'youtube'">
-                                                                    <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>
+                                                                    <i class="ti-youtube"
+                                                                       style="color:#e52d27">&nbsp;</i>
                                                                 </ng-container>
                                                                 <ng-container *ngSwitchCase="'periscope'">
                                                                     <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>
@@ -262,6 +267,9 @@
                                                             </ng-container>
                                                             {{endpoint.accountName}}
                                                         </label>
+
+                                                        <input [(ngModel)]="shareEndpoint[i]" [id]="endpoint.id" [name]="endpoint.id" type="checkbox">
+
 
                                                     </div>
                                                 </ng-container>
@@ -904,7 +912,8 @@
 
                                                 <div class="col-sm-12 col-md-12 text-left">
 
-                                                    <div class="col-sm-12 col-md-12 text-left">
+                                                    <div class="col-sm-12 col-md-12 text-left"
+                                                         style="margin-top: 10px; margin-bottom: 20px;">
                                                         <label class="text-left">Bitrate at the input redirected to output as it is.</label>
                                                     </div>
 
@@ -935,12 +944,8 @@
 
                                                 <div class="col-sm-12 col-md-10 text-left">
 
-                                                    <div class="col-sm-12 col-md-12 text-left">
-                                                        <label class="text-left">Bitrate at the input redirected to output with the following bitrates</label>
-                                                    </div>
-
-
-                                                    <div class="col-sm-12 col-md-12 text-left" style="padding-left: 0px;">
+                                                    <div class="col-sm-12 col-md-12 text-left"
+                                                         style="padding-left: 0px;margin-top: 10px;">
 
                                                         <div class="col-sm-12 col-md-4 text-left">
                                                             <label class="control-label">WebRTC Frame Rate</label>
@@ -948,10 +953,22 @@
 
 
                                                         <div class="col-sm-12 col-md-4 text-left">
-                                                            <input #webRTCFrameRate="ngModel" [(ngModel)]="appSettings.webRTCFrameRate" [name]="webRTCFrameRate" class="form-control" maxlength="30"  minlength="5" required type="number" value="20">
+                                                            <input #webRTCFrameRate="ngModel"
+                                                                   [(ngModel)]="appSettings.webRTCFrameRate"
+                                                                   [name]="webRTCFrameRate" class="form-control"
+                                                                   maxlength="30" minlength="5" required type="number"
+                                                                   value="20">
                                                         </div>
 
                                                     </div>
+
+                                                    <div class="col-sm-12 col-md-12 text-left"
+                                                         style="margin-top: 20px;">
+                                                        <label class="text-left">Bitrate at the input redirected to output with the following bitrates</label>
+                                                    </div>
+
+
+
 
                                                 </div>
                                             </div>
@@ -1000,11 +1017,13 @@
                                                                     -->
 
 
-                                                                    <select class="dropdown-toggle form-control  selectpicker" data-style="btn-default btn-block" data-title="Single Select" name="cities" >
-                                                                        <option value="1080p">1080p</option>
-                                                                        <option value="720p">720p</option>
-                                                                        <option value="480p">480p</option>
-                                                                        <option value="360p">360p</option>
+                                                                    <select #resolutionList
+                                                                            class="dropdown-toggle form-control  selectpicker">
+                                                                        <option value="1080">1080p</option>
+                                                                        <option value="720">720p</option>
+                                                                        <option value="480">480p</option>
+                                                                        <option value="360">360p</option>
+                                                                        <option value="240">240p</option>
 
                                                                     </select>
 
@@ -1013,16 +1032,46 @@
                                                                 </div>
                                                                 <div class="col-sm-4 text-left">
 
+                                                                    <select *ngIf="resolutionList.value == '1080'"
+                                                                            class="dropdown-toggle form-control  selectpicker">
+                                                                        <option value="6000">High (6.000)</option>
+                                                                        <option value="4000">Medium (4.000)</option>
+                                                                        <option value="3000">Low (3.000)</option>
 
-                                                                    <select class="dropdown-toggle form-control  selectpicker" data-style="btn-default btn-block" data-title="Single Select" name="cities" >
-                                                                        <option value="6000">Great(6.000)</option>
-                                                                        <option value="720p">Fine(2.500)</option>
-                                                                        <option value="480p">Great(2.000)</option>
-                                                                        <option value="360p">Mean(400)</option>
+                                                                    </select>
+
+                                                                    <select *ngIf="resolutionList.value == '720'"
+                                                                            class="dropdown-toggle form-control  selectpicker">
+                                                                        <option value="1080">High (4.000)</option>
+                                                                        <option value="720">Medium (2.500)</option>
+                                                                        <option value="480p">Low (1.200)</option>
+
+                                                                    </select>
+
+                                                                    <select *ngIf="resolutionList.value == '480'"
+                                                                            class="dropdown-toggle form-control  selectpicker">
+                                                                        <option value="1080">High (2.000)</option>
+                                                                        <option value="720">Medium (1.200)</option>
+                                                                        <option value="480p">Low (600)</option>
 
                                                                     </select>
 
 
+                                                                    <select *ngIf="resolutionList.value == '360'"
+                                                                            class="dropdown-toggle form-control  selectpicker">
+                                                                        <option value="1080">High (1.000)</option>
+                                                                        <option value="720">Medium (700)</option>
+                                                                        <option value="480p">Low (400)</option>
+
+                                                                    </select>
+
+                                                                    <select *ngIf="resolutionList.value == '240'"
+                                                                            class="dropdown-toggle form-control  selectpicker">
+                                                                        <option value="1080">High (700)</option>
+                                                                        <option value="720">Medium (500)</option>
+                                                                        <option value="480p">Low (300)</option>
+
+                                                                    </select>
 
 
                                                                     <!--
@@ -1114,10 +1163,13 @@
                                                 <div class="form-group">
                                                     <div class="col-sm-12 col-md-12 text-left">
                                                         <div class="checkbox" >
-                                                            <input [(ngModel)]="appSettings.hlsMuxingEnabled" id="hlsMuxingEnabled" name="hlsMuxingEnabled" type="checkbox">
+
                                                             <label for="hlsMuxingEnabled" i18n="@@enableHLSLiveStreaming">
                                                                 Create HLS Streaming
                                                             </label>
+                                                            <input [(ngModel)]="appSettings.hlsMuxingEnabled"
+                                                                   id="hlsMuxingEnabled" name="hlsMuxingEnabled"
+                                                                   type="checkbox">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1129,7 +1181,7 @@
                                                         <label class="col-sm-12 text-left col-md-3 control-label" i18n="@@HLSSegmentListSize">Segment List Size</label>
 
 
-                                                        <div class="col-sm-12 text-left col-md-9">
+                                                        <div class="col-sm-12 text-left col-md-3">
                                                             <small [hidden]="hlsListSize.valid" class="text-danger">
                                                                 Segment list size is required
                                                             </small>
@@ -1146,7 +1198,7 @@
                                                         <label class="col-sm-12 text-left col-md-3 control-label" i18n="@@HLSSegmentDuration">Segment Duration</label>
 
 
-                                                        <div class="col-sm-12 text-left col-md-9">
+                                                        <div class="col-sm-12 text-left col-md-3">
                                                             <small [hidden]="hlsTime.valid" class="text-danger">
                                                                 Segment duration is required
                                                             </small>
@@ -1189,12 +1241,13 @@
                                                     </p>
                                                 </div>
 
-                                                <div *ngIf=isEnterpriseEdition class="col-sm-12 col-md-12 text-left">
+                                                <div *ngIf=isEnterpriseEdition class="col-sm-12 col-md-6 text-right ">
                                                     <div class="checkbox">
-                                                        <input [(ngModel)]="appSettings.tokenControlEnabled" id="tokenControlEnabled" name="tokenControlEnabled" type="checkbox">
                                                         <label for="tokenControlEnabled">
                                                             Streaming only with one time token
                                                         </label>
+                                                        <input [(ngModel)]="appSettings.tokenControlEnabled" id="tokenControlEnabled" name="tokenControlEnabled" type="checkbox">
+
                                                     </div>
 
                                                 </div>
@@ -1209,14 +1262,16 @@
                                                     </p>
                                                 </div>
 
-                                                <div *ngIf=isEnterpriseEdition class="col-sm-12 col-md-12 text-left">
+                                                <div *ngIf=isEnterpriseEdition class="col-sm-12 col-md-6 text-right">
 
                                                     <div class="checkbox">
-                                                        <input id="externalEnabled" name="externalEnabled" type="checkbox" >
 
                                                         <label for="externalEnabled" i18n="@@externalEnabled">
                                                             Use External Sources
                                                         </label>
+                                                        <input id="externalEnabled" name="externalEnabled" type="checkbox" >
+
+
 
                                                     </div>
 
@@ -1227,13 +1282,16 @@
 
                                             <div class="form-group">
 
-                                                <div class="col-sm-12 col-md-12 text-left">
+                                                <div class="col-sm-12 col-md-6 text-right">
 
                                                     <div class="checkbox">
-                                                        <input [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" type="checkbox">
-                                                        <label for="acceptOnlyStreamsInDataStore" i18n="@@acceptOnlyStreamsInDataStore">
+
+                                                        <label for="acceptOnlyStreamsInDataStore"
+                                                               i18n="@@acceptOnlyStreamsInDataStore">
                                                             Use Ip Filtering for RESTful API
                                                         </label>
+                                                        <input [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" type="checkbox">
+
                                                     </div>
 
 
@@ -1261,23 +1319,28 @@
 
 
                                                     <div class="form-group">
-                                                        <div class="col-sm-12 col-md-12 text-left">
+                                                        <div class="col-sm-12 col-md-6 text-right">
                                                             <div class="checkbox">
-                                                                <input [(ngModel)]="appSettings.mp4MuxingEnabled" id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox">
-                                                                <label for="mp4MuxingEnabled" i18n="@@enableMP4Recording">
+
+                                                                <label for="mp4MuxingEnabled"
+                                                                       i18n="@@enableMP4Recording">
                                                                     Record Live Streams as MP4
                                                                 </label>
+                                                                <input [(ngModel)]="appSettings.mp4MuxingEnabled" id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox">
+
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <div class="col-sm-12 col-md-12 text-left">
+                                                        <div class="col-sm-12 col-md-6 text-right">
                                                             <div class="checkbox">
-                                                                <input [(ngModel)]="appSettings.addDateTimeToMp4FileName" id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox">
-                                                                <label for="addDateTimeToMp4FileName" i18n="@@addDateTimeToMP4Recordings">
+                                                                <label for="addDateTimeToMp4FileName"
+                                                                       i18n="@@addDateTimeToMP4Recordings">
                                                                     Add Date-Time to MP4 File names
                                                                 </label>
+                                                                <input [(ngModel)]="appSettings.addDateTimeToMp4FileName" id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox">
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1289,131 +1352,133 @@
                                     </div>
 
 
-                                    <!--
-                                <div class="col-sm-12 col-md-12">
-                                    <fieldset>
-                                        <legend class="text-left" i18n="@@SocialSharing">Social Streaming</legend>
-                                        <div class="form-group">
+                                    <div class="card">
 
-                                            <div class="col-sm-12 col-md-3">
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left" i18n="@@SocialSharing">
+                                                Social Streaming
+                                            </h4>
+                                        </div>
 
+                                        <div class="card-content">
+                                            <div class="form-group">
 
-                                                <div class="col-sm-12 col-md-12">
-                                                <button class="btn btn-default"
-                                                        style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                        (click)="getSocialMediaAuthParameters('facebook')">
-
-                                                    <i class="ti-facebook"></i> Add Facebook
-                                                </button>
-                                                </div>
-
-                                                <div class="col-sm-12 col-md-12">
-                                                <button class="btn btn-default "
-                                                        style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                        (click)="getSocialMediaAuthParameters('youtube')">
-
-                                                    <i class="ti-youtube"></i> Add Youtube
-                                                </button>
-                                                </div>
-
-                                                <div class="col-sm-12 col-md-12">
-                                                <button class="btn btn-default "
-                                                        style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                        (click)="getSocialMediaAuthParameters('periscope')">
-
-                                                    <i class="ti-twitter-alt"></i> Add Periscope
-                                                </button>
-                                                </div>
+                                                <div class="col-sm-12 col-md-4">
 
 
-                                            </div>
+                                                    <div class="form-group">
+                                                        <button (click)="getSocialMediaAuthParameters('facebook')"
+                                                                class="btn btn-default" i18n="@@authenticate"
+                                                                type="button">
 
-
-                                            <div class="col-sm-12  col-md-9">
-
-                                                <div class="row"
-                                                     *ngFor="let endpoint of videoServiceEndpoints; let i = index">
-
-                                                    <div class="col-sm-12 col-md-12 text-left">
-
-                                                    <label>
-                                                        <ng-container [ngSwitch]="endpoint.serviceName">
-                                                            <ng-container *ngSwitchCase="'facebook'">
-                                                                <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>
-                                                            </ng-container>
-                                                            <ng-container *ngSwitchCase="'youtube'">
-                                                                <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>
-                                                            </ng-container>
-                                                            <ng-container *ngSwitchCase="'periscope'">
-                                                                <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>
-                                                            </ng-container>
-                                                        </ng-container>
-                                                    </label>
-
-
-
-                                                        {{endpoint.accountName}}
-
-                                                        <button class="btn btn-simple btn-danger btn-xs"
-                                                                style="text-align:left" i18n="@@SocialAuthenticated"
-                                                                type="button" (click)="revokeSocialMediaAuth(endpoint.id)">
-                                                            <i style="vertical-align: initial;" class="ti-close"></i>
+                                                            <i class="ti-facebook"></i> Add Facebook
                                                         </button>
-
                                                     </div>
 
 
+                                                    <div class="form-group">
+                                                        <button (click)="getSocialMediaAuthParameters('youtube')"
+                                                                class="btn btn-default " i18n="@@authenticate"
+                                                                type="button">
+
+                                                            <i class="ti-youtube"></i> Add Youtube
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <button (click)="getSocialMediaAuthParameters('periscope')"
+                                                                class="btn btn-default " i18n="@@authenticate"
+                                                                type="button">
+
+                                                            <i class="ti-twitter-alt"></i> Add Periscope
+                                                        </button>
+                                                    </div>
 
 
                                                 </div>
 
-                                                <div class="row">
-                                                    <a class="btn btn-simple col-sm-12" *ngIf="gettingDeviceParameters">
-                                                        <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-                                                    </a>
-                                                    <a class="btn btn-simple col-sm-12" *ngIf="waitingForConfirmation">
-                                                        <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-                                                        Waiting for confirmation
-                                                    </a>
+
+                                                <div class="col-sm-12  col-md-8">
+
+                                                    <div *ngFor="let endpoint of videoServiceEndpoints; let i = index"
+                                                         class="row row-mobile">
+
+                                                        <div class="text-left form-group" style="    display: flex;
+    align-items: center;">
+
+
+                                                            <label>
+                                                                <button (click)="revokeSocialMediaAuth(endpoint.id)"
+                                                                        class="btn btn-simple btn-danger btn-xs"
+                                                                        i18n="@@SocialAuthenticated"
+                                                                        style=" -webkit-text-stroke: 2px; text-align:left"
+                                                                        type="button">
+                                                                    <i class="ti-close"
+                                                                       style="vertical-align: initial;"></i>
+                                                                </button>
+                                                            </label>
+
+                                                            <label style="padding-left: 20px">
+                                                                <ng-container [ngSwitch]="endpoint.serviceName">
+                                                                    <ng-container *ngSwitchCase="'facebook'">
+                                                                        <!--   <i class="ti-facebook" style="color:#3b5998">&nbsp;</i> -->
+
+                                                                        <label class="btn btn-icon btn-fill btn-facebook">
+                                                                            <i class="ti-facebook"></i>
+                                                                        </label>
+
+                                                                    </ng-container>
+                                                                    <ng-container *ngSwitchCase="'youtube'">
+
+                                                                        <label class="btn btn-icon btn-fill btn-youtube">
+                                                                            <i class="ti-control-play"></i>
+                                                                        </label>
+
+
+                                                                    </ng-container>
+                                                                    <ng-container *ngSwitchCase="'periscope'">
+                                                                        <!--  <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>-->
+
+
+                                                                        <label class="btn btn-icon btn-fill btn-twitter">
+                                                                            <i class="ti-twitter-alt"></i>
+                                                                        </label>
+
+                                                                    </ng-container>
+                                                                </ng-container>
+                                                            </label>
+
+
+                                                            <label style=" min-width: 125px; padding-left: 15px">
+                                                                <label>  {{endpoint.accountName}}  </label>
+                                                            </label>
+
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <a *ngIf="gettingDeviceParameters"
+                                                           class="btn btn-simple col-sm-12">
+                                                            <i aria-hidden="true"
+                                                               class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>
+                                                        </a>
+                                                        <a *ngIf="waitingForConfirmation"
+                                                           class="btn btn-simple col-sm-12">
+                                                            <i aria-hidden="true"
+                                                               class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>
+                                                            Waiting for confirmation
+                                                        </a>
+                                                    </div>
+
                                                 </div>
 
                                             </div>
-
-
-
-                                            <div class="row"
-                                                 *ngFor="let endpoint of videoServiceEndpoints; let i = index">
-
-                                                <label class="col-sm-2 control-label">
-                                                    <ng-container [ngSwitch]="endpoint.serviceName">
-                                                        <ng-container *ngSwitchCase="'facebook'">
-                                                            <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>Facebook
-                                                        </ng-container>
-                                                        <ng-container *ngSwitchCase="'youtube'">
-                                                            <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>Youtube
-                                                        </ng-container>
-                                                        <ng-container *ngSwitchCase="'periscope'">
-                                                            <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>Periscope
-                                                        </ng-container>
-                                                    </ng-container>
-                                                </label>
-
-                                                <div class="col-sm-3 form-control-static">
-
-                                                    {{endpoint.accountName}}
-                                                    <button class="btn btn-simple btn-danger btn-xs"
-                                                            style="text-align:left" i18n="@@YoutubeAuthenticated"
-                                                            type="button" (click)="revokeSocialMediaAuth(endpoint.id)">
-                                                        <i class="ti-unlink"></i>Remove
-                                                    </button>
-
-
-                                                </div>
-
-                                            </div>
-
                                         </div>
 
+                                        <!--
                                         <div class="form-group" style="margin-top:10px">
 
                                             <div class="row">
@@ -1453,163 +1518,162 @@
 
                                       </div>
 
+-->
 
 
-                                  </fieldset>
-                              </div>
+                                    </div>
 
 
+                                    <!--
+
+                                                                        <div class="col-sm-12 col-md-6">
+                                                              <fieldset>
+                                                                  <legend class="text-left" i18n="@@Security">Security</legend>
+                                                                  <div class="form-group">
+                                                                      <label class="col-sm-2 control-label">Stream Publishing</label>
+                                                                      <div class="text-left" >
+                                                                          <div class="col-sm-2">
+                                                                              <div class="radio">
+                                                                              <input class="radio" type="radio" name="acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" [value]="false" [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore">
+                                                                              <label for="acceptOnlyStreamsInDataStore">
+                                                                                  Allow All
+                                                                              </label>
+                                                                              </div>
+                                                                          </div>
+
+                                                                          <div class="col-sm-2">
+                                                                              <div class="radio">
+                                                                              <input class="radio" type="radio" name="acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore2" [value]="true" [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore">
+                                                                              <label for="acceptOnlyStreamsInDataStore2">
+                                                                                  Allow Only In Database
+                                                                              </label>
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+
+                                                                  <div class="form-group">
+                                                                      <label class="col-sm-2 control-label">
+                                                                          One-Time Token <a href="https://antmedia.io/secure-video-streaming/" target="_blank"  matTooltip="Token is required for publishing and playing.
+                                                                             You need to create token and provide for these operations. Use 'getToken' rest service for that. Click icon for details."><i class="fa fa-info-circle"></i></a>
+                                                                      </label>
 
 
+                                                                      <div class="form-group text-center" *ngIf=!isEnterpriseEdition>
+                                                                          <p i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                                              This feature is enabled in
+                                                                              <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
+                                                                          </p>
+                                                                      </div>
 
-                              <div class="col-sm-12 col-md-6">
-                          <fieldset>
-                              <legend class="text-left" i18n="@@Security">Security</legend>
-                              <div class="form-group">
-                                  <label class="col-sm-2 control-label">Stream Publishing</label>
-                                  <div class="text-left" >
-                                      <div class="col-sm-2">
-                                          <div class="radio">
-                                          <input class="radio" type="radio" name="acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" [value]="false" [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore">
-                                          <label for="acceptOnlyStreamsInDataStore">
-                                              Allow All
-                                          </label>
-                                          </div>
-                                      </div>
+                                                                      <div class="text-left" *ngIf=isEnterpriseEdition>
+                                                                          <div class="col-sm-2">
+                                                                              <div class="radio">
+                                                                              <input type="radio" name="tokenControlEnabled" id="tokenControlEnabled" [value]="false" [(ngModel)]="appSettings.tokenControlEnabled">
+                                                                              <label for="tokenControlEnabled">
+                                                                                  Disable
+                                                                              </label>
+                                                                              </div>
+                                                                          </div>
 
-                                      <div class="col-sm-2">
-                                          <div class="radio">
-                                          <input class="radio" type="radio" name="acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore2" [value]="true" [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore">
-                                          <label for="acceptOnlyStreamsInDataStore2">
-                                              Allow Only In Database
-                                          </label>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
+                                                                          <div class="col-sm-2">
+                                                                              <div class="radio">
+                                                                              <input type="radio" name="tokenControlEnabled" id="tokenControlEnabled2" [value]="true" [(ngModel)]="appSettings.tokenControlEnabled">
+                                                                              <label for="tokenControlEnabled2">
+                                                                                  Enable
+                                                                              </label>
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
 
-                              <div class="form-group">
-                                  <label class="col-sm-2 control-label">
-                                      One-Time Token <a href="https://antmedia.io/secure-video-streaming/" target="_blank"  matTooltip="Token is required for publishing and playing.
-                                         You need to create token and provide for these operations. Use 'getToken' rest service for that. Click icon for details."><i class="fa fa-info-circle"></i></a>
-                                  </label>
-
-
-                                  <div class="form-group text-center" *ngIf=!isEnterpriseEdition>
-                                      <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                          This feature is enabled in
-                                          <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
-                                      </p>
-                                  </div>
-
-                                  <div class="text-left" *ngIf=isEnterpriseEdition>
-                                      <div class="col-sm-2">
-                                          <div class="radio">
-                                          <input type="radio" name="tokenControlEnabled" id="tokenControlEnabled" [value]="false" [(ngModel)]="appSettings.tokenControlEnabled">
-                                          <label for="tokenControlEnabled">
-                                              Disable
-                                          </label>
-                                          </div>
-                                      </div>
-
-                                      <div class="col-sm-2">
-                                          <div class="radio">
-                                          <input type="radio" name="tokenControlEnabled" id="tokenControlEnabled2" [value]="true" [(ngModel)]="appSettings.tokenControlEnabled">
-                                          <label for="tokenControlEnabled2">
-                                              Enable
-                                          </label>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-
-                          </fieldset>
-                              </div>
-
-
-
-                             <div class="col-sm-12 col-md-6">
-                         <fieldset>
-                             <legend class="text-left" i18n="@@VoDFolder">Ministra TV Platform</legend>
-                             <div class="form-group">
-                                 <label class="col-sm-2 control-label">Options</label>
-                                 <div class="text-left">
-                                     <div class="col-sm-2 form-control-static ">
-                                     <button class="btn btn-default btn-block"
-                                             i18n="@@addNewStream" type="button"
-                                             (click)="importLiveStreams2Stalker()">
-                                         <i *ngIf="importingLiveStreams"
-                                            class="fa fa-spinner fa-pulse fa-1x fa-fw"
-                                            aria-hidden="true"></i>Import Live Streams
-                                     </button>
-                                     </div>
-
-                                     <div class="col-sm-2 form-control-static ">
-                                     <button class="btn-block btn btn-default"
-                                             i18n="@@addNewStream" type="button"
-                                             (click)="importVoDStreams2Stalker()">
-                                         <i *ngIf="importingVoDStreams"
-                                            class="fa fa-spinner fa-pulse fa-1x fa-fw"
-                                            aria-hidden="true"></i>Import VoD Streams
-                                     </button>
-                                 </div>
-                             </div>
-                             </div>
-
-                         </fieldset>
-                             </div>
+                                                              </fieldset>
+                                                                  </div>
 
 
 
+                                                                 <div class="col-sm-12 col-md-6">
+                                                             <fieldset>
+                                                                 <legend class="text-left" i18n="@@VoDFolder">Ministra TV Platform</legend>
+                                                                 <div class="form-group">
+                                                                     <label class="col-sm-2 control-label">Options</label>
+                                                                     <div class="text-left">
+                                                                         <div class="col-sm-2 form-control-static ">
+                                                                         <button class="btn btn-default btn-block"
+                                                                                 i18n="@@addNewStream" type="button"
+                                                                                 (click)="importLiveStreams2Stalker()">
+                                                                             <i *ngIf="importingLiveStreams"
+                                                                                class="fa fa-spinner fa-pulse fa-1x fa-fw"
+                                                                                aria-hidden="true"></i>Import Live Streams
+                                                                         </button>
+                                                                         </div>
 
-                             <div class="col-sm-12 col-md-12">
-                                 <fieldset>
-                                     <legend class="text-left" i18n="@@Advanced">Advanced</legend>
-                                     <div class="form-group">
+                                                                         <div class="col-sm-2 form-control-static ">
+                                                                         <button class="btn-block btn btn-default"
+                                                                                 i18n="@@addNewStream" type="button"
+                                                                                 (click)="importVoDStreams2Stalker()">
+                                                                             <i *ngIf="importingVoDStreams"
+                                                                                class="fa fa-spinner fa-pulse fa-1x fa-fw"
+                                                                                aria-hidden="true"></i>Import VoD Streams
+                                                                         </button>
+                                                                     </div>
+                                                                 </div>
+                                                                 </div>
 
-                                         <div class="col-sm-12 col-md-12 text-left">
+                                                             </fieldset>
+                                                                 </div>
 
-                                             <div class="col-sm-12 col-md-12 text-left">
-                                                 <div class="form-group" *ngIf=!isEnterpriseEdition>
-                                                     <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                         Object Detection feature is enabled in
-                                                         <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
-                                                     </p>
-                                                 </div>
-                                             </div>
 
-                                                 <div class="text-left" *ngIf=isEnterpriseEdition>
-                                                     <div class="col-sm-12 col-md-12">
-                                                         <div class="checkbox">
-                                                             <input type="checkbox" name="objectDetection" id="objectDetection" [(ngModel)]="appSettings.objectDetectionEnabled">
-                                                             <label for="objectDetection">
-                                                                 Use Object Detection
-                                                             </label>
-                                                         </div>
-                                                     </div>
-                                                 </div>
 
-                                             <div class="col-sm-12 col-md-12 text-left">
-                                                 <label class="text-left">Vod Streaming Folder.</label>
-                                             </div>
 
-                                             <div class="col-sm-12 col-md-6 text-left">
-                                             <input type="text" name="vodFolderPath"
-                                                    placeholder="Write full path of VoD folder"
-                                                    class="form-control" [(ngModel)]="appSettings.vodFolder"
-                                                    #vodFolderPath="ngModel">
-                                             <small [hidden]="vodFolderPath.valid || (!f.submitted)"
-                                                    class="text-danger">
-                                                 Folder path should be at least 4 characters.
-                                             </small>
-                                             </div>
+                                                                 <div class="col-sm-12 col-md-12">
+                                                                     <fieldset>
+                                                                         <legend class="text-left" i18n="@@Advanced">Advanced</legend>
+                                                                         <div class="form-group">
 
-                                         </div>
-                                     </div>
+                                                                             <div class="col-sm-12 col-md-12 text-left">
 
-                                 </fieldset>
-                             </div>
-                             -->
+                                                                                 <div class="col-sm-12 col-md-12 text-left">
+                                                                                     <div class="form-group" *ngIf=!isEnterpriseEdition>
+                                                                                         <p i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                                                             Object Detection feature is enabled in
+                                                                                             <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
+                                                                                         </p>
+                                                                                     </div>
+                                                                                 </div>
+
+                                                                                     <div class="text-left" *ngIf=isEnterpriseEdition>
+                                                                                         <div class="col-sm-12 col-md-12">
+                                                                                             <div class="checkbox">
+                                                                                                 <input type="checkbox" name="objectDetection" id="objectDetection" [(ngModel)]="appSettings.objectDetectionEnabled">
+                                                                                                 <label for="objectDetection">
+                                                                                                     Use Object Detection
+                                                                                                 </label>
+                                                                                             </div>
+                                                                                         </div>
+                                                                                     </div>
+
+                                                                                 <div class="col-sm-12 col-md-12 text-left">
+                                                                                     <label class="text-left">Vod Streaming Folder.</label>
+                                                                                 </div>
+
+                                                                                 <div class="col-sm-12 col-md-6 text-left">
+                                                                                 <input type="text" name="vodFolderPath"
+                                                                                        placeholder="Write full path of VoD folder"
+                                                                                        class="form-control" [(ngModel)]="appSettings.vodFolder"
+                                                                                        #vodFolderPath="ngModel">
+                                                                                 <small [hidden]="vodFolderPath.valid || (!f.submitted)"
+                                                                                        class="text-danger">
+                                                                                     Folder path should be at least 4 characters.
+                                                                                 </small>
+                                                                                 </div>
+
+                                                                             </div>
+                                                                         </div>
+
+                                                                     </fieldset>
+                                                                 </div>
+                                                                 -->
 
                                 </div>
 
