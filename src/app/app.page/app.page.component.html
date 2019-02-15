@@ -33,7 +33,7 @@
                                 <div>
 
                                     <div class="dropdown text-right" style="float: right">
-                                        <button class="btn btn-fill btn-success" data-toggle="dropdown" i18n="@@newLiveStreamButton" role="button">New Live Stream
+                                        <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" data-toggle="dropdown" role="button">New Live Stream
                                             <span class="caret"></span>
                                         </button>
 
@@ -60,9 +60,9 @@
                                     <br>
                                 </div>
 
-                                <div *ngIf="newLiveStreamActive" class="card">
+                                <div class="card" *ngIf="newLiveStreamActive">
 
-                                    <form #f="ngForm" (ngSubmit)="createLiveStream(f.valid)" method="post" validate>
+                                    <form method="post" #f="ngForm" validate (ngSubmit)="createLiveStream(f.valid)">
                                         <div class="card-header">
                                             <h4 class="card-title text-left" i18n="@@newLiveStreamCardTitle">
                                                 New Live Stream
@@ -71,32 +71,31 @@
                                         <div class="card-content">
                                             <div class="form-group text-left">
                                                 <label i18n="@@newLiveStreamName">Name</label>
-                                                <input #broadcastName="ngModel" [(ngModel)]="liveBroadcast.name" class="form-control" i18n-placeholder="@@stream_name_place_holder" minlength="4" name="broadcastName"
-                                                       placeholder="Stream name" required
-                                                       type="text">
+                                                <input type="text" required minlength="4" name="broadcastName" i18n-placeholder="@@stream_name_place_holder" placeholder="Stream name"
+                                                       class="form-control" [(ngModel)]="liveBroadcast.name"
+                                                       #broadcastName="ngModel">
                                                 <small [hidden]="broadcastName.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                                                     Stream name should be at least 4 characters.
                                                 </small>
-                                                <small *ngIf="streamNameEmpty" class="text-danger">
+                                                <small class="text-danger" *ngIf="streamNameEmpty">
                                                     Stream name should not be empty.
                                                 </small>
                                             </div>
 
-                                            <div *ngIf="videoServiceEndpoints.length>0" class="form-group text-left">
-                                                <label  class="col-sm-12" i18n="@@newLiveStreamSocialShare" style="padding-left:0px">Share</label>
+                                            <div class="form-group text-left" *ngIf="videoServiceEndpoints.length>0">
+                                                <label  class="col-sm-12" style="padding-left:0px" i18n="@@newLiveStreamSocialShare">Share</label>
                                                 <ng-container *ngFor="let endpoint of videoServiceEndpoints; let i = index">
 
                                                     <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
 
+                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
                                                         <label [for]="endpoint.id">
                                                             <ng-container [ngSwitch]="endpoint.serviceName">
                                                                 <ng-container *ngSwitchCase="'facebook'">
-                                                                    <i class="ti-facebook"
-                                                                       style="color:#3b5998">&nbsp;</i>
+                                                                    <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>
                                                                 </ng-container>
                                                                 <ng-container *ngSwitchCase="'youtube'">
-                                                                    <i class="ti-youtube"
-                                                                       style="color:#e52d27">&nbsp;</i>
+                                                                    <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>
                                                                 </ng-container>
                                                                 <ng-container *ngSwitchCase="'periscope'">
                                                                     <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>
@@ -105,19 +104,16 @@
                                                             {{endpoint.accountName}}
                                                         </label>
 
-                                                        <input [(ngModel)]="shareEndpoint[i]" [id]="endpoint.id" [name]="endpoint.id" type="checkbox">
-
-
                                                     </div>
                                                 </ng-container>
                                             </div>
 
                                             <div class="form-group text-center">
 
-                                                <button [disabled]='newLiveStreamCreating' class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton" type="submit">
-                                                    <i *ngIf="newLiveStreamCreating" aria-hidden="true" class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>Create</button>
+                                                <button type="submit" [disabled]='newLiveStreamCreating' class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
+                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newLiveStreamCreating" aria-hidden="true"></i>Create</button>
 
-                                                <button (click)="cancelNewLiveStream()" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" type="button">Cancel</button>
+                                                <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelNewLiveStream()">Cancel</button>
                                             </div>
 
                                         </div>
@@ -125,9 +121,9 @@
                                     </form>
                                 </div>
 
-                                <div *ngIf="newIPCameraActive" class="card">
+                                <div class="card" *ngIf="newIPCameraActive">
 
-                                    <form #f="ngForm" (ngSubmit)="addIPCamera(f.valid)" method="post" validate>
+                                    <form method="post" #f="ngForm" validate (ngSubmit)="addIPCamera(f.valid)">
                                         <div class="card-header">
                                             <h4 class="card-title text-left" i18n="@@newIPCameraTitle">
                                                 New IP Camera
@@ -136,14 +132,14 @@
                                         <div class="card-content">
                                             <div class="form-group text-left">
                                                 <label i18n="@@newLiveStreamName">Name</label>
-                                                <input #broadcastName="ngModel" [(ngModel)]="liveBroadcast.name" class="form-control" minlength="4"
-                                                       name="broadcastName" placeholder="Camera Name"
-                                                       required
-                                                       type="text">
+                                                <input type="text" required minlength="4" name="broadcastName"
+                                                       placeholder="Camera Name" class="form-control"
+                                                       [(ngModel)]="liveBroadcast.name"
+                                                       #broadcastName="ngModel">
                                                 <small [hidden]="broadcastName.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                                                     Camera name should be at least 4 characters.
                                                 </small>
-                                                <small *ngIf="streamNameEmpty" class="text-danger">
+                                                <small class="text-danger" *ngIf="streamNameEmpty">
                                                     Stream name should not be empty.
                                                 </small>
                                             </div>
@@ -154,15 +150,15 @@
                                                         class="btn btn-success btn-simple btn-magnify btn-xs "
                                                         type="button"> discover
                                                 </button>
-                                                <i *ngIf="discoveryStarted" aria-hidden="true"
-                                                   class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>
-                                                <small *ngIf="noCamWarning" class="text-danger">
+                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="discoveryStarted"
+                                                   aria-hidden="true"></i>
+                                                <small class="text-danger" *ngIf="noCamWarning">
                                                     No unregistered camera found, write camera URL manually!
                                                 </small>
-                                                <input #onvifURL="ngModel" [(ngModel)]="liveBroadcast.ipAddr"
-                                                       class="form-control"
-                                                       i18n-placeholder="@@onvifUrl_place_holder" name="onvifURL"
-                                                       placeholder="Onvif Url" type="text">
+                                                <input type="text" name="onvifURL"
+                                                       i18n-placeholder="@@onvifUrl_place_holder"
+                                                       placeholder="Onvif Url" class="form-control"
+                                                       [(ngModel)]="liveBroadcast.ipAddr" #onvifURL="ngModel">
                                                 <small [hidden]="onvifURL.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                                                     URL should be at least 4 characters.
                                                 </small>
@@ -171,29 +167,29 @@
 
                                             <div class="form-group text-left">
                                                 <label i18n="@@newLiveStreamName">User Name</label>
-                                                <input #username="ngModel" [(ngModel)]="liveBroadcast.username"
-                                                       class="form-control"
-                                                       i18n-placeholder="@@username_place_holder" name="username"
-                                                       placeholder="User Name" type="text">
+                                                <input type="text" name="username"
+                                                       i18n-placeholder="@@username_place_holder"
+                                                       placeholder="User Name" class="form-control"
+                                                       [(ngModel)]="liveBroadcast.username" #username="ngModel">
 
                                             </div>
 
                                             <div class="form-group text-left">
                                                 <label i18n="@@newLiveStreamName">Password</label>
-                                                <input #password="ngModel" [(ngModel)]="liveBroadcast.password"
-                                                       class="form-control" i18n-placeholder="@@password_place_holder"
-                                                       name="password"
-                                                       placeholder="Password" type="text">
+                                                <input type="text" name="password"
+                                                       i18n-placeholder="@@password_place_holder" placeholder="Password"
+                                                       class="form-control"
+                                                       [(ngModel)]="liveBroadcast.password" #password="ngModel">
 
                                             </div>
 
 
                                             <div class="form-group text-center">
 
-                                                <button [disabled]='newIPCameraAdding' class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton" type="submit">
-                                                    <i *ngIf="newIPCameraAdding" aria-hidden="true" class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>Add</button>
+                                                <button type="submit" [disabled]='newIPCameraAdding' class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
+                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newIPCameraAdding" aria-hidden="true"></i>Add</button>
 
-                                                <button (click)="cancelNewIPCamera()" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" type="button">Cancel</button>
+                                                <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelNewIPCamera()">Cancel</button>
                                             </div>
 
                                         </div>
@@ -204,9 +200,9 @@
 
 
 
-                                <div *ngIf="newStreamSourceActive" class="card">
+                                <div class="card" *ngIf="newStreamSourceActive">
 
-                                    <form #f="ngForm" (ngSubmit)="addStreamSource(f.valid)" method="post" validate>
+                                    <form method="post" #f="ngForm" validate (ngSubmit)="addStreamSource(f.valid)">
                                         <div class="card-header">
                                             <h4 class="card-title text-left" i18n="@@newLiveStreamCardTitle">
                                                 New Stream Source
@@ -215,16 +211,16 @@
                                         <div class="card-content">
                                             <div class="form-group text-left">
                                                 <label i18n="@@newLiveStreamName">Name</label>
-                                                <input #broadcastName="ngModel" [(ngModel)]="liveBroadcast.name" class="form-control" i18n-placeholder="@@stream_name_place_holder"
-                                                       minlength="4"
-                                                       name="broadcastName"
-                                                       placeholder="Stream name" required
-                                                       type="text">
+                                                <input type="text" required minlength="4" name="broadcastName"
+                                                       i18n-placeholder="@@stream_name_place_holder"
+                                                       placeholder="Stream name"
+                                                       class="form-control" [(ngModel)]="liveBroadcast.name"
+                                                       #broadcastName="ngModel">
                                                 <small [hidden]="broadcastName.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                                                     Stream name should be at least 4 characters.
                                                 </small>
 
-                                                <small *ngIf="streamNameEmpty" class="text-danger">
+                                                <small class="text-danger" *ngIf="streamNameEmpty">
                                                     Stream name should not be empty.
                                                 </small>
                                             </div>
@@ -232,21 +228,21 @@
 
                                             <div class="form-group text-left">
                                                 <label i18n="@@newLiveStreamUrl">Stream URL</label>
-                                                <input #broadcasturl="ngModel" [(ngModel)]="liveBroadcast.streamUrl" class="form-control" i18n-placeholder="@@stream_name_place_holder"
-                                                       minlength="4"
-                                                       name="broadcasturl"
-                                                       placeholder="Stream Url" required
-                                                       type="text">
+                                                <input type="text" required minlength="4" name="broadcasturl"
+                                                       i18n-placeholder="@@stream_name_place_holder"
+                                                       placeholder="Stream Url"
+                                                       class="form-control" [(ngModel)]="liveBroadcast.streamUrl"
+                                                       #broadcasturl="ngModel">
                                                 <small [hidden]="broadcasturl.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                                                     Stream URL is not valid
                                                 </small>
-                                                <small *ngIf="!streamUrlValid" class="text-danger">
+                                                <small class="text-danger" *ngIf="!streamUrlValid">
                                                     Please write a valid stream URL
                                                 </small>
                                             </div>
 
-                                            <div *ngIf="videoServiceEndpoints.length>0" class="form-group text-left">
-                                                <label  class="col-sm-12" i18n="@@newLiveStreamSocialShare" style="padding-left:0px">Share</label>
+                                            <div class="form-group text-left" *ngIf="videoServiceEndpoints.length>0">
+                                                <label  class="col-sm-12" style="padding-left:0px" i18n="@@newLiveStreamSocialShare">Share</label>
                                                 <ng-container *ngFor="let endpoint of videoServiceEndpoints; let i = index">
 
                                                     <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
@@ -254,12 +250,10 @@
                                                         <label [for]="endpoint.id">
                                                             <ng-container [ngSwitch]="endpoint.serviceName">
                                                                 <ng-container *ngSwitchCase="'facebook'">
-                                                                    <i class="ti-facebook"
-                                                                       style="color:#3b5998">&nbsp;</i>
+                                                                    <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>
                                                                 </ng-container>
                                                                 <ng-container *ngSwitchCase="'youtube'">
-                                                                    <i class="ti-youtube"
-                                                                       style="color:#e52d27">&nbsp;</i>
+                                                                    <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>
                                                                 </ng-container>
                                                                 <ng-container *ngSwitchCase="'periscope'">
                                                                     <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>
@@ -268,7 +262,7 @@
                                                             {{endpoint.accountName}}
                                                         </label>
 
-                                                        <input [(ngModel)]="shareEndpoint[i]" [id]="endpoint.id" [name]="endpoint.id" type="checkbox">
+                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
 
 
                                                     </div>
@@ -277,10 +271,10 @@
 
                                             <div class="form-group text-center">
 
-                                                <button [disabled]='newStreamSourceWarn' class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton" type="submit">
-                                                    <i *ngIf="newStreamSourceAdding" aria-hidden="true" class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>Create</button>
+                                                <button type="submit" [disabled]='newStreamSourceWarn' class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
+                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newStreamSourceAdding" aria-hidden="true"></i>Create</button>
 
-                                                <button (click)="cancelStreamSource()" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" type="button">Cancel</button>
+                                                <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelStreamSource()">Cancel</button>
                                             </div>
 
                                         </div>
@@ -290,8 +284,8 @@
 
                                 <br>
 
-                                <div *ngIf="broadcastTableData.dataRows.length>0"
-                                     style="display: flex; justify-content: flex-end">
+                                <div style="display: flex; justify-content: flex-end"
+                                     *ngIf="broadcastTableData.dataRows.length>0">
 
                                     <div class="mat-header">
 
@@ -299,10 +293,10 @@
 
                                     </div>
                                     <div>
-                                        <button (click)="switchToListView()" *ngIf="isGridView" class="btn">
+                                        <button class="btn" *ngIf="isGridView" (click)="switchToListView()">
                                             <i class="fa fa-bars"></i> List
                                         </button>
-                                        <button (click)="switchToGridView()" *ngIf="!isGridView" class="btn">
+                                        <button class="btn" *ngIf="!isGridView" (click)="switchToGridView()">
                                             <i class="fa fa-th-large"></i> Grid
                                         </button>
                                     </div>
@@ -310,8 +304,8 @@
                                 </div>
 
 
-                                <div *ngIf="!isGridView && broadcastTableData.dataRows.length>0" id="broadcastTable"
-                                     style="text-align: left;">
+                                <div id="broadcastTable" style="text-align: left;"
+                                     *ngIf="!isGridView && broadcastTableData.dataRows.length>0">
 
 
                                     <div class="mat-container mat-elevation-z0">
@@ -326,16 +320,16 @@
 
                                                     <ng-container [ngSwitch]="row.type">
                                                         <ng-container *ngSwitchCase="'liveStream'">
-                                                            <img src="/assets/img/icons/video-camera.svg"
-                                                                 style="width: 10%">
+                                                            <img style="width: 10%"
+                                                                 src="/assets/img/icons/video-camera.svg">
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'ipCamera'">
-                                                            <img src="/assets/img/icons/cctv.svg"
-                                                                 style="width: 10%">
+                                                            <img style="width: 10%"
+                                                                 src="/assets/img/icons/cctv.svg">
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'streamSource'">
-                                                            <img src="/assets/img/icons/video-camera.svg"
-                                                                 style="width: 10%">
+                                                            <img style="width: 10%"
+                                                                 src="/assets/img/icons/video-camera.svg">
                                                         </ng-container>
                                                     </ng-container>
 
@@ -364,21 +358,21 @@
 
                                                                 <ng-container *ngSwitchCase="'poor'">
                                                                     <i class="ti-pulse"
+                                                                       style="color:#98000b;font-size: 1.1em"
                                                                        data-toggle="tooltip"
                                                                        i18n-title
-                                                                       style="color:#98000b;font-size: 1.1em"
                                                                        title="Quality: Poor"> </i>
                                                                 </ng-container>
                                                                 <ng-container *ngSwitchCase="'average'">
                                                                     <i class="ti-pulse"
-                                                                       data-toggle="tooltip"
-                                                                       i18n-title style="color:#190e98;font-size: 1.1em"
+                                                                       style="color:#190e98;font-size: 1.1em"
+                                                                       data-toggle="tooltip" i18n-title
                                                                        title="Quality: Average"> </i></ng-container>
                                                                 <ng-container *ngSwitchCase="'good'">
                                                                     <i class="ti-pulse"
+                                                                       style="color:#199826;font-size: 1.1em"
                                                                        data-toggle="tooltip"
                                                                        i18n-title
-                                                                       style="color:#199826;font-size: 1.1em"
                                                                        title="Quality: Good"> </i>
                                                                 </ng-container>
                                                                 Broadcasting
@@ -394,8 +388,8 @@
 
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'finished'">
-                                                            <i *ngSwitchCase="'finished'"
-                                                               class="fa fa-circle text-muted">&nbsp;</i>Offline
+                                                            <i class="fa fa-circle text-muted"
+                                                               *ngSwitchCase="'finished'">&nbsp;</i>Offline
                                                         </ng-container>
                                                     </ng-container>
 
@@ -413,7 +407,7 @@
                                                         HLS :  {{row.hlsViewerCount}}
                                                     </div>
                                                     <div *ngIf="row.webRTCViewerCount > 0">
-                                                        <i (click)="webrtcStats(row)" class="ti-eye " style="color:#199826;font-size: 1.1em"> </i>
+                                                        <i class="ti-eye " style="color:#199826;font-size: 1.1em" (click)="webrtcStats(row)"> </i>
                                                         WebRTC :  {{row.webRTCViewerCount}}
                                                     </div>
                                                     <div *ngIf="row.rtmpViewerCount > 0">
@@ -438,9 +432,9 @@
 
                                                     <ng-container *ngFor="let endpoint of row.endPointList" class="text-center">
                                                         <ng-container [ngSwitch]="endpoint.type">
-                                                            <i *ngSwitchCase="'facebook'" class="ti-facebook" style="color:#3b5998;"> </i>
-                                                            <i *ngSwitchCase="'youtube'" class="ti-youtube" style="color:#e52d27;"> </i>
-                                                            <i *ngSwitchCase="'periscope'" class="ti-twitter-alt" style="color:#55acee;"></i>
+                                                            <i class="ti-facebook" style="color:#3b5998;" *ngSwitchCase="'facebook'"> </i>
+                                                            <i class="ti-youtube" style="color:#e52d27;" *ngSwitchCase="'youtube'"> </i>
+                                                            <i class="ti-twitter-alt" style="color:#55acee;" *ngSwitchCase="'periscope'"></i>
                                                         </ng-container>
 
                                                     </ng-container>
@@ -457,10 +451,10 @@
 
                                                     <div style="font-size: 1.1em">
                                                         <!-- Play Button -->
-                                                        <button (click)="playLive(row.streamId)"
-                                                                *ngIf="row.status=='broadcasting' && (appSettings.webRTCEnabled == true|| appSettings.hlsMuxingEnabled == true) " class="btn btn-success btn-simple btn-magnify btn-xs big-icons" data-toggle="tooltip"
-                                                                i18n-title
-                                                                title="Play Stream"
+                                                        <button *ngIf="row.status=='broadcasting' && (appSettings.webRTCEnabled == true|| appSettings.hlsMuxingEnabled == true) "
+                                                                data-toggle="tooltip" i18n-title title="Play Stream"
+                                                                (click)="playLive(row.streamId)"
+                                                                class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
                                                                 type="button">
                                                             <span class="btn-label">
                                                                 <i class="ti-control-play"></i>
@@ -471,8 +465,8 @@
 
 
                                                         <button *ngIf="row.status=='broadcasting' && appSettings.webRTCEnabled == false  && appSettings.hlsMuxingEnabled == false"
-                                                                class="btn btn-warning btn-simple btn-magnify btn-xs big-icons" data-toggle="tooltip" i18n-title
-                                                                matTooltip="Please enable HLS or WebRTC Live Streaming to watch streams."
+                                                                data-toggle="tooltip" i18n-title matTooltip="Please enable HLS or WebRTC Live Streaming to watch streams."
+                                                                class="btn btn-warning btn-simple btn-magnify btn-xs big-icons"
                                                                 type="button">
                                                               <span class="btn-label">
                                                                 <i class="fa fa-info-circle "></i>
@@ -484,10 +478,10 @@
 
 
                                                         <!--  Social media stats Button -->
-                                                        <button (click)="showLiveComments(row)"
-                                                                *ngIf="row.status=='broadcasting' && hasSocialEndpoint(row)" class="btn btn-success btn-simple btn-magnify btn-xs big-icons" data-toggle="tooltip"
-                                                                i18n-title
-                                                                title="Comments on Social Media"
+                                                        <button *ngIf="row.status=='broadcasting' && hasSocialEndpoint(row)"
+                                                                data-toggle="tooltip" i18n-title title="Comments on Social Media"
+                                                                (click)="showLiveComments(row)"
+                                                                class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
                                                                 type="button">
                                                             <span class="btn-label">
                                                                 <i class="ti-stats-up"></i>
@@ -496,10 +490,10 @@
 
                                                         </button>
                                                         <!-- Edit Broadcast Button -->
-                                                        <button (click)="openBroadcastEditDialog(row)"
-                                                                *ngIf="row.status!='broadcasting'&& row.type=='liveStream'" class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
+                                                        <button *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
+                                                                (click)="openBroadcastEditDialog(row)" title="Edit"
                                                                 data-toggle="tooltip"
-                                                                title="Edit"
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button"
                                                         >
                                                             <span class="btn-label">
@@ -510,11 +504,11 @@
                                                         </button>
 
 
-                                                        <button (click)="openSettingsDialog(row)"
-                                                                *ngIf="row.type=='ipCamera'"
+                                                        <button *ngIf="row.type=='ipCamera'"
+                                                                (click)="openSettingsDialog(row)"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
-                                                                data-toggle="tooltip" i18n-title title="Settings"
-                                                                type="button" >
+                                                                type="button" data-toggle="tooltip" i18n-title
+                                                                title="Settings" >
                                                             <span class="btn-label" style="float: right;">
                                                                 <i class="ti-settings"></i>
                                                             </span>
@@ -522,11 +516,11 @@
                                                             <ng-container i18n="@@tableSettings"></ng-container>
                                                         </button>
 
-                                                        <button (click)="openStreamSourceSettingsDialog(row)"
-                                                                *ngIf="row.type=='streamSource'"
+                                                        <button *ngIf="row.type=='streamSource'"
+                                                                (click)="openStreamSourceSettingsDialog(row)"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
-                                                                data-toggle="tooltip" i18n-title title="Settings"
-                                                                type="button" >
+                                                                type="button" data-toggle="tooltip" i18n-title
+                                                                title="Settings" >
                                                             <span class="btn-label" style="float: right;">
                                                                 <i class="ti-settings"></i>
                                                             </span>
@@ -537,9 +531,9 @@
 
 
                                                         <button (click)="copyLiveEmbedCode(row.streamId)"
-                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons" data-toggle="tooltip"
-                                                                i18n-title
+                                                                data-toggle="tooltip" i18n-title
                                                                 title="Copy Live Embed Code to Clipboard"
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button"
                                                         >
                                                             <span class="btn-label">
@@ -548,12 +542,12 @@
                                                             <ng-container i18n="@@tableEmbedCode"></ng-container>
                                                         </button>
 
-                                                        <button (click)="copyPublishUrl(row.streamId)"
-                                                                *ngIf="row.status!='broadcasting'"
+                                                        <button *ngIf="row.status!='broadcasting'"
+                                                                id="copyPublishUrlButton"
+                                                                (click)="copyPublishUrl(row.streamId)"
+                                                                data-toggle="tooltip"
                                                                 [title]="'Copy Publish URL to Clipboard : ' + getRtmpUrl(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
-                                                                data-toggle="tooltip"
-                                                                id="copyPublishUrlButton"
                                                                 type="button"
                                                         >
                                                             <span class="btn-label">
@@ -563,8 +557,8 @@
                                                         </button>
                                                         <button (click)="deleteLiveBroadcast(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
-                                                                data-toggle="tooltip" i18n-title
-                                                                title="Delete" type="button" >
+                                                                type="button" data-toggle="tooltip"
+                                                                i18n-title title="Delete" >
                                                             <span class="btn-label">
                                                                 <i class="ti-close"></i>
                                                             </span>
@@ -572,11 +566,11 @@
                                                         </button>
 
 
-                                                        <button (click)="showDetectedObject(row.streamId)"
-                                                                *ngIf="appSettings.objectDetectionEnabled==true"
+                                                        <button *ngIf="appSettings.objectDetectionEnabled==true"
+                                                                (click)="showDetectedObject(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-danger btn-xs "
-                                                                data-toggle="tooltip" i18n-title
-                                                                style="font-size: 1.1em" title="Object Detected" type="button">
+                                                                type="button" data-toggle="tooltip"
+                                                                i18n-title title="Object Detected" style="font-size: 1.1em">
                                                             <span class="btn-label">
                                                                 <i class="ti-target"></i>
                                                             </span>
@@ -595,9 +589,9 @@
                                         </mat-table>
 
                                         <mat-paginator
+                                                [pageSizeOptions]="pageSizeOptions"
                                                 (page)="onListPaginateChange($event)"
                                                 [length]="listLength"
-                                                [pageSizeOptions]="pageSizeOptions"
                                                 [pageSize]="pageSize"
                                         >
                                         </mat-paginator>
@@ -609,14 +603,14 @@
                                 <div class="main">
 
 
-                                    <div *ngIf="broadcastTableData.dataRows.length>0 && isGridView" class="cbp-vm-switcher cbp-vm-view-list"
-                                         id="cbp-vm">
+                                    <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list"
+                                         *ngIf="broadcastTableData.dataRows.length>0 && isGridView">
 
                                         <ul>
                                             <div>
 
-                                                <div *ngFor="let row of broadcastGridTableData.dataRows"
-                                                     class="card col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                                                <div class="card col-md-6 col-lg-6 col-sm-12 col-xs-12"
+                                                     *ngFor="let row of broadcastGridTableData.dataRows">
 
 
                                                     <div class="card-content">
@@ -628,8 +622,8 @@
                                                         <div class="embed-container">
 
 
-                                                            <iframe allowfullscreen="true"
-                                                                    id="{{row.streamId}}"></iframe>
+                                                            <iframe id="{{row.streamId}}"
+                                                                    allowfullscreen="true"></iframe>
 
 
                                                         </div>
@@ -656,11 +650,11 @@
 
 
 
-                                                            <button (click)="showDetectedObject(row.streamId)"
-                                                                    *ngIf="appSettings.objectDetectionEnabled==true"
+                                                            <button *ngIf="appSettings.objectDetectionEnabled==true"
+                                                                    (click)="showDetectedObject(row.streamId)"
                                                                     class="btn btn-simple btn-magnify btn-danger btn-xs "
-                                                                    data-toggle="tooltip" i18n-title
-                                                                    style="float: right;font-size: 1.1em" title="Object Detected" type="button">
+                                                                    type="button" data-toggle="tooltip"
+                                                                    i18n-title title="Object Detected" style="float: right;font-size: 1.1em">
                                                                 <span class="btn-label">
                                                                     <i class="ti-target"></i>
                                                                 </span>
@@ -672,9 +666,9 @@
 
                                                             <button (click)="deleteLiveBroadcast(row.streamId)"
                                                                     class="btn btn-simple btn-magnify btn-danger btn-xs "
-                                                                    data-toggle="tooltip" i18n-title
-                                                                    style="float: right;font-size: 1.2em;" title="Delete"
-                                                                    type="button">
+                                                                    type="button" data-toggle="tooltip"
+                                                                    i18n-title title="Delete"
+                                                                    style="float: right;font-size: 1.2em;">
                                                                 <span class="btn-label">
                                                                     <i class="ti-close"></i>
                                                                 </span>
@@ -683,33 +677,33 @@
 
 
                                                             <button (click)="copyLiveEmbedCode(row.streamId)"
-                                                                    class="btn btn-simple btn-magnify btn-info btn-xs " data-toggle="tooltip"
-                                                                    i18n-title
-                                                                    style="float: right;font-size: 1.2em;"
+                                                                    data-toggle="tooltip" i18n-title
                                                                     title="Copy Live Embed Code to Clipboard"
-                                                                    type="button">
+                                                                    class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                    type="button"
+                                                                    style="float: right;font-size: 1.2em;">
                                                                 <span class="btn-label">
                                                                     <i class="ti-share"></i>
                                                                 </span>
                                                                 <ng-container i18n="@@tableEmbedCode"></ng-container>
                                                             </button>
-                                                            <button (click)="copyPublishUrl(row.streamId)" *ngIf="row.status!='broadcasting'" [title]="'Copy Publish URL to Clipboard : ' + getRtmpUrl(row.streamId)" class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                    data-toggle="tooltip"
-                                                                    id="copyPublishUrlButton"
-                                                                    style="float: right;font-size: 1.2em;"
-                                                                    type="button">
+                                                            <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
+                                                                    [title]="'Copy Publish URL to Clipboard : ' + getRtmpUrl(row.streamId)"
+                                                                    class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                    type="button"
+                                                                    style="float: right;font-size: 1.2em;">
                                                                 <span class="btn-label">
                                                                     <i class="ti-clipboard"></i>
                                                                 </span>
                                                                 <ng-container i18n="@@copyPublishUrl"></ng-container>
                                                             </button>
 
-                                                            <button (click)="openBroadcastEditDialog(row)"
-                                                                    *ngIf="row.status!='broadcasting'&& row.type=='liveStream'" class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                            <button *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
+                                                                    (click)="openBroadcastEditDialog(row)" title="Edit"
                                                                     data-toggle="tooltip"
-                                                                    style="float: right;font-size: 1.2em;"
-                                                                    title="Edit"
-                                                                    type="button">
+                                                                    class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                    type="button"
+                                                                    style="float: right;font-size: 1.2em;">
                                                                 <span class="btn-label">
                                                                     <i class="ti-pencil"></i>
                                                                 </span>
@@ -718,11 +712,11 @@
                                                             </button>
 
 
-                                                            <button (click)="openSettingsDialog(row)"
-                                                                    *ngIf="row.type=='ipCamera'"
+                                                            <button *ngIf="row.type=='ipCamera'"
+                                                                    (click)="openSettingsDialog(row)"
                                                                     class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                    data-toggle="tooltip" i18n-title style="float: right;font-size: 1.2em;"
-                                                                    title="Settings" type="button">
+                                                                    type="button" data-toggle="tooltip" i18n-title
+                                                                    title="Settings" style="float: right;font-size: 1.2em;">
                                                             <span class="btn-label" >
                                                                 <i class="ti-settings"></i>
                                                             </span>
@@ -731,11 +725,11 @@
                                                             </button>
 
 
-                                                            <button (click)="openStreamSourceSettingsDialog(row)"
-                                                                    *ngIf="row.type=='streamSource'"
+                                                            <button *ngIf="row.type=='streamSource'"
+                                                                    (click)="openStreamSourceSettingsDialog(row)"
                                                                     class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                    data-toggle="tooltip" i18n-title style="float: right;font-size: 1.2em;"
-                                                                    title="Settings" type="button">
+                                                                    type="button" data-toggle="tooltip" i18n-title
+                                                                    title="Settings" style="float: right;font-size: 1.2em;">
                                                             <span class="btn-label" >
                                                                 <i class="ti-settings"></i>
                                                             </span>
@@ -750,9 +744,9 @@
                                             </div>
                                         </ul>
                                         <div>
-                                            <mat-paginator (page)="onGridPaginateChange($event)"
+                                            <mat-paginator [pageSizeOptions]="[4, 10, 25]"
                                                            [length]="listLength"
-                                                           [pageSizeOptions]="[4, 10, 25]">
+                                                           (page)="onGridPaginateChange($event)">
 
 
                                             </mat-paginator>
@@ -770,19 +764,14 @@
 
                     </div>
 
-
-
-
-
                     <div class="tab-pane" id="vod">
-
                         <div class="card">
                             <div class="card-content">
 
                                 <div class=" text-right">
 
                                     <div>
-                                        <button (click)="openVodUploadDialog()" class="btn btn-fill btn-success"
+                                        <button class="btn btn-fill btn-success" (click)="openVodUploadDialog()"
                                                 data-toggle="dropdown" role="button">Upload VoD
                                         </button>
 
@@ -790,8 +779,8 @@
 
                                 </div>
 
-                                <div *ngIf=" vodTableData.dataRows.length>0" id="vodTable"
-                                     style="text-align: left">
+                                <div id="vodTable" style="text-align: left"
+                                     *ngIf=" vodTableData.dataRows.length>0">
 
                                     <br>
                                     <div class="mat-container mat-elevation-z0">
@@ -847,16 +836,31 @@
                                                     </button>
 
                                                     <button (click)="copyVoDEmbedCode(row.vodName, row.type, row.vodId)"
-                                                            class="btn btn-simple btn-magnify btn-info btn-xs " data-toggle="tooltip"
-                                                            i18n-title
-                                                            style="font-size: 1.1em"
+                                                            data-toggle="tooltip" i18n-title
                                                             title="Copy Live Embed Code to Clipboard"
-                                                            type="button">
+                                                            class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                            type="button"
+                                                            style="font-size: 1.1em">
                                                             <span class="btn-label">
                                                                 <i class="ti-share"></i>
                                                             </span>
                                                         <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
                                                     </button>
+
+
+                                                    <a (click)="downloadFile(row.vodName ,row.type,row.vodId, row.streamId)" download>
+                                                    <button
+                                                            data-toggle="tooltip" i18n-title
+                                                            title="VoD Donwloading"
+                                                            class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                            type="button"
+                                                            style="font-size: 1.1em" >
+                                                            <span class="btn-label">
+                                                                <i class="ti-download"></i>
+                                                            </span>
+                                                        <ng-container i18n="@@tableDownloadButton">Download</ng-container>
+                                                    </button>
+                                                        </a>
 
                                                     <button (click)="deleteVoD(row.vodName, row.vodId, row.type)" class="btn btn-simple btn-magnify btn-danger" type="button">
                                                         <span class="btn-label">
@@ -873,10 +877,10 @@
                                             </mat-row>
                                         </mat-table>
 
-                                        <mat-paginator (page)="onPaginateChange($event)"
-                                                       [length]="vodLength"
-                                                       [pageSizeOptions]="pageSizeOptions"
+                                        <mat-paginator [length]="vodLength"
                                                        [pageSize]="pageSize"
+                                                       [pageSizeOptions]="pageSizeOptions"
+                                                       (page)="onPaginateChange($event)"
                                         >
                                         </mat-paginator>
                                     </div>
@@ -1004,32 +1008,9 @@
                                                             <div class="col-sm-12 col-md-12 text-left">
                                                                 <div class="col-sm-4 text-left">
 
-
-                                                                    <!--
-                                                                    <div class="dropdown">
-                                                                        <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
-                                                                            <label for="addDateTimeToMp4FileName"    [(ngModel)]="encoderSetting.videoBitrate" i18n="@@addDateTimeToMP4Recordings">
-                                                                                Choose
-                                                                            </label>
-
-
-                                                                            <b class="caret"></b>
-                                                                        </a>
-                                                                        <ul class="dropdown-menu">
-                                                                            <li><a href="#paper">1080p</a></li>
-                                                                            <li><a href="#paper">720p</a></li>
-                                                                            <li><a href="#paper">480p</a></li>
-                                                                            <li><a href="#paper">360p</a></li>
-                                                                            <li><a href="#paper">144p</a></li>
-                                                                        </ul>
-                                                                    </div>
-                                                                     <input type="number" [name]="'resolutionHeight'+i" class="form-control" [(ngModel)]="encoderSetting.height">
-                                                                    -->
-
-
-                                                                    <select #resolutionList
-                                                                            class="dropdown-toggle form-control  selectpicker">
-                                                                        <option value="1080">1080p</option>
+                                                                    <select #resolutionList  [name]="'resolutionHeight'+i" [(ngModel)]="encoderSetting.height"
+                                                                            class="dropdown-toggle form-control selectpicker">
+                                                                        <option value="1080" selected="selected" >1080p</option>
                                                                         <option value="720">720p</option>
                                                                         <option value="480">480p</option>
                                                                         <option value="360">360p</option>
@@ -1037,100 +1018,51 @@
 
                                                                     </select>
 
-
-
                                                                 </div>
                                                                 <div class="col-sm-4 text-left">
 
-                                                                    <select *ngIf="resolutionList.value == '1080'"
+                                                                    <select *ngIf="resolutionList.value == '1080'"  [name]="'videobitrate'"  [(ngModel)]="encoderSetting.videoBitrate"
                                                                             class="dropdown-toggle form-control  selectpicker">
-                                                                        <option value="6000">High (6.000)</option>
+                                                                        <option value="6000" selected>High (6.000)</option>
                                                                         <option value="4000">Medium (4.000)</option>
                                                                         <option value="3000">Low (3.000)</option>
 
                                                                     </select>
 
-                                                                    <select *ngIf="resolutionList.value == '720'"
-                                                                            class="dropdown-toggle form-control  selectpicker">
-                                                                        <option value="1080">High (4.000)</option>
-                                                                        <option value="720">Medium (2.500)</option>
-                                                                        <option value="480p">Low (1.200)</option>
+                                                                    <select *ngIf="resolutionList.value == '720'"  [name]="'videobitrate'"  [(ngModel)]="encoderSetting.videoBitrate"
+                                                                            class="dropdown-toggle form-control  selectpicker" >
+                                                                        <option value="4000" selected>High (4.000)</option>
+                                                                        <option value="2500">Medium (2.500)</option>
+                                                                        <option value="1200">Low (1.200)</option>
 
                                                                     </select>
 
-                                                                    <select *ngIf="resolutionList.value == '480'"
+                                                                    <select *ngIf="resolutionList.value == '480'"  [name]="'videobitrate'" [(ngModel)]="encoderSetting.videoBitrate"
                                                                             class="dropdown-toggle form-control  selectpicker">
-                                                                        <option value="1080">High (2.000)</option>
-                                                                        <option value="720">Medium (1.200)</option>
-                                                                        <option value="480p">Low (600)</option>
-
-                                                                    </select>
-
-
-                                                                    <select *ngIf="resolutionList.value == '360'"
-                                                                            class="dropdown-toggle form-control  selectpicker">
-                                                                        <option value="1080">High (1.000)</option>
-                                                                        <option value="720">Medium (700)</option>
-                                                                        <option value="480p">Low (400)</option>
-
-                                                                    </select>
-
-                                                                    <select *ngIf="resolutionList.value == '240'"
-                                                                            class="dropdown-toggle form-control  selectpicker">
-                                                                        <option value="1080">High (700)</option>
-                                                                        <option value="720">Medium (500)</option>
-                                                                        <option value="480p">Low (300)</option>
+                                                                        <option value="2000" selected >High (2.000)</option>
+                                                                        <option value="1200">Medium (1.200)</option>
+                                                                        <option value="600">Low (600)</option>
 
                                                                     </select>
 
 
-                                                                    <!--
+                                                                    <select *ngIf="resolutionList.value == '360'"  [name]="'videobitrate'" [(ngModel)]="encoderSetting.videoBitrate"
+                                                                            class="dropdown-toggle form-control  selectpicker">
+                                                                        <option value="1000" selected >High (1.000)</option>
+                                                                        <option value="700" >Medium (700)</option>
+                                                                        <option value="400">Low (400)</option>
 
-                                                                    <input type="number" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate">
-                                                                    <div class="dropdown">
-                                                                        <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
-                                                                            <label for="addDateTimeToMp4FileName"    [(ngModel)]="encoderSetting.videoBitrate" i18n="@@addDateTimeToMP4Recordings">
-                                                                     1080p
-                                                                            </label>
+                                                                    </select>
 
+                                                                    <select *ngIf="resolutionList.value == '240'"  [name]="'videobitrate'"  [(ngModel)]="encoderSetting.videoBitrate"
+                                                                            class="dropdown-toggle form-control  selectpicker">
+                                                                        <option value="700" selected>High (700)</option>
+                                                                        <option value="500">Medium (500)</option>
+                                                                        <option value="300">Low (300)</option>
 
-                                                                            <b class="caret"></b>
-                                                                        </a>
-                                                                        <ul class="dropdown-menu">
-                                                                            <li><a href="#paper">1080p</a></li>
-                                                                            <li><a href="#paper">720p</a></li>
-                                                                            <li><a href="#paper">480p</a></li>
-                                                                            <li><a href="#paper">360p</a></li>
-                                                                            <li><a href="#paper">144p</a></li>
-                                                                        </ul>
-                                                                    </div>
-                                                                    -->
+                                                                    </select>
 
                                                                 </div>
-
-                                                                <!--     <div class="col-sm-3 text-left">
-                                                                         <input type="number" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate">
-
-
-                                                                        <div class="dropdown">
-                                                                              <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
-                                                                                  <label for="addDateTimeToMp4FileName"    [(ngModel)]="encoderSetting.videoBitrate" i18n="@@addDateTimeToMP4Recordings">
-                                                                                      Choose
-                                                                                  </label>
-
-
-                                                                                  <b class="caret"></b>
-                                                                              </a>
-                                                                              <ul class="dropdown-menu">
-                                                                                  <li><a href="#paper">1080p</a></li>
-                                                                                  <li><a href="#paper">720p</a></li>
-                                                                                  <li><a href="#paper">480p</a></li>
-                                                                                  <li><a href="#paper">360p</a></li>
-                                                                                  <li><a href="#paper">144p</a></li>
-                                                                              </ul>
-                                                                          </div>
-                                                                          -->
-
 
 
                                                                 <div class="col-sm-1 text-left">
@@ -1280,10 +1212,11 @@
 
                                                     <div class="checkbox">
 
-                                                        <label for="externalEnabled" i18n="@@externalEnabled">
+                                                        <label  for="acceptOnlyStreamsInDataStore"
+                                                                i18n="@@acceptOnlyStreamsInDataStore">
                                                             Use External Sources
                                                         </label>
-                                                        <input id="externalEnabled" name="externalEnabled" type="checkbox" >
+                                                        <input [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" id="externalEnabled" name="externalEnabled" type="checkbox" >
 
 
 
@@ -1294,23 +1227,25 @@
                                             </div>
 
 
+                                            <!--
                                             <div class="form-group">
 
                                                 <div class="col-xs-10 col-sm-6 col-md-6 text-right">
 
                                                     <div class="checkbox">
 
-                                                        <label for="acceptOnlyStreamsInDataStore"
-                                                               i18n="@@acceptOnlyStreamsInDataStore">
+                                                        <label for="IpFilteringEnabled"
+                                                               i18n="@@IpFilteringEnabled">
                                                             Use Ip Filtering for RESTful API
                                                         </label>
-                                                        <input [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" type="checkbox">
+                                                        <input [(ngModel)]="appSettings.IpFiltering" id="IpFilteringEnabled" name="IpFilteringEnabled" type="checkbox">
 
                                                     </div>
 
 
                                                 </div>
                                             </div>
+                                            -->
 
                                         </div>
 
@@ -1492,152 +1427,8 @@
                                             </div>
                                         </div>
 
-                                        <!--
-                                        <div class="form-group" style="margin-top:10px">
-
-                                            <div class="row">
-
-                                                <button class="col-sm-2 form-control-static btn btn-default "
-                                                        style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                        (click)="getSocialMediaAuthParameters('facebook')">
-
-                                                    <i class="ti-facebook"></i> Add Facebook
-                                                </button>
-
-                                                <button class="col-sm-2 form-control-static btn btn-default  "
-                                                        style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                        (click)="getSocialMediaAuthParameters('youtube')">
-
-                                                    <i class="ti-youtube"></i> Add Youtube
-                                                </button>
-
-                                                <button class="col-sm-2 form-control-static btn btn-default "
-                                                        style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                        (click)="getSocialMediaAuthParameters('periscope')">
-
-
-                                                    <i class="ti-twitter-alt"></i> Add Periscope
-                                                </button>
-                                            </div>
-                                            <div class="row">
-                                                <a class="btn btn-simple col-sm-12" *ngIf="gettingDeviceParameters">
-                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-                                                </a>
-                                                <a class="btn btn-simple col-sm-12" *ngIf="waitingForConfirmation">
-                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-                                                    Waiting for confirmation
-                                                </a>
-                                            </div>
-
-
-                                      </div>
-
--->
-
 
                                     </div>
-
-
-                                    <!--
-
-                                                                        <div class="col-sm-12 col-md-6">
-                                                              <fieldset>
-                                                                  <legend class="text-left" i18n="@@Security">Security</legend>
-                                                                  <div class="form-group">
-                                                                      <label class="col-sm-2 control-label">Stream Publishing</label>
-                                                                      <div class="text-left" >
-                                                                          <div class="col-sm-2">
-                                                                              <div class="radio">
-                                                                              <input class="radio" type="radio" name="acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" [value]="false" [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore">
-                                                                              <label for="acceptOnlyStreamsInDataStore">
-                                                                                  Allow All
-                                                                              </label>
-                                                                              </div>
-                                                                          </div>
-
-                                                                          <div class="col-sm-2">
-                                                                              <div class="radio">
-                                                                              <input class="radio" type="radio" name="acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore2" [value]="true" [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore">
-                                                                              <label for="acceptOnlyStreamsInDataStore2">
-                                                                                  Allow Only In Database
-                                                                              </label>
-                                                                              </div>
-                                                                          </div>
-                                                                      </div>
-                                                                  </div>
-
-                                                                  <div class="form-group">
-                                                                      <label class="col-sm-2 control-label">
-                                                                          One-Time Token <a href="https://antmedia.io/secure-video-streaming/" target="_blank"  matTooltip="Token is required for publishing and playing.
-                                                                             You need to create token and provide for these operations. Use 'getToken' rest service for that. Click icon for details."><i class="fa fa-info-circle"></i></a>
-                                                                      </label>
-
-
-                                                                      <div class="form-group text-center" *ngIf=!isEnterpriseEdition>
-                                                                          <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                                              This feature is enabled in
-                                                                              <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
-                                                                          </p>
-                                                                      </div>
-
-                                                                      <div class="text-left" *ngIf=isEnterpriseEdition>
-                                                                          <div class="col-sm-2">
-                                                                              <div class="radio">
-                                                                              <input type="radio" name="tokenControlEnabled" id="tokenControlEnabled" [value]="false" [(ngModel)]="appSettings.tokenControlEnabled">
-                                                                              <label for="tokenControlEnabled">
-                                                                                  Disable
-                                                                              </label>
-                                                                              </div>
-                                                                          </div>
-
-                                                                          <div class="col-sm-2">
-                                                                              <div class="radio">
-                                                                              <input type="radio" name="tokenControlEnabled" id="tokenControlEnabled2" [value]="true" [(ngModel)]="appSettings.tokenControlEnabled">
-                                                                              <label for="tokenControlEnabled2">
-                                                                                  Enable
-                                                                              </label>
-                                                                              </div>
-                                                                          </div>
-                                                                      </div>
-                                                                  </div>
-
-                                                              </fieldset>
-                                                                  </div>
-
-
-
-                                                                 <div class="col-sm-12 col-md-6">
-                                                             <fieldset>
-                                                                 <legend class="text-left" i18n="@@VoDFolder">Ministra TV Platform</legend>
-                                                                 <div class="form-group">
-                                                                     <label class="col-sm-2 control-label">Options</label>
-                                                                     <div class="text-left">
-                                                                         <div class="col-sm-2 form-control-static ">
-                                                                         <button class="btn btn-default btn-block"
-                                                                                 i18n="@@addNewStream" type="button"
-                                                                                 (click)="importLiveStreams2Stalker()">
-                                                                             <i *ngIf="importingLiveStreams"
-                                                                                class="fa fa-spinner fa-pulse fa-1x fa-fw"
-                                                                                aria-hidden="true"></i>Import Live Streams
-                                                                         </button>
-                                                                         </div>
-
-                                                                         <div class="col-sm-2 form-control-static ">
-                                                                         <button class="btn-block btn btn-default"
-                                                                                 i18n="@@addNewStream" type="button"
-                                                                                 (click)="importVoDStreams2Stalker()">
-                                                                             <i *ngIf="importingVoDStreams"
-                                                                                class="fa fa-spinner fa-pulse fa-1x fa-fw"
-                                                                                aria-hidden="true"></i>Import VoD Streams
-                                                                         </button>
-                                                                     </div>
-                                                                 </div>
-                                                                 </div>
-
-                                                             </fieldset>
-                                                                 </div>
-
--->
 
 
                                     <div [hidden]="!advancedSetting" class="card">
@@ -1754,12 +1545,9 @@
             </div>
 
 
-
         </div>
     </div>
 
 
 
 </div>
-
-

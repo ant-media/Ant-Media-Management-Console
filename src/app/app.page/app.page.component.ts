@@ -1051,22 +1051,22 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    downloadFile(vodName: string, type: string, vodId: string, streamId: string): void {
+    downloadFile(vodName: string, type: string, vodId:string, streamId:string): void {
 
         var srcFile = null;
         var vodUrlName = null;
 
         if (type == "uploadedVod") {
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4';
-            vodUrlName = vodId;
-        } else if (type == "streamVod") {
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4'  ;
+            vodUrlName = vodId ;
+        }else if (type == "streamVod"){
             srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName;
-            vodUrlName = vodName;
-        } else if (type == "userVod") {
+            vodUrlName = vodName ;
+        }else if (type == "userVod") {
             var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
             var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
             srcFile = HTTP_SERVER_ROOT + this.appName + '/streams' + folderName + '/' + vodName;
-            vodUrlName = vodName;
+            vodUrlName = vodName ;
         }
 
         const link = document.createElement("a");
@@ -1386,8 +1386,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.appSettings.encoderSettings = [];
         }
         this.appSettings.encoderSettings.push({
-            height: 0,
-            videoBitrate: 0,
+            height: 1080,
+            videoBitrate: 6000,
             audioBitrate: 0
         });
     }

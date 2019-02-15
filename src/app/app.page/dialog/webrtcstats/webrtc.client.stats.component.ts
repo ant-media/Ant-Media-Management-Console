@@ -12,7 +12,7 @@ declare var swal: any;
 @Component({
     selector: 'webrct-client-stats-component',
     templateUrl: './webrtc.client.stats.component.html',
-    styles: ['./webrtc.client.stats.component.css']
+    styleUrls: ['./webrtc.client.stats.component.css']
 })
 
 export class WebRTCClientStatsComponent {
@@ -45,8 +45,6 @@ export class WebRTCClientStatsComponent {
         this.getStats();
 
 
-
-
         //call get comments and interaction periodically
         this.timerId = window.setInterval(() => {
             //add new comments to list and update the interaction
@@ -70,7 +68,7 @@ export class WebRTCClientStatsComponent {
     getWebRTCStatsTotal(appName:string, streamId:string) {
         this.restService.getWebRTCStats(appName, streamId).subscribe(data =>
         {
-            this.webrtcLenght=null;
+            this.webrtcLenght = null;
             for (var i in data) {
                 this.webrtcLenght++;
             }
@@ -97,61 +95,39 @@ export class WebRTCClientStatsComponent {
     ngAfterViewInit() {
         var bitrateChartData = {
             series: [
-                {"name":"measured", "data":[]},
-                {"name":"send", "data":[]},
+                {"name": "measured", "data": []},
+                {"name": "send", "data": []},
             ]
         };
 
         var sendPeriodChartData = {
             series: [
-                {"name":"Video", "data":[]},
-                {"name":"Audio", "data":[]},
+                {"name": "Video", "data": []},
+                {"name": "Audio", "data": []},
             ]
         };
-
-        /*  var bitrateOptions = {
-                  seriesBarDistance: 10,
-                  axisX: {
-                      showGrid: false
-                  },
-                  axisY: {
-                      labelInterpolationFnc: function(value) {
-                          return (value / 1000) + 'k';
-                        }
-                  },
-                  height: "250px",
-                  plugins: [legend()]
-          };
-          */
         var bitrateOptions = {
 
             axisY: {
-                labelInterpolationFnc: function(value) {
+                labelInterpolationFnc: function (value) {
                     return (value / 1000) + 'k';
                 }
             },
 
             axisX: {
-                labelInterpolationFnc: function(value) {
-                    return 'Client ' + value ;
+                labelInterpolationFnc: function (value) {
+                    return 'Client ' + value;
                 }
             },
-
 
 
             height: "250px",
             plugins: [legend()]
         };
 
-
-
-
         var sendPeriodOptions = {
 
             low: 0,
-
-            // As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
-
             axisX: {
                 labelInterpolationFnc: function (value) {
                     return 'Client ' + value;
@@ -161,48 +137,9 @@ export class WebRTCClientStatsComponent {
             height: "250px",
             plugins: [legend()]
         };
-
-        /*  this.bitrateChart = new Chartist.Bar('#bitrateChart', bitrateChartData, bitrateOptions).on('draw', function(data) {
-                if(data.type === 'bar') {
-                    var w = data.chartRect.width()/data.axisX.ticks.length*0.9;
-                    data.element.attr({
-                      style: 'stroke-width: '+w+'px'
-                    });
-                  }
-                });
-                */
-
-
-
-        this.bitrateChart = new Chartist.Bar('#bitrateChart', bitrateChartData, bitrateOptions).on('draw', function(data) {
-            if(data.type === 'bar') {
-                var w = data.chartRect.width()/data.axisX.ticks.length*0.1;
-                data.element.attr({
-                    // style: 'stroke-width: '+w+'px'
-                    //   style: 'stroke-width: 40px;'
-
-                });
-            }
-        });
+        this.bitrateChart = new Chartist.Bar('#bitrateChart', bitrateChartData, bitrateOptions);
 
         this.mediaPeriodChart = new Chartist.Line('#mediaSendPeriodChart', sendPeriodChartData, sendPeriodOptions);
-
-
-        /*    this.mediaPeriodChart = new Chartist.Line('#mediaSendPeriodChart', sendPeriodChartData, {
-
-                fullWidth: true,
-                // As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
-                axisY: {
-
-                    offset: 1
-                },
-                axisX: {
-                    showGrid: false,
-                    offset: 1
-                },
-                plugins: [legend()]
-            });
-            */
     }
 
     update(data) {
@@ -231,16 +168,16 @@ export class WebRTCClientStatsComponent {
         var bitrateChartData = {
             labels: labels,
             series: [
-                {"name":"measured", "data":measuredBitrates},
-                {"name":"send", "data":sendBitrates},
+                {"name": "measured", "data": measuredBitrates},
+                {"name": "send", "data": sendBitrates},
             ]
         };
 
         var sendPeriodChartData = {
             labels: labels,
             series: [
-                {"name":"Video", "data":videoFrameSendPeriods},
-                {"name":"Audio", "data":audioFrameSendPeriods},
+                {"name": "Video", "data": videoFrameSendPeriods},
+                {"name": "Audio", "data": audioFrameSendPeriods},
             ]
         };
 
