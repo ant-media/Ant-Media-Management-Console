@@ -16,11 +16,19 @@
 /*           Social buttons            */
 
 
-@media (max-width: 950px) {
+@media (max-width: 990px) {
+  .mobile-text-left {
+    text-align: left !important;
+  }
+
+}
+
+@media (max-width: 990px) {
     .row-mobile {
         display: table;
         margin: auto;
     }
+
 }
 
 .ct-blue {

@@ -908,7 +908,7 @@
 
                                         <div class="card-content">
 
-                                            <div class="form-group">
+                                            <div *ngIf=isEnterpriseEdition class="form-group">
 
                                                 <div class="col-sm-12 col-md-12 text-left">
 
@@ -925,6 +925,14 @@
                                                 </div>
 
                                             </div>
+
+                                            <div *ngIf=!isEnterpriseEdition class="form-group text-center">
+                                                <p i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                    These features are enabled in
+                                                    <a href="https://antmedia.io">Ant Media Server Enterprise
+                                                        Edition.</a>
+                                                </p>
+                                            </div>
                                         </div>
 
                                     </div>
@@ -940,6 +948,7 @@
                                         </div>
 
                                         <div class="card-content">
+
                                             <div *ngIf=isEnterpriseEdition class="form-group">
 
                                                 <div class="col-sm-12 col-md-10 text-left">
@@ -972,6 +981,7 @@
 
                                                 </div>
                                             </div>
+
 
 
 
@@ -1178,7 +1188,8 @@
                                                     <div class="col-sm-12 text-left col-md-12">
 
 
-                                                        <label class="col-sm-12 text-left col-md-3 control-label" i18n="@@HLSSegmentListSize">Segment List Size</label>
+                                                        <label class="col-sm-12 text-left col-md-3 mobile-text-left control-label"
+                                                               i18n="@@HLSSegmentListSize">Segment List Size</label>
 
 
                                                         <div class="col-sm-12 text-left col-md-3">
@@ -1195,7 +1206,8 @@
                                                     <div class="col-sm-12 text-left col-md-12">
 
 
-                                                        <label class="col-sm-12 text-left col-md-3 control-label" i18n="@@HLSSegmentDuration">Segment Duration</label>
+                                                        <label class="col-sm-12 text-left mobile-text-left col-md-3 control-label"
+                                                               i18n="@@HLSSegmentDuration">Segment Duration</label>
 
 
                                                         <div class="col-sm-12 text-left col-md-3">
@@ -1241,7 +1253,8 @@
                                                     </p>
                                                 </div>
 
-                                                <div *ngIf=isEnterpriseEdition class="col-sm-12 col-md-6 text-right ">
+                                                <div *ngIf=isEnterpriseEdition
+                                                     class="col-xs-10  col-sm-6 col-md-6 text-right ">
                                                     <div class="checkbox">
                                                         <label for="tokenControlEnabled">
                                                             Streaming only with one time token
@@ -1262,7 +1275,8 @@
                                                     </p>
                                                 </div>
 
-                                                <div *ngIf=isEnterpriseEdition class="col-sm-12 col-md-6 text-right">
+                                                <div *ngIf=isEnterpriseEdition
+                                                     class="col-xs-10 col-sm-6 col-md-6 text-right">
 
                                                     <div class="checkbox">
 
@@ -1282,7 +1296,7 @@
 
                                             <div class="form-group">
 
-                                                <div class="col-sm-12 col-md-6 text-right">
+                                                <div class="col-xs-10 col-sm-6 col-md-6 text-right">
 
                                                     <div class="checkbox">
 
@@ -1319,7 +1333,7 @@
 
 
                                                     <div class="form-group">
-                                                        <div class="col-sm-12 col-md-6 text-right">
+                                                        <div class="col-xs-10 col-sm-6 col-md-6 text-right">
                                                             <div class="checkbox">
 
                                                                 <label for="mp4MuxingEnabled"
@@ -1333,7 +1347,7 @@
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <div class="col-sm-12 col-md-6 text-right">
+                                                        <div class="col-xs-10 col-sm-6 col-md-6 text-right">
                                                             <div class="checkbox">
                                                                 <label for="addDateTimeToMp4FileName"
                                                                        i18n="@@addDateTimeToMP4Recordings">
@@ -1623,57 +1637,71 @@
                                                              </fieldset>
                                                                  </div>
 
+-->
 
 
+                                    <div [hidden]="!advancedSetting" class="card">
 
-                                                                 <div class="col-sm-12 col-md-12">
-                                                                     <fieldset>
-                                                                         <legend class="text-left" i18n="@@Advanced">Advanced</legend>
-                                                                         <div class="form-group">
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left" i18n="@@Advanced">
+                                                Advanced
+                                            </h4>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="form-group">
 
-                                                                             <div class="col-sm-12 col-md-12 text-left">
+                                                <div class="col-sm-12 col-md-12 text-left">
 
-                                                                                 <div class="col-sm-12 col-md-12 text-left">
-                                                                                     <div class="form-group" *ngIf=!isEnterpriseEdition>
-                                                                                         <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                                                             Object Detection feature is enabled in
-                                                                                             <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
-                                                                                         </p>
-                                                                                     </div>
-                                                                                 </div>
+                                                    <div class="col-sm-12 col-md-12 text-left">
+                                                        <div *ngIf=!isEnterpriseEdition class="form-group text-center">
+                                                            <p i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                                Object Detection feature is enabled in
+                                                                <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
+                                                            </p>
+                                                        </div>
+                                                    </div>
 
-                                                                                     <div class="text-left" *ngIf=isEnterpriseEdition>
-                                                                                         <div class="col-sm-12 col-md-12">
-                                                                                             <div class="checkbox">
-                                                                                                 <input type="checkbox" name="objectDetection" id="objectDetection" [(ngModel)]="appSettings.objectDetectionEnabled">
-                                                                                                 <label for="objectDetection">
-                                                                                                     Use Object Detection
-                                                                                                 </label>
-                                                                                             </div>
-                                                                                         </div>
-                                                                                     </div>
+                                                    <div class="form-group">
+                                                        <div class="text-left" *ngIf=isEnterpriseEdition>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="checkbox">
+                                                                    <label for="objectDetection">
+                                                                        Use Object Detection
+                                                                    </label>
+                                                                    <input [(ngModel)]="appSettings.objectDetectionEnabled"
+                                                                           id="objectDetection" name="objectDetection"
+                                                                           type="checkbox">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                                                                 <div class="col-sm-12 col-md-12 text-left">
-                                                                                     <label class="text-left">Vod Streaming Folder.</label>
-                                                                                 </div>
+                                                    <div class="form-group">
 
-                                                                                 <div class="col-sm-12 col-md-6 text-left">
-                                                                                 <input type="text" name="vodFolderPath"
-                                                                                        placeholder="Write full path of VoD folder"
-                                                                                        class="form-control" [(ngModel)]="appSettings.vodFolder"
-                                                                                        #vodFolderPath="ngModel">
-                                                                                 <small [hidden]="vodFolderPath.valid || (!f.submitted)"
-                                                                                        class="text-danger">
-                                                                                     Folder path should be at least 4 characters.
-                                                                                 </small>
-                                                                                 </div>
+                                                        <label class="col-sm-12 text-left mobile-text-left col-md-3 control-label">Vod
+                                                            Streaming Folder</label>
 
-                                                                             </div>
-                                                                         </div>
 
-                                                                     </fieldset>
-                                                                 </div>
-                                                                 -->
+                                                        <div class="col-sm-12 col-md-6 text-left">
+                                                            <input type="text" name="vodFolderPath"
+                                                                   placeholder="Write full path of VoD folder"
+                                                                   class="form-control" [(ngModel)]="appSettings.vodFolder"
+                                                                   #vodFolderPath="ngModel">
+                                                            <small [hidden]="vodFolderPath.valid || (!f.submitted)"
+                                                                   class="text-danger">
+                                                                Folder path should be at least 4 characters.
+                                                            </small>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
 
                                 </div>
 
@@ -1684,7 +1712,13 @@
                                     <div class="card">
                                         <div class="text-center">
 
-                                            <button class="btn btn-info" i18n="@@saveForm" style="margin: 15px" type="submit">Save</button>
+                                            <button class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
+                                                    type="submit">Save
+                                            </button>
+                                            <button (click)="advancedSetting = !advancedSetting" class="btn btn-info"
+                                                    i18n="@@saveForm" style="margin: 15px" type="button">Advanced
+                                                Setting
+                                            </button>
 
 
                                         </div>
