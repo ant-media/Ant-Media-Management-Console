@@ -1,11 +1,8 @@
-import { Component, Inject } from '@angular/core';
-import { Locale } from "../../locale/locale";
-import { RestService, LiveBroadcast } from '../../rest/rest.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import {
-    Endpoint,
-    VideoServiceEndpoint,
-} from '../app.definitions';
+import {Component, Inject} from '@angular/core';
+import {Locale} from "../../locale/locale";
+import {LiveBroadcast, RestService} from '../../rest/rest.service';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {Endpoint, VideoServiceEndpoint,} from '../app.definitions';
 
 declare var $: any;
 declare var swal: any;
@@ -86,7 +83,8 @@ export class CamSettingsDialogComponent {
         }
         this.loadingSettings = true;
 
-        this.restService.editCameraInfo(this.camera, this.dialogRef.componentInstance.data.appName).subscribe(data => {
+        var socialNetworks = [];
+        this.restService.editCameraInfo(this.camera, this.dialogRef.componentInstance.data.appName, socialNetworks).subscribe(data => {
 
             if (data["success"]) {
 

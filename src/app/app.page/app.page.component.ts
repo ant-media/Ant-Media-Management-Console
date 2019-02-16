@@ -120,7 +120,7 @@ export class Token {
     public expireDate: number;
     public type: string;
 }
- 
+
 @Component({
     selector: 'manage-app-cmp',
     moduleId: module.id,
@@ -1052,6 +1052,33 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
+    downloadFile(vodName: string, type: string, vodId:string, streamId:string): void {
+
+        var srcFile = null;
+        var vodUrlName = null;
+
+        if (type == "uploadedVod") {
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4'  ;
+            vodUrlName = vodId ;
+        }else if (type == "streamVod"){
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName;
+            vodUrlName = vodName ;
+        }else if (type == "userVod") {
+            var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
+            var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams' + folderName + '/' + vodName;
+            vodUrlName = vodName ;
+        }
+
+        const link = document.createElement("a");
+        link.download = vodUrlName;
+        document.body.appendChild(link);
+        link.href = srcFile;
+        link.target = '_blank';
+        link.click();
+    }
+
+
 
     playVoD(vodName: string, type: string, vodId: string, streamId: string): void {
 
@@ -1549,6 +1576,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     newStreamSource(): void {
+        this.shareEndpoint = [];
         this.newLiveStreamActive = false;
         this.newIPCameraActive = false;
         this.newStreamSourceActive = true;
@@ -1573,7 +1601,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraAdding = true;
         this.liveBroadcast.type = "ipCamera";
 
-        this.restService.addStreamSource(this.appName, this.liveBroadcast)
+
+        var socialNetworks = [];
+        this.restService.addStreamSource(this.appName, this.liveBroadcast, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
@@ -1701,7 +1731,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newStreamSourceAdding = true;
         this.liveBroadcast.type = "streamSource";
 
-        this.restService.addStreamSource(this.appName, this.liveBroadcast)
+        var socialNetworks = [];
+        this.shareEndpoint.forEach((value, index) => {
+            if (value === true) {
+                socialNetworks.push(this.videoServiceEndpoints[index].id);
+            }
+        });
+
+        this.restService.addStreamSource(this.appName, this.liveBroadcast, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
