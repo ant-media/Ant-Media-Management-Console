@@ -1011,7 +1011,7 @@
                                                                 <div class="col-sm-4 text-left">
 
                                                                     <select #resolutionList [name]="'resolutionHeight'+i"  [(ngModel)]="encoderSetting.height"
-                                                                            class="dropdown-toggle form-control selectpicker">
+                                                                            class="dropdown-toggle form-control ">
                                                                         <option value="1080">1080p</option>
                                                                         <option value="720">720p</option>
                                                                         <option value="480">480p</option>
@@ -1024,7 +1024,7 @@
                                                                 <div class="col-sm-4 text-left">
 
                                                                     <select [name]="'videobitrate'+i"  [(ngModel)]="encoderSetting.videoBitrate"
-                                                                            class="dropdown-toggle form-control  selectpicker">
+                                                                            class="dropdown-toggle form-control ">
 
 
                                                                         <option *ngIf="resolutionList.value == '1080'" value="6000" >High (6.000)</option>
