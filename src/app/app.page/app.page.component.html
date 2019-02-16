@@ -1010,9 +1010,9 @@
                                                             <div class="col-sm-12 col-md-12 text-left">
                                                                 <div class="col-sm-4 text-left">
 
-                                                                    <select #resolutionList  [name]="'resolutionHeight'+i" [(ngModel)]="encoderSetting.height"
+                                                                    <select #resolutionList [name]="'resolutionHeight'+i"  [(ngModel)]="encoderSetting.height"
                                                                             class="dropdown-toggle form-control selectpicker">
-                                                                        <option value="1080" selected="selected" >1080p</option>
+                                                                        <option value="1080">1080p</option>
                                                                         <option value="720">720p</option>
                                                                         <option value="480">480p</option>
                                                                         <option value="360">360p</option>
@@ -1023,46 +1023,37 @@
                                                                 </div>
                                                                 <div class="col-sm-4 text-left">
 
-                                                                    <select *ngIf="resolutionList.value == '1080'"  [name]="'videobitrate'"  [(ngModel)]="encoderSetting.videoBitrate"
+                                                                    <select [name]="'videobitrate'+i"  [(ngModel)]="encoderSetting.videoBitrate"
                                                                             class="dropdown-toggle form-control  selectpicker">
-                                                                        <option value="6000" selected>High (6.000)</option>
-                                                                        <option value="4000">Medium (4.000)</option>
-                                                                        <option value="3000">Low (3.000)</option>
+
+
+                                                                        <option *ngIf="resolutionList.value == '1080'" value="6000" >High (6.000)</option>
+                                                                        <option *ngIf="resolutionList.value == '1080'" value="4000">Medium (4.000)</option>
+                                                                        <option *ngIf="resolutionList.value == '1080'" value="3000">Low (3.000)</option>
+
+
+                                                                        <option  *ngIf="resolutionList.value == '720'"  value="4000" >High (4.000)</option>
+                                                                        <option  *ngIf="resolutionList.value == '720'"  value="2500">Medium (2.500)</option>
+                                                                        <option  *ngIf="resolutionList.value == '720'"  value="1200">Low (1.200)</option>
+
+
+                                                                        <option *ngIf="resolutionList.value == '480'" value="2000"  >High (2.000)</option>
+                                                                        <option *ngIf="resolutionList.value == '480'" value="1200">Medium (1.200)</option>
+                                                                        <option *ngIf="resolutionList.value == '480'" value="600">Low (600)</option>
+
+
+                                                                        <option  *ngIf="resolutionList.value == '360'"  value="1000"  >High (1.000)</option>
+                                                                        <option  *ngIf="resolutionList.value == '360'" value="700" >Medium (700)</option>
+                                                                        <option  *ngIf="resolutionList.value == '360'" value="400">Low (400)</option>
+
+
+                                                                        <option *ngIf="resolutionList.value == '240'"  value="700">High (700)</option>
+                                                                        <option *ngIf="resolutionList.value == '240'"  value="500">Medium (500)</option>
+                                                                        <option *ngIf="resolutionList.value == '240'"  value="300">Low (300)</option>
+
 
                                                                     </select>
 
-                                                                    <select *ngIf="resolutionList.value == '720'"  [name]="'videobitrate'"  [(ngModel)]="encoderSetting.videoBitrate"
-                                                                            class="dropdown-toggle form-control  selectpicker" >
-                                                                        <option value="4000" selected>High (4.000)</option>
-                                                                        <option value="2500">Medium (2.500)</option>
-                                                                        <option value="1200">Low (1.200)</option>
-
-                                                                    </select>
-
-                                                                    <select *ngIf="resolutionList.value == '480'"  [name]="'videobitrate'" [(ngModel)]="encoderSetting.videoBitrate"
-                                                                            class="dropdown-toggle form-control  selectpicker">
-                                                                        <option value="2000" selected >High (2.000)</option>
-                                                                        <option value="1200">Medium (1.200)</option>
-                                                                        <option value="600">Low (600)</option>
-
-                                                                    </select>
-
-
-                                                                    <select *ngIf="resolutionList.value == '360'"  [name]="'videobitrate'" [(ngModel)]="encoderSetting.videoBitrate"
-                                                                            class="dropdown-toggle form-control  selectpicker">
-                                                                        <option value="1000" selected >High (1.000)</option>
-                                                                        <option value="700" >Medium (700)</option>
-                                                                        <option value="400">Low (400)</option>
-
-                                                                    </select>
-
-                                                                    <select *ngIf="resolutionList.value == '240'"  [name]="'videobitrate'"  [(ngModel)]="encoderSetting.videoBitrate"
-                                                                            class="dropdown-toggle form-control  selectpicker">
-                                                                        <option value="700" selected>High (700)</option>
-                                                                        <option value="500">Medium (500)</option>
-                                                                        <option value="300">Low (300)</option>
-
-                                                                    </select>
 
                                                                 </div>
 
