@@ -962,7 +962,7 @@
                                                     <div class="col-sm-12 col-md-12 text-left"
                                                          style="padding-left: 0px;margin-top: 10px;">
 
-                                                        <div class="col-sm-12 col-md-4 text-left">
+                                                        <div class="col-sm-12 col-md-5 text-left">
                                                             <label class="control-label">WebRTC Frame Rate</label>
                                                         </div>
 
@@ -981,9 +981,6 @@
                                                          style="margin-top: 20px;">
                                                         <label class="text-left">Bitrate at the input redirected to output with the following bitrates</label>
                                                     </div>
-
-
-
 
                                                 </div>
                                             </div>
@@ -1162,6 +1159,55 @@
                                 <div class="col-sm-12 col-md-6">
 
 
+
+                                    <div class="card">
+
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left"  i18n="@@Mp4Recording">
+                                                MP4 Recording
+                                            </h4>
+                                        </div>
+
+                                        <div class="card-content">
+                                            <div class="form-group">
+
+                                                <div class="col-sm-12 col-md-12 text-left">
+
+
+                                                    <div class="form-group">
+                                                        <div class="col-xs-10 col-sm-6 col-md-6 text-right">
+                                                            <div class="checkbox">
+
+                                                                <label for="mp4MuxingEnabled"
+                                                                       i18n="@@enableMP4Recording">
+                                                                    Record Live Streams as MP4
+                                                                </label>
+                                                                <input [(ngModel)]="appSettings.mp4MuxingEnabled" id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <div class="col-xs-10 col-sm-6 col-md-6 text-right">
+                                                            <div class="checkbox">
+                                                                <label for="addDateTimeToMp4FileName"
+                                                                       i18n="@@addDateTimeToMP4Recordings">
+                                                                    Add Date-Time to MP4 File names
+                                                                </label>
+                                                                <input [(ngModel)]="appSettings.addDateTimeToMp4FileName" id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
                                     <div class="card">
 
 
@@ -1245,54 +1291,6 @@
 
                                         </div>
 
-
-                                    </div>
-
-
-                                    <div class="card">
-
-                                        <div class="card-header">
-                                            <h4 class="card-title text-left"  i18n="@@Mp4Recording">
-                                                MP4 Recording
-                                            </h4>
-                                        </div>
-
-                                        <div class="card-content">
-                                            <div class="form-group">
-
-                                                <div class="col-sm-12 col-md-12 text-left">
-
-
-                                                    <div class="form-group">
-                                                        <div class="col-xs-10 col-sm-6 col-md-6 text-right">
-                                                            <div class="checkbox">
-
-                                                                <label for="mp4MuxingEnabled"
-                                                                       i18n="@@enableMP4Recording">
-                                                                    Record Live Streams as MP4
-                                                                </label>
-                                                                <input [(ngModel)]="appSettings.mp4MuxingEnabled" id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox">
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <div class="col-xs-10 col-sm-6 col-md-6 text-right">
-                                                            <div class="checkbox">
-                                                                <label for="addDateTimeToMp4FileName"
-                                                                       i18n="@@addDateTimeToMP4Recordings">
-                                                                    Add Date-Time to MP4 File names
-                                                                </label>
-                                                                <input [(ngModel)]="appSettings.addDateTimeToMp4FileName" id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox">
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
 
                                     </div>
 
