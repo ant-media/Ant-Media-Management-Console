@@ -1386,8 +1386,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.appSettings.encoderSettings = [];
         }
         this.appSettings.encoderSettings.push({
-            height: 1080,
-            videoBitrate: 6000,
+            height: 0,
+            videoBitrate: 0,
             audioBitrate: 0
         });
     }

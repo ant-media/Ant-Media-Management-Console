@@ -997,18 +997,20 @@
                                                 <div class="col-sm-12 col-md-12">
 
 
-                                                    <div class="col-sm-4 text-left">
+                                                    <div class="col-xs-5 col-sm-4 text-left">
                                                         <span class="help-block" i18n="@@ResolutionHeight">Resolution</span>
                                                     </div>
-                                                    <div class="col-sm-4 text-left">
+                                                    <div class="col-xs-6 col-sm-4 text-left">
                                                         <span class="help-block" i18n="@@ResolutionHeight">Bitrate(Kbps)</span>
                                                     </div>
 
 
+                                                   <div class="row">
+
                                                     <ng-container *ngIf="appSettings.encoderSettings">
-                                                        <div *ngFor="let encoderSetting of appSettings.encoderSettings; let i = index" class="row" style="margin-bottom: 20px;">
-                                                            <div class="col-sm-12 col-md-12 text-left">
-                                                                <div class="col-sm-4 text-left">
+                                                        <div *ngFor="let encoderSetting of appSettings.encoderSettings; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px" >
+
+                                                                <div class="col-xs-5 col-sm-4 text-left">
 
                                                                     <select #resolutionList [name]="'resolutionHeight'+i"  [(ngModel)]="encoderSetting.height"
                                                                             class="dropdown-toggle form-control ">
@@ -1021,13 +1023,12 @@
                                                                     </select>
 
                                                                 </div>
-                                                                <div class="col-sm-4 text-left">
+                                                                <div class="col-xs-6 col-sm-4  text-left">
 
                                                                     <select [name]="'videobitrate'+i"  [(ngModel)]="encoderSetting.videoBitrate"
                                                                             class="dropdown-toggle form-control ">
 
-
-                                                                        <option *ngIf="resolutionList.value == '1080'" value="6000" >High (6.000)</option>
+                                                                        <option *ngIf="resolutionList.value == '1080'" value="6000">High (6.000)</option>
                                                                         <option *ngIf="resolutionList.value == '1080'" value="4000">Medium (4.000)</option>
                                                                         <option *ngIf="resolutionList.value == '1080'" value="3000">Low (3.000)</option>
 
@@ -1037,20 +1038,19 @@
                                                                         <option  *ngIf="resolutionList.value == '720'"  value="1200">Low (1.200)</option>
 
 
-                                                                        <option *ngIf="resolutionList.value == '480'" value="2000"  >High (2.000)</option>
+                                                                        <option *ngIf="resolutionList.value == '480'" value="2000" >High (2.000)</option>
                                                                         <option *ngIf="resolutionList.value == '480'" value="1200">Medium (1.200)</option>
                                                                         <option *ngIf="resolutionList.value == '480'" value="600">Low (600)</option>
 
 
-                                                                        <option  *ngIf="resolutionList.value == '360'"  value="1000"  >High (1.000)</option>
+                                                                        <option  *ngIf="resolutionList.value == '360'"  value="1000" >High (1.000)</option>
                                                                         <option  *ngIf="resolutionList.value == '360'" value="700" >Medium (700)</option>
                                                                         <option  *ngIf="resolutionList.value == '360'" value="400">Low (400)</option>
 
 
-                                                                        <option *ngIf="resolutionList.value == '240'"  value="700">High (700)</option>
+                                                                        <option *ngIf="resolutionList.value == '240'"  value="700" >High (700)</option>
                                                                         <option *ngIf="resolutionList.value == '240'"  value="500">Medium (500)</option>
                                                                         <option *ngIf="resolutionList.value == '240'"  value="300">Low (300)</option>
-
 
                                                                     </select>
 
@@ -1058,15 +1058,16 @@
                                                                 </div>
 
 
-                                                                <div class="col-sm-1 text-left">
+                                                                <div class="col-xs-1 col-sm-1 text-left">
                                                                     <button (click)="deleteStream(i)" class="btn btn-icon btn-simple btn-danger btn-minus" type="button">
                                                                         <i class="ti-close"></i>
                                                                     </button>
                                                                 </div>
 
-                                                            </div>
+
                                                         </div>
                                                     </ng-container>
+                                                   </div>
                                                     <div class="col-sm-12 text-left col-md-12" ><button (click)="addNewStream()" class="btn btn-default" i18n="@@addNewStream" type="button">
                                                         Add New Stream
                                                     </button>
