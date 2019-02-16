@@ -88,7 +88,6 @@
 
                                                     <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
 
-                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
                                                         <label [for]="endpoint.id">
                                                             <ng-container [ngSwitch]="endpoint.serviceName">
                                                                 <ng-container *ngSwitchCase="'facebook'">
@@ -103,6 +102,9 @@
                                                             </ng-container>
                                                             {{endpoint.accountName}}
                                                         </label>
+
+                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
+
 
                                                     </div>
                                                 </ng-container>
