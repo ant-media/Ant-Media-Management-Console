@@ -104,8 +104,6 @@
                                                         </label>
 
                                                         <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
-
-
                                                     </div>
                                                 </ng-container>
                                             </div>
@@ -265,8 +263,6 @@
                                                         </label>
 
                                                         <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
-
-
                                                     </div>
                                                 </ng-container>
                                             </div>
@@ -1152,6 +1148,70 @@
                                     </div>
 
 
+                                    <div [hidden]="!advancedSetting" class="card">
+
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left" i18n="@@Advanced">
+                                                Advanced
+                                            </h4>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="form-group">
+
+                                                <div class="col-sm-12 col-md-12 text-left">
+
+                                                    <div class="col-sm-12 col-md-12 text-left">
+                                                        <div *ngIf=!isEnterpriseEdition class="form-group text-center">
+                                                            <p i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                                Object Detection feature is enabled in
+                                                                <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <div class="text-left" *ngIf=isEnterpriseEdition>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="checkbox">
+                                                                    <label for="objectDetection">
+                                                                        Use Object Detection
+                                                                    </label>
+                                                                    <input [(ngModel)]="appSettings.objectDetectionEnabled"
+                                                                           id="objectDetection" name="objectDetection"
+                                                                           type="checkbox">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+
+                                                        <label class="col-sm-12 text-left mobile-text-left col-md-3 control-label">Vod
+                                                            Streaming Folder</label>
+
+
+                                                        <div class="col-sm-12 col-md-6 text-left">
+                                                            <input type="text" name="vodFolderPath"
+                                                                   placeholder="Write full path of VoD folder"
+                                                                   class="form-control" [(ngModel)]="appSettings.vodFolder"
+                                                                   #vodFolderPath="ngModel">
+                                                            <small [hidden]="vodFolderPath.valid || (!f.submitted)"
+                                                                   class="text-danger">
+                                                                Folder path should be at least 4 characters.
+                                                            </small>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+
+
                                 </div>
 
 
@@ -1424,68 +1484,6 @@
 
                                     </div>
 
-
-                                    <div [hidden]="!advancedSetting" class="card">
-
-                                        <div class="card-header">
-                                            <h4 class="card-title text-left" i18n="@@Advanced">
-                                                Advanced
-                                            </h4>
-                                        </div>
-                                        <div class="card-content">
-                                            <div class="form-group">
-
-                                                <div class="col-sm-12 col-md-12 text-left">
-
-                                                    <div class="col-sm-12 col-md-12 text-left">
-                                                        <div *ngIf=!isEnterpriseEdition class="form-group text-center">
-                                                            <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                                Object Detection feature is enabled in
-                                                                <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <div class="text-left" *ngIf=isEnterpriseEdition>
-                                                            <div class="col-sm-12 col-md-12">
-                                                                <div class="checkbox">
-                                                                    <label for="objectDetection">
-                                                                        Use Object Detection
-                                                                    </label>
-                                                                    <input [(ngModel)]="appSettings.objectDetectionEnabled"
-                                                                           id="objectDetection" name="objectDetection"
-                                                                           type="checkbox">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-
-                                                        <label class="col-sm-12 text-left mobile-text-left col-md-3 control-label">Vod
-                                                            Streaming Folder</label>
-
-
-                                                        <div class="col-sm-12 col-md-6 text-left">
-                                                            <input type="text" name="vodFolderPath"
-                                                                   placeholder="Write full path of VoD folder"
-                                                                   class="form-control" [(ngModel)]="appSettings.vodFolder"
-                                                                   #vodFolderPath="ngModel">
-                                                            <small [hidden]="vodFolderPath.valid || (!f.submitted)"
-                                                                   class="text-danger">
-                                                                Folder path should be at least 4 characters.
-                                                            </small>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-
-                                            </div>
-                                        </div>
-
-
-                                    </div>
 
 
                                 </div>
