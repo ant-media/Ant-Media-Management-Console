@@ -6,27 +6,29 @@
                     <div class="card-content">
                         <div class="nav-tabs-navigation">
                             <div class="nav-tabs-wrapper">
-                                <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                                <ul class="nav nav-tabs" data-tabs="tabs" id="tabs">
                                     <li class="active">
-                                        <a href="#livestreams" data-toggle="tab" i18n="live stream|Live Streams tab header that lists live stream@@liveStreamTabHeader">Live Streams</a>
+                                        <a data-toggle="tab" href="#livestreams" i18n="live stream|Live Streams tab header that lists live stream@@liveStreamTabHeader">Live Streams</a>
                                     </li>
                                     <li>
-                                        <a href="#vod" data-toggle="tab" i18n="VoD|Vod tab header that lists vod@@vodTabHeader">VoD</a>
+                                        <a data-toggle="tab" href="#vod" i18n="VoD|Vod tab header that lists vod@@vodTabHeader">VoD</a>
                                     </li>
-                                    <!--
                                     <li>
-                                        <a href="#logs" data-toggle="tab" i18n="@@logTabHeader">Log</a>
-                                    </li>
-                                -->
-                                    <li>
-                                        <a href="#settings" data-toggle="tab" i18n="@@settingsTabHeader">Settings</a>
+                                        <a data-toggle="tab" href="#settings" i18n="@@settingsTabHeader">Settings</a>
                                     </li>
                                 </ul>
                             </div>
                         </div>
-                        <div id="my-tab-content" class="tab-content text-center">
+                    </div>
+                </div>
 
-                            <div class="tab-pane active" id="livestreams">
+                <div class="tab-content text-center" id="my-tab-content">
+
+
+                    <div class="tab-pane active" id="livestreams">
+
+                        <div class="card">
+                            <div class="card-content">
 
                                 <div>
 
@@ -86,7 +88,6 @@
 
                                                     <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
 
-                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
                                                         <label [for]="endpoint.id">
                                                             <ng-container [ngSwitch]="endpoint.serviceName">
                                                                 <ng-container *ngSwitchCase="'facebook'">
@@ -102,6 +103,7 @@
                                                             {{endpoint.accountName}}
                                                         </label>
 
+                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
                                                     </div>
                                                 </ng-container>
                                             </div>
@@ -238,14 +240,13 @@
                                                     Please write a valid stream URL
                                                 </small>
                                             </div>
-                                            
+
                                             <div class="form-group text-left" *ngIf="videoServiceEndpoints.length>0">
                                                 <label  class="col-sm-12" style="padding-left:0px" i18n="@@newLiveStreamSocialShare">Share</label>
                                                 <ng-container *ngFor="let endpoint of videoServiceEndpoints; let i = index">
 
                                                     <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
 
-                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
                                                         <label [for]="endpoint.id">
                                                             <ng-container [ngSwitch]="endpoint.serviceName">
                                                                 <ng-container *ngSwitchCase="'facebook'">
@@ -261,6 +262,7 @@
                                                             {{endpoint.accountName}}
                                                         </label>
 
+                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
                                                     </div>
                                                 </ng-container>
                                             </div>
@@ -756,11 +758,13 @@
 
                                 </div>
                                 <!-- /main -->
+                            </div> </div>
 
+                    </div>
 
-                            </div>
-
-                            <div class="tab-pane container-fluid" id="vod">
+                    <div class="tab-pane" id="vod">
+                        <div class="card">
+                            <div class="card-content">
 
                                 <div class=" text-right">
 
@@ -884,353 +888,651 @@
                                     There is no VoD stream in this app.
                                 </p>
                             </div>
-                            <div class="tab-pane" id="logs">
-                                <p>Here are your messages.</p>
-                            </div>
+                        </div>  </div>
 
-                            <div class="tab-pane" id="settings" *ngIf="appSettings">
-                                <form method="post" #f="ngForm" (ngSubmit)="changeSettings(f.valid)" class="form-horizontal">
 
-                                    <fieldset>
-                                        <legend class="text-left">Muxing</legend>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">MP4</label>
-                                            <div class="col-sm-4 text-left">
-                                                <div class="checkbox">
-                                                    <input id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox" [(ngModel)]="appSettings.mp4MuxingEnabled">
-                                                    <label for="mp4MuxingEnabled" i18n="@@enableMP4Recording">
-                                                        Enable MP4 Recording
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-4 text-left">
-                                                <div class="checkbox">
-                                                    <input id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox" [(ngModel)]="appSettings.addDateTimeToMp4FileName">
-                                                    <label for="addDateTimeToMp4FileName" i18n="@@addDateTimeToMP4Recordings">
-                                                        Add Datetime to MP4 Filenames
-                                                    </label>
-                                                </div>
-                                            </div>
+
+                    <div *ngIf="appSettings" class="tab-pane" id="settings">
+                        <form #f="ngForm" (ngSubmit)="changeSettings(f.valid)" class="form-horizontal" method="post">
+                            <div class="row">
+
+                                <div class="col-sm-12 col-md-6">
+
+
+                                    <div *ngIf="0>=appSettings.encoderSettings.length" class="card">
+
+
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left">
+                                                Adaptive Streaming
+                                            </h4>
                                         </div>
 
+                                        <div class="card-content">
 
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">HLS</label>
-                                            <div class="col-sm-10 text-left">
-                                                <div class="checkbox">
-                                                    <input id="hlsMuxingEnabled" name="hlsMuxingEnabled" type="checkbox" [(ngModel)]="appSettings.hlsMuxingEnabled">
-                                                    <label for="hlsMuxingEnabled" i18n="@@enableHLSLiveStreaming">
-                                                        Enable HLS Live Streaming
-                                                    </label>
-                                                </div>
-                                                <div>
-                                                    <small [hidden]="hlsListSize.valid" class="text-danger">
-                                                        Segment list size is required
-                                                    </small>
-                                                    <input type="number" name="hlsListSize" class="form-control" required #hlsListSize="ngModel" [(ngModel)]="appSettings.hlsListSize">
-                                                    <span class="help-block" i18n="@@HLSSegmentListSize">Segment List Size</span>
+                                            <div *ngIf=isEnterpriseEdition class="form-group">
 
-                                                </div>
-                                                <div>
-                                                    <small [hidden]="hlsTime.valid" class="text-danger">
-                                                        Segment duration is required
-                                                    </small>
-                                                    <input type="number" name="hlsTime" class="form-control" #hlsTime="ngModel" required [(ngModel)]="appSettings.hlsTime">
-                                                    <span class="help-block" i18n="@@HLSSegmentDuration">Segment Duration</span>
+                                                <div class="col-sm-12 col-md-12 text-left">
 
-                                                </div>
+                                                    <div class="col-sm-12 col-md-12 text-left"
+                                                         style="margin-top: 10px; margin-bottom: 20px;">
+                                                        <label class="text-left">Bitrate at the input redirected to output as it is.</label>
+                                                    </div>
 
-                                            </div>
-                                        </div>
-                                    </fieldset>
-
-
-                                    <fieldset>
-                                        <legend class="text-left" i18n="@@Security">Security</legend>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Stream Publishing</label>
-                                            <div class="col-sm-10 text-left">
-                                                <div class="radio col-sm-3">
-                                                    <input type="radio" name="acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" [value]="false" [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore">
-                                                    <label for="acceptOnlyStreamsInDataStore">
-                                                        Allow All
-                                                    </label>
-                                                </div>
-
-                                                <div class="radio col-sm-3" style="margin-top:13px">
-                                                    <input type="radio" name="acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore2" [value]="true" [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore">
-                                                    <label for="acceptOnlyStreamsInDataStore2">
-                                                        Allow Only In Database
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">
-                                                One-Time Token <a href="https://antmedia.io/secure-video-streaming/" target="_blank"  matTooltip="Token is required for publishing and playing.
-                                                   You need to create token and provide for these operations. Use 'getToken' rest service for that. Click icon for details."><i class="fa fa-info-circle"></i></a>
-                                            </label>
-
-
-                                            <div class="form-group text-center" *ngIf=!isEnterpriseEdition>
-                                                <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                    This feature is enabled in
-                                                    <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
-                                                </p>
-                                            </div>
-
-                                            <div class="col-sm-10 text-left" *ngIf=isEnterpriseEdition>
-                                                <div class="radio col-sm-3">
-                                                    <input type="radio" name="tokenControlEnabled" id="tokenControlEnabled" [value]="false" [(ngModel)]="appSettings.tokenControlEnabled">
-                                                    <label for="tokenControlEnabled">
-                                                        Disable
-                                                    </label>
-                                                </div>
-
-                                                <div class="radio col-sm-3" style="margin-top:13px">
-                                                    <input type="radio" name="tokenControlEnabled" id="tokenControlEnabled2" [value]="true" [(ngModel)]="appSettings.tokenControlEnabled">
-                                                    <label for="tokenControlEnabled2">
-                                                        Enable
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </fieldset>
-
-                                    <fieldset>
-                                        <legend class="text-left" i18n="@@ObjectDetection">Object Detection</legend>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Enable Object Detection</label>
-
-                                            <div class="form-group text-center" *ngIf=!isEnterpriseEdition>
-                                                <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                    This feature is enabled in
-                                                    <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
-                                                </p>
-                                            </div>
-
-
-                                            <div class="col-sm-10 text-left" *ngIf=isEnterpriseEdition>
-                                                <div class="radio col-sm-3">
-                                                    <input type="radio" name="objectDetection" id="objectDetection" [value]="false" [(ngModel)]="appSettings.objectDetectionEnabled">
-                                                    <label for="objectDetection">
-                                                        No
-                                                    </label>
-                                                </div>
-
-                                                <div class="radio col-sm-2" style="margin-top:13px">
-                                                    <input type="radio" name="objectDetection" id="objectDetection2" [value]="true" [(ngModel)]="appSettings.objectDetectionEnabled">
-                                                    <label for="objectDetection2">
-                                                        Yes
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </fieldset>
-
-
-
-                                    <fieldset>
-                                        <legend class="text-left" i18n="@@VoDFolder">VoD Folder</legend>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Folder Path</label>
-                                            <div class="col-sm-10 text-left">
-
-                                                <input type="text" name="vodFolderPath"
-                                                       placeholder="Write full path of VoD folder"
-                                                       class="form-control" [(ngModel)]="appSettings.vodFolder"
-                                                       #vodFolderPath="ngModel">
-                                                <small [hidden]="vodFolderPath.valid || (!f.submitted)"
-                                                       class="text-danger">
-                                                    Folder path should be at least 4 characters.
-                                                </small>
-
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset>
-                                        <legend class="text-left" i18n="@@VoDFolder">Ministra TV Platform</legend>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Options</label>
-                                            <div class="col-sm-10 text-left">
-
-                                                <button class="col-sm-2 form-control-static btn btn-default btn-xs"
-                                                        i18n="@@addNewStream" type="button"
-                                                        (click)="importLiveStreams2Stalker()">
-                                                    <i *ngIf="importingLiveStreams"
-                                                       class="fa fa-spinner fa-pulse fa-1x fa-fw"
-                                                       aria-hidden="true"></i>Import Live Streams
-                                                </button>
-                                                <div class="col-xs-1"></div>
-                                                <button class=" col-sm-2 form-control-static btn btn-default btn-xs"
-                                                        i18n="@@addNewStream" type="button"
-                                                        (click)="importVoDStreams2Stalker()">
-                                                    <i *ngIf="importingVoDStreams"
-                                                       class="fa fa-spinner fa-pulse fa-1x fa-fw"
-                                                       aria-hidden="true"></i>Import VoD Streams
-                                                </button>
-
-                                            </div>
-                                        </div>
-
-                                    </fieldset>
-
-                                    <fieldset>
-                                        <legend class="text-left">Adaptive Streaming</legend>
-                                        <div class="form-group" *ngIf=isEnterpriseEdition>
-                                            <label class="col-sm-2 control-label">WebRTC Frame Rate</label>
-                                            <div class="col-sm-10 text-left">
-                                                <input type="number" [name]="webRTCFrameRate" class="form-control" required #webRTCFrameRate="ngModel" [(ngModel)]="appSettings.webRTCFrameRate">
-                                            </div>
-                                        </div>
-                                        <div class="form-group" *ngIf=isEnterpriseEdition>
-                                            <label class="col-sm-2 control-label">Streams</label>
-                                            <div class="col-sm-10">
-                                                <ng-container *ngIf="appSettings.encoderSettings">
-                                                    <div class="row" *ngFor="let encoderSetting of appSettings.encoderSettings; let i = index">
-                                                        <div class="col-sm-3 text-left">
-
-                                                            <input type="number" [name]="'resolutionHeight'+i" class="form-control" [(ngModel)]="encoderSetting.height">
-                                                            <span class="help-block" i18n="@@ResolutionHeight">Video Resolution Height</span>
-                                                        </div>
-                                                        <div class="col-sm-3 text-left">
-                                                            <input type="number" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate">
-                                                            <span class="help-block" i18n="@@VideoBitrate">Video Bitrate(bps)</span>
-                                                        </div>
-                                                        <div class="col-sm-3 text-left">
-                                                            <input type="number" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate">
-                                                            <span class="help-block" i18n="@@AudioBitrate">Audio Bitrate(bps)</span>
-                                                        </div>
-
-                                                        <button type="button" class="col-sm-1 btn btn-icon btn-simple btn-danger btn-minus" (click)="deleteStream(i)">
-                                                            <i class="ti-close"></i>
+                                                    <div class="text-left col-sm-12 col-md-12">
+                                                        <button (click)="addNewStream()" class="btn btn-default" i18n="@@addNewStream"  type="button">
+                                                            Add New Stream
                                                         </button>
                                                     </div>
-                                                </ng-container>
-                                                <button class="col-sm-3 form-control-static btn btn-default" i18n="@@addNewStream" type="button" (click)="addNewStream()">
-                                                    Add New Stream
-                                                </button>
+                                                </div>
+
+                                            </div>
+
+                                            <div *ngIf=!isEnterpriseEdition class="form-group text-center">
+                                                <p i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                    These features are enabled in
+                                                    <a href="https://antmedia.io">Ant Media Server Enterprise
+                                                        Edition.</a>
+                                                </p>
                                             </div>
                                         </div>
-                                        <div class="form-group text-center" *ngIf=!isEnterpriseEdition>
-                                            <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                These features are enabled in
-                                                <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
-                                            </p>
+
+                                    </div>
+
+
+                                    <div *ngIf="0<appSettings.encoderSettings.length" class="card">
+
+
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left">
+                                                Adaptive Streaming
+                                            </h4>
                                         </div>
-                                    </fieldset>
+
+                                        <div class="card-content">
+
+                                            <div *ngIf=isEnterpriseEdition class="form-group">
+
+                                                <div class="col-sm-12 col-md-10 text-left">
+
+                                                    <div class="col-sm-12 col-md-12 text-left"
+                                                         style="padding-left: 0px;margin-top: 10px;">
+
+                                                        <div class="col-sm-12 col-md-5 text-left">
+                                                            <label class="control-label">WebRTC Frame Rate</label>
+                                                        </div>
 
 
-                                    <fieldset>
-                                        <legend class="text-left" i18n="@@SocialSharing">Social Network Sharing</legend>
-                                        <div class="form-group">
+                                                        <div class="col-sm-12 col-md-4 text-left">
+                                                            <input #webRTCFrameRate="ngModel"
+                                                                   [(ngModel)]="appSettings.webRTCFrameRate"
+                                                                   [name]="webRTCFrameRate" class="form-control"
+                                                                   maxlength="30" minlength="5" required type="number"
+                                                                   value="20">
+                                                        </div>
 
-                                            <div class="row"
-                                                 *ngFor="let endpoint of videoServiceEndpoints; let i = index">
+                                                    </div>
 
-                                                <label class="col-sm-2 control-label">
-                                                    <ng-container [ngSwitch]="endpoint.serviceName">
-                                                        <ng-container *ngSwitchCase="'facebook'">
-                                                            <i class="ti-facebook" style="color:#3b5998">&nbsp;</i>Facebook
-                                                        </ng-container>
-                                                        <ng-container *ngSwitchCase="'youtube'">
-                                                            <i class="ti-youtube" style="color:#e52d27">&nbsp;</i>Youtube
-                                                        </ng-container>
-                                                        <ng-container *ngSwitchCase="'periscope'">
-                                                            <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>Periscope
-                                                        </ng-container>
+                                                    <div class="col-sm-12 col-md-12 text-left"
+                                                         style="margin-top: 20px;">
+                                                        <label class="text-left">Bitrate at the input redirected to output with the following bitrates</label>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+
+
+                                            <div *ngIf=isEnterpriseEdition class="form-group">
+
+
+                                                <div class="col-sm-12 col-md-12">
+
+
+                                                    <div class="col-xs-5 col-sm-4 text-left">
+                                                        <span class="help-block" i18n="@@ResolutionHeight">Resolution</span>
+                                                    </div>
+                                                    <div class="col-xs-6 col-sm-4 text-left">
+                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate(Kbps)</span>
+                                                    </div>
+
+
+                                                   <div class="row">
+
+                                                    <ng-container *ngIf="appSettings.encoderSettings">
+                                                        <div *ngFor="let encoderSetting of appSettings.encoderSettings; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px" >
+
+                                                                <div class="col-xs-5 col-sm-4 text-left">
+
+                                                                    <select #resolutionList [name]="'resolutionHeight'+i"  [(ngModel)]="encoderSetting.height"
+                                                                            class="dropdown-toggle form-control ">
+                                                                        <option value="0" selected disabled>Choose One</option>
+                                                                        <option value="1080">1080p</option>
+                                                                        <option value="720">720p</option>
+                                                                        <option value="480">480p</option>
+                                                                        <option value="360">360p</option>
+                                                                        <option value="240">240p</option>
+
+                                                                    </select>
+
+                                                                </div>
+                                                                <div class="col-xs-6 col-sm-4  text-left">
+
+                                                                    <select [name]="'videobitrate'+i"  [(ngModel)]="encoderSetting.videoBitrate"
+                                                                            class="dropdown-toggle form-control ">
+
+                                                                        <option value="0" selected disabled>Choose One</option>
+                                                                        <option *ngIf="resolutionList.value == '1080'" value="6000">High (6.000)</option>
+                                                                        <option *ngIf="resolutionList.value == '1080'" value="4000">Medium (4.000)</option>
+                                                                        <option *ngIf="resolutionList.value == '1080'" value="3000">Low (3.000)</option>
+
+
+                                                                        <option  *ngIf="resolutionList.value == '720'"  value="4000">High (4.000)</option>
+                                                                        <option  *ngIf="resolutionList.value == '720'"  value="2500">Medium (2.500)</option>
+                                                                        <option  *ngIf="resolutionList.value == '720'"  value="1200">Low (1.200)</option>
+
+
+                                                                        <option *ngIf="resolutionList.value == '480'" value="2000">High (2.000)</option>
+                                                                        <option *ngIf="resolutionList.value == '480'" value="1200">Medium (1.200)</option>
+                                                                        <option *ngIf="resolutionList.value == '480'" value="600">Low (600)</option>
+
+
+                                                                        <option  *ngIf="resolutionList.value == '360'"  value="1000">High (1.000)</option>
+                                                                        <option  *ngIf="resolutionList.value == '360'" value="700">Medium (700)</option>
+                                                                        <option  *ngIf="resolutionList.value == '360'" value="400">Low (400)</option>
+
+
+                                                                        <option *ngIf="resolutionList.value == '240'"  value="700">High (700)</option>
+                                                                        <option *ngIf="resolutionList.value == '240'"  value="500">Medium (500)</option>
+                                                                        <option *ngIf="resolutionList.value == '240'"  value="300">Low (300)</option>
+
+                                                                    </select>
+
+
+                                                                </div>
+
+
+                                                                <div class="col-xs-1 col-sm-1 text-left">
+                                                                    <button (click)="deleteStream(i)" class="btn btn-icon btn-simple btn-danger btn-minus" type="button">
+                                                                        <i class="ti-close"></i>
+                                                                    </button>
+                                                                </div>
+
+
+                                                        </div>
                                                     </ng-container>
-                                                </label>
-
-                                                <div class="col-sm-3 form-control-static">
-
-                                                    {{endpoint.accountName}}
-                                                    <button class="btn btn-simple btn-danger btn-xs"
-                                                            style="text-align:left" i18n="@@YoutubeAuthenticated"
-                                                            type="button" (click)="revokeSocialMediaAuth(endpoint.id)">
-                                                        <i class="ti-unlink"></i>Remove
+                                                   </div>
+                                                    <div class="col-sm-12 text-left col-md-12" ><button (click)="addNewStream()" class="btn btn-default" i18n="@@addNewStream" type="button">
+                                                        Add New Stream
                                                     </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf=!isEnterpriseEdition class="form-group text-center">
+                                                <p i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                    These features are enabled in
+                                                    <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
 
 
+                                    <div class="card">
+
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left">
+                                                HLS Streaming
+                                            </h4>
+                                        </div>
+
+                                        <div class="card-content">
+
+                                            <div class="text-left">
+
+                                                <div class="form-group">
+                                                    <div class="col-sm-12 col-md-12 text-left">
+                                                        <div class="checkbox" >
+
+                                                            <label for="hlsMuxingEnabled" i18n="@@enableHLSLiveStreaming">
+                                                                Create HLS Streaming
+                                                            </label>
+                                                            <input [(ngModel)]="appSettings.hlsMuxingEnabled"
+                                                                   id="hlsMuxingEnabled" name="hlsMuxingEnabled"
+                                                                   type="checkbox">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="col-sm-12 text-left col-md-12">
+
+
+                                                        <label class="col-sm-12 text-left col-md-3 mobile-text-left control-label"
+                                                               i18n="@@HLSSegmentListSize">Segment List Size</label>
+
+
+                                                        <div class="col-sm-12 text-left col-md-3">
+                                                            <small [hidden]="hlsListSize.valid" class="text-danger">
+                                                                Segment list size is required
+                                                            </small>
+                                                            <input #hlsListSize="ngModel" [(ngModel)]="appSettings.hlsListSize" class="form-control" name="hlsListSize" required type="number">
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="col-sm-12 text-left col-md-12">
+
+
+                                                        <label class="col-sm-12 text-left mobile-text-left col-md-3 control-label"
+                                                               i18n="@@HLSSegmentDuration">Segment Duration</label>
+
+
+                                                        <div class="col-sm-12 text-left col-md-3">
+                                                            <small [hidden]="hlsTime.valid" class="text-danger">
+                                                                Segment duration is required
+                                                            </small>
+                                                            <input #hlsTime="ngModel" [(ngModel)]="appSettings.hlsTime" class="form-control" name="hlsTime" required type="number">
+                                                        </div>
+
+                                                    </div>
                                                 </div>
 
                                             </div>
 
                                         </div>
 
-                                        <div class="form-group" style="margin-top:10px">
-
-                                            <div class="row">
-                                                <label class="col-sm-2 control-label">
-                                                    Add Account
-                                                </label>
-
-                                                <button class="col-sm-2 form-control-static btn btn-simple btn-success"
-                                                        style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                        (click)="getSocialMediaAuthParameters('facebook')">
-
-                                                    <i class="ti-facebook"></i> Add Facebook
-                                                </button>
-
-                                                <button class="col-sm-2 form-control-static btn btn-simple btn-success "
-                                                        style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                        (click)="getSocialMediaAuthParameters('youtube')">
-
-                                                    <i class="ti-youtube"></i> Add Youtube
-                                                </button>
-
-                                                <button class="col-sm-2 form-control-static btn btn-simple btn-success "
-                                                        style="margin-right:10px" i18n="@@authenticate" type="button"
-                                                        (click)="getSocialMediaAuthParameters('periscope')">
+                                    </div>
 
 
-                                                    <i class="ti-twitter-alt"></i> Add Periscope
-                                                </button>
+                                    <div [hidden]="!advancedSetting" class="card">
+
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left" i18n="@@Advanced">
+                                                Advanced
+                                            </h4>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="form-group">
+
+                                                <div class="col-sm-12 col-md-12 text-left">
+
+                                                    <div class="col-sm-12 col-md-12 text-left">
+                                                        <div *ngIf=!isEnterpriseEdition class="form-group text-center">
+                                                            <p i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                                Object Detection feature is enabled in
+                                                                <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <div class="text-left" *ngIf=isEnterpriseEdition>
+                                                            <div class="col-sm-12 col-md-12">
+                                                                <div class="checkbox">
+                                                                    <label for="objectDetection">
+                                                                        Use Object Detection
+                                                                    </label>
+                                                                    <input [(ngModel)]="appSettings.objectDetectionEnabled"
+                                                                           id="objectDetection" name="objectDetection"
+                                                                           type="checkbox">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+
+                                                        <label class="col-sm-12 text-left mobile-text-left col-md-3 control-label">VoD
+                                                            Streaming Folder</label>
+
+
+                                                        <div class="col-sm-12 col-md-6 text-left">
+                                                            <input type="text" name="vodFolderPath"
+                                                                   placeholder="Write full path of VoD folder"
+                                                                   class="form-control" [(ngModel)]="appSettings.vodFolder"
+                                                                   #vodFolderPath="ngModel">
+                                                            <small [hidden]="vodFolderPath.valid || (!f.submitted)"
+                                                                   class="text-danger">
+                                                                Folder path should be at least 4 characters.
+                                                            </small>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
                                             </div>
-                                            <div class="row">
-                                                <a class="btn btn-simple col-sm-12" *ngIf="gettingDeviceParameters">
-                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-                                                </a>
-                                                <a class="btn btn-simple col-sm-12" *ngIf="waitingForConfirmation">
-                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-                                                    Waiting for confirmation
-                                                </a>
+                                        </div>
+
+
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                <div class="col-sm-12 col-md-6">
+
+
+
+                                    <div class="card">
+
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left"  i18n="@@Mp4Recording">
+                                                MP4 Recording
+                                            </h4>
+                                        </div>
+
+                                        <div class="card-content">
+                                            <div class="form-group">
+
+                                                <div class="col-sm-12 col-md-12 text-left">
+
+
+                                                    <div class="form-group">
+                                                        <div class="col-xs-10 col-sm-6 col-md-6 text-right">
+                                                            <div class="checkbox">
+
+                                                                <label for="mp4MuxingEnabled"
+                                                                       i18n="@@enableMP4Recording">
+                                                                    Record Live Streams as MP4
+                                                                </label>
+                                                                <input [(ngModel)]="appSettings.mp4MuxingEnabled" id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <div class="col-xs-10 col-sm-6 col-md-6 text-right">
+                                                            <div class="checkbox">
+                                                                <label for="addDateTimeToMp4FileName"
+                                                                       i18n="@@addDateTimeToMP4Recordings">
+                                                                    Add Date-Time to MP4 File names
+                                                                </label>
+                                                                <input [(ngModel)]="appSettings.addDateTimeToMp4FileName" id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
                                             </div>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="card">
+
+
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left"  i18n="@@Security">
+                                                Security
+                                            </h4>
+                                        </div>
+
+                                        <div class="card-content">
+                                            <div class="form-group">
+
+                                                <div *ngIf=!isEnterpriseEdition class="form-group text-center">
+                                                    <p i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                        This feature is enabled in
+                                                        <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
+                                                    </p>
+                                                </div>
+
+                                                <div *ngIf=isEnterpriseEdition
+                                                     class="col-xs-10  col-sm-6 col-md-6 text-right ">
+                                                    <div class="checkbox">
+                                                        <label for="tokenControlEnabled">
+                                                            Streaming only with one time token
+                                                        </label>
+                                                        <input [(ngModel)]="appSettings.tokenControlEnabled" id="tokenControlEnabled" name="tokenControlEnabled" type="checkbox">
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+
+                                                <div *ngIf=!isEnterpriseEdition class="form-group text-center">
+                                                    <p i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                        This feature is enabled in
+                                                        <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
+                                                    </p>
+                                                </div>
+
+                                                <div *ngIf=isEnterpriseEdition
+                                                     class="col-xs-10 col-sm-6 col-md-6 text-right">
+
+                                                    <div class="checkbox">
+
+                                                        <label  for="acceptOnlyStreamsInDataStore"
+                                                                i18n="@@acceptOnlyStreamsInDataStore">
+                                                            Use External Sources
+                                                        </label>
+                                                        <input [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" id="externalEnabled" name="externalEnabled" type="checkbox" >
+
+
+
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+
+                                            <!--
+                                            <div class="form-group">
+
+                                                <div class="col-xs-10 col-sm-6 col-md-6 text-right">
+
+                                                    <div class="checkbox">
+
+                                                        <label for="IpFilteringEnabled"
+                                                               i18n="@@IpFilteringEnabled">
+                                                            Use Ip Filtering for RESTful API
+                                                        </label>
+                                                        <input [(ngModel)]="appSettings.IpFiltering" id="IpFilteringEnabled" name="IpFilteringEnabled" type="checkbox">
+
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+                                            -->
 
                                         </div>
 
-                                    </fieldset>
+
+                                    </div>
 
 
-                                    <fieldset>
-                                        <div class="form-group text-center">
-                                            <button type="submit" class="btn btn-fill btn-info" i18n="@@saveForm">Save</button>
+                                    <div class="card">
+
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left" i18n="@@SocialSharing">
+                                                Social Streaming
+                                            </h4>
                                         </div>
-                                    </fieldset>
-                                </form>
+
+                                        <div class="card-content">
+                                            <div class="form-group">
+
+                                                <div class="col-sm-12 col-md-4">
+
+
+                                                    <div class="form-group">
+                                                        <button (click)="getSocialMediaAuthParameters('facebook')"
+                                                                class="btn btn-default" i18n="@@authenticate"
+                                                                type="button">
+
+                                                            <i class="ti-facebook"></i> Add Facebook
+                                                        </button>
+                                                    </div>
+
+
+                                                    <div class="form-group">
+                                                        <button (click)="getSocialMediaAuthParameters('youtube')"
+                                                                class="btn btn-default " i18n="@@authenticate"
+                                                                type="button">
+
+                                                            <i class="ti-youtube"></i> Add Youtube
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <button (click)="getSocialMediaAuthParameters('periscope')"
+                                                                class="btn btn-default " i18n="@@authenticate"
+                                                                type="button">
+
+                                                            <i class="ti-twitter-alt"></i> Add Periscope
+                                                        </button>
+                                                    </div>
+
+
+                                                </div>
+
+
+                                                <div class="col-sm-12  col-md-8">
+
+                                                    <div *ngFor="let endpoint of videoServiceEndpoints; let i = index"
+                                                         class="row row-mobile">
+
+                                                        <div class="text-left form-group" style="    display: flex;
+    align-items: center;">
+
+
+                                                            <label>
+                                                                <button (click)="revokeSocialMediaAuth(endpoint.id)"
+                                                                        class="btn btn-simple btn-danger btn-xs"
+                                                                        i18n="@@SocialAuthenticated"
+                                                                        style=" -webkit-text-stroke: 2px; text-align:left"
+                                                                        type="button">
+                                                                    <i class="ti-close"
+                                                                       style="vertical-align: initial;"></i>
+                                                                </button>
+                                                            </label>
+
+                                                            <label style="padding-left: 20px">
+                                                                <ng-container [ngSwitch]="endpoint.serviceName">
+                                                                    <ng-container *ngSwitchCase="'facebook'">
+                                                                        <!--   <i class="ti-facebook" style="color:#3b5998">&nbsp;</i> -->
+
+                                                                        <label class="btn btn-icon btn-fill btn-facebook">
+                                                                            <i class="ti-facebook"></i>
+                                                                        </label>
+
+                                                                    </ng-container>
+                                                                    <ng-container *ngSwitchCase="'youtube'">
+
+                                                                        <label class="btn btn-icon btn-fill btn-youtube">
+                                                                            <i class="ti-control-play"></i>
+                                                                        </label>
+
+
+                                                                    </ng-container>
+                                                                    <ng-container *ngSwitchCase="'periscope'">
+                                                                        <!--  <i class="ti-twitter-alt" style="color:#55acee">&nbsp;</i>-->
+
+
+                                                                        <label class="btn btn-icon btn-fill btn-twitter">
+                                                                            <i class="ti-twitter-alt"></i>
+                                                                        </label>
+
+                                                                    </ng-container>
+                                                                </ng-container>
+                                                            </label>
+
+
+                                                            <label style=" min-width: 125px; padding-left: 15px">
+                                                                <label>  {{endpoint.accountName}}  </label>
+                                                            </label>
+
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <a *ngIf="gettingDeviceParameters"
+                                                           class="btn btn-simple col-sm-12">
+                                                            <i aria-hidden="true"
+                                                               class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>
+                                                        </a>
+                                                        <a *ngIf="waitingForConfirmation"
+                                                           class="btn btn-simple col-sm-12">
+                                                            <i aria-hidden="true"
+                                                               class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>
+                                                            Waiting for confirmation
+                                                        </a>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+
+
+                                </div>
+
+
+                                <div class="col-sm-12 col-md-12">
+
+
+                                    <div class="card">
+                                        <div class="text-center">
+
+                                            <button class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
+                                                    type="submit">Save
+                                            </button>
+                                            <button (click)="advancedSetting = !advancedSetting" class="btn btn-info"
+                                                    i18n="@@saveForm" style="margin: 15px" type="button">Advanced
+                                                Setting
+                                            </button>
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
 
 
 
                             </div>
-                        </div>
+                        </form>
 
 
 
-                        <div class="footer">
-                            <!--
-                        <hr />
-
-                        <div class="stats">
-                               <button class="btn btn-primary btn-simple btn-sm" (click)="updateCPULoad()">
-                                   <i class="ti-reload"></i>Update now</button>
-                        </div>
-                    -->
-                        </div>
                     </div>
+
+
+                </div>
+
+
+
+                <div class="footer">
+                    <!--
+                <hr />
+
+                <div class="stats">
+                       <button class="btn btn-primary btn-simple btn-sm" (click)="updateCPULoad()">
+                           <i class="ti-reload"></i>Update now</button>
+                </div>
+            -->
                 </div>
             </div>
 

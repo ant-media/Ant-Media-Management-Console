@@ -65,3 +65,7 @@
 .ct-chart-line-multipleseries .ct-legend li.inactive:before {
    background: transparent;
  }
+
+label {
+    font-weight: 400;
+}
