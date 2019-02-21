@@ -911,18 +911,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.playLiveToken(streamId);
             return;
         }
-        var iframeSource;
-        var width = "800px"
 
-        var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
+        var width = "640px"
+        var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId;
+        var  htmlCode = '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:400px"  ></iframe>';
+        width = "640px"
 
-        iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true";
-
-        if(this.appSettings.webRTCEnabled){
-            iframeSource = HTTP_SERVER_ROOT + this.appName + "/play_embed.html?name=" + streamId;
-            htmlCode = '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:400px"  ></iframe>';
-            width = "640px"
-        }
         this.openLivePlayer(htmlCode, streamId, width);
 
 
@@ -935,24 +929,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     playLiveToken(streamId: string): void {
 
-        var iframeSource;
-        var width = "800px";
-        var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
+        var width = "640px"
 
         this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
             this.token = <Token>data;
 
-            iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&token=" + this.token.tokenId +"&autoplay=true";
-
-            if(this.appSettings.webRTCEnabled){
-
-                iframeSource = HTTP_SERVER_ROOT + this.appName + "/play_embed.html?name=" + streamId + "&token=" + this.token.tokenId;
-                htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px"></iframe>';
-                width = "640px"
-            }
+            var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&token=" + this.token.tokenId;
+            var   htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px"></iframe>';
 
             this.openLivePlayer(htmlCode, streamId, width);
-
 
             var $iframe = $('#' + streamId);
 
@@ -1566,7 +1551,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraAdding = true;
         this.liveBroadcast.type = "ipCamera";
 
-        
+
         var socialNetworks = [];
         this.restService.addStreamSource(this.appName, this.liveBroadcast, socialNetworks.join(","))
             .subscribe(data => {
@@ -1706,7 +1691,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 socialNetworks.push(this.videoServiceEndpoints[index].id);
             }
         });
-        
+
         this.restService.addStreamSource(this.appName, this.liveBroadcast, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
@@ -1730,8 +1715,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     this.liveBroadcast.streamUrl = "";
                     this.streamUrlValid=true;
-                    
-             
+
+
                 }
                 else {
 
