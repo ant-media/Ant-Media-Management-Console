@@ -88,6 +88,8 @@
 
                                                     <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
 
+                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
+
                                                         <label [for]="endpoint.id">
                                                             <ng-container [ngSwitch]="endpoint.serviceName">
                                                                 <ng-container *ngSwitchCase="'facebook'">
@@ -103,7 +105,7 @@
                                                             {{endpoint.accountName}}
                                                         </label>
 
-                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
+
                                                     </div>
                                                 </ng-container>
                                             </div>
@@ -247,6 +249,8 @@
 
                                                     <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
 
+                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
+
                                                         <label [for]="endpoint.id">
                                                             <ng-container [ngSwitch]="endpoint.serviceName">
                                                                 <ng-container *ngSwitchCase="'facebook'">
@@ -262,7 +266,7 @@
                                                             {{endpoint.accountName}}
                                                         </label>
 
-                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
+
                                                     </div>
                                                 </ng-container>
                                             </div>
@@ -1095,12 +1099,14 @@
                                                     <div class="col-sm-12 col-md-12 text-left">
                                                         <div class="checkbox" >
 
-                                                            <label for="hlsMuxingEnabled" i18n="@@enableHLSLiveStreaming">
-                                                                Create HLS Streaming
-                                                            </label>
                                                             <input [(ngModel)]="appSettings.hlsMuxingEnabled"
                                                                    id="hlsMuxingEnabled" name="hlsMuxingEnabled"
                                                                    type="checkbox">
+
+                                                            <label for="hlsMuxingEnabled" i18n="@@enableHLSLiveStreaming">
+                                                                Create HLS Streaming
+                                                            </label>
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1173,12 +1179,15 @@
                                                         <div class="text-left" *ngIf=isEnterpriseEdition>
                                                             <div class="col-sm-12 col-md-12">
                                                                 <div class="checkbox">
-                                                                    <label for="objectDetection">
-                                                                        Use Object Detection
-                                                                    </label>
+
                                                                     <input [(ngModel)]="appSettings.objectDetectionEnabled"
                                                                            id="objectDetection" name="objectDetection"
                                                                            type="checkbox">
+
+                                                                    <label for="objectDetection">
+                                                                        Use Object Detection
+                                                                    </label>
+
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1238,11 +1247,13 @@
                                                         <div class="col-xs-10 col-sm-6 col-md-6 text-right">
                                                             <div class="checkbox">
 
+                                                                <input [(ngModel)]="appSettings.mp4MuxingEnabled" id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox">
+
                                                                 <label for="mp4MuxingEnabled"
                                                                        i18n="@@enableMP4Recording">
                                                                     Record Live Streams as MP4
                                                                 </label>
-                                                                <input [(ngModel)]="appSettings.mp4MuxingEnabled" id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox">
+
 
                                                             </div>
                                                         </div>
@@ -1251,11 +1262,13 @@
                                                     <div class="form-group">
                                                         <div class="col-xs-10 col-sm-6 col-md-6 text-right">
                                                             <div class="checkbox">
+
+                                                                <input [(ngModel)]="appSettings.addDateTimeToMp4FileName" id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox">
+
                                                                 <label for="addDateTimeToMp4FileName"
                                                                        i18n="@@addDateTimeToMP4Recordings">
                                                                     Add Date-Time to MP4 File names
                                                                 </label>
-                                                                <input [(ngModel)]="appSettings.addDateTimeToMp4FileName" id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox">
 
                                                             </div>
                                                         </div>
@@ -1290,10 +1303,11 @@
                                                 <div *ngIf=isEnterpriseEdition
                                                      class="col-xs-10  col-sm-6 col-md-6 text-right ">
                                                     <div class="checkbox">
+                                                        <input [(ngModel)]="appSettings.tokenControlEnabled" id="tokenControlEnabled" name="tokenControlEnabled" type="checkbox">
+
                                                         <label for="tokenControlEnabled">
                                                             Streaming only with one time token
                                                         </label>
-                                                        <input [(ngModel)]="appSettings.tokenControlEnabled" id="tokenControlEnabled" name="tokenControlEnabled" type="checkbox">
 
                                                     </div>
 
@@ -1314,11 +1328,12 @@
 
                                                     <div class="checkbox">
 
+                                                        <input [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" type="checkbox" >
+
                                                         <label  for="acceptOnlyStreamsInDataStore"
                                                                 i18n="@@acceptOnlyStreamsInDataStore">
                                                             Use External Sources
                                                         </label>
-                                                        <input [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" id="externalEnabled" name="externalEnabled" type="checkbox" >
 
 
 
@@ -1452,7 +1467,7 @@
                                                             </label>
 
 
-                                                            <label style=" min-width: 125px; padding-left: 15px">
+                                                            <label style=" min-width: 125px; padding-left: 15px; padding-right: 15px;">
                                                                 <label>  {{endpoint.accountName}}  </label>
                                                             </label>
 

@@ -69,3 +69,18 @@
 label {
     font-weight: 400;
 }
+
+@media (max-width: 990px) {
+    .mobile-text-left {
+        text-align: left !important;
+    }
+
+}
+
+@media (max-width: 990px) {
+    .row-mobile {
+        display: table;
+        margin: auto;
+    }
+
+}
