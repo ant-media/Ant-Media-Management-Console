@@ -82,6 +82,10 @@ export class RestService {
         } 
     }
 
+    public getSystemResourcesInfo(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/getSystemResourcesInfo');
+    }
+
     public getCPULoad(): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + '/getCPUInfo');
     }
