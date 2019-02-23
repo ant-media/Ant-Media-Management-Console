@@ -997,10 +997,12 @@
                                                     <div class="col-xs-5 col-sm-4 text-left">
                                                         <span class="help-block" i18n="@@ResolutionHeight">Resolution</span>
                                                     </div>
-                                                    <div class="col-xs-6 col-sm-4 text-left">
-                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate(Kbps)</span>
+                                                    <div class="col-xs-6 col-sm-3 text-left">
+                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate (Kbps)</span>
                                                     </div>
-
+                                                    <div class="col-xs-6 col-sm-3 text-left">
+                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate (Kbps)</span>
+                                                    </div>
 
                                                    <div class="row">
 
@@ -1009,7 +1011,7 @@
 
                                                                 <div class="col-xs-5 col-sm-4 text-left">
 
-                                                                    <select #resolutionList [name]="'resolutionHeight'+i"  [(ngModel)]="encoderSetting.height"
+                                                                    <select  [name]="'resolutionHeight'+i" (ngModelChange)="dropDownChanged($event,i)"   [(ngModel)]="encoderSetting.height"
                                                                             class="dropdown-toggle form-control ">
                                                                         <option value="0" selected disabled>Choose One</option>
                                                                         <option value="1080">1080p</option>
@@ -1021,39 +1023,12 @@
                                                                     </select>
 
                                                                 </div>
-                                                                <div class="col-xs-6 col-sm-4  text-left">
+                                                                <div class="col-xs-6 col-sm-3 text-left">
+                                                                    <input  type="number" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate" />
+                                                                </div>
 
-                                                                    <select [name]="'videobitrate'+i"  [(ngModel)]="encoderSetting.videoBitrate"
-                                                                            class="dropdown-toggle form-control ">
-
-                                                                        <option value="0" selected disabled>Choose One</option>
-                                                                        <option *ngIf="resolutionList.value == '1080'" value="6000">High (6.000)</option>
-                                                                        <option *ngIf="resolutionList.value == '1080'" value="4000">Medium (4.000)</option>
-                                                                        <option *ngIf="resolutionList.value == '1080'" value="3000">Low (3.000)</option>
-
-
-                                                                        <option  *ngIf="resolutionList.value == '720'"  value="4000">High (4.000)</option>
-                                                                        <option  *ngIf="resolutionList.value == '720'"  value="2500">Medium (2.500)</option>
-                                                                        <option  *ngIf="resolutionList.value == '720'"  value="1200">Low (1.200)</option>
-
-
-                                                                        <option *ngIf="resolutionList.value == '480'" value="2000">High (2.000)</option>
-                                                                        <option *ngIf="resolutionList.value == '480'" value="1200">Medium (1.200)</option>
-                                                                        <option *ngIf="resolutionList.value == '480'" value="600">Low (600)</option>
-
-
-                                                                        <option  *ngIf="resolutionList.value == '360'"  value="1000">High (1.000)</option>
-                                                                        <option  *ngIf="resolutionList.value == '360'" value="700">Medium (700)</option>
-                                                                        <option  *ngIf="resolutionList.value == '360'" value="400">Low (400)</option>
-
-
-                                                                        <option *ngIf="resolutionList.value == '240'"  value="700">High (700)</option>
-                                                                        <option *ngIf="resolutionList.value == '240'"  value="500">Medium (500)</option>
-                                                                        <option *ngIf="resolutionList.value == '240'"  value="300">Low (300)</option>
-
-                                                                    </select>
-
-
+                                                                <div class="col-xs-6 col-sm-3 text-left">
+                                                                    <input  type="number" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate" />
                                                                 </div>
 
 

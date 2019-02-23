@@ -82,5 +82,9 @@ label {
         display: table;
         margin: auto;
     }
+}
 
+select.bs-select-hidden,
+select.selectpicker {
+     display: inline !important;
 }

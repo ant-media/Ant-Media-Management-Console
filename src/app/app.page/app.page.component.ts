@@ -251,6 +251,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit() {
+
         this.timerId = null;
 
         //  Init Bootstrap Select Picker
@@ -1382,18 +1383,48 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     addNewStream(): void {
+
         if (!this.appSettings.encoderSettings) {
             this.appSettings.encoderSettings = [];
         }
+
         this.appSettings.encoderSettings.push({
             height: 0,
             videoBitrate: 0,
             audioBitrate: 0
         });
+
+    }
+
+    dropDownChanged(event:any,i:number){
+
+        if(event == 1080) {
+            this.appSettings.encoderSettings[i].videoBitrate = 2000;
+            this.appSettings.encoderSettings[i].audioBitrate = 256;
+        }
+        if(event == 720) {
+            this.appSettings.encoderSettings[i].videoBitrate = 1500;
+            this.appSettings.encoderSettings[i].audioBitrate = 128;
+        }
+        if(event == 480) {
+            this.appSettings.encoderSettings[i].videoBitrate = 1000;
+            this.appSettings.encoderSettings[i].audioBitrate = 96;
+        }
+        if(event == 360) {
+            this.appSettings.encoderSettings[i].videoBitrate = 800;
+            this.appSettings.encoderSettings[i].audioBitrate = 64;
+        }
+        if(event == 240) {
+            this.appSettings.encoderSettings[i].videoBitrate = 500;
+            this.appSettings.encoderSettings[i].audioBitrate = 32;
+        }
+
+
     }
 
     deleteStream(index: number): void {
         this.appSettings.encoderSettings.splice(index, 1);
+        console.log("deleteStream: " + index);
     }
 
     setSocialNetworkChannel(endpointId: string, type: string, value: string): void {

@@ -14,7 +14,6 @@
 */
 /*      light colors - used for select dropdown         */
 /*           Social buttons            */
-
 .ct-blue {
   stroke: #7A9E9F !important;
 }
@@ -4152,7 +4151,7 @@ svg {
  */
 select.bs-select-hidden,
 select.selectpicker {
- /* display: none !important; */
+  display: none !important;
 }
 
 .bootstrap-select {
