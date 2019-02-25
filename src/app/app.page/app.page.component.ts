@@ -185,6 +185,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public streamUrlValid = true;
     public streamNameEmpty=false;
     public encoderSettings:EncoderSettings[];
+    public acceptAllStreams : boolean;
 
 
 
@@ -1505,6 +1506,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             });
 
+            this.acceptAllStreams = !this.appSettings.acceptOnlyStreamsInDataStore ;
+
+
         });
 
 
@@ -1542,6 +1546,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             }
         });
+
+        this.appSettings.acceptOnlyStreamsInDataStore = !this.acceptAllStreams ;
+
 
         this.restService.changeSettings(this.appName, this.appSettings).subscribe(data => {
             if (data["success"] == true) {

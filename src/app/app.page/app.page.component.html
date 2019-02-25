@@ -1060,15 +1060,15 @@
                                                     <div class="col-sm-12 text-left col-md-12">
 
 
-                                                        <label class="col-sm-12 text-left col-md-3 mobile-text-left control-label"
+                                                        <label class="col-sm-12 col-md-3 control-label" style="min-width: 160px; "
                                                                i18n="@@HLSSegmentListSize">Segment List Size</label>
 
 
                                                         <div class="col-sm-12 text-left col-md-3">
+                                                            <input style="min-width: 125px;" #hlsListSize="ngModel" [(ngModel)]="appSettings.hlsListSize" class="form-control" name="hlsListSize" required type="number">
                                                             <small [hidden]="hlsListSize.valid" class="text-danger">
                                                                 Segment list size is required
                                                             </small>
-                                                            <input #hlsListSize="ngModel" [(ngModel)]="appSettings.hlsListSize" class="form-control" name="hlsListSize" required type="number">
                                                         </div>
 
                                                     </div>
@@ -1078,15 +1078,15 @@
                                                     <div class="col-sm-12 text-left col-md-12">
 
 
-                                                        <label class="col-sm-12 text-left mobile-text-left col-md-3 control-label"
+                                                        <label class="col-sm-12 col-md-3 control-label" style="min-width: 160px; "
                                                                i18n="@@HLSSegmentDuration">Segment Duration</label>
 
 
                                                         <div class="col-sm-12 text-left col-md-3">
+                                                            <input style="min-width: 125px;" #hlsTime="ngModel" [(ngModel)]="appSettings.hlsTime" class="form-control" name="hlsTime" required type="number">
                                                             <small [hidden]="hlsTime.valid" class="text-danger">
                                                                 Segment duration is required
                                                             </small>
-                                                            <input #hlsTime="ngModel" [(ngModel)]="appSettings.hlsTime" class="form-control" name="hlsTime" required type="number">
                                                         </div>
 
                                                     </div>
@@ -1185,11 +1185,11 @@
                                         <div class="card-content text-left">
                                             <div class="form-group">
 
-                                                <div class="col-sm-12 col-md-12">
+                                                <div class="col-sm-12">
 
 
                                                     <div class="form-group">
-                                                        <div class="col-xs-10 col-sm-6 col-md-6">
+                                                        <div class="col-xs-12">
                                                             <div class="checkbox">
 
                                                                 <input [(ngModel)]="appSettings.mp4MuxingEnabled" id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox">
@@ -1205,7 +1205,7 @@
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <div class="col-xs-10 col-sm-6 col-md-6">
+                                                        <div class="col-xs-12">
                                                             <div class="checkbox">
 
                                                                 <input [(ngModel)]="appSettings.addDateTimeToMp4FileName" id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox">
@@ -1246,12 +1246,12 @@
                                                 </div>
 
                                                 <div *ngIf=isEnterpriseEdition
-                                                     class="col-xs-10  col-sm-6 col-md-6 ">
+                                                     class="col-xs-12 ">
                                                     <div class="checkbox">
                                                         <input [(ngModel)]="appSettings.tokenControlEnabled" id="tokenControlEnabled" name="tokenControlEnabled" type="checkbox">
 
                                                         <label for="tokenControlEnabled">
-                                                            Streaming only with one time token
+                                                            Publish/Play with one time tokens <a href="https://antmedia.io/secure-video-streaming/" target="_blank"   matTooltip="By enabling this option, one time tokens are required for publishing and playing. Publish/Play request without tokens will not be streamed. Click for more information."><i style="font-size: 20px;" class="fa fa-info-circle"></i></a>
                                                         </label>
 
                                                     </div>
@@ -1269,15 +1269,15 @@
                                                 </div>
 
                                                 <div *ngIf=isEnterpriseEdition
-                                                     class="col-xs-10 col-sm-6 col-md-6">
+                                                     class="col-xs-12">
 
                                                     <div class="checkbox">
 
-                                                        <input [(ngModel)]="!appSettings.acceptOnlyStreamsInDataStore" [checked]="!appSettings.acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" type="checkbox" >
+                                                        <input [(ngModel)]="acceptAllStreams" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" type="checkbox" >
 
                                                         <label  for="acceptOnlyStreamsInDataStore"
                                                                 i18n="@@acceptOnlyStreamsInDataStore">
-                                                            Accept undefined Streams
+                                                            Accept Undefined Streams <a  matTooltip="By enabling this option, all streams are accepted even if they are not defined in database."><i style="font-size: 20px;" class="fa fa-info-circle"></i></a>
                                                         </label>
 
 
