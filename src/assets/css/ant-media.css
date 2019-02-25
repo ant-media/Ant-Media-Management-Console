@@ -88,3 +88,16 @@ select.bs-select-hidden,
 select.selectpicker {
      display: inline !important;
 }
+
+.deneme{
+    font-weight: 400;
+    font-size: 16pt;
+    position: relative;
+}
+.deneme::after{
+    bottom: 0;
+    color: red;
+    content: '000';
+    position: absolute;
+    transform: translate(-100%, 0);
+}

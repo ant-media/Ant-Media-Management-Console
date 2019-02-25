@@ -897,51 +897,10 @@
 
 
                     <div *ngIf="appSettings" class="tab-pane" id="settings">
-                        <form #f="ngForm" (ngSubmit)="changeSettings(f.valid)" class="form-horizontal" method="post">
+                        <form #f="ngForm" (ngSubmit)="changeSettings(f.valid)" validate class="form-horizontal" method="post">
                             <div class="row">
 
                                 <div class="col-sm-12 col-md-6">
-
-
-                                    <div *ngIf="0>=appSettings.encoderSettings.length" class="card">
-
-
-                                        <div class="card-header">
-                                            <h4 class="card-title text-left">
-                                                Adaptive Streaming
-                                            </h4>
-                                        </div>
-
-                                        <div class="card-content">
-
-                                            <div *ngIf=isEnterpriseEdition class="form-group">
-
-                                                <div class="col-sm-12 col-md-12 text-left">
-
-                                                    <div class="col-sm-12 col-md-12 text-left"
-                                                         style="margin-top: 10px; margin-bottom: 20px;">
-                                                        <label class="text-left">Bitrate at the input redirected to output as it is.</label>
-                                                    </div>
-
-                                                    <div class="text-left col-sm-12 col-md-12">
-                                                        <button (click)="addNewStream()" class="btn btn-default" i18n="@@addNewStream"  type="button">
-                                                            Add New Stream
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-
-                                            <div *ngIf=!isEnterpriseEdition class="form-group text-center">
-                                                <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                    These features are enabled in
-                                                    <a href="https://antmedia.io">Ant Media Server Enterprise
-                                                        Edition.</a>
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                    </div>
 
 
                                     <div *ngIf="0<appSettings.encoderSettings.length" class="card">
@@ -959,20 +918,20 @@
 
                                                 <div class="col-sm-12 col-md-10 text-left">
 
-                                                    <div class="col-sm-12 col-md-12 text-left"
+                                                    <div *ngIf="0<encoderSettings.length"  class="col-sm-12 col-md-12 text-left"
                                                          style="padding-left: 0px;margin-top: 10px;">
 
-                                                        <div class="col-sm-12 col-md-5 text-left">
+                                                        <div  class="col-sm-12 col-md-5 text-left">
                                                             <label class="control-label">WebRTC Frame Rate</label>
                                                         </div>
 
 
                                                         <div class="col-sm-12 col-md-4 text-left">
-                                                            <input #webRTCFrameRate="ngModel"
+                                                            <input id="webRTCFrameRate" #webRTCFrameRate="ngModel"
                                                                    [(ngModel)]="appSettings.webRTCFrameRate"
                                                                    [name]="webRTCFrameRate" class="form-control"
-                                                                   maxlength="30" minlength="5" required type="number"
-                                                                   value="20">
+                                                                   range="[5,30]" required type="number"
+                                                                   >
                                                         </div>
 
                                                     </div>
@@ -988,12 +947,12 @@
 
 
 
-                                            <div *ngIf=isEnterpriseEdition class="form-group">
+                                            <div *ngIf="isEnterpriseEdition" class="form-group">
 
 
                                                 <div class="col-sm-12 col-md-12">
 
-
+                                                    <div *ngIf="0<encoderSettings.length" >
                                                     <div class="col-xs-5 col-sm-4 text-left">
                                                         <span class="help-block" i18n="@@ResolutionHeight">Resolution</span>
                                                     </div>
@@ -1003,15 +962,17 @@
                                                     <div class="col-xs-6 col-sm-3 text-left">
                                                         <span class="help-block" i18n="@@ResolutionHeight">Bitrate (Kbps)</span>
                                                     </div>
+                                                        </div>
 
-                                                   <div class="row">
+                                                   <div *ngIf="0<encoderSettings.length" class="row">
 
-                                                    <ng-container *ngIf="appSettings.encoderSettings">
-                                                        <div *ngFor="let encoderSetting of appSettings.encoderSettings; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px" >
+
+                                                    <ng-container>
+                                                        <div *ngFor="let encoderSetting of encoderSettings; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px" >
 
                                                                 <div class="col-xs-5 col-sm-4 text-left">
 
-                                                                    <select  [name]="'resolutionHeight'+i" (ngModelChange)="dropDownChanged($event,i)"   [(ngModel)]="encoderSetting.height"
+                                                                    <select [name]="'resolutionHeight'+i" (ngModelChange)="dropDownChanged($event,i)" [(ngModel)]="encoderSetting.height"
                                                                             class="dropdown-toggle form-control ">
                                                                         <option value="0" selected disabled>Choose One</option>
                                                                         <option value="1080">1080p</option>
@@ -1019,16 +980,25 @@
                                                                         <option value="480">480p</option>
                                                                         <option value="360">360p</option>
                                                                         <option value="240">240p</option>
-
                                                                     </select>
-
+                                                                  <!--  <small [hidden]="resolution.value != 0  || (resolution.pristine && !f.submitted)" class="text-danger">
+                                                                        Resolution Bitrate is required.
+                                                                    </small>
+                                                                  -->
                                                                 </div>
                                                                 <div class="col-xs-6 col-sm-3 text-left">
-                                                                    <input  type="number" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate" />
+                                                                    <input type="number" [min]="10" min="10" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate" required />
+                                                                  <!--  <small [hidden]="videobitrate.value > 100  || (videobitrate.pristine &&  !f.submitted)" class="text-danger">
+                                                                        Video Bitrate is required.
+                                                                    </small> -->
                                                                 </div>
 
                                                                 <div class="col-xs-6 col-sm-3 text-left">
-                                                                    <input  type="number" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate" />
+                                                                    <input type="number" [min]="10" min="10" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate" required />
+                                                                   <!-- <small [hidden]="audiobitrate.value > 10   || (audiobitrate.pristine && !f.submitted)" class="text-danger">
+                                                                        Audio Bitrate is required.
+                                                                    </small>
+                                                                    -->
                                                                 </div>
 
 
