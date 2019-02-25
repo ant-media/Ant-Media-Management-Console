@@ -126,8 +126,8 @@ export declare interface VodInfo {
 
 export declare interface EncoderSettings {
     height: Number;
-    videoBitrate: Number;
-    audioBitrate: Number;
+    videoBitrate: number;
+    audioBitrate: number;
 }
 
 export declare interface VodInfoTable {

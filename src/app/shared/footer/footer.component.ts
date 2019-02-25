@@ -16,6 +16,7 @@ export class FooterComponent{
     public target_language:string;
     public versionName : string;
     public versionType : string;
+    public buildNumber : string;
 
     constructor(@Inject(LOCALE_ID) locale: string,private http: HttpClient, private restService: RestService) {
         
@@ -30,9 +31,10 @@ export class FooterComponent{
 
     ngOnInit() {
 
-            this.restService.getVersionList("LiveApp").subscribe(data => {
+            this.restService.getVersion().subscribe(data => {
             this.versionName = data["versionName"];
             this.versionType = data["versionType"];
+            this.buildNumber = data["buildNumber"];
         });
     }
 

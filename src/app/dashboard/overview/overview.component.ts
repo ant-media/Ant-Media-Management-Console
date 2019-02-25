@@ -73,18 +73,10 @@ export class OverviewComponent implements OnInit {
     }
     ngAfterViewInit() {
         this.initCirclePercentage();
-        this.updateCPULoad();
-        this.getLiveClientsSize();
-        this.getSystemMemoryInfo();
-        this.getFileSystemInfo();
-        this.getJVMMemoryInfo();
+        this.getSystemResources(); // All in One
         this.getApplicationsInfo();
         this.timerId = window.setInterval(() => {
-            this.updateCPULoad();
-            this.getLiveClientsSize();
-            this.getSystemMemoryInfo();
-            this.getFileSystemInfo();
-            this.getJVMMemoryInfo();
+            this.getSystemResources(); // All in One
             this.getApplicationsInfo();
         }, 5000);
     }
@@ -96,12 +88,37 @@ export class OverviewComponent implements OnInit {
         }
     }
 
-    updateCPULoad(): void {
-        this.restService.getCPULoad().subscribe(data => {
-                this.cpuLoad = Number(data["systemCPULoad"]);
+    getSystemResources(): void {
+        this.restService.getSystemResourcesInfo().subscribe(data => {
 
-                //["systemCPULoad"]
-            },
+            //updateCPULoad()
+
+            this.cpuLoad = Number(data["cpuUsage"]["systemCPULoad"]);
+            this.liveStreamSize = Number(data["totalLiveStreamSize"]);
+
+            //getSystemMemoryInfo()
+
+            this.systemMemoryInUse = Number(data["systemMemoryInfo"]["inUseMemory"]);
+            this.systemMemoryTotal  = Number(data["systemMemoryInfo"]["totalMemory"]);
+            this.systemMemoryUsagePercent = Math.round(this.systemMemoryInUse * 100 / this.systemMemoryTotal);
+
+            //getFileSystemInfo()
+
+            this.diskInUseSpace = Number(data["fileSystemInfo"]["inUseSpace"]);
+            this.diskTotalSpace = Number(data["fileSystemInfo"]["totalSpace"]);
+            this.diskUsagePercent = Math.round(this.diskInUseSpace * 100 / this.diskTotalSpace);
+
+            $("#chartDiskUsage").data('easyPieChart').update(this.diskUsagePercent);
+
+            //getJVMMemoryInfo()
+
+             this.memoryInUseSpace = Number(data["jvmMemoryUsage"]["inUseMemory"]);
+             this.memoryTotalSpace = Number(data["jvmMemoryUsage"]["maxMemory"]);
+             this.memoryUsagePercent = Math.round(Number(this.memoryInUseSpace * 100 / this.memoryTotalSpace));
+
+             $("#chartMemoryUsage").data('easyPieChart').update(this.memoryUsagePercent);
+
+        },
             this.handleError);
     }
 
@@ -115,14 +132,27 @@ export class OverviewComponent implements OnInit {
 
     }
 
-    getLiveClientsSize(): void {
+    /*updateCPULoad(): void {
+        this.restService.getCPULoad().subscribe(data => {
+                this.cpuLoad = Number(data["systemCPULoad"]);
+
+                //["systemCPULoad"]
+            },
+            this.handleError);
+    }
+    */
+
+
+
+    /*getLiveClientsSize(): void {
         this.restService.getLiveClientsSize().subscribe(data => {
             this.liveStreamSize = Number(data["totalLiveStreamSize"]);
-            this.watcherSize = Number(data["totalConnectionSize"]) - this.liveStreamSize;
+           // this.watcherSize = Number(data["totalConnectionSize"]) - this.liveStreamSize;
         });
     }
+    */
 
-    getSystemMemoryInfo(): void {
+    /*getSystemMemoryInfo(): void {
         this.restService.getSystemMemoryInfo().subscribe(data => {
             var freeSpace = Number(data["freeMemory"]);
             this.systemMemoryInUse = Number(data["inUseMemory"]);
@@ -133,8 +163,10 @@ export class OverviewComponent implements OnInit {
         });
 
     }
+    */
 
-    getFileSystemInfo(): void {
+
+    /*getFileSystemInfo(): void {
 
         this.restService.getFileSystemInfo().subscribe(data => {
             // Read the result field from the JSON response.
@@ -146,8 +178,9 @@ export class OverviewComponent implements OnInit {
             $("#chartDiskUsage").data('easyPieChart').update(this.diskUsagePercent);
         });
     }
+    */
 
-    getJVMMemoryInfo(): void {
+   /* getJVMMemoryInfo(): void {
 
         this.restService.getJVMMemoryInfo().subscribe(data => {
             this.memoryInUseSpace = Number(data["inUseMemory"]);
@@ -157,6 +190,7 @@ export class OverviewComponent implements OnInit {
             $("#chartMemoryUsage").data('easyPieChart').update(this.memoryUsagePercent);
         });
     }
+    */
 
 
     getApplicationsInfo(): void {

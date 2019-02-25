@@ -82,6 +82,10 @@ export class RestService {
         } 
     }
 
+    public getSystemResourcesInfo(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/getSystemResourcesInfo');
+    }
+
     public getCPULoad(): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + '/getCPUInfo');
     }
@@ -91,8 +95,8 @@ export class RestService {
             {});
     }
 
-    public getVersionList(appName: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getVersion');
+    public getVersion(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/getVersion");
     }
 
     public getDetectionList(appName:string, streamId:string, offset:number, size:Number): Observable<Object> {

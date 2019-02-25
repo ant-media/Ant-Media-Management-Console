@@ -88,6 +88,8 @@
 
                                                     <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
 
+                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
+
                                                         <label [for]="endpoint.id">
                                                             <ng-container [ngSwitch]="endpoint.serviceName">
                                                                 <ng-container *ngSwitchCase="'facebook'">
@@ -103,7 +105,7 @@
                                                             {{endpoint.accountName}}
                                                         </label>
 
-                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
+
                                                     </div>
                                                 </ng-container>
                                             </div>
@@ -247,6 +249,8 @@
 
                                                     <div class="col-sm-4 text-left checkbox vcenter"style="margin-top:5px">
 
+                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
+
                                                         <label [for]="endpoint.id">
                                                             <ng-container [ngSwitch]="endpoint.serviceName">
                                                                 <ng-container *ngSwitchCase="'facebook'">
@@ -262,7 +266,7 @@
                                                             {{endpoint.accountName}}
                                                         </label>
 
-                                                        <input [id]="endpoint.id" [name]="endpoint.id" type="checkbox" [(ngModel)]="shareEndpoint[i]">
+
                                                     </div>
                                                 </ng-container>
                                             </div>
@@ -893,54 +897,13 @@
 
 
                     <div *ngIf="appSettings" class="tab-pane" id="settings">
-                        <form #f="ngForm" (ngSubmit)="changeSettings(f.valid)" class="form-horizontal" method="post">
+                        <form #f="ngForm" (ngSubmit)="changeSettings(f.valid)" validate class="form-horizontal" method="post">
                             <div class="row">
 
                                 <div class="col-sm-12 col-md-6">
 
 
-                                    <div *ngIf="0>=appSettings.encoderSettings.length" class="card">
-
-
-                                        <div class="card-header">
-                                            <h4 class="card-title text-left">
-                                                Adaptive Streaming
-                                            </h4>
-                                        </div>
-
-                                        <div class="card-content">
-
-                                            <div *ngIf=isEnterpriseEdition class="form-group">
-
-                                                <div class="col-sm-12 col-md-12 text-left">
-
-                                                    <div class="col-sm-12 col-md-12 text-left"
-                                                         style="margin-top: 10px; margin-bottom: 20px;">
-                                                        <label class="text-left">Bitrate at the input redirected to output as it is.</label>
-                                                    </div>
-
-                                                    <div class="text-left col-sm-12 col-md-12">
-                                                        <button (click)="addNewStream()" class="btn btn-default" i18n="@@addNewStream"  type="button">
-                                                            Add New Stream
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-
-                                            <div *ngIf=!isEnterpriseEdition class="form-group text-center">
-                                                <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                    These features are enabled in
-                                                    <a href="https://antmedia.io">Ant Media Server Enterprise
-                                                        Edition.</a>
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-
-                                    <div *ngIf="0<appSettings.encoderSettings.length" class="card">
+                                    <div class="card">
 
 
                                         <div class="card-header">
@@ -955,20 +918,20 @@
 
                                                 <div class="col-sm-12 col-md-10 text-left">
 
-                                                    <div class="col-sm-12 col-md-12 text-left"
+                                                    <div *ngIf="0!=encoderSettings.length"  class="col-sm-12 col-md-12 text-left"
                                                          style="padding-left: 0px;margin-top: 10px;">
 
-                                                        <div class="col-sm-12 col-md-5 text-left">
+                                                        <div  class="col-sm-12 col-md-5 text-left">
                                                             <label class="control-label">WebRTC Frame Rate</label>
                                                         </div>
 
 
                                                         <div class="col-sm-12 col-md-4 text-left">
-                                                            <input #webRTCFrameRate="ngModel"
+                                                            <input id="webRTCFrameRate" #webRTCFrameRate="ngModel"
                                                                    [(ngModel)]="appSettings.webRTCFrameRate"
                                                                    [name]="webRTCFrameRate" class="form-control"
-                                                                   maxlength="30" minlength="5" required type="number"
-                                                                   value="20">
+                                                                   range="[5,30]" required type="number"
+                                                                   >
                                                         </div>
 
                                                     </div>
@@ -984,71 +947,57 @@
 
 
 
-                                            <div *ngIf=isEnterpriseEdition class="form-group">
+                                            <div *ngIf="isEnterpriseEdition" class="form-group">
 
 
                                                 <div class="col-sm-12 col-md-12">
 
-
-                                                    <div class="col-xs-5 col-sm-4 text-left">
+                                                    <div *ngIf="0!=encoderSettings.length" >
+                                                    <div class="col-xs-4 col-sm-4 text-left">
                                                         <span class="help-block" i18n="@@ResolutionHeight">Resolution</span>
                                                     </div>
-                                                    <div class="col-xs-6 col-sm-4 text-left">
+                                                    <div class="col-xs-4 col-sm-3 text-left">
                                                         <span class="help-block" i18n="@@ResolutionHeight">Bitrate(Kbps)</span>
                                                     </div>
+                                                    <div class="col-xs-4 col-sm-3 text-left">
+                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate(Kbps)</span>
+                                                    </div>
+                                                        </div>
+
+                                                   <div *ngIf="0!=encoderSettings.length" class="row">
 
 
-                                                   <div class="row">
+                                                    <ng-container>
+                                                        <div *ngFor="let encoderSetting of encoderSettings; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px" >
 
-                                                    <ng-container *ngIf="appSettings.encoderSettings">
-                                                        <div *ngFor="let encoderSetting of appSettings.encoderSettings; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px" >
+                                                                <div class="col-xs-4 col-sm-4 text-left">
 
-                                                                <div class="col-xs-5 col-sm-4 text-left">
-
-                                                                    <select #resolutionList [name]="'resolutionHeight'+i"  [(ngModel)]="encoderSetting.height"
-                                                                            class="dropdown-toggle form-control ">
+                                                                    <select  type="number" #resolution="ngModel"  [name]="'resolutionHeight'+i" (ngModelChange)="dropDownChanged($event,i)" [(ngModel)]="encoderSetting.height"
+                                                                            class="dropdown-toggle form-control" required>
                                                                         <option value="0" selected disabled>Choose One</option>
                                                                         <option value="1080">1080p</option>
                                                                         <option value="720">720p</option>
                                                                         <option value="480">480p</option>
                                                                         <option value="360">360p</option>
                                                                         <option value="240">240p</option>
-
                                                                     </select>
+                                                                    <small [hidden]="resolution.valid || (resolution.pristine && !f.submitted)" class="text-danger">
+                                                                        Resolution Bitrate is required.
+                                                                    </small>
 
                                                                 </div>
-                                                                <div class="col-xs-6 col-sm-4  text-left">
+                                                                <div class="col-xs-4 col-sm-3 text-left">
+                                                                    <input #videobitrate="ngModel" type="number" [min]="10" min="10" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate" required />
+                                                                    <small [hidden]="videobitrate.valid || (videobitrate.pristine &&  !f.submitted)" class="text-danger">
+                                                                        Video Bitrate is required.
+                                                                    </small>
+                                                                </div>
 
-                                                                    <select [name]="'videobitrate'+i"  [(ngModel)]="encoderSetting.videoBitrate"
-                                                                            class="dropdown-toggle form-control ">
-
-                                                                        <option value="0" selected disabled>Choose One</option>
-                                                                        <option *ngIf="resolutionList.value == '1080'" value="6000">High (6.000)</option>
-                                                                        <option *ngIf="resolutionList.value == '1080'" value="4000">Medium (4.000)</option>
-                                                                        <option *ngIf="resolutionList.value == '1080'" value="3000">Low (3.000)</option>
-
-
-                                                                        <option  *ngIf="resolutionList.value == '720'"  value="4000">High (4.000)</option>
-                                                                        <option  *ngIf="resolutionList.value == '720'"  value="2500">Medium (2.500)</option>
-                                                                        <option  *ngIf="resolutionList.value == '720'"  value="1200">Low (1.200)</option>
-
-
-                                                                        <option *ngIf="resolutionList.value == '480'" value="2000">High (2.000)</option>
-                                                                        <option *ngIf="resolutionList.value == '480'" value="1200">Medium (1.200)</option>
-                                                                        <option *ngIf="resolutionList.value == '480'" value="600">Low (600)</option>
-
-
-                                                                        <option  *ngIf="resolutionList.value == '360'"  value="1000">High (1.000)</option>
-                                                                        <option  *ngIf="resolutionList.value == '360'" value="700">Medium (700)</option>
-                                                                        <option  *ngIf="resolutionList.value == '360'" value="400">Low (400)</option>
-
-
-                                                                        <option *ngIf="resolutionList.value == '240'"  value="700">High (700)</option>
-                                                                        <option *ngIf="resolutionList.value == '240'"  value="500">Medium (500)</option>
-                                                                        <option *ngIf="resolutionList.value == '240'"  value="300">Low (300)</option>
-
-                                                                    </select>
-
+                                                                <div class="col-xs-4 col-sm-3 text-left">
+                                                                    <input #audiobitrate="ngModel" type="number" [min]="10" min="10" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate" required />
+                                                                    <small [hidden]="audiobitrate.valid   || (audiobitrate.pristine && !f.submitted)" class="text-danger">
+                                                                        Audio Bitrate is required.
+                                                                    </small>
 
                                                                 </div>
 
@@ -1095,12 +1044,14 @@
                                                     <div class="col-sm-12 col-md-12 text-left">
                                                         <div class="checkbox" >
 
-                                                            <label for="hlsMuxingEnabled" i18n="@@enableHLSLiveStreaming">
-                                                                Create HLS Streaming
-                                                            </label>
                                                             <input [(ngModel)]="appSettings.hlsMuxingEnabled"
                                                                    id="hlsMuxingEnabled" name="hlsMuxingEnabled"
                                                                    type="checkbox">
+
+                                                            <label for="hlsMuxingEnabled" i18n="@@enableHLSLiveStreaming">
+                                                                Create HLS Streaming
+                                                            </label>
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1173,12 +1124,15 @@
                                                         <div class="text-left" *ngIf=isEnterpriseEdition>
                                                             <div class="col-sm-12 col-md-12">
                                                                 <div class="checkbox">
-                                                                    <label for="objectDetection">
-                                                                        Use Object Detection
-                                                                    </label>
+
                                                                     <input [(ngModel)]="appSettings.objectDetectionEnabled"
                                                                            id="objectDetection" name="objectDetection"
                                                                            type="checkbox">
+
+                                                                    <label for="objectDetection">
+                                                                        Use Object Detection
+                                                                    </label>
+
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1228,34 +1182,38 @@
                                             </h4>
                                         </div>
 
-                                        <div class="card-content">
+                                        <div class="card-content text-left">
                                             <div class="form-group">
 
-                                                <div class="col-sm-12 col-md-12 text-left">
+                                                <div class="col-sm-12 col-md-12">
 
 
                                                     <div class="form-group">
-                                                        <div class="col-xs-10 col-sm-6 col-md-6 text-right">
+                                                        <div class="col-xs-10 col-sm-6 col-md-6">
                                                             <div class="checkbox">
+
+                                                                <input [(ngModel)]="appSettings.mp4MuxingEnabled" id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox">
 
                                                                 <label for="mp4MuxingEnabled"
                                                                        i18n="@@enableMP4Recording">
                                                                     Record Live Streams as MP4
                                                                 </label>
-                                                                <input [(ngModel)]="appSettings.mp4MuxingEnabled" id="mp4MuxingEnabled" name="mp4MuxingEnabled" type="checkbox">
+
 
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <div class="col-xs-10 col-sm-6 col-md-6 text-right">
+                                                        <div class="col-xs-10 col-sm-6 col-md-6">
                                                             <div class="checkbox">
+
+                                                                <input [(ngModel)]="appSettings.addDateTimeToMp4FileName" id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox">
+
                                                                 <label for="addDateTimeToMp4FileName"
                                                                        i18n="@@addDateTimeToMP4Recordings">
                                                                     Add Date-Time to MP4 File names
                                                                 </label>
-                                                                <input [(ngModel)]="appSettings.addDateTimeToMp4FileName" id="addDateTimeToMp4FileName" name="addDateTimeToMp4FileName" type="checkbox">
 
                                                             </div>
                                                         </div>
@@ -1277,7 +1235,7 @@
                                             </h4>
                                         </div>
 
-                                        <div class="card-content">
+                                        <div class="card-content text-left">
                                             <div class="form-group">
 
                                                 <div *ngIf=!isEnterpriseEdition class="form-group text-center">
@@ -1288,12 +1246,13 @@
                                                 </div>
 
                                                 <div *ngIf=isEnterpriseEdition
-                                                     class="col-xs-10  col-sm-6 col-md-6 text-right ">
+                                                     class="col-xs-10  col-sm-6 col-md-6 ">
                                                     <div class="checkbox">
+                                                        <input [(ngModel)]="appSettings.tokenControlEnabled" id="tokenControlEnabled" name="tokenControlEnabled" type="checkbox">
+
                                                         <label for="tokenControlEnabled">
                                                             Streaming only with one time token
                                                         </label>
-                                                        <input [(ngModel)]="appSettings.tokenControlEnabled" id="tokenControlEnabled" name="tokenControlEnabled" type="checkbox">
 
                                                     </div>
 
@@ -1310,15 +1269,16 @@
                                                 </div>
 
                                                 <div *ngIf=isEnterpriseEdition
-                                                     class="col-xs-10 col-sm-6 col-md-6 text-right">
+                                                     class="col-xs-10 col-sm-6 col-md-6">
 
                                                     <div class="checkbox">
+
+                                                        <input [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" type="checkbox" >
 
                                                         <label  for="acceptOnlyStreamsInDataStore"
                                                                 i18n="@@acceptOnlyStreamsInDataStore">
                                                             Use External Sources
                                                         </label>
-                                                        <input [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" id="externalEnabled" name="externalEnabled" type="checkbox" >
 
 
 
@@ -1452,7 +1412,7 @@
                                                             </label>
 
 
-                                                            <label style=" min-width: 125px; padding-left: 15px">
+                                                            <label style=" min-width: 125px; padding-left: 15px; padding-right: 15px;">
                                                                 <label>  {{endpoint.accountName}}  </label>
                                                             </label>
 

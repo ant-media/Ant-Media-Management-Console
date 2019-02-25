@@ -38,6 +38,7 @@ import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
 import {Observable} from "rxjs";
 import "rxjs/add/observable/of";
+import {forEach} from "@angular/router/src/utils/collection";
 
 declare var $: any;
 declare var Chartist: any;
@@ -183,6 +184,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public videoServiceEndpoints: VideoServiceEndpoint[];
     public streamUrlValid = true;
     public streamNameEmpty=false;
+    public encoderSettings:EncoderSettings[];
+
+
+
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
     public token:Token;
@@ -190,7 +195,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         new HLSListType('None', ''),
         new HLSListType('Event', 'event'),
     ];
-
 
     public displayedColumnsStreams = ['name', 'status', 'viewerCount', 'social_media', 'actions'];
     public displayedColumnsVod = ['name', 'type', 'date', 'actions'];
@@ -251,6 +255,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit() {
+
         this.timerId = null;
 
         //  Init Bootstrap Select Picker
@@ -424,6 +429,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
             });
+
 
             this.getAppLiveStreamsNumber();
             this.getVoDStreams();
@@ -1367,18 +1373,47 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     addNewStream(): void {
-        if (!this.appSettings.encoderSettings) {
-            this.appSettings.encoderSettings = [];
+
+        if (!this.encoderSettings) {
+            this.encoderSettings = [];
         }
-        this.appSettings.encoderSettings.push({
+
+        this.encoderSettings.push({
             height: 0,
             videoBitrate: 0,
             audioBitrate: 0
         });
+
+    }
+
+    dropDownChanged(event:any,i:number){
+
+        if(event == 1080) {
+            this.encoderSettings[i].videoBitrate = 2000;
+            this.encoderSettings[i].audioBitrate = 256;
+        }
+        if(event == 720) {
+            this.encoderSettings[i].videoBitrate = 1500;
+            this.encoderSettings[i].audioBitrate = 128;
+        }
+        if(event == 480) {
+            this.encoderSettings[i].videoBitrate = 1000;
+            this.encoderSettings[i].audioBitrate = 96;
+        }
+        if(event == 360) {
+            this.encoderSettings[i].videoBitrate = 800;
+            this.encoderSettings[i].audioBitrate = 64;
+        }
+        if(event == 240) {
+            this.encoderSettings[i].videoBitrate = 500;
+            this.encoderSettings[i].audioBitrate = 32;
+        }
+
+
     }
 
     deleteStream(index: number): void {
-        this.appSettings.encoderSettings.splice(index, 1);
+        this.encoderSettings.splice(index, 1);
     }
 
     setSocialNetworkChannel(endpointId: string, type: string, value: string): void {
@@ -1456,9 +1491,26 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     getSettings(): void {
         this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
+
+
+            this.encoderSettings = [];
+            this.appSettings.encoderSettings.forEach((value, index) => {
+                if (value != null ) {
+                    this.encoderSettings.push({
+                        height: this.appSettings.encoderSettings[index].height,
+                        videoBitrate: this.appSettings.encoderSettings[index].videoBitrate / 1000,
+                        audioBitrate: this.appSettings.encoderSettings[index].audioBitrate / 1000
+                    });
+
+                }
+            });
+
         });
 
+
+
         this.getSocialEndpoints();
+
     }
 
     getToken(streamId:string): void {
@@ -1478,6 +1530,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
+        this.appSettings.encoderSettings = [];
+
+        this.encoderSettings.forEach((value, index) => {
+            if (value != null ) {
+                this.appSettings.encoderSettings.push({
+                    height: this.encoderSettings[index].height,
+                    videoBitrate: this.encoderSettings[index].videoBitrate * 1000,
+                    audioBitrate: this.encoderSettings[index].audioBitrate * 1000
+                });
+
+            }
+        });
+
         this.restService.changeSettings(this.appName, this.appSettings).subscribe(data => {
             if (data["success"] == true) {
                 $.notify({
@@ -1491,7 +1556,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         align: 'right'
                     }
                 });
-            }
+
+                            }
             else {
                 $.notify({
                     icon: "ti-alert",
@@ -1504,8 +1570,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         align: 'right'
                     }
                 });
-
             }
+
+            this.appSettings.encoderSettings.forEach((value, index) => {
+                if (value != null ) {
+                    this.appSettings.encoderSettings[index].videoBitrate /= 1000 ;
+                    this.appSettings.encoderSettings[index].audioBitrate /= 1000 ;
+                }
+            });
+
         });
     }
 
