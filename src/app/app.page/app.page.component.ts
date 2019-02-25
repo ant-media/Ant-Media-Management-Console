@@ -99,6 +99,7 @@ export class ServerSettings {
 
     constructor(public serverName: string,
                 public licenceKey: string,
+                public buildForMarket: boolean,
     ) {}
 }
 
@@ -1525,7 +1526,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     changeServerSettings(): void {
 
-        var serverSettigs = new ServerSettings(null, "11111-2222-3333-4444 ");
+        var serverSettigs = new ServerSettings(null, "11111-2222-3333-4444 ", false);
 
 
         this.restService.changeServerSettings(serverSettigs).subscribe(data => {

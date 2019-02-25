@@ -50,7 +50,7 @@ export class AuthService implements CanActivate {
     }
 
     initLicenseCheck(){
-        //check first after 5 seconds then each 1 minute
+        //check first after 4 seconds then each 1 minute
 
         this.source = timer(4000, 60000);
         this.licenceSubscription= this.source.subscribe(val => {
@@ -206,7 +206,7 @@ export class AuthService implements CanActivate {
             else {
                 console.log("invalid license")
 
-                if(this.licenceWarningDisplay) {
+                if(this.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
                     swal({
                         title: "Invalid License",
                         text: "Please Validate Your License ",

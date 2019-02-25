@@ -64,7 +64,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
     ngOnInit(){
 
-        this.serverSettings = new ServerSettings(null,"key");
+        this.serverSettings = new ServerSettings(null,"key", false);
         this.getServerSettings();
 
 
@@ -95,10 +95,10 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
             else {
 
                 this.licenseStatus = "invalid";
-                console.log("invalid license")
+                console.log("invalid license");
 
 
-                if (this.authService.licenceWarningDisplay) {
+                if (this.authService.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
 
                     swal({
                         title: "Invalid License",
@@ -164,7 +164,9 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
             }
             this.authService.licenceWarningDisplay = true;
-            this.getLicenseStatus();
+            if(!this.serverSettings.buildForMarket){
+                this.getLicenseStatus()
+            }
 
         });
 
@@ -174,13 +176,15 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     getServerSettings(): void {
         this.restService.getServerSettings().subscribe(data => {
             this.serverSettings = <ServerSettings>data;
-
             console.log(data);
 
-            this.getLicenseStatus()
+            if(!this.serverSettings.buildForMarket){
+                this.getLicenseStatus()
+            }
 
         });
         this.settingsReceived = true;
+
 
     }
 
