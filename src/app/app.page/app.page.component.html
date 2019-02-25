@@ -903,7 +903,7 @@
                                 <div class="col-sm-12 col-md-6">
 
 
-                                    <div *ngIf="0<appSettings.encoderSettings.length" class="card">
+                                    <div class="card">
 
 
                                         <div class="card-header">
@@ -918,7 +918,7 @@
 
                                                 <div class="col-sm-12 col-md-10 text-left">
 
-                                                    <div *ngIf="0<encoderSettings.length"  class="col-sm-12 col-md-12 text-left"
+                                                    <div *ngIf="0!=encoderSettings.length"  class="col-sm-12 col-md-12 text-left"
                                                          style="padding-left: 0px;margin-top: 10px;">
 
                                                         <div  class="col-sm-12 col-md-5 text-left">
@@ -952,28 +952,28 @@
 
                                                 <div class="col-sm-12 col-md-12">
 
-                                                    <div *ngIf="0<encoderSettings.length" >
-                                                    <div class="col-xs-5 col-sm-4 text-left">
+                                                    <div *ngIf="0!=encoderSettings.length" >
+                                                    <div class="col-xs-4 col-sm-4 text-left">
                                                         <span class="help-block" i18n="@@ResolutionHeight">Resolution</span>
                                                     </div>
-                                                    <div class="col-xs-6 col-sm-3 text-left">
-                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate (Kbps)</span>
+                                                    <div class="col-xs-4 col-sm-3 text-left">
+                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate(Kbps)</span>
                                                     </div>
-                                                    <div class="col-xs-6 col-sm-3 text-left">
-                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate (Kbps)</span>
+                                                    <div class="col-xs-4 col-sm-3 text-left">
+                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate(Kbps)</span>
                                                     </div>
                                                         </div>
 
-                                                   <div *ngIf="0<encoderSettings.length" class="row">
+                                                   <div *ngIf="0!=encoderSettings.length" class="row">
 
 
                                                     <ng-container>
                                                         <div *ngFor="let encoderSetting of encoderSettings; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px" >
 
-                                                                <div class="col-xs-5 col-sm-4 text-left">
+                                                                <div class="col-xs-4 col-sm-4 text-left">
 
-                                                                    <select [name]="'resolutionHeight'+i" (ngModelChange)="dropDownChanged($event,i)" [(ngModel)]="encoderSetting.height"
-                                                                            class="dropdown-toggle form-control ">
+                                                                    <select  type="number" #resolution="ngModel"  [name]="'resolutionHeight'+i" (ngModelChange)="dropDownChanged($event,i)" [(ngModel)]="encoderSetting.height"
+                                                                            class="dropdown-toggle form-control" required>
                                                                         <option value="0" selected disabled>Choose One</option>
                                                                         <option value="1080">1080p</option>
                                                                         <option value="720">720p</option>
@@ -981,24 +981,24 @@
                                                                         <option value="360">360p</option>
                                                                         <option value="240">240p</option>
                                                                     </select>
-                                                                  <!--  <small [hidden]="resolution.value != 0  || (resolution.pristine && !f.submitted)" class="text-danger">
+                                                                    <small [hidden]="resolution.valid || (resolution.pristine && !f.submitted)" class="text-danger">
                                                                         Resolution Bitrate is required.
                                                                     </small>
-                                                                  -->
+
                                                                 </div>
-                                                                <div class="col-xs-6 col-sm-3 text-left">
-                                                                    <input type="number" [min]="10" min="10" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate" required />
-                                                                  <!--  <small [hidden]="videobitrate.value > 100  || (videobitrate.pristine &&  !f.submitted)" class="text-danger">
+                                                                <div class="col-xs-4 col-sm-3 text-left">
+                                                                    <input #videobitrate="ngModel" type="number" [min]="10" min="10" [name]="'videobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.videoBitrate" required />
+                                                                    <small [hidden]="videobitrate.valid || (videobitrate.pristine &&  !f.submitted)" class="text-danger">
                                                                         Video Bitrate is required.
-                                                                    </small> -->
+                                                                    </small>
                                                                 </div>
 
-                                                                <div class="col-xs-6 col-sm-3 text-left">
-                                                                    <input type="number" [min]="10" min="10" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate" required />
-                                                                   <!-- <small [hidden]="audiobitrate.value > 10   || (audiobitrate.pristine && !f.submitted)" class="text-danger">
+                                                                <div class="col-xs-4 col-sm-3 text-left">
+                                                                    <input #audiobitrate="ngModel" type="number" [min]="10" min="10" [name]="'audiobitrate'+i" class="form-control" [(ngModel)]="encoderSetting.audioBitrate" required />
+                                                                    <small [hidden]="audiobitrate.valid   || (audiobitrate.pristine && !f.submitted)" class="text-danger">
                                                                         Audio Bitrate is required.
                                                                     </small>
-                                                                    -->
+
                                                                 </div>
 
 
