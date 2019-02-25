@@ -936,7 +936,7 @@
 
                                                     </div>
 
-                                                    <div class="col-sm-12 col-md-12 text-left"
+                                                    <div *ngIf="0==encoderSettings.length"  class="col-sm-12 col-md-12 text-left"
                                                          style="margin-top: 20px;">
                                                         <label class="text-left">Bitrate at the input redirected to output with the following bitrates</label>
                                                     </div>
@@ -1273,11 +1273,11 @@
 
                                                     <div class="checkbox">
 
-                                                        <input [(ngModel)]="appSettings.acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" type="checkbox" >
+                                                        <input [(ngModel)]="!appSettings.acceptOnlyStreamsInDataStore" [checked]="!appSettings.acceptOnlyStreamsInDataStore" id="acceptOnlyStreamsInDataStore" name="acceptOnlyStreamsInDataStore" type="checkbox" >
 
                                                         <label  for="acceptOnlyStreamsInDataStore"
                                                                 i18n="@@acceptOnlyStreamsInDataStore">
-                                                            Use External Sources
+                                                            Accept undefined Streams
                                                         </label>
 
 
