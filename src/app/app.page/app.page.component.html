@@ -234,7 +234,7 @@
                                                        i18n-placeholder="@@stream_name_place_holder"
                                                        placeholder="Stream Url"
                                                        class="form-control" [(ngModel)]="liveBroadcast.streamUrl"
-                                                       #broadcasturl="ngModel">
+                                                       pt Undefine         #broadcasturl="ngModel">
                                                 <small [hidden]="broadcasturl.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                                                     Stream URL is not valid
                                                 </small>
@@ -1289,25 +1289,37 @@
                                             </div>
 
 
-                                            <!--
+
                                             <div class="form-group">
 
-                                                <div class="col-xs-10 col-sm-6 col-md-6 text-right">
+                                                <div class="col-xs-12">
 
                                                     <div class="checkbox">
 
-                                                        <label for="IpFilteringEnabled"
-                                                               i18n="@@IpFilteringEnabled">
+                                                        <input [(ngModel)]="isIpFilterEnable" id="isIpFilterEnable" name="isIpFilterEnable" type="checkbox">
+
+                                                        <label for="isIpFilterEnable"
+                                                               i18n="@@isIpFilterEnable">
                                                             Use Ip Filtering for RESTful API
                                                         </label>
-                                                        <input [(ngModel)]="appSettings.IpFiltering" id="IpFilteringEnabled" name="IpFilteringEnabled" type="checkbox">
 
+                                                    </div>
+
+                                                    <div *ngIf="isIpFilterEnable">
+                                                            <textarea name="isIpFilterEnable"
+                                                                      (keydown.enter)="false"
+                                                                      [(ngModel)]="appSettings.remoteAllowedCIDR"
+                                                                      #isIpFilterEnable='ngModel'
+                                                                      type="textarea" class="form-control"
+                                                                      placeholder="Write Ip filter Regex"
+                                                                      rows="3">{{appSettings.remoteAllowedCIDR}}
+                                                            </textarea>
                                                     </div>
 
 
                                                 </div>
                                             </div>
-                                            -->
+
 
                                         </div>
 
