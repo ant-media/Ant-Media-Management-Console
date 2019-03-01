@@ -1557,7 +1557,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
         if(!this.isIpFilterEnable){
-            this.appSettings.remoteAllowedCIDR = "";
+            this.appSettings.remoteAllowedCIDR = "127.0.0.1";
         }
 
 

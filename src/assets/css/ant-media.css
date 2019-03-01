@@ -94,3 +94,7 @@ select.selectpicker {
     text-align: left;
     }
     }
+
+.mat-tooltip {
+    font-size: 14px !important;
+}
