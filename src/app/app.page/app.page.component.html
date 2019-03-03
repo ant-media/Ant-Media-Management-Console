@@ -918,7 +918,7 @@
 
                                                 <div class="col-sm-12 col-md-10 text-left">
 
-                                                    <div *ngIf="0!=encoderSettings.length"  class="col-sm-12 col-md-12 text-left"
+                                                    <div *ngIf="encoderSettings.length!=0"  class="col-sm-12 col-md-12 text-left"
                                                          style="padding-left: 0px;margin-top: 10px;">
 
                                                         <div  class="col-sm-12 col-md-5 text-left">
@@ -936,7 +936,7 @@
 
                                                     </div>
 
-                                                    <div *ngIf="0==encoderSettings.length"  class="col-sm-12 col-md-12 text-left"
+                                                    <div *ngIf="encoderSettings.length==0"  class="col-sm-12 col-md-12 text-left"
                                                          style="margin-top: 20px;">
                                                         <label class="text-left">Bitrate at the input redirected to output with the following bitrates</label>
                                                     </div>
@@ -952,7 +952,7 @@
 
                                                 <div class="col-sm-12 col-md-12">
 
-                                                    <div *ngIf="0!=encoderSettings.length" >
+                                                    <div *ngIf="encoderSettings.length!=0" >
                                                     <div class="col-xs-4 col-sm-4 text-left">
                                                         <span class="help-block" i18n="@@ResolutionHeight">Resolution</span>
                                                     </div>
@@ -964,7 +964,7 @@
                                                     </div>
                                                         </div>
 
-                                                   <div *ngIf="0!=encoderSettings.length" class="row">
+                                                   <div *ngIf="encoderSettings.length!=0" class="row">
 
 
                                                     <ng-container>
@@ -1300,7 +1300,7 @@
 
                                                         <label for="isIpFilterEnable"
                                                                i18n="@@isIpFilterEnable">
-                                                            Use Ip Filtering for RESTful API  <a  matTooltip="If you delete 127.0.0.1 the web panel will no longer work"><i class="fa fa-info-circle"></i></a>
+                                                            Use Ip Filtering for RESTful API  <a  matTooltip="If you delete 127.0.0.1 the web panel will no longer work. Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"><i class="fa fa-info-circle"></i></a>
                                                         </label>
 
                                                     </div>
@@ -1311,7 +1311,7 @@
                                                                       [(ngModel)]="appSettings.remoteAllowedCIDR"
                                                                       #isIpFilterEnable='ngModel'
                                                                       type="textarea" class="form-control"
-                                                                      placeholder="Write Ip filter Regex"
+                                                                      placeholder="Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"
                                                                       rows="3">{{appSettings.remoteAllowedCIDR}}
                                                             </textarea>
                                                     </div>
