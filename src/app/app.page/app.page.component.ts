@@ -92,7 +92,8 @@ export class AppSettings {
                 public objectDetectionEnabled: boolean,
                 public tokenControlEnabled:boolean,
                 public webRTCEnabled:boolean,
-                public webRTCFrameRate:number
+                public webRTCFrameRate:number,
+                public remoteAllowedCIDR: string
     ) {
 
     }
@@ -185,6 +186,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public streamUrlValid = true;
     public streamNameEmpty=false;
     public encoderSettings:EncoderSettings[];
+    public acceptAllStreams : boolean;
+    public isIpFilterEnable : boolean;
 
 
 
@@ -1505,6 +1508,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             });
 
+            if(this.appSettings.remoteAllowedCIDR.length == 0 ){
+                this.isIpFilterEnable = false;
+            }
+            else{
+                this.isIpFilterEnable = true;
+            }
+
+            this.acceptAllStreams = !this.appSettings.acceptOnlyStreamsInDataStore ;
+
+
         });
 
 
@@ -1542,6 +1555,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             }
         });
+
+        if(!this.isIpFilterEnable){
+            this.appSettings.remoteAllowedCIDR = "127.0.0.1";
+        }
+
+
+        this.appSettings.acceptOnlyStreamsInDataStore = !this.acceptAllStreams ;
+
 
         this.restService.changeSettings(this.appName, this.appSettings).subscribe(data => {
             if (data["success"] == true) {

@@ -89,15 +89,12 @@ select.selectpicker {
      display: inline !important;
 }
 
-.deneme{
-    font-weight: 400;
-    font-size: 16pt;
-    position: relative;
-}
-.deneme::after{
-    bottom: 0;
-    color: red;
-    content: '000';
-    position: absolute;
-    transform: translate(-100%, 0);
+@media (min-width: 768px){
+    .form-horizontal .control-label {
+    text-align: left;
+    }
+    }
+
+.mat-tooltip {
+    font-size: 14px !important;
 }
