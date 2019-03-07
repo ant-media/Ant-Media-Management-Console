@@ -957,10 +957,10 @@
                                                         <span class="help-block" i18n="@@ResolutionHeight">Resolution</span>
                                                     </div>
                                                     <div class="col-xs-4 col-sm-3 text-left">
-                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate(Kbps)</span>
+                                                        <span class="help-block" i18n="@@ResolutionHeight">Video Bitrate (Kbps)</span>
                                                     </div>
                                                     <div class="col-xs-4 col-sm-3 text-left">
-                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate(Kbps)</span>
+                                                        <span class="help-block" i18n="@@ResolutionHeight">Audio Bitrate(Kbps)</span>
                                                     </div>
                                                         </div>
 
@@ -1020,7 +1020,7 @@
                                             </div>
                                             <div *ngIf=!isEnterpriseEdition class="form-group text-center">
                                                 <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                    These features are enabled in
+                                                    Adaptive Streaming feature are enabled in
                                                     <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
                                                 </p>
                                             </div>
@@ -1240,7 +1240,7 @@
 
                                                 <div *ngIf=!isEnterpriseEdition class="form-group text-center">
                                                     <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                        This feature is enabled in
+                                                        One time token feature is enabled in
                                                         <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
                                                     </p>
                                                 </div>
@@ -1251,7 +1251,7 @@
                                                         <input [(ngModel)]="appSettings.tokenControlEnabled" id="tokenControlEnabled" name="tokenControlEnabled" type="checkbox">
 
                                                         <label for="tokenControlEnabled">
-                                                            Publish/Play with one time tokens <a href="https://antmedia.io/secure-video-streaming/" target="_blank"   matTooltip="By enabling this option, one time tokens are required for publishing and playing. Publish/Play request without tokens will not be streamed. Click for more information."><i style="font-size: 20px;" class="fa fa-info-circle"></i></a>
+                                                            Publish/play with one time tokens <a href="https://antmedia.io/secure-video-streaming/" target="_blank"   matTooltip="By enabling this option, one time tokens are required for publishing and playing. Publish/Play request without tokens will not be streamed. Click for more information."><i style="font-size: 20px;" class="fa fa-info-circle"></i></a>
                                                         </label>
 
                                                     </div>
@@ -1263,7 +1263,7 @@
 
                                                 <div *ngIf=!isEnterpriseEdition class="form-group text-center">
                                                     <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                        This feature is enabled in
+                                                        Undefined stream control feature is enabled in
                                                         <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
                                                     </p>
                                                 </div>
@@ -1300,7 +1300,7 @@
 
                                                         <label for="isIpFilterEnable"
                                                                i18n="@@isIpFilterEnable">
-                                                            Use Ip Filtering for RESTful API  <a  matTooltip="If you delete 127.0.0.1, localhost web panel will no longer work. Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"><i class="fa fa-info-circle"></i></a>
+                                                            Use IP Filtering for RESTful API  <a  matTooltip="If you delete 127.0.0.1, localhost web panel will no longer work. Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"><i class="fa fa-info-circle"></i></a>
                                                         </label>
 
                                                     </div>
