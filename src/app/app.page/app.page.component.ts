@@ -199,7 +199,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         new HLSListType('Event', 'event'),
     ];
 
-    public displayedColumnsStreams = ['name', 'status', 'viewerCount', 'social_media', 'actions'];
+    public displayedColumnsStreams = ['name', 'streamId' , 'status', 'viewerCount', 'social_media', 'actions'];
     public displayedColumnsVod = ['name', 'type', 'date', 'actions'];
     public displayedColumnsUserVod = ['name', 'date', 'actions'];
 
