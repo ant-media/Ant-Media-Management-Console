@@ -26,7 +26,7 @@ export class WebRTCClientStatsComponent {
 
     public webrtcLenght = 0;
     public pageSize = 5;
-    public pageSizeOptions = [5, 10, 20];
+    public pageSizeOptions = [10, 25, 50];
     public webrtcListOffset = 0;
 
     public sss: string;

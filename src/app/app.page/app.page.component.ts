@@ -91,7 +91,8 @@ export class AppSettings {
                 public objectDetectionEnabled: boolean,
                 public tokenControlEnabled: boolean,
                 public webRTCEnabled: boolean,
-                public webRTCFrameRate: number
+                public webRTCFrameRate: number,
+                public remoteAllowedCIDR: string
     ) {}
 }
 
@@ -119,7 +120,7 @@ export class Token {
     public tokenId: string;
     public streamId: string;
     public expireDate: number;
-    public type: string;
+    public type:string;
 }
 
 @Component({
@@ -143,7 +144,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public gridTableData: CameraInfoTable;
     public vodTableData: VodInfoTable;
     public timerId: any;
-    public camereErrorTimerId: any;
+    public camereErrorTimerId:any;
     public checkAuthStatusTimerId: any;
     public newLiveStreamActive: boolean;
     public newIPCameraActive: boolean;
@@ -188,7 +189,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public shareEndpoint: boolean[];
     public videoServiceEndpoints: VideoServiceEndpoint[];
     public streamUrlValid = true;
-    public streamNameEmpty = false;
+    public streamNameEmpty=false;
+    public encoderSettings:EncoderSettings[];
+    public acceptAllStreams : boolean;
+    public isIpFilterEnable : boolean;
+
+
+
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
     public token: Token;
@@ -197,7 +204,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         new HLSListType('None', ''),
         new HLSListType('Event', 'event'),
     ];
-
 
     public displayedColumnsStreams = ['name', 'status', 'viewerCount', 'social_media', 'actions'];
     public displayedColumnsVod = ['name', 'type', 'date', 'actions'];
@@ -245,6 +251,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 private cdr: ChangeDetectorRef,
                 private matpage: MatPaginatorIntl,
                 private authService: AuthService,
+
+
     ) {
         this.dataSource = new MatTableDataSource<BroadcastInfo>();
         this.dataSourceVod = new MatTableDataSource<VodInfo>();
@@ -256,6 +264,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit() {
+
         this.timerId = null;
 
         //  Init Bootstrap Select Picker
@@ -336,8 +345,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         //this timer gets the related information according to active application
         //so that it checks appname whether it is undefined
         this.timerId = window.setInterval(() => {
-            if (this.authService.isAuthenticated) {
-                if (this.appName != "undefined") {
+            if(this.authService.isAuthenticated) {
+                if(this.appName != "undefined"){
 
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getVoDStreams();
@@ -403,7 +412,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    getInitParams() {
+    getInitParams (){
         this.sub = this.route.params.subscribe(params => {
             //this method is called whenever app changes
 
@@ -431,6 +440,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
             });
+
 
             this.getAppLiveStreamsNumber();
             this.getVoDStreams();
@@ -565,7 +575,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 id: this.selectedBroadcast.streamId,
                 status: this.selectedBroadcast.status,
                 appName: this.appName,
-                streamUrl: this.selectedBroadcast.streamUrl,
+                streamUrl:this.selectedBroadcast.streamUrl,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
                 editBroadcastShareFacebook: this.editBroadcastShareFacebook,
@@ -601,7 +611,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     openVodUploadDialog(): void {
 
         let dialogRef = this.dialog.open(UploadVodDialogComponent, {
-            data: {appName: this.appName},
+            data: { appName: this.appName },
             width: '300px'
 
         });
@@ -716,7 +726,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if (type == "displayAll") {
             this.getAppLiveStreams(0, 50);
-        } else {
+        }
+
+        else {
             this.restService.filterAppLiveStreams(this.appName, 0, 10, type).subscribe(data => {
                 //console.log(data);
                 this.broadcastTableData.dataRows = [];
@@ -814,7 +826,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 icon = "ti-alert";
                 if (data["errorId"] == 404) {
                     message = Locale.getLocaleInterface().missing_configuration_parameter_for_stalker;
-                } else {
+                }
+                else {
                     message = Locale.getLocaleInterface().error_occured;
                 }
                 type = "warning";
@@ -849,7 +862,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 icon = "ti-alert";
                 if (data["errorId"] == 404) {
                     message = Locale.getLocaleInterface().missing_configuration_parameter_for_stalker;
-                } else {
+                }
+                else {
                     message = Locale.getLocaleInterface().error_occured;
                 }
                 type = "warning";
@@ -909,22 +923,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     playLive(streamId: string): void {
 
-        if (this.appSettings.tokenControlEnabled) {
+        if(this.appSettings.tokenControlEnabled){
             this.playLiveToken(streamId);
             return;
         }
-        var iframeSource;
-        var width = "800px"
 
-        var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
+        var width = "640px"
+        var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true";
+        var  htmlCode = '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:400px"  ></iframe>';
+        width = "640px"
 
-        iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&autoplay=true";
-
-        if (this.appSettings.webRTCEnabled) {
-            iframeSource = HTTP_SERVER_ROOT + this.appName + "/play_embed.html?name=" + streamId;
-            htmlCode = '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:400px"  ></iframe>';
-            width = "640px"
-        }
         this.openLivePlayer(htmlCode, streamId, width);
 
 
@@ -937,24 +945,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     playLiveToken(streamId: string): void {
 
-        var iframeSource;
-        var width = "800px";
-        var htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px;"></iframe>';
+        var width = "640px"
 
-        this.restService.getToken(this.appName, streamId, 0).subscribe(data => {
+        this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
             this.token = <Token>data;
 
-            iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&token=" + this.token.tokenId + "&autoplay=true";
-
-            if (this.appSettings.webRTCEnabled) {
-
-                iframeSource = HTTP_SERVER_ROOT + this.appName + "/play_embed.html?name=" + streamId + "&token=" + this.token.tokenId;
-                htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px"></iframe>';
-                width = "640px"
-            }
+            var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true&token=" + this.token.tokenId;
+            var   htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px"></iframe>';
 
             this.openLivePlayer(htmlCode, streamId, width);
-
 
             var $iframe = $('#' + streamId);
 
@@ -963,13 +962,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    openLivePlayer(htmlCode: string, streamId: string, width: string): void {
+    openLivePlayer(htmlCode:string, streamId: string, width: string):void {
 
         swal({
             html: htmlCode,
             showConfirmButton: false,
             width: width,
-            padding: "10px",
+            padding:"10px" ,
             animation: false,
             showCloseButton: true,
             onOpen: () => {
@@ -982,12 +981,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 ifr.parentNode.removeChild(ifr);
 
             }
-        }).then(function () {
-        }, function () {
-        });
+        }).then(function () { }, function () { });
+
 
 
     }
+
 
 
     openGridPlayers(index: number, size: number): void {
@@ -1081,9 +1080,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-    playVoD(vodName: string, type: string, vodId: string, streamId: string): void {
+    playVoD(vodName: string, type: string, vodId:string, streamId:string): void {
 
-        if (this.appSettings.tokenControlEnabled) {
+        if(this.appSettings.tokenControlEnabled){
             this.playVoDToken(vodName, type, vodId, streamId);
             return;
 
@@ -1092,10 +1091,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         var srcFile = null;
 
         if (type == "uploadedVod") {
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4';
-        } else if (type == "streamVod") {
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4'  ;
+        }else if (type == "streamVod"){
             srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName;
-        } else if (type == "userVod") {
+        }else if (type == "userVod") {
             var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
             var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
             srcFile = HTTP_SERVER_ROOT + this.appName + '/streams' + folderName + '/' + vodName;
@@ -1104,13 +1103,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         if (srcFile != null) {
 
             this.openVoDPlayer(srcFile);
-        } else {
+        }
+        else {
             console.error("Undefined type");
         }
 
     }
 
-    openVoDPlayer(url: string): void {
+    openVoDPlayer (url:string): void {
 
         swal({
             html: '<div id="player"></div>',
@@ -1136,34 +1136,36 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-    playVoDToken(name: string, type: string, vodId: string, streamId: string): void {
+    playVoDToken(name: string, type: string, vodId:string, streamId:string):void{
         let tokenParam;
         let source;
 
         let lastSlashIndex = name.lastIndexOf(".mp4");
-        let VoDName = name.substring(0, lastSlashIndex);
+        let  VoDName = name.substring(0, lastSlashIndex);
 
-        if (type == "uploadedVod") {
+        if(type == "uploadedVod" ){
             tokenParam = vodId;
             source = vodId;
-        } else if (type == "streamVod") {
+        }
+        else if (type == "streamVod" ) {
             tokenParam = streamId;
             source = VoDName;
-        } else if (type == "userVod") {
+        }
+        else if (type == "userVod" ) {
             tokenParam = VoDName;
             var index = this.appSettings.vodFolder.lastIndexOf("/");
             var folderName = this.appSettings.vodFolder.substring(index);
-            source = folderName + '/' + VoDName;
+            source =  folderName + '/' + VoDName ;
         }
 
-        if (tokenParam != null) {
+        if (tokenParam != null ){
 
-            this.restService.getToken(this.appName, tokenParam, 0).subscribe(data => {
+            this.restService.getToken (this.appName, tokenParam, 0).subscribe(data => {
                 this.token = <Token>data;
                 var srcFile = null;
-                srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + source + '.mp4?token=' + this.token.tokenId;
+                srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + source + '.mp4?token=' + this.token.tokenId  ;
 
-                if (srcFile != null) {
+                if(srcFile != null) {
                     this.openVoDPlayer(srcFile);
                 }
             });
@@ -1200,7 +1202,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     });
 
 
-                } else {
+                }
+                else {
                     this.showVoDFileNotDeleted();
                 }
                 this.getVoDStreams();
@@ -1251,7 +1254,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.liveStreamEditing.streamId = stream.streamId;
             this.liveStreamEditing.name = stream.name;
             this.liveStreamEditing.description = "";
-        } else {
+        }
+        else {
             this.liveStreamEditing = null;
         }
     }
@@ -1297,7 +1301,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         align: 'right'
                     }
                 });
-            } else {
+            }
+            else {
                 $.notify({
                     icon: "ti-alert",
                     message: Locale.getLocaleInterface().broadcast_not_updated + " " + data["message"] + " " + data["errorId"]
@@ -1315,6 +1320,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
+
     deleteLiveBroadcast(streamId: string): void {
         swal({
             title: Locale.getLocaleInterface().are_you_sure,
@@ -1329,7 +1335,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 .subscribe(data => {
                     if (data["success"] == true) {
 
-                        this.restService.stopBroadcast(this.appName, streamId);
+                        this.restService.stopBroadcast(this.appName,streamId);
 
                         $.notify({
                             icon: "ti-save",
@@ -1343,7 +1349,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             }
                         });
 
-                    } else {
+                    }
+                    else {
                         $.notify({
                             icon: "ti-save",
                             message: Locale.getLocaleInterface().broadcast_not_deleted
@@ -1360,11 +1367,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreamsNumber();
 
 
+
                     if (this.isGridView) {
                         setTimeout(() => {
                             this.switchToGridView();
                         }, 500);
                     }
+
 
 
                 });
@@ -1382,6 +1391,33 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             videoBitrate: 0,
             audioBitrate: 0
         });
+
+    }
+
+    dropDownChanged(event:any,i:number){
+
+        if(event == 1080) {
+            this.encoderSettings[i].videoBitrate = 2000;
+            this.encoderSettings[i].audioBitrate = 256;
+        }
+        if(event == 720) {
+            this.encoderSettings[i].videoBitrate = 1500;
+            this.encoderSettings[i].audioBitrate = 128;
+        }
+        if(event == 480) {
+            this.encoderSettings[i].videoBitrate = 1000;
+            this.encoderSettings[i].audioBitrate = 96;
+        }
+        if(event == 360) {
+            this.encoderSettings[i].videoBitrate = 800;
+            this.encoderSettings[i].audioBitrate = 64;
+        }
+        if(event == 240) {
+            this.encoderSettings[i].videoBitrate = 500;
+            this.encoderSettings[i].audioBitrate = 32;
+        }
+
+
     }
 
     deleteStream(index: number): void {
@@ -1399,7 +1435,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     async showChannelChooserDialog(options: any, endpointId: string, type: string): Promise<boolean> {
-        const {value: id} = await swal({
+        const { value: id } = await swal({
             title: 'Select the target to publish',
             input: 'select',
             inputOptions: options,
@@ -1414,7 +1450,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         this.setSocialNetworkChannel(endpointId, type, value);
 
                         resolve();
-                    } else {
+                    }
+                    else {
                         console.log("not item selected");
                         resolve()
                     }
@@ -1429,17 +1466,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     }
-
     showNetworkChannelList(endpointId: string, type: string): void {
         this.userFBPagesLoading = true;
         this.restService.getSocialNetworkChannelList(this.appName, endpointId, type).subscribe(data => {
             console.log(data);
-            var options = {};
+            var options = {
+            };
 
             for (var i in data) {
                 options[data[i]["id"]] = data[i]["name"];
             }
-
             this.userFBPagesLoading = false;
             this.showChannelChooserDialog(options, endpointId, type);
 
@@ -1463,15 +1499,42 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     getSettings(): void {
         this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
+
+
+            this.encoderSettings = [];
+            this.appSettings.encoderSettings.forEach((value, index) => {
+                if (value != null ) {
+                    this.encoderSettings.push({
+                        height: this.appSettings.encoderSettings[index].height,
+                        videoBitrate: this.appSettings.encoderSettings[index].videoBitrate / 1000,
+                        audioBitrate: this.appSettings.encoderSettings[index].audioBitrate / 1000
+                    });
+
+                }
+            });
+
+            if(this.appSettings.remoteAllowedCIDR == " " || this.appSettings.remoteAllowedCIDR == ""  ){
+                this.isIpFilterEnable = false;
+            }
+            else{
+                this.isIpFilterEnable = true;
+            }
+
+            this.acceptAllStreams = !this.appSettings.acceptOnlyStreamsInDataStore ;
+
+
         });
 
+
+
         this.getSocialEndpoints();
+
     }
 
-    getToken(streamId: string): void {
+    getToken(streamId:string): void {
         this.token = null;
 
-        this.restService.getToken(this.appName, streamId, 0).subscribe(data => {
+        this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
             this.token = <Token>data;
         });
 
@@ -1491,6 +1554,27 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!valid) {
             return;
         }
+
+        this.appSettings.encoderSettings = [];
+
+        this.encoderSettings.forEach((value, index) => {
+            if (value != null ) {
+                this.appSettings.encoderSettings.push({
+                    height: this.encoderSettings[index].height,
+                    videoBitrate: this.encoderSettings[index].videoBitrate * 1000,
+                    audioBitrate: this.encoderSettings[index].audioBitrate * 1000
+                });
+
+            }
+        });
+
+        if(!this.isIpFilterEnable){
+            this.appSettings.remoteAllowedCIDR = " ";
+        }
+
+
+        this.appSettings.acceptOnlyStreamsInDataStore = !this.acceptAllStreams ;
+
 
         this.restService.changeSettings(this.appName, this.appSettings).subscribe(data => {
             if (data["success"] == true) {
@@ -1517,8 +1601,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         align: 'right'
                     }
                 });
-
             }
+
+            this.appSettings.encoderSettings.forEach((value, index) => {
+                if (value != null ) {
+                    this.appSettings.encoderSettings[index].videoBitrate /= 1000 ;
+                    this.appSettings.encoderSettings[index].audioBitrate /= 1000 ;
+                }
+            });
+
         });
 
 
@@ -1594,7 +1685,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
 
-        if (!this.restService.checkStreamName(this.liveBroadcast.name)) {
+
+        if (!this.restService.checkStreamName(this.liveBroadcast.name)){
             this.streamNameEmpty = true;
 
             return;
@@ -1630,7 +1722,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     this.liveBroadcast.streamUrl = "";
 
-                } else {
+                }
+                else {
 
                     console.log("success: " + data["success"]);
                     console.log("error: " + data["message"]);
@@ -1670,13 +1763,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
 
-        setTimeout(() => {
+        setTimeout(()=>{
 
-            this.restService.getCameraError(this.appName, this.liveBroadcast.ipAddr).subscribe(data => {
+            this.restService.getCameraError(this.appName , this.liveBroadcast.ipAddr) .subscribe(data => {
 
-                console.log("stream ID :  " + this.liveBroadcast.ipAddr);
+                console.log("stream ID :  "+this.liveBroadcast.ipAddr);
 
-                if (data["message"] != null) {
+                if(data["message"] != null){
 
                     if (data["message"].includes("401")) {
 
@@ -1694,7 +1787,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                         });
                     }
-                } else {
+                }
+
+                else{
 
                     console.log("no  camera error")
                 }
@@ -1702,9 +1797,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.liveBroadcast.ipAddr = "";
             });
 
-        }, 8000)
+        },8000)
 
     }
+
 
 
     addStreamSource(isValid: boolean): void {
@@ -1723,9 +1819,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        if (!this.restService.checkStreamUrl(this.liveBroadcast.streamUrl)) {
+        if(!this.restService.checkStreamUrl(this.liveBroadcast.streamUrl)){
             console.log("stream source address is not in correct format");
-            this.streamUrlValid = false;
+            this.streamUrlValid=false;
             return;
         }
         this.streamNameEmpty = false;
@@ -1761,8 +1857,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreamsNumber();
 
                     this.liveBroadcast.streamUrl = "";
-                    this.streamUrlValid = true;
-                } else {
+                    this.streamUrlValid=true;
+
+
+                }
+                else {
 
                     this.newIPCameraAdding = false;
 
@@ -1929,7 +2028,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.liveBroadcast.type = "liveStream";
 
-        if (!this.restService.checkStreamName(this.liveBroadcast.name)) {
+        if (!this.restService.checkStreamName(this.liveBroadcast.name)){
 
             this.streamNameEmpty = true;
             return;
@@ -1996,7 +2095,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 change(this);
 
 
-            },);
+
+            }, );
         });
 
 
@@ -2168,12 +2268,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         var folderName = this.appSettings.vodFolder.substring(Index);
 
         var lastSlashIndex = name.lastIndexOf(".mp4");
-        var VoDName = name.substring(0, lastSlashIndex);
+        var  VoDName = name.substring(0, lastSlashIndex);
 
-        if (type == "uploadedVod") {
-            VoDName = vodId;
-        } else if (type == "userVod") {
-            VoDName = folderName + "/" + VoDName;
+        if(type == "uploadedVod"){
+            VoDName = vodId ;
+        }
+        else if(type == "userVod"){
+            VoDName = folderName + "/" + VoDName ;
         }
 
 
@@ -2222,12 +2323,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.checkAuthStatusTimerId = setTimeout(() => {
                         this.checkAuthStatus(userCode, networkName);
                     }, 5000);
-                } else {
+                }
+                else {
                     this.waitingForConfirmation = false;
                     let message = Locale.getLocaleInterface().error_occured;
                     if (data["message"] == LIVE_STREAMING_NOT_ENABLED) {
                         message = Locale.getLocaleInterface().live_streaming_not_enabled_message;
-                    } else if (data["message"] == AUTHENTICATION_TIMEOUT) {
+                    }
+                    else if (data["message"] == AUTHENTICATION_TIMEOUT) {
                         message = Locale.getLocaleInterface().authentication_timeout_message;
                     }
                     swal({
@@ -2237,7 +2340,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     });
                 }
 
-            } else {
+            }
+            else {
                 if (this.checkAuthStatusTimerId) {
                     clearInterval(this.checkAuthStatusTimerId);
                 }
@@ -2247,7 +2351,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.waitingForConfirmation = false;
                 if (networkName == "facebook") {
                     this.showNetworkChannelList(data["dataId"], "all");
-                } else {
+                }
+                else {
                     swal({
                         type: "success",
                         title: Locale.getLocaleInterface().congrats,
@@ -2421,7 +2526,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         );
     }
 
-    webrtcStats(broadcast: LiveBroadcast) {
+    webrtcStats(broadcast : LiveBroadcast) {
         this.dialog.open(WebRTCClientStatsComponent, {
             width: '90%',
             data: {
@@ -2434,4 +2539,5 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 }
+
 

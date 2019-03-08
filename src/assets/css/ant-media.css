@@ -65,3 +65,36 @@
 .ct-chart-line-multipleseries .ct-legend li.inactive:before {
    background: transparent;
  }
+
+label {
+    font-weight: 400;
+}
+
+@media (max-width: 990px) {
+    .mobile-text-left {
+        text-align: left !important;
+    }
+
+}
+
+@media (max-width: 990px) {
+    .row-mobile {
+        display: table;
+        margin: auto;
+    }
+}
+
+select.bs-select-hidden,
+select.selectpicker {
+     display: inline !important;
+}
+
+@media (min-width: 768px){
+    .form-horizontal .control-label {
+    text-align: left;
+    }
+    }
+
+.mat-tooltip {
+    font-size: 14px !important;
+}
