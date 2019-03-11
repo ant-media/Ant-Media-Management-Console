@@ -1508,12 +1508,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             });
 
-            if(this.appSettings.remoteAllowedCIDR == " " || this.appSettings.remoteAllowedCIDR == ""  ){
-                this.isIpFilterEnable = false;
-            }
-            else{
-                this.isIpFilterEnable = true;
-            }
+            this.isIpFilterEnable = true;
 
             this.acceptAllStreams = !this.appSettings.acceptOnlyStreamsInDataStore ;
 
@@ -1557,7 +1552,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
         if(!this.isIpFilterEnable){
-            this.appSettings.remoteAllowedCIDR = " ";
+            this.appSettings.remoteAllowedCIDR = "127.0.0.1";
         }
 
 
