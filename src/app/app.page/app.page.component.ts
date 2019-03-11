@@ -38,7 +38,6 @@ import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
 import {Observable} from "rxjs";
 import "rxjs/add/observable/of";
-import {forEach} from "@angular/router/src/utils/collection";
 
 declare var $: any;
 declare var Chartist: any;
@@ -922,7 +921,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         var width = "640px"
-        var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId;
+        var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true";
         var  htmlCode = '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:400px"  ></iframe>';
         width = "640px"
 
@@ -943,7 +942,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
             this.token = <Token>data;
 
-            var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&token=" + this.token.tokenId;
+            var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true&token=" + this.token.tokenId;
             var   htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px"></iframe>';
 
             this.openLivePlayer(htmlCode, streamId, width);
