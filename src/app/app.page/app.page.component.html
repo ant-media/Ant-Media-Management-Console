@@ -19,16 +19,14 @@
                                 </ul>
                             </div>
                         </div>
-                    </div>
-                </div>
+
 
                 <div class="tab-content text-center" id="my-tab-content">
 
 
                     <div class="tab-pane active" id="livestreams">
 
-                        <div class="card">
-                            <div class="card-content">
+
 
                                 <div>
 
@@ -341,6 +339,14 @@
                                                     </ng-container>
 
 
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="streamId">
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header> Stream ID </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row">
+                                                    {{row.streamId}}
                                                 </mat-cell>
                                             </ng-container>
 
@@ -762,13 +768,12 @@
 
                                 </div>
                                 <!-- /main -->
-                            </div> </div>
+
 
                     </div>
 
                     <div class="tab-pane" id="vod">
-                        <div class="card">
-                            <div class="card-content">
+
 
                                 <div class=" text-right">
 
@@ -892,7 +897,7 @@
                                     There is no VoD stream in this app.
                                 </p>
                             </div>
-                        </div>  </div>
+
 
 
 
@@ -900,16 +905,21 @@
                         <form #f="ngForm" (ngSubmit)="changeSettings(f.valid)" validate class="form-horizontal" method="post">
                             <div class="row">
 
+
+
+
+                                <div class="col-sm-12 col-md-12">
+
+
                                 <div class="col-sm-12 col-md-6">
 
 
-                                    <div class="card">
 
 
                                         <div class="card-header">
-                                            <h4 class="card-title text-left">
+                                            <legend class=" text-left">
                                                 Adaptive Streaming
-                                            </h4>
+                                            </legend>
                                         </div>
 
                                         <div class="card-content">
@@ -957,10 +967,10 @@
                                                         <span class="help-block" i18n="@@ResolutionHeight">Resolution</span>
                                                     </div>
                                                     <div class="col-xs-4 col-sm-3 text-left">
-                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate(Kbps)</span>
+                                                        <span class="help-block" i18n="@@ResolutionHeight">Video Bitrate (Kbps)</span>
                                                     </div>
                                                     <div class="col-xs-4 col-sm-3 text-left">
-                                                        <span class="help-block" i18n="@@ResolutionHeight">Bitrate(Kbps)</span>
+                                                        <span class="help-block" i18n="@@ResolutionHeight">Audio Bitrate (Kbps)</span>
                                                     </div>
                                                         </div>
 
@@ -1020,20 +1030,18 @@
                                             </div>
                                             <div *ngIf=!isEnterpriseEdition class="form-group text-center">
                                                 <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                    These features are enabled in
+                                                    Adaptive Streaming feature are enabled in
                                                     <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
                                                 </p>
                                             </div>
                                         </div>
-                                    </div>
 
 
-                                    <div class="card">
 
                                         <div class="card-header">
-                                            <h4 class="card-title text-left">
+                                            <legend class="text-left">
                                                 HLS Streaming
-                                            </h4>
+                                            </legend>
                                         </div>
 
                                         <div class="card-content">
@@ -1096,15 +1104,15 @@
 
                                         </div>
 
-                                    </div>
 
 
-                                    <div [hidden]="!advancedSetting" class="card">
 
+                                    <!--<div [hidden]="!advancedSetting">-->
+                                    <div>
                                         <div class="card-header">
-                                            <h4 class="card-title text-left" i18n="@@Advanced">
-                                                Advanced
-                                            </h4>
+                                            <legend class="text-left" i18n="@@Advanced">
+                                                Advanced Setting
+                                            </legend>
                                         </div>
                                         <div class="card-content">
                                             <div class="form-group">
@@ -1140,11 +1148,11 @@
 
                                                     <div class="form-group">
 
-                                                        <label class="col-sm-12 text-left mobile-text-left col-md-3 control-label">VoD
+                                                        <label  class="col-sm-12 col-md-3 col-lg-3 control-label" style="min-width: 190px; ">VoD
                                                             Streaming Folder</label>
 
 
-                                                        <div class="col-sm-12 col-md-6 text-left">
+                                                        <div class="col-sm-12 col-md-9 col-lg-6 text-left">
                                                             <input type="text" name="vodFolderPath"
                                                                    placeholder="Write full path of VoD folder"
                                                                    class="form-control" [(ngModel)]="appSettings.vodFolder"
@@ -1173,13 +1181,10 @@
                                 <div class="col-sm-12 col-md-6">
 
 
-
-                                    <div class="card">
-
                                         <div class="card-header">
-                                            <h4 class="card-title text-left"  i18n="@@Mp4Recording">
+                                            <legend class="text-left"  i18n="@@Mp4Recording">
                                                 MP4 Recording
-                                            </h4>
+                                            </legend>
                                         </div>
 
                                         <div class="card-content text-left">
@@ -1223,16 +1228,16 @@
                                             </div>
                                         </div>
 
-                                    </div>
 
 
-                                    <div class="card">
+
+
 
 
                                         <div class="card-header">
-                                            <h4 class="card-title text-left"  i18n="@@Security">
+                                            <legend class="text-left"  i18n="@@Security">
                                                 Security
-                                            </h4>
+                                            </legend>
                                         </div>
 
                                         <div class="card-content text-left">
@@ -1240,7 +1245,7 @@
 
                                                 <div *ngIf=!isEnterpriseEdition class="form-group text-center">
                                                     <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                        This feature is enabled in
+                                                        One time token feature is enabled in
                                                         <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
                                                     </p>
                                                 </div>
@@ -1251,7 +1256,7 @@
                                                         <input [(ngModel)]="appSettings.tokenControlEnabled" id="tokenControlEnabled" name="tokenControlEnabled" type="checkbox">
 
                                                         <label for="tokenControlEnabled">
-                                                            Publish/Play with one time tokens <a href="https://antmedia.io/secure-video-streaming/" target="_blank"   matTooltip="By enabling this option, one time tokens are required for publishing and playing. Publish/Play request without tokens will not be streamed. Click for more information."><i style="font-size: 20px;" class="fa fa-info-circle"></i></a>
+                                                            Publish/play with one time tokens <a href="https://antmedia.io/secure-video-streaming/" target="_blank"   matTooltip="By enabling this option, one time tokens are required for publishing and playing. Publish/Play request without tokens will not be streamed. Click for more information."><i style="font-size: 20px;" class="fa fa-info-circle"></i></a>
                                                         </label>
 
                                                     </div>
@@ -1263,7 +1268,7 @@
 
                                                 <div *ngIf=!isEnterpriseEdition class="form-group text-center">
                                                     <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                        This feature is enabled in
+                                                        Undefined stream control feature is enabled in
                                                         <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
                                                     </p>
                                                 </div>
@@ -1300,7 +1305,7 @@
 
                                                         <label for="isIpFilterEnable"
                                                                i18n="@@isIpFilterEnable">
-                                                            Use Ip Filtering for RESTful API  <a  matTooltip="If you delete 127.0.0.1, localhost web panel will no longer work. Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"><i class="fa fa-info-circle"></i></a>
+                                                            Use IP Filtering for RESTful API  <a  matTooltip="If you delete 127.0.0.1, localhost web panel will no longer work. Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"><i class="fa fa-info-circle"></i></a>
                                                         </label>
 
                                                     </div>
@@ -1324,21 +1329,21 @@
                                         </div>
 
 
-                                    </div>
 
 
-                                    <div class="card">
+
+
 
                                         <div class="card-header">
-                                            <h4 class="card-title text-left" i18n="@@SocialSharing">
+                                            <legend class="text-left" i18n="@@SocialSharing">
                                                 Social Streaming
-                                            </h4>
+                                            </legend>
                                         </div>
 
                                         <div class="card-content">
                                             <div class="form-group">
 
-                                                <div class="col-sm-12 col-md-4">
+                                                <div class="col-sm-12 col-md-12 col-lg-4">
 
 
                                                     <div class="form-group">
@@ -1373,7 +1378,7 @@
                                                 </div>
 
 
-                                                <div class="col-sm-12  col-md-8">
+                                                <div class="col-sm-12  col-md-12 col-lg-7 col-lg-offset-1 ">
 
                                                     <div *ngFor="let endpoint of videoServiceEndpoints; let i = index"
                                                          class="row row-mobile">
@@ -1454,7 +1459,7 @@
                                         </div>
 
 
-                                    </div>
+
 
 
 
@@ -1464,23 +1469,29 @@
                                 <div class="col-sm-12 col-md-12">
 
 
-                                    <div class="card">
+
                                         <div class="text-center">
 
                                             <button class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
                                                     type="submit">Save
                                             </button>
+                                            <!--
                                             <button (click)="advancedSetting = !advancedSetting" class="btn btn-info"
                                                     i18n="@@saveForm" style="margin: 15px" type="button">Advanced
                                                 Setting
                                             </button>
+                                            -->
 
 
                                         </div>
 
-                                    </div>
+
+
+
                                 </div>
 
+
+                                    </div>
 
 
 
@@ -1494,7 +1505,7 @@
 
                 </div>
 
-
+                    </div></div>
 
                 <div class="footer">
                     <!--

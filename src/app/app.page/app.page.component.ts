@@ -198,7 +198,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         new HLSListType('Event', 'event'),
     ];
 
-    public displayedColumnsStreams = ['name', 'status', 'viewerCount', 'social_media', 'actions'];
+    public displayedColumnsStreams = ['name', 'streamId' , 'status', 'viewerCount', 'social_media', 'actions'];
     public displayedColumnsVod = ['name', 'type', 'date', 'actions'];
     public displayedColumnsUserVod = ['name', 'date', 'actions'];
 
@@ -1507,12 +1507,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             });
 
-            if(this.appSettings.remoteAllowedCIDR == " " || this.appSettings.remoteAllowedCIDR == ""  ){
-                this.isIpFilterEnable = false;
-            }
-            else{
-                this.isIpFilterEnable = true;
-            }
+            this.isIpFilterEnable = true;
 
             this.acceptAllStreams = !this.appSettings.acceptOnlyStreamsInDataStore ;
 
@@ -1556,7 +1551,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
         if(!this.isIpFilterEnable){
-            this.appSettings.remoteAllowedCIDR = " ";
+            this.appSettings.remoteAllowedCIDR = "127.0.0.1";
         }
 
 
