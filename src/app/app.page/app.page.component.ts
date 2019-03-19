@@ -186,7 +186,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public streamNameEmpty=false;
     public encoderSettings:EncoderSettings[];
     public acceptAllStreams : boolean;
-    public isIpFilterEnable : boolean;
 
 
 
@@ -1507,8 +1506,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             });
 
-            this.isIpFilterEnable = true;
-
             this.acceptAllStreams = !this.appSettings.acceptOnlyStreamsInDataStore ;
 
 
@@ -1550,10 +1547,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
 
-        if(!this.isIpFilterEnable){
-            this.appSettings.remoteAllowedCIDR = "127.0.0.1";
-        }
+        this.appSettings.remoteAllowedCIDR = this.appSettings.remoteAllowedCIDR.trim();
 
+        if(this.appSettings.remoteAllowedCIDR == ""){
+        this.appSettings.remoteAllowedCIDR = "127.0.0.1";
+        }
 
         this.appSettings.acceptOnlyStreamsInDataStore = !this.acceptAllStreams ;
 
