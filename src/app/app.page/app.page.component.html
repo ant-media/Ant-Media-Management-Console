@@ -1028,11 +1028,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div *ngIf=!isEnterpriseEdition class="form-group text-center">
-                                                <p i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                    Adaptive Streaming feature are enabled in
+                                            <div *ngIf=!isEnterpriseEdition class="form-group text-left">
+                                                <div class="col-xs-12">
+                                                <label i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                    Adaptive Streaming feature is enabled in
                                                     <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
-                                                </p>
+                                                </label>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -1120,11 +1122,13 @@
                                                 <div class="col-sm-12 col-md-12 text-left">
 
                                                     <div class="col-sm-12 col-md-12 text-left">
-                                                        <div *ngIf=!isEnterpriseEdition class="form-group text-center">
+                                                        <div *ngIf=!isEnterpriseEdition class="form-group text-left">
+                                                            <div>
                                                             <p i18n="not Enterprise@@notEnterpriseEditionMessage">
                                                                 Object Detection feature is enabled in
                                                                 <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
                                                             </p>
+                                                                </div>
                                                         </div>
                                                     </div>
 
@@ -1243,11 +1247,13 @@
                                         <div class="card-content text-left">
                                             <div class="form-group">
 
-                                                <div *ngIf=!isEnterpriseEdition class="form-group text-center">
+                                                <div *ngIf=!isEnterpriseEdition class="col-xs-12 left-left">
+                                                    <div>
                                                     <p i18n="not Enterprise@@notEnterpriseEditionMessage">
                                                         One time token feature is enabled in
                                                         <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
                                                     </p>
+                                                    </div>
                                                 </div>
 
                                                 <div *ngIf=isEnterpriseEdition
@@ -1256,7 +1262,7 @@
                                                         <input [(ngModel)]="appSettings.tokenControlEnabled" id="tokenControlEnabled" name="tokenControlEnabled" type="checkbox">
 
                                                         <label for="tokenControlEnabled">
-                                                            Publish/play with one time tokens <a href="https://antmedia.io/secure-video-streaming/" target="_blank"   matTooltip="By enabling this option, one time tokens are required for publishing and playing. Publish/Play request without tokens will not be streamed. Click for more information."><i style="font-size: 20px;" class="fa fa-info-circle"></i></a>
+                                                            Publish/Play with One-time Tokens <a href="https://antmedia.io/secure-video-streaming/" target="_blank"   matTooltip="By enabling this option, one time tokens are required for publishing and playing. Publish/Play request without tokens will not be streamed. Click for more information."><i style="font-size: 20px;" class="fa fa-info-circle"></i></a>
                                                         </label>
 
                                                     </div>
@@ -1266,11 +1272,13 @@
 
                                             <div class="form-group">
 
-                                                <div *ngIf=!isEnterpriseEdition class="form-group text-center">
+                                                <div *ngIf=!isEnterpriseEdition class="col-xs-12 text-left">
+                                                    <div>
                                                     <p i18n="not Enterprise@@notEnterpriseEditionMessage">
                                                         Undefined stream control feature is enabled in
                                                         <a href="https://antmedia.io">Ant Media Server Enterprise Edition.</a>
                                                     </p>
+                                                    </div>
                                                 </div>
 
                                                 <div *ngIf=isEnterpriseEdition
