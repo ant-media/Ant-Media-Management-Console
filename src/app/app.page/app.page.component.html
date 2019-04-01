@@ -815,9 +815,15 @@
                                                 <mat-header-cell *matHeaderCellDef> Type</mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
-                                                    {{row.type}}
+
+                                                <ng-container [ngSwitch]="row.type">
+                                                    <i *ngSwitchCase="'streamVod'">Stream VOD</i>
+                                                    <i *ngSwitchCase="'uploadedVod'">Uploaded VOD</i>
+                                                    <i *ngSwitchCase="'userVod'">User VOD</i>
+                                                </ng-container>
 
                                                 </mat-cell>
+
                                             </ng-container>
 
                                             <ng-container matColumnDef="date">
