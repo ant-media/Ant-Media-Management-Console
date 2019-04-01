@@ -941,7 +941,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
             this.token = <Token>data;
 
-            var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true&token=" + this.token.tokenId;
+            var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=trueng buil&token=" + this.token.tokenId;
             var   htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px"></iframe>';
 
             this.openLivePlayer(htmlCode, streamId, width);
@@ -1669,21 +1669,47 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 else {
 
                     console.log("success: " + data["success"]);
-                    console.log("error: " + data["message"]);
+                    console.log("message: " + data["message"]);
 
+                    var onvifError = data["message"];
                     this.newIPCameraAdding = false;
 
-                    $.notify({
-                        icon: "ti-save",
-                        message: Locale.getLocaleInterface().new_broadcast_error
-                    }, {
-                        type: "warning",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                    if (onvifError == -1) {
+
+                        swal({
+                            title: "Connection Error",
+                            text: "Please Check Camera URL",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+
+                        }).catch(function () {
+
+                        });
+                    }
+
+                    if (onvifError == -2) {
+
+                        swal({
+                            title: "Authorization Error",
+                            text: "Please Check Username and/or Password",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+
+                        }).catch(function () {
+
+                        });
+                    }
+
+
+
 
 
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
