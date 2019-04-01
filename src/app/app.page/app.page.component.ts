@@ -941,7 +941,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
             this.token = <Token>data;
 
-            var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=trueng buil&token=" + this.token.tokenId;
+            var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true&token=" + this.token.tokenId;
             var   htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px"></iframe>';
 
             this.openLivePlayer(htmlCode, streamId, width);
