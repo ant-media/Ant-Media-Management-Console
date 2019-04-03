@@ -1669,21 +1669,47 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 else {
 
                     console.log("success: " + data["success"]);
-                    console.log("error: " + data["message"]);
+                    console.log("message: " + data["message"]);
 
+                    var onvifError = data["message"];
                     this.newIPCameraAdding = false;
 
-                    $.notify({
-                        icon: "ti-save",
-                        message: Locale.getLocaleInterface().new_broadcast_error
-                    }, {
-                        type: "warning",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                    if (onvifError == -1) {
+
+                        swal({
+                            title: "Connection Error",
+                            text: "Please Check Camera URL",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+
+                        }).catch(function () {
+
+                        });
+                    }
+
+                    if (onvifError == -2) {
+
+                        swal({
+                            title: "Authorization Error",
+                            text: "Please Check Username and/or Password",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+
+                        }).catch(function () {
+
+                        });
+                    }
+
+
+
 
 
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
