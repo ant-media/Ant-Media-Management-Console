@@ -921,7 +921,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         var width = "640px"
         var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true";
-        var  htmlCode = '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:400px"  ></iframe>';
+        var  htmlCode = '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:480px"  ></iframe>';
         width = "640px"
 
         this.openLivePlayer(htmlCode, streamId, width);
@@ -942,7 +942,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.token = <Token>data;
 
             var iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay=true&token=" + this.token.tokenId;
-            var   htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:400px"></iframe>';
+            var   htmlCode = '<iframe id="' + streamId + '"frameborder="0" allowfullscreen="true"  seamless="seamless" style="display:block; width:100%; height:480px"></iframe>';
 
             this.openLivePlayer(htmlCode, streamId, width);
 
