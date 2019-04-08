@@ -21,6 +21,11 @@ export const AppRoutes: Routes = [{
             loadChildren: './server.settings/server.settings.module#ServerSettingsModule',
             canActivate: [AuthService]
         },{
+            path: 'logs',
+            loadChildren: './logs/logs.module#LogsModule',
+            canActivate: [AuthService]
+        }
+        ,{
             path: 'applications',
             loadChildren: './app.page/app.page.module#AppPageModule',
             canActivate: [AuthService]
