@@ -262,6 +262,14 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + '/getApplicationsInfo');
     }
 
+    public getErrorLogFile(): Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + '/getErrorLogFile/100');
+    }
+
+    public getConsoleLogFile(): Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + '/getConsoleLogFile/100');
+    }
+
     public getVodList(appName:string, offset:Number, size:Number): Observable<Object>  {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/broadcast/getVodList/'+offset+"/"+size,{});
 
