@@ -270,6 +270,14 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + '/getConsoleLogFile/100');
     }
 
+    public getLogLevel(): Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + '/getLogLevel');
+    }
+
+    public changeLogLevel(logLevel : string): Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + '/changeLogLevel/'+logLevel);
+    }
+
     public getVodList(appName:string, offset:Number, size:Number): Observable<Object>  {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/broadcast/getVodList/'+offset+"/"+size,{});
 
