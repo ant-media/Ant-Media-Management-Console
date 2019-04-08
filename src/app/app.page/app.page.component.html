@@ -799,14 +799,11 @@
                                                 <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
-
                                                     <ng-container [ngSwitch]="row.type">
-                                                        <i *ngSwitchCase="'streamVod'"> {{row.streamName}}</i>
-                                                        <i *ngSwitchCase="'uploadedVod'">{{row.vodName}} </i>
-                                                        <i *ngSwitchCase="'userVod'">{{row.vodName}}</i>
+                                                        <ng-container *ngSwitchCase="'streamVod'"> {{row.streamName}}</ng-container>
+                                                        <ng-container *ngSwitchCase="'uploadedVod'">{{row.vodName}} </ng-container>
+                                                        <ng-container *ngSwitchCase="'userVod'">{{row.vodName}}</ng-container>
                                                     </ng-container>
-
-
                                                 </mat-cell>
 
                                             </ng-container>
@@ -815,13 +812,11 @@
                                                 <mat-header-cell *matHeaderCellDef> Type</mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
-
-                                                <ng-container [ngSwitch]="row.type">
-                                                    <i *ngSwitchCase="'streamVod'">Stream VOD</i>
-                                                    <i *ngSwitchCase="'uploadedVod'">Uploaded VOD</i>
-                                                    <i *ngSwitchCase="'userVod'">User VOD</i>
-                                                </ng-container>
-
+                                                    <ng-container [ngSwitch]="row.type">
+                                                        <ng-container *ngSwitchCase="'streamVod'">Recorded Stream</ng-container>
+                                                        <ng-container *ngSwitchCase="'uploadedVod'">Uploaded</ng-container>
+                                                        <ng-container *ngSwitchCase="'userVod'">Linked</ng-container>
+                                                    </ng-container>
                                                 </mat-cell>
 
                                             </ng-container>
@@ -836,50 +831,47 @@
                                             </ng-container>
 
                                             <ng-container matColumnDef="actions">
-                                                <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
+                                                <mat-header-cell *matHeaderCellDef class="text-right"> Actions</mat-header-cell>
 
-                                                <mat-cell *matCellDef="let row">
-                                                    <button (click)="playVoD(row.vodName ,row.type,row.vodId, row.streamId)"
-                                                            class="btn btn-success btn-simple btn-magnify"
+                                                <mat-cell *matCellDef="let row" class="text-right">
+                                                    <button (click)="playVoD(row.vodName ,row.type,row.vodId, row.streamId, row.filePath)"
+                                                            class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
                                                             type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-control-play"></i>
                                                         </span>
-                                                        <ng-container i18n="@@tablePlayButton">Play</ng-container>
                                                     </button>
 
                                                     <button (click)="copyVoDEmbedCode(row.vodName, row.type, row.vodId)"
                                                             data-toggle="tooltip" i18n-title
                                                             title="Copy Live Embed Code to Clipboard"
-                                                            class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                            class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                             type="button"
-                                                            style="font-size: 1.1em">
+                                                            >
                                                             <span class="btn-label">
                                                                 <i class="ti-share"></i>
                                                             </span>
-                                                        <ng-container i18n="@@tableEmbedCode">Embed Code</ng-container>
                                                     </button>
 
 
                                                     <a (click)="downloadFile(row.vodName ,row.type,row.vodId, row.streamId)" download>
-                                                    <button
-                                                            data-toggle="tooltip" i18n-title
-                                                            title="VoD Donwloading"
-                                                            class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                            type="button"
-                                                            style="font-size: 1.1em" >
-                                                            <span class="btn-label">
-                                                                <i class="ti-download"></i>
-                                                            </span>
-                                                        <ng-container i18n="@@tableDownloadButton">Download</ng-container>
-                                                    </button>
-                                                        </a>
+                                                        <button
+                                                                data-toggle="tooltip" i18n-title
+                                                                title="VoD Downloading"
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
+                                                                type="button"
+                                                                >
+                                                                <span class="btn-label">
+                                                                    <i class="ti-download"></i>
+                                                                </span>
+                                                        </button>
+                                                    </a>
 
-                                                    <button (click)="deleteVoD(row.vodName, row.vodId, row.type)" class="btn btn-simple btn-magnify btn-danger" type="button">
+                                                    <button (click)="deleteVoD(row.vodName, row.vodId, row.type)" 
+                                                        class="btn btn-simple btn-magnify btn-danger btn-xs big-icons" type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-close"></i>
                                                         </span>
-                                                        <ng-container i18n="@@tableDeleteButton">Delete</ng-container>
                                                     </button>
 
                                                 </mat-cell>
