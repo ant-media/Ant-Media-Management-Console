@@ -67,10 +67,11 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     ngOnInit(){
 
         this.serverSettings = new ServerSettings(null,"key", false);
-        this.getServerSettings();
 
         this.restService.isEnterpriseEdition().subscribe(data => {
             this.isEnterpriseEdition = data["success"];
+            this.getServerSettings();
+
         });
 
 
@@ -172,6 +173,8 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
         if (!isValid) {
             return;
         }
+
+        console.log("submitted license key : " + this.serverSettings.licenceKey)
         // this.licenseStatusReceiving = true;
         this.restService.changeServerSettings( this.serverSettings).subscribe(data => {
             if (data["success"] == true) {
