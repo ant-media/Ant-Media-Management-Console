@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { RestService } from '../rest/rest.service';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {RestService} from '../rest/rest.service';
+import {Router} from '@angular/router';
 
 
 declare var $: any;
@@ -15,9 +15,13 @@ declare var Chartist: any;
 export class LogsComponent implements OnInit {
 
 
-    public LogFileText: any;
+    public logFileText: any;
 
     constructor(private restService:RestService, private router:Router) { }
+
+    public textConsoleLog : String = "ConsoleLog";
+    public textErrorLog : String = "ErrorLog";
+
 
     ngOnInit() {
     }
@@ -32,7 +36,7 @@ export class LogsComponent implements OnInit {
 
         this.restService.getConsoleLogFile().subscribe(data => {
 
-            this.LogFileText = data;
+            this.logFileText = data;
 
         });
 
@@ -41,21 +45,21 @@ export class LogsComponent implements OnInit {
 
     logChanged(event:any){
 
-        if(event == "ConsoleLog") {
+        if(event == this.textConsoleLog) {
 
             this.restService.getConsoleLogFile().subscribe(data => {
 
-                this.LogFileText = data;
+                this.logFileText = data;
 
             });
 
         }
 
-        if(event == "ErrorLog"){
+        if(event == this.textErrorLog){
 
             this.restService.getErrorLogFile().subscribe(data => {
 
-                this.LogFileText = data;
+                this.logFileText = data;
 
             });
 
