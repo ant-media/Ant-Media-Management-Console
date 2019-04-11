@@ -1,8 +1,8 @@
-import { Routes } from '@angular/router';
+import {Routes} from '@angular/router';
 
-import { AdminLayoutComponent } from './layouts/admin/admin-layout.component';
-import { AuthLayoutComponent } from './layouts/auth/auth-layout.component';
-import { AuthService } from  './rest/auth.service';
+import {AdminLayoutComponent} from './layouts/admin/admin-layout.component';
+import {AuthLayoutComponent} from './layouts/auth/auth-layout.component';
+import {AuthService} from './rest/auth.service';
 
 export const AppRoutes: Routes = [{
         path: '',
@@ -17,6 +17,15 @@ export const AppRoutes: Routes = [{
             loadChildren: './dashboard/dashboard.module#DashboardModule',
             canActivate: [AuthService]
         },{
+            path: 'serverSettings',
+            loadChildren: './server.settings/server.settings.module#ServerSettingsModule',
+            canActivate: [AuthService]
+        },{
+            path: 'logs',
+            loadChildren: './logs/logs.module#LogsModule',
+            canActivate: [AuthService]
+        }
+        ,{
             path: 'applications',
             loadChildren: './app.page/app.page.module#AppPageModule',
             canActivate: [AuthService]

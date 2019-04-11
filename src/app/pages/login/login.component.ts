@@ -1,7 +1,7 @@
-import { Component, OnInit, ElementRef, LOCALE_ID, Inject } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { AuthService} from '../../rest/auth.service';
-import { User} from '../../rest/rest.service';
+import {Component, ElementRef, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {AuthService} from '../../rest/auth.service';
+import {User} from '../../rest/rest.service';
 
 declare var $:any;
 
@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit{
         this.sidebarVisible = false;
         this.showYouCanLogin = false;
         this.showFailedToCreateUserAccount = false;
-        
+
     }
     checkFullPageBackgroundImage(){
         var $page = $('.full-page');
@@ -51,6 +51,12 @@ export class LoginComponent implements OnInit{
             }
         });
 
+        this.auth.licenceWarningDisplay = true;
+
+        if(this.auth.licenceSubscription != null){
+            this.auth.licenceSubscription.unsubscribe();
+        }
+
         this.checkFullPageBackgroundImage();
 
         this.logout();
@@ -61,12 +67,12 @@ export class LoginComponent implements OnInit{
         setTimeout(function(){
             // after 1000 ms we add the class animated to the login/register card
             $('.card').removeClass('card-hidden');
-           
+
         }, 700)
     }
 
     logout() {
-       // localStorage.setItem("authenticated", null);
+        // localStorage.setItem("authenticated", null);
         localStorage.clear();
         //this.router.navigateByUrl("/pages/login");
     }
@@ -89,9 +95,9 @@ export class LoginComponent implements OnInit{
     }
 
     loginUser() {
-      
+
         this.auth.login(this.email, this.password).subscribe(data =>{
-         
+
             if (data["success"] == true) {
                 this.auth.isAuthenticated = data["success"];
                 localStorage.setItem("authenticated", "true");
@@ -118,7 +124,7 @@ export class LoginComponent implements OnInit{
             if (data["success"] == true) {
                 this.firstLogin = false;
                 this.showYouCanLogin = true;
-                
+
             }
             else {
                 this.showFailedToCreateUserAccount = true;

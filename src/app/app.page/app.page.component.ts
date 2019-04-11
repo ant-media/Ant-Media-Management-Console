@@ -89,13 +89,19 @@ export class AppSettings {
                 public acceptOnlyStreamsInDataStore: boolean,
                 public vodFolder: string,
                 public objectDetectionEnabled: boolean,
-                public tokenControlEnabled:boolean,
-                public webRTCEnabled:boolean,
-                public webRTCFrameRate:number,
+                public tokenControlEnabled: boolean,
+                public webRTCEnabled: boolean,
+                public webRTCFrameRate: number,
                 public remoteAllowedCIDR: string
-    ) {
+    ) {}
+}
 
-    }
+export class ServerSettings {
+
+    constructor(public serverName: string,
+                public licenceKey: string,
+                public buildForMarket: boolean,
+    ) {}
 }
 
 export class SocialNetworkChannel {
@@ -191,7 +197,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
-    public token:Token;
+    public token: Token;
+    public serverSettings: ServerSettings;
     public listTypes = [
         new HLSListType('None', ''),
         new HLSListType('Event', 'event'),
@@ -596,7 +603,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         return hasEndpoint;
     }
-
 
 
     openVodUploadDialog(): void {
@@ -1288,12 +1294,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     addNewStream(): void {
-
-        if (!this.encoderSettings) {
-            this.encoderSettings = [];
+        if (!this.appSettings.encoderSettings) {
+            this.appSettings.encoderSettings = [];
         }
-
-        this.encoderSettings.push({
+        this.appSettings.encoderSettings.push({
             height: 0,
             videoBitrate: 0,
             audioBitrate: 0
@@ -1328,7 +1332,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     deleteStream(index: number): void {
-        this.encoderSettings.splice(index, 1);
+        this.appSettings.encoderSettings.splice(index, 1);
     }
 
     setSocialNetworkChannel(endpointId: string, type: string, value: string): void {
@@ -1440,8 +1444,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-
-
     changeSettings(valid: boolean): void {
 
         if (!valid) {
@@ -1483,9 +1485,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         align: 'right'
                     }
                 });
-
-                            }
-            else {
+            } else {
                 $.notify({
                     icon: "ti-alert",
                     message: Locale.getLocaleInterface().settings_not_saved
@@ -1507,6 +1507,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
         });
+
+
     }
 
     newLiveStream(): void {
@@ -2420,4 +2422,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             disableClose: true,
         });
     }
+
 }
+
+
