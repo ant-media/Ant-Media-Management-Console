@@ -98,3 +98,21 @@ select.selectpicker {
 .mat-tooltip {
     font-size: 14px !important;
 }
+.stream-name-column{
+    flex: 0 0 20%!important;
+}
+.stream-id-column{
+    flex: 0 0 30%!important;
+}
+.status-column{
+    flex: 0 0 15%!important;
+}
+.viewer-column{
+    flex: 0 0 10%!important;
+}
+.social-column{
+    flex: 0 0 10%!important;
+}
+.action-column{
+    flex: 0 0 15%!important;
+}
