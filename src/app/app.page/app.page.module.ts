@@ -5,9 +5,7 @@ import {FormsModule} from '@angular/forms';
 
 
 import {HttpClientModule} from '@angular/common/http';
-import {
-    AppPageComponent
-} from './app.page.component';
+import {AppPageComponent} from './app.page.component';
 import {ClipboardModule} from 'ngx-clipboard';
 import {
     MatAutocompleteModule,
@@ -44,13 +42,13 @@ import {
     MatToolbarModule,
     MatTooltipModule
 } from '@angular/material';
-import { DetectedObjectListDialog } from './dialog/detected.objects.list';
-import { UploadVodDialogComponent } from './dialog/upload-vod-dialog';
-import { StreamSourceEditComponent } from './dialog/stream.source.edit.component';
-import { BroadcastEditComponent } from './dialog/broadcast.edit.dialog.component';
-import { CamSettingsDialogComponent } from './dialog/cam.settings.dialog.component';
-import { SocialMediaStatsComponent } from './dialog/social.media.stats.component';
-import { WebRTCClientStatsComponent } from './dialog/webrtcstats/webrtc.client.stats.component';
+import {DetectedObjectListDialog} from './dialog/detected.objects.list';
+import {UploadVodDialogComponent} from './dialog/upload-vod-dialog';
+import {StreamSourceEditComponent} from './dialog/stream.source.edit.component';
+import {BroadcastEditComponent} from './dialog/broadcast.edit.dialog.component';
+import {CamSettingsDialogComponent} from './dialog/cam.settings.dialog.component';
+import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
+import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
 
 
 export const AppPageRoutes: Routes = [
@@ -68,11 +66,11 @@ export const AppPageRoutes: Routes = [
 @NgModule({
 
     declarations: [
-                    AppPageComponent, 
-                    CamSettingsDialogComponent, 
-                    UploadVodDialogComponent, 
+                    AppPageComponent,
+                    CamSettingsDialogComponent,
+                    UploadVodDialogComponent,
                     BroadcastEditComponent,
-                    DetectedObjectListDialog, 
+                    DetectedObjectListDialog,
                     StreamSourceEditComponent,
                     SocialMediaStatsComponent,
                     WebRTCClientStatsComponent,
@@ -80,8 +78,8 @@ export const AppPageRoutes: Routes = [
 
     entryComponents: [
                         CamSettingsDialogComponent,
-                        AppPageComponent, 
-                        UploadVodDialogComponent, 
+                        AppPageComponent,
+                        UploadVodDialogComponent,
                         BroadcastEditComponent,
                         DetectedObjectListDialog,
                         StreamSourceEditComponent,

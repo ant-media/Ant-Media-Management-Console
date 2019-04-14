@@ -1,10 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { RestService } from '../../rest/rest.service';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {RestService} from '../../rest/rest.service';
+import {Router} from '@angular/router';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import {Licence} from "../../server.settings/server.settings.component";
+import {AuthService} from "../../rest/auth.service";
+import {ServerSettings} from "../../app.page/app.page.component";
 
 
 declare var $: any;
 declare var Chartist: any;
+declare var swal: any;
+
 
 declare interface AppInfo {
     name: string;
@@ -42,8 +49,15 @@ export class OverviewComponent implements OnInit {
     public appTableData: TableData;
     public units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     public timerId:any;
+    public licence : Licence;
+    public serverSettings : ServerSettings;
 
-    constructor(/*private http: HttpClient,*/ private restService:RestService, private router:Router) { }
+
+
+    constructor(/*private http: HttpClient,*/private auth: AuthService, private restService:RestService, private router:Router, private authService: AuthService) {
+
+
+    }
 
     niceBytes(x): string {
         let l = 0, n = parseInt(x, 10) || 0;
@@ -70,8 +84,12 @@ export class OverviewComponent implements OnInit {
             dataRows: [
             ]
         };
+
+
+
     }
     ngAfterViewInit() {
+
         this.initCirclePercentage();
         this.getSystemResources(); // All in One
         this.getApplicationsInfo();
@@ -79,6 +97,10 @@ export class OverviewComponent implements OnInit {
             this.getSystemResources(); // All in One
             this.getApplicationsInfo();
         }, 5000);
+
+        this.auth.initLicenseCheck();
+
+
     }
 
     ngOnDestroy() {
@@ -86,6 +108,7 @@ export class OverviewComponent implements OnInit {
         if (this.timerId) {
             clearInterval(this.timerId);
         }
+
     }
 
     getSystemResources(): void {

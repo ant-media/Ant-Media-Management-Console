@@ -1,8 +1,7 @@
-
-import { Component, OnInit, ElementRef, LOCALE_ID, Inject, Injectable } from '@angular/core';
-import { Locale } from 'app/locale/locale';
-import { RestService } from '../../rest/rest.service';
-import { HttpClient } from '@angular/common/http';
+import {Component, Inject, LOCALE_ID} from '@angular/core';
+import {Locale} from 'app/locale/locale';
+import {RestService} from '../../rest/rest.service';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
     moduleId: module.id,
