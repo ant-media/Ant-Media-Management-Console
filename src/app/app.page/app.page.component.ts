@@ -1294,10 +1294,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     addNewStream(): void {
-        if (!this.appSettings.encoderSettings) {
-            this.appSettings.encoderSettings = [];
+
+        if (!this.encoderSettings) {
+            this.encoderSettings = [];
         }
-        this.appSettings.encoderSettings.push({
+
+        this.encoderSettings.push({
             height: 0,
             videoBitrate: 0,
             audioBitrate: 0
@@ -1332,7 +1334,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     deleteStream(index: number): void {
-        this.appSettings.encoderSettings.splice(index, 1);
+        this.encoderSettings.splice(index, 1);
     }
 
     setSocialNetworkChannel(endpointId: string, type: string, value: string): void {
