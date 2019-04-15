@@ -51,6 +51,8 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     public timerId: any;
     public displayWarning = true;
     public currentLogLevel : string;
+    public leftDays : number;
+    public isEnterpriseEdition = false;
 
 
 
@@ -66,7 +68,12 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     ngOnInit(){
 
         this.serverSettings = new ServerSettings(null,"key", false);
-        this.getServerSettings();
+
+        this.restService.isEnterpriseEdition().subscribe(data => {
+            this.isEnterpriseEdition = data["success"];
+            this.getServerSettings();
+
+        });
 
         this.getLogLevel();
 
@@ -158,30 +165,62 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     }
 
 
-
     public getLicenseStatus(){
 
         this.licenseStatusReceiving = true;
-        this.restService.getLicenseStatus(this.serverSettings.licenceKey ).subscribe(data => {
-            this.licenseStatusReceiving = false;
-            if (data != null) {
-                this.licenseStatus = "valid";
-                this.currentLicence= <Licence>data;
-                console.log(data);
 
-            }
-            else {
+        if(this.authService.isEnterpriseEdition){
+            this.restService.getLicenseStatus(this.serverSettings.licenceKey ).subscribe(data => {
+                this.licenseStatusReceiving = false;
+                if (data != null) {
+                    this.licenseStatus = "valid";
+                    this.currentLicence  = <Licence>data;
+                    console.log(data);
 
-                this.licenseStatus = "invalid";
-                console.log("invalid license");
+                }
+                if(this.currentLicence.licenceId == null)  {
+
+                    this.licenseStatus = "invalid";
+                    console.log("invalid license");
 
 
-                if (this.authService.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
+                    if (this.authService.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
+
+                        swal({
+                            title: "Invalid License",
+                            text: "Please Validate Your License ",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+
+                            onClose: function () {
+
+                            }
+                        }).then(() => {
+
+                        }).catch(function () {
+
+                        });
+                    }
+
+                }
+
+                this.authService.licenceWarningDisplay = false;
+
+                let end =this.currentLicence.endDate;
+
+
+                this.leftDays = this.differenceInDays(new Date().getTime(), new Date(end).getTime());
+
+                console.log("Your license expires in " + this.leftDays + " days");
+
+                if (this.leftDays <16 && this.authService.licenceWarningDisplay){
 
                     swal({
-                        title: "Invalid License",
-                        text: "Please Validate Your License ",
-                        type: 'error',
+                        title: "Your license expires in " + this.leftDays + " days",
+                        text: "Please Renew Your License ",
+                        type: 'info',
 
                         confirmButtonColor: '#3085d6',
                         confirmButtonText: 'OK',
@@ -191,15 +230,17 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
                         }
                     }).then(() => {
 
+
                     }).catch(function () {
 
                     });
+
+                    this.authService.licenceWarningDisplay = false;
+
                 }
+            });
 
-            }
-
-            this.authService.licenceWarningDisplay = false;
-        });
+        }
 
         return this.currentLicence;
 
@@ -210,6 +251,8 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
         if (!isValid) {
             return;
         }
+
+        console.log("submitted license key : " + this.serverSettings.licenceKey)
         // this.licenseStatusReceiving = true;
         this.restService.changeServerSettings( this.serverSettings).subscribe(data => {
             if (data["success"] == true) {
@@ -264,6 +307,10 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
         this.settingsReceived = true;
 
 
+    }
+
+    differenceInDays(firstDate: number, secondDate: number) {
+        return Math.round((secondDate-firstDate)/(1000*60*60*24));
     }
 
 

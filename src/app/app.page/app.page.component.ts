@@ -433,8 +433,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             this.getSettings();
-            this.getServerSettings();
-
 
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
@@ -1446,15 +1444,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-
-    getServerSettings(): void {
-        this.restService.getServerSettings().subscribe(data => {
-            this.serverSettings = <ServerSettings>data;
-        });
-
-    }
-
-
     changeSettings(valid: boolean): void {
 
         if (!valid) {
@@ -1520,43 +1509,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
 
-    }
-
-    changeServerSettings(): void {
-
-        var serverSettigs = new ServerSettings(null, "11111-2222-3333-4444 ", false);
-
-
-        this.restService.changeServerSettings(serverSettigs).subscribe(data => {
-            if (data["success"] == true) {
-                $.notify({
-                    icon: "ti-save",
-                    message: Locale.getLocaleInterface().settings_saved
-                }, {
-                    type: "success",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            } else {
-                $.notify({
-                    icon: "ti-alert",
-                    message: Locale.getLocaleInterface().settings_not_saved
-                }, {
-                    type: 'warning',
-                    delay: 1900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-
-            }
-        });
-
-        this.getServerSettings();
     }
 
     newLiveStream(): void {
