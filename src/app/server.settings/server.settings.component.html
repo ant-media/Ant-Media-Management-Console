@@ -95,7 +95,7 @@
                                 <form #f="ngForm" (ngSubmit)="changeLogLevel(f.valid)" validate class="form-horizontal" method="post">
 
 
-                                    <select  type="text"  [name]="'resolutionHeight'" (ngModelChange)="logLevelChanged($event,i)" [(ngModel)]="currentLogLevel"
+                                    <select  type="text"  [name]="'resolutionHeight'" (ngModelChange)="logLevelChanged($event)" [(ngModel)]="currentLogLevel"
                                              class="dropdown-toggle form-control" required>
                                         <option value="ALL">ALL</option>
                                         <option value="TRACE">TRACE</option>

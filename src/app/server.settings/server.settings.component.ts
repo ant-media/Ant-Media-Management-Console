@@ -99,7 +99,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
         });
     }
 
-    logLevelChanged(event:any,i:string){
+    logLevelChanged(event:any){
 
         if(event == "ALL") {
             this.currentLogLevel = "ALL";
