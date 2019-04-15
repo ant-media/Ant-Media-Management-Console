@@ -92,7 +92,26 @@
 
                             <div class="tab-pane container-fluid" id="log">
 
-                                Log level
+                                <form #f="ngForm" (ngSubmit)="changeLogLevel(f.valid)" validate class="form-horizontal" method="post">
+
+
+                                    <select  type="text"  [name]="'resolutionHeight'" (ngModelChange)="logLevelChanged($event)" [(ngModel)]="currentLogLevel"
+                                             class="dropdown-toggle form-control" required>
+                                        <option value="ALL">ALL</option>
+                                        <option value="TRACE">TRACE</option>
+                                        <option value="DEBUG">DEBUG</option>
+                                        <option value="INFO">INFO</option>
+                                        <option value="WARN">WARN</option>
+                                        <option value="ERROR">ERROR</option>
+                                        <option value="OFF">OFF</option>
+                                    </select>
+
+
+                                    <button class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
+                                            type="submit">Save
+                                    </button>
+
+                                </form>
 
                             </div>
 

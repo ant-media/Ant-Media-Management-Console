@@ -52,6 +52,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     public displayWarning = true;
     public leftDays : number;
     public isEnterpriseEdition = false;
+    public currentLogLevel : string;
 
 
 
@@ -74,6 +75,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
         });
 
+        this.getLogLevel();
 
     }
 
@@ -82,6 +84,81 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     }
 
     ngOnDestroy() {
+
+
+    }
+
+    public getLogLevel(){
+
+
+
+        this.restService.getLogLevel().subscribe(data => {
+
+            this.currentLogLevel = data['logLevel'];
+
+        });
+    }
+
+    logLevelChanged(event:any){
+
+        if(event == "ALL") {
+            this.currentLogLevel = "ALL";
+        }
+        if(event == "TRACE") {
+            this.currentLogLevel = "TRACE";
+        }
+        if(event == "DEBUG") {
+            this.currentLogLevel = "DEBUG";
+        }
+        if(event == "INFO") {
+            this.currentLogLevel = "INFO";
+        }
+        if(event == "WARN") {
+            this.currentLogLevel = "WARN";
+        }
+        if(event == "ERROR") {
+            this.currentLogLevel = "ERROR";
+        }
+        if(event == "OFF") {
+            this.currentLogLevel = "OFF";
+        }
+
+
+    }
+
+    changeLogLevel(valid: boolean): void {
+
+        if (!valid) {
+            return;
+        }
+
+        this.restService.changeLogLevel(this.currentLogLevel).subscribe(data => {
+            if (data["success"] == true) {
+                $.notify({
+                    icon: "ti-save",
+                    message: Locale.getLocaleInterface().settings_saved
+                }, {
+                    type: "success",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else {
+                $.notify({
+                    icon: "ti-alert",
+                    message: Locale.getLocaleInterface().settings_not_saved
+                }, {
+                    type: 'warning',
+                    delay: 1900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+        });
 
 
     }

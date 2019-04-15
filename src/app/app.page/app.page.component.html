@@ -312,7 +312,7 @@
                                         <mat-table [dataSource]="dataSource" matSort>
 
 
-                                            <ng-container [ngClass]="'stream-name-column'" matColumnDef="name">
+                                            <ng-container matColumnDef="name">
                                                 <mat-header-cell [ngClass]="'stream-name-column'" *matHeaderCellDef mat-sort-header> Stream Name </mat-header-cell>
 
                                                 <mat-cell [ngClass]="'stream-name-column'" *matCellDef="let row">
@@ -341,7 +341,7 @@
                                                 </mat-cell>
                                             </ng-container>
 
-                                            <ng-container [ngClass]="'stream-id-column'" matColumnDef="streamId">
+                                            <ng-container matColumnDef="streamId">
                                                 <mat-header-cell  [ngClass]="'stream-id-column'" *matHeaderCellDef mat-sort-header> Stream ID </mat-header-cell>
 
                                                 <mat-cell [ngClass]="'stream-id-column'" *matCellDef="let row">
@@ -350,7 +350,7 @@
                                             </ng-container>
 
 
-                                            <ng-container [ngClass]="'status-column'" matColumnDef="status">
+                                            <ng-container matColumnDef="status">
                                                 <mat-header-cell [ngClass]="'status-column'" *matHeaderCellDef mat-sort-header>Status </mat-header-cell>
                                                 <mat-cell [ngClass]="'status-column'" *matCellDef="let row">
 
@@ -404,7 +404,7 @@
 
                                             </ng-container>
 
-                                            <ng-container [ngClass]="'viewer-column'" matColumnDef="viewerCount">
+                                            <ng-container matColumnDef="viewerCount">
                                                 <mat-header-cell [ngClass]="'viewer-column'" *matHeaderCellDef mat-sort-header> Viewers </mat-header-cell>
 
                                                 <mat-cell [ngClass]="'viewer-column'" *matCellDef="let row">
@@ -433,7 +433,7 @@
                                             </ng-container>
 
 
-                                            <ng-container [ngClass]="'social-column'"   matColumnDef="social_media">
+                                            <ng-container  matColumnDef="social_media">
                                                 <mat-header-cell [ngClass]="'social-column'"  *matHeaderCellDef> Social Share</mat-header-cell>
                                                 <mat-cell [ngClass]="'social-column'"  *matCellDef="let row">
 
@@ -452,7 +452,7 @@
                                             </ng-container>
 
 
-                                            <ng-container [ngClass]="'action-column'"  matColumnDef="actions">
+                                            <ng-container matColumnDef="actions">
                                                 <mat-header-cell [ngClass]="'action-column'"  *matHeaderCellDef class="text-right"> Actions</mat-header-cell>
                                                 <mat-cell [ngClass]="'action-column'"  *matCellDef="let row" class="text-right">
 
