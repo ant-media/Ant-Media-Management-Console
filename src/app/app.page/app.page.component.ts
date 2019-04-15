@@ -1294,10 +1294,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     addNewStream(): void {
-        if (!this.appSettings.encoderSettings) {
-            this.appSettings.encoderSettings = [];
+
+        if (!this.encoderSettings) {
+            this.encoderSettings = [];
         }
-        this.appSettings.encoderSettings.push({
+
+        this.encoderSettings.push({
             height: 0,
             videoBitrate: 0,
             audioBitrate: 0
@@ -1332,7 +1334,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     deleteStream(index: number): void {
-        this.appSettings.encoderSettings.splice(index, 1);
+        this.encoderSettings.splice(index, 1);
     }
 
     setSocialNetworkChannel(endpointId: string, type: string, value: string): void {
@@ -1543,8 +1545,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-
-
         if (!this.restService.checkStreamName(this.liveBroadcast.name)){
             this.streamNameEmpty = true;
 
@@ -1555,6 +1555,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         var socialNetworks = [];
+
+        this.shareEndpoint.forEach((value, index) => {
+            if (value === true) {
+                socialNetworks.push(this.videoServiceEndpoints[index].id);
+            }
+        });
         this.restService.addStreamSource(this.appName, this.liveBroadcast, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
@@ -1587,10 +1593,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     console.log("success: " + data["success"]);
                     console.log("message: " + data["message"]);
 
-                    var onvifError = data["message"];
+                    var errorCode = data["message"];
                     this.newIPCameraAdding = false;
 
-                    if (onvifError == -1) {
+                    if (errorCode == -1) {
 
                         swal({
                             title: "Connection Error",
@@ -1607,7 +1613,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         });
                     }
 
-                    if (onvifError == -2) {
+                    if (errorCode == -2) {
 
                         swal({
                             title: "Authorization Error",
@@ -1624,9 +1630,22 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         });
                     }
 
+                    if (errorCode == -3) {
+
+                        swal({
+                            title: "High CPU Load",
+                            text: "Please Decrease CPU Load Then Try Again",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
 
 
+                        }).catch(function () {
 
+                        });
+                    }
 
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
@@ -1747,6 +1766,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 }
                 else {
+                    var errorCode = data["message"];
 
                     this.newIPCameraAdding = false;
 
@@ -1764,6 +1784,23 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
+                    if (errorCode == -3) {
+
+                        swal({
+                            title: "High CPU Load",
+                            text: "Please Decrease CPU Load Then Try Again",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+
+                        }).catch(function () {
+
+                        });
+                    }
+
                 }
 
                 //swal.close();
@@ -1780,8 +1817,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         this.switchToGridView();
                     }, 500);
                 }
-
-
             });
 
     }
