@@ -172,14 +172,14 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
             this.restService.getLicenseStatus(this.serverSettings.licenceKey ).subscribe(data => {
                 this.licenseStatusReceiving = false;
                 if (data != null) {
-                    this.licenseStatus = "valid";
+                    this.licenseStatus = "Valid";
                     this.currentLicence  = <Licence>data;
                     console.log(data);
 
                 }
                 if(this.currentLicence.licenceId == null)  {
 
-                    this.licenseStatus = "invalid";
+                    this.licenseStatus = "Invalid";
                     console.log("invalid license");
 
 
@@ -251,7 +251,6 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
             return;
         }
 
-        console.log("submitted license key : " + this.serverSettings.licenceKey)
         // this.licenseStatusReceiving = true;
         this.restService.changeServerSettings( this.serverSettings).subscribe(data => {
             if (data["success"] == true) {
