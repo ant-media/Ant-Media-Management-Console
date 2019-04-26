@@ -171,76 +171,72 @@ export class AuthService implements CanActivate {
         this.currentLicence = null;
 
         this.restService.getLicenseStatus(key).subscribe(data => {
-            if (data != null) {
-                this.currentLicence = <Licence>data;
-                console.log(data);
-                //    console.log("end date: " + this.currentLicence.endDate);
-                if(this.currentLicence.licenceId != null){
 
-                    let end =this.currentLicence.endDate;
+            this.currentLicence = <Licence>data;
+            console.log(data);
+            //    console.log("end date: " + this.currentLicence.endDate);
+            if(this.currentLicence != null  && this.currentLicence.licenceId != null){
+
+                let end =this.currentLicence.endDate;
 
 
-                    this.leftDays = this.differenceInDays(new Date().getTime(), new Date(end).getTime());
+                this.leftDays = this.differenceInDays(new Date().getTime(), new Date(end).getTime());
+
+
+                if (this.leftDays < 16 && this.licenceWarningDisplay){
 
                     console.log("Your license expires in " + this.leftDays + " days");
 
-                    if (this.leftDays <16 && this.licenceWarningDisplay){
+                    swal({
+                        title: "Your license expires in " + this.leftDays + " days",
+                        text: "Please Renew Your License ",
+                        type: 'info',
 
-                        swal({
-                            title: "Your license expires in " + this.leftDays + " days",
-                            text: "Please Renew Your License ",
-                            type: 'info',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
 
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK',
+                        onClose: function () {
 
-                            onClose: function () {
-
-                            }
-                        }).then(() => {
+                        }
+                    }).then(() => {
 
 
-                        }).catch(function () {
+                    }).catch(function () {
 
-                        });
+                    });
 
-                        this.licenceWarningDisplay = false;
-
-                    }
-
-                    return this.currentLicence;
-                }
-
-                else {
-                    console.log("invalid license")
-
-                    if(this.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
-                        swal({
-                            title: "Invalid License",
-                            text: "Please Validate Your License ",
-                            type: 'error',
-
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK',
-
-                            onClose: function () {
-
-                            }
-                        }).then(() => {
-                            window.location.href = "/#/serverSettings";
-
-                        }).catch(function () {
-
-                        });
-                    }
                     this.licenceWarningDisplay = false;
-                    return null;
-
 
                 }
 
+                return this.currentLicence;
             }
 
+            else {
+                console.log("invalid license")
+
+                if(this.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
+                    swal({
+                        title: "Invalid License",
+                        text: "Please Validate Your License ",
+                        type: 'error',
+
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+
+                        onClose: function () {
+
+                        }
+                    }).then(() => {
+                        window.location.href = "/#/serverSettings";
+
+                    }).catch(function () {
+
+                    });
+                }
+                this.licenceWarningDisplay = false;
+                return null;
+            }
 
         });
 

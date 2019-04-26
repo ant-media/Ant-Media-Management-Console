@@ -71,9 +71,9 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
         this.restService.isEnterpriseEdition().subscribe(data => {
             this.isEnterpriseEdition = data["success"];
-            this.getServerSettings();
 
         });
+        this.getServerSettings();
 
         this.getLogLevel();
 
@@ -177,7 +177,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
                     console.log(data);
 
                 }
-                if(this.currentLicence.licenceId == null)  {
+                if(this.currentLicence == null || this.currentLicence.licenceId == null)  {
 
                     this.licenseStatus = "Invalid";
                     console.log("invalid license");
@@ -204,38 +204,41 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
                     }
 
                 }
-
-                this.authService.licenceWarningDisplay = false;
-
-                let end =this.currentLicence.endDate;
-
-
-                this.leftDays = this.differenceInDays(new Date().getTime(), new Date(end).getTime());
-
-                console.log("Your license expires in " + this.leftDays + " days");
-
-                if (this.leftDays <16 && this.authService.licenceWarningDisplay){
-
-                    swal({
-                        title: "Your license expires in " + this.leftDays + " days",
-                        text: "Please Renew Your License ",
-                        type: 'info',
-
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK',
-
-                        onClose: function () {
-
-                        }
-                    }).then(() => {
-
-
-                    }).catch(function () {
-
-                    });
-
+                else{
                     this.authService.licenceWarningDisplay = false;
 
+                    let end =this.currentLicence.endDate;
+
+
+                    this.leftDays = this.differenceInDays(new Date().getTime(), new Date(end).getTime());
+
+
+                    if (this.leftDays <16 && this.authService.licenceWarningDisplay){
+
+                        console.log("Your license expires in " + this.leftDays + " days");
+
+
+                        swal({
+                            title: "Your license expires in " + this.leftDays + " days",
+                            text: "Please Renew Your License ",
+                            type: 'info',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+
+                            onClose: function () {
+
+                            }
+                        }).then(() => {
+
+
+                        }).catch(function () {
+
+                        });
+
+                        this.authService.licenceWarningDisplay = false;
+
+                    }
                 }
             });
 

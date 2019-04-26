@@ -8,7 +8,6 @@ import 'rxjs/add/operator/toPromise';
 import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Endpoint} from "../app.page/app.definitions";
 
-
 export class User {
 
     public newPassword: string;
@@ -238,7 +237,7 @@ export class RestService {
     }
 
     public getLicenseStatus(licenceKey : string): Observable<Object> {
-        return  this.http.get(REST_SERVICE_ROOT + '/getLicenceStatus/'+ licenceKey);
+        return  this.http.get(REST_SERVICE_ROOT + '/getLicenceStatus/?key='+ licenceKey);
     }
 
     public getLiveClientsSize(): Observable<Object> {
@@ -248,7 +247,6 @@ export class RestService {
     public getSystemMemoryInfo(): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + '/getSystemMemoryInfo');
     }
-
 
     public getFileSystemInfo(): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + '/getFileSystemInfo');
@@ -301,7 +299,6 @@ export class RestService {
     public getTotalBroadcastNumber(appName: string): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/broadcast/getTotalBroadcastNumber', {});
     }
-
 
     public filterAppLiveStreams(appName:string, offset:Number, size:Number,type:String): Observable<Object>  {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/broadcast/filterList/'+offset+"/"+size+"/"+type,{});
@@ -388,7 +385,6 @@ export class RestService {
 
         return this.http.post(url, stream);
     }
-
 
     public  autoDiscover(appName: string): Observable<any> {
 
