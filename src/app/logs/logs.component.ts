@@ -22,9 +22,15 @@ export class LogsComponent implements OnInit {
     public textConsoleLog : String = "ConsoleLog";
     public textErrorLog : String = "ErrorLog";
 
+    public serverLogType : string = "";
+    public errorLogType : string = "error";
+
+    public timerId:any;
+
 
     ngOnInit() {
     }
+
     ngAfterViewInit() {
         this.getConsoleLogFile();
     }
@@ -34,9 +40,9 @@ export class LogsComponent implements OnInit {
 
     getConsoleLogFile (): void{
 
-        this.restService.getConsoleLogFile().subscribe(data => {
+        this.restService.getLogFile(this.serverLogType).subscribe(data => {
 
-            this.logFileText = data;
+            this.logFileText = data["logContent"];
 
         });
 
@@ -47,9 +53,9 @@ export class LogsComponent implements OnInit {
 
         if(event == this.textConsoleLog) {
 
-            this.restService.getConsoleLogFile().subscribe(data => {
+            this.restService.getLogFile(this.serverLogType).subscribe(data => {
 
-                this.logFileText = data;
+                this.logFileText = data["logContent"];
 
             });
 
@@ -57,9 +63,9 @@ export class LogsComponent implements OnInit {
 
         if(event == this.textErrorLog){
 
-            this.restService.getErrorLogFile().subscribe(data => {
+            this.restService.getLogFile(this.errorLogType).subscribe(data => {
 
-                this.logFileText = data;
+                this.logFileText = data["logContent"];
 
             });
 
