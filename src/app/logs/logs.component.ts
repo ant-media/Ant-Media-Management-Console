@@ -25,9 +25,6 @@ export class LogsComponent implements OnInit {
     public serverLogType : string = "";
     public errorLogType : string = "error";
 
-    public timerId:any;
-
-
     ngOnInit() {
     }
 

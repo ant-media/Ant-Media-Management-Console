@@ -138,58 +138,49 @@
             </a>
         </li>
 
-        <li *ngIf="isNotMobileMenu()">
-            <a data-toggle="collapse" href="#UserAccount">
-                <i class="ti-user"></i> <p>
-                <ng-container i18n="@@myAccountMenuItem">My Account</ng-container>
-                <b class="caret"></b>
-            </p>
-            </a>
-            <div id="UserAccount" class="collapse">
-                <ul class="nav">
-                    <li>
-                        <a routerLink="/pages/changepass" routerLinkActive="active">
-                            <i class="ti-angle-double-right"></i>
-                            <ng-container i18n="@@changePassword">Change Password</ng-container>
-                        </a>
 
-                    </li>
-                    <li class="text-left">
-                        <a routerLink="/pages/login" routerLinkActive="active">
-
-                            <i class="ti-angle-double-right"></i>
-                            <ng-container i18n="@@logout">Logout</ng-container>
-
-                        </a>
-                    </li>
-                </ul>
-
-
-            </div>
-
-
-
-        </li>
-
-
-
-
-
-        <div class="logo">
-
-        </div>
         <li routerLinkActive="active">
             <a routerLink="/serverSettings">
                 <i class="ti-settings"></i>
-                <p i18n="@@dashboardMenuItem">Server Settings</p>
+                <p i18n="@@dashboardMenuItem">Settings</p>
             </a>
         </li>
+
         <li routerLinkActive="active">
             <a routerLink="/logs">
                 <i class="ti-write"></i>
                 <p i18n="@@dashboardMenuItem">Logs</p>
             </a>
         </li>
+
+
+        <li *ngIf="isNotMobileMenu()">
+                <a data-toggle="collapse" href="#UserAccount">
+                    <i class="ti-user"></i> <p>
+                    <ng-container i18n="@@myAccountMenuItem">My Account</ng-container>
+                    <b class="caret"></b>
+                </p>
+                </a>
+                <div id="UserAccount" class="collapse">
+                    <ul class="nav">
+                        <li>
+                            <a routerLink="/pages/changepass" routerLinkActive="active">
+                                <i class="ti-angle-double-right"></i>
+                                <ng-container i18n="@@changePassword">Change Password</ng-container>
+                            </a>
+
+                        </li>
+                        <li class="text-left">
+                            <a routerLink="/pages/login" routerLinkActive="active">
+
+                                <i class="ti-angle-double-right"></i>
+                                <ng-container i18n="@@logout">Logout</ng-container>
+
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
     </ul>
 
