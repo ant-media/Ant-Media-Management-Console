@@ -52,7 +52,12 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     public displayWarning = true;
     public leftDays : number;
     public isEnterpriseEdition = false;
-    public currentLogLevel : string;
+    public currentLogLevel: string;
+    public logLevelDebug : string =  "DEBUG";
+    public logLevelInfo : string= "INFO";
+    public logLevelWarn : string = "WARN";
+    public logLevelError : string = "ERROR";
+    public logLevelOff : string = "OFF";
 
 
 
@@ -101,20 +106,20 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
     logLevelChanged(event:any){
 
-        if(event == "DEBUG") {
-            this.currentLogLevel = "DEBUG";
+        if(event == this.logLevelDebug) {
+            this.currentLogLevel = this.logLevelDebug;
         }
-        if(event == "INFO") {
-            this.currentLogLevel = "INFO";
+        if(event == this.logLevelInfo) {
+            this.currentLogLevel = this.logLevelInfo;
         }
-        if(event == "WARN") {
-            this.currentLogLevel = "WARN";
+        if(event == this.logLevelWarn) {
+            this.currentLogLevel = this.logLevelWarn;
         }
-        if(event == "ERROR") {
-            this.currentLogLevel = "ERROR";
+        if(event == this.logLevelError) {
+            this.currentLogLevel = this.logLevelError;
         }
-        if(event == "OFF") {
-            this.currentLogLevel = "OFF";
+        if(event == this.logLevelOff) {
+            this.currentLogLevel = this.logLevelOff;
         }
 
 
