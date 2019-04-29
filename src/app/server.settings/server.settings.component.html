@@ -107,11 +107,11 @@
 
                                                 <select  type="text"  [name]="'resolutionHeight'" (ngModelChange)="logLevelChanged($event)" [(ngModel)]="currentLogLevel"
                                                          class="dropdown-toggle form-control" required>
-                                                    <option value="DEBUG">DEBUG</option>
-                                                    <option value="INFO">INFO</option>
-                                                    <option value="WARN">WARN</option>
-                                                    <option value="ERROR">ERROR</option>
-                                                    <option value="OFF">OFF</option>
+                                                    <option value="{{logLevelDebug}}" >{{logLevelDebug}}</option>
+                                                    <option value="{{logLevelInfo}}">{{logLevelInfo}}</option>
+                                                    <option value="{{logLevelWarn}}">{{logLevelWarn}}</option>
+                                                    <option value="{{logLevelError}}">{{logLevelError}}</option>
+                                                    <option value="{{logLevelOff}}">{{logLevelOff}}</option>
                                                 </select>
 
                                             </div>

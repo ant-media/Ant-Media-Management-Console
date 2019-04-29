@@ -8,6 +8,7 @@ declare var Chartist: any;
 
 
 @Component({
+    moduleId: module.id,
     selector: 'logs-cmp',
     templateUrl: './logs.component.html'
 })
@@ -22,7 +23,7 @@ export class LogsComponent implements OnInit {
     public textConsoleLog : String = "ConsoleLog";
     public textErrorLog : String = "ErrorLog";
 
-    public serverLogType : string = "";
+    public serverLogType : string = "server";
     public errorLogType : string = "error";
 
     ngOnInit() {

@@ -126,6 +126,9 @@ export class NavbarComponent implements OnInit{
                 if (first_child == "serverSettings") {
                     return "Server Settings";
                 }
+                if (first_child == "logs") {
+                    return "Log Settings";
+                }
                 /*
                 var children_from_url = titlee.split("/")[1];
                 
