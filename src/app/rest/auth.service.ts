@@ -169,76 +169,75 @@ export class AuthService implements CanActivate {
     getLicenceStatus (key: string) : any {
 
         this.currentLicence = null;
+        if(this.isEnterpriseEdition) {
+            this.restService.getLicenseStatus(key).subscribe(data => {
 
-        this.restService.getLicenseStatus(key).subscribe(data => {
+                this.currentLicence = <Licence>data;
+                console.log(data);
+                //    console.log("end date: " + this.currentLicence.endDate);
+                if (this.currentLicence != null && this.currentLicence.licenceId != null) {
 
-            this.currentLicence = <Licence>data;
-            console.log(data);
-            //    console.log("end date: " + this.currentLicence.endDate);
-            if(this.currentLicence != null  && this.currentLicence.licenceId != null){
-
-                let end =this.currentLicence.endDate;
-
-
-                this.leftDays = this.differenceInDays(new Date().getTime(), new Date(end).getTime());
+                    let end = this.currentLicence.endDate;
 
 
-                if (this.leftDays < 16 && this.licenceWarningDisplay){
-
-                    console.log("Your license expires in " + this.leftDays + " days");
-
-                    swal({
-                        title: "Your license expires in " + this.leftDays + " days",
-                        text: "Please Renew Your License ",
-                        type: 'info',
-
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK',
-
-                        onClose: function () {
-
-                        }
-                    }).then(() => {
+                    this.leftDays = this.differenceInDays(new Date().getTime(), new Date(end).getTime());
 
 
-                    }).catch(function () {
+                    if (this.leftDays < 16 && this.licenceWarningDisplay) {
 
-                    });
+                        console.log("Your license expires in " + this.leftDays + " days");
 
+                        swal({
+                            title: "Your license expires in " + this.leftDays + " days",
+                            text: "Please Renew Your License ",
+                            type: 'info',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+
+                            onClose: function () {
+
+                            }
+                        }).then(() => {
+
+
+                        }).catch(function () {
+
+                        });
+
+                        this.licenceWarningDisplay = false;
+
+                    }
+
+                    return this.currentLicence;
+                } else {
+                    console.log("invalid license")
+
+                    if (this.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
+                        swal({
+                            title: "Invalid License",
+                            text: "Please Validate Your License ",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+
+                            onClose: function () {
+
+                            }
+                        }).then(() => {
+                            window.location.href = "/#/serverSettings";
+
+                        }).catch(function () {
+
+                        });
+                    }
                     this.licenceWarningDisplay = false;
-
+                    return null;
                 }
 
-                return this.currentLicence;
-            }
-
-            else {
-                console.log("invalid license")
-
-                if(this.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
-                    swal({
-                        title: "Invalid License",
-                        text: "Please Validate Your License ",
-                        type: 'error',
-
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK',
-
-                        onClose: function () {
-
-                        }
-                    }).then(() => {
-                        window.location.href = "/#/serverSettings";
-
-                    }).catch(function () {
-
-                    });
-                }
-                this.licenceWarningDisplay = false;
-                return null;
-            }
-
-        });
+            });
+        }
 
     }
 

@@ -64,38 +64,31 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     constructor(private http: HttpClient, private route: ActivatedRoute,
                 private restService: RestService,
                 public router: Router,private dataService: DataService, private authService: AuthService,) {
-
-
-
     }
-
 
     ngOnInit(){
 
-        this.serverSettings = new ServerSettings(null,"key", false);
+        this.serverSettings = new ServerSettings(null,null, false);
 
         this.restService.isEnterpriseEdition().subscribe(data => {
             this.isEnterpriseEdition = data["success"];
 
         });
-        this.getServerSettings();
 
         this.getLogLevel();
 
     }
 
     ngAfterViewInit() {
+        this.getServerSettings();
 
     }
 
     ngOnDestroy() {
 
-
     }
 
     public getLogLevel(){
-
-
 
         this.restService.getLogLevel().subscribe(data => {
 
@@ -162,25 +155,20 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
     }
 
-
     public getLicenseStatus(){
 
         this.licenseStatusReceiving = true;
 
-        if(this.authService.isEnterpriseEdition){
+        if(this.isEnterpriseEdition){
             this.restService.getLicenseStatus(this.serverSettings.licenceKey ).subscribe(data => {
                 this.licenseStatusReceiving = false;
                 if (data != null) {
-                    this.licenseStatus = "Valid";
                     this.currentLicence  = <Licence>data;
-                    console.log(data);
-
                 }
                 if(this.currentLicence == null || this.currentLicence.licenceId == null)  {
 
                     this.licenseStatus = "Invalid";
                     console.log("invalid license");
-
 
                     if (this.authService.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
 
@@ -204,18 +192,18 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
                 }
                 else{
+
+                    this.licenseStatus = "Valid";
+
                     this.authService.licenceWarningDisplay = false;
 
                     let end =this.currentLicence.endDate;
 
-
                     this.leftDays = this.differenceInDays(new Date().getTime(), new Date(end).getTime());
-
 
                     if (this.leftDays <16 && this.authService.licenceWarningDisplay){
 
                         console.log("Your license expires in " + this.leftDays + " days");
-
 
                         swal({
                             title: "Your license expires in " + this.leftDays + " days",
@@ -230,7 +218,6 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
                             }
                         }).then(() => {
 
-
                         }).catch(function () {
 
                         });
@@ -244,7 +231,6 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
         }
 
         return this.currentLicence;
-
     }
 
     changeServerSettings(isValid : boolean): void {
@@ -290,28 +276,22 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
             }
 
         });
-
-
     }
 
     getServerSettings(): void {
         this.restService.getServerSettings().subscribe(data => {
             this.serverSettings = <ServerSettings>data;
-            console.log(data);
+            this.settingsReceived = true;
 
             if(!this.serverSettings.buildForMarket){
                 this.getLicenseStatus()
             }
 
         });
-        this.settingsReceived = true;
-
-
     }
 
     differenceInDays(firstDate: number, secondDate: number) {
         return Math.round((secondDate-firstDate)/(1000*60*60*24));
     }
-
 
 }
