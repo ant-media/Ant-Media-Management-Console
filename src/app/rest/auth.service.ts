@@ -173,15 +173,11 @@ export class AuthService implements CanActivate {
             this.restService.getLicenseStatus(key).subscribe(data => {
 
                 this.currentLicence = <Licence>data;
-                console.log(data);
-                //    console.log("end date: " + this.currentLicence.endDate);
                 if (this.currentLicence != null && this.currentLicence.licenceId != null) {
 
                     let end = this.currentLicence.endDate;
 
-
                     this.leftDays = this.differenceInDays(new Date().getTime(), new Date(end).getTime());
-
 
                     if (this.leftDays < 16 && this.licenceWarningDisplay) {
 
