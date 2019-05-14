@@ -240,6 +240,10 @@ export class RestService {
         return  this.http.get(REST_SERVICE_ROOT + '/getLicenceStatus/?key='+ licenceKey);
     }
 
+    public getLastLicenseStatus(): Observable<Object> {
+        return  this.http.get(REST_SERVICE_ROOT + '/getLastLicenceStatus');
+    }
+
     public getLiveClientsSize(): Observable<Object> {
         return  this.http.get(REST_SERVICE_ROOT + '/getLiveClientsSize');
     }
@@ -260,8 +264,8 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + '/getApplicationsInfo');
     }
 
-    public getLogFile(logType:string): Observable<Object>{
-        return this.http.get(REST_SERVICE_ROOT + '/getLogFile/-1/10000/?logType='+ logType);
+    public getLogFile(offset:number, logType:string): Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + '/getLogFile/' + offset +'/10000/?logType='+ logType);
     }
 
     public getLogLevel(): Observable<Object>{
