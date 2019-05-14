@@ -155,6 +155,16 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
     }
 
+    public getLastLicenseStatus() {
+        this.licenseStatusReceiving = true;
+        if (this.isEnterpriseEdition) {
+            this.restService.getLastLicenseStatus().subscribe(data => {
+                this.licenseStatusReceiving = false;
+                this.evaluateLicenseStatus(data);
+            });
+        }
+    }
+
     public getLicenseStatus(){
 
         this.licenseStatusReceiving = true;
@@ -162,75 +172,79 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
         if(this.isEnterpriseEdition){
             this.restService.getLicenseStatus(this.serverSettings.licenceKey ).subscribe(data => {
                 this.licenseStatusReceiving = false;
-                if (data != null) {
-                    this.currentLicence  = <Licence>data;
-                }
-                if(this.currentLicence == null || this.currentLicence.licenceId == null)  {
-
-                    this.licenseStatus = "Invalid";
-                    console.log("invalid license");
-
-                    if (this.authService.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
-
-                        swal({
-                            title: "Invalid License",
-                            text: "Please Validate Your License ",
-                            type: 'error',
-
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK',
-
-                            onClose: function () {
-
-                            }
-                        }).then(() => {
-
-                        }).catch(function () {
-
-                        });
-                    }
-
-                }
-                else{
-
-                    this.licenseStatus = "Valid";
-
-                    this.authService.licenceWarningDisplay = false;
-
-                    let end =this.currentLicence.endDate;
-
-                    this.leftDays = this.differenceInDays(new Date().getTime(), new Date(end).getTime());
-
-                    if (this.leftDays <16 && this.authService.licenceWarningDisplay){
-
-                        console.log("Your license expires in " + this.leftDays + " days");
-
-                        swal({
-                            title: "Your license expires in " + this.leftDays + " days",
-                            text: "Please Renew Your License ",
-                            type: 'info',
-
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK',
-
-                            onClose: function () {
-
-                            }
-                        }).then(() => {
-
-                        }).catch(function () {
-
-                        });
-
-                        this.authService.licenceWarningDisplay = false;
-
-                    }
-                }
+                this.evaluateLicenseStatus(data);
             });
 
         }
 
         return this.currentLicence;
+    }
+
+    public evaluateLicenseStatus(data:Object) {
+        if (data != null) {
+            this.currentLicence  = <Licence>data;
+        }
+        if(this.currentLicence == null || this.currentLicence.licenceId == null)  {
+
+            this.licenseStatus = "Invalid";
+            console.log("invalid license");
+
+            if (this.authService.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
+
+                swal({
+                    title: "Invalid License",
+                    text: "Please Validate Your License ",
+                    type: 'error',
+
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+
+                    onClose: function () {
+
+                    }
+                }).then(() => {
+
+                }).catch(function () {
+
+                });
+            }
+
+        }
+        else{
+
+            this.licenseStatus = "Valid";
+
+            this.authService.licenceWarningDisplay = false;
+
+            let end =this.currentLicence.endDate;
+
+            this.leftDays = this.differenceInDays(new Date().getTime(), new Date(end).getTime());
+
+            if (this.leftDays <16 && this.authService.licenceWarningDisplay){
+
+                console.log("Your license expires in " + this.leftDays + " days");
+
+                swal({
+                    title: "Your license expires in " + this.leftDays + " days",
+                    text: "Please Renew Your License ",
+                    type: 'info',
+
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+
+                    onClose: function () {
+
+                    }
+                }).then(() => {
+
+                }).catch(function () {
+
+                });
+
+                this.authService.licenceWarningDisplay = false;
+
+            }
+        }
     }
 
     changeServerSettings(isValid : boolean): void {
@@ -284,7 +298,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
             this.settingsReceived = true;
 
             if(!this.serverSettings.buildForMarket){
-                this.getLicenseStatus()
+                this.getLastLicenseStatus()
             }
 
         });
