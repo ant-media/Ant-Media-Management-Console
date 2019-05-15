@@ -16,17 +16,29 @@ declare var Chartist: any;
 export class LogsComponent implements OnInit {
 
 
-    public logFileText: any;
+    public logFileText: string;
 
     constructor(private restService:RestService, private router:Router) { }
 
-    public textConsoleLog : String = "ConsoleLog";
-    public textErrorLog : String = "ErrorLog";
+    public textConsoleLog : string = "ConsoleLog";
+    public textErrorLog : string = "ErrorLog";
 
     public serverLogType : string = "server";
     public errorLogType : string = "error";
 
+    public activeLogType: string;
+
+    public logFileOffset: number = -1;
+
+    public timerId: any;
+
     ngOnInit() {
+        //make activeLogType serverLogType by default 
+        this.activeLogType = this.serverLogType;
+
+        this.timerId = window.setInterval(() => {
+            this.getConsoleLogFile();
+        }, 10000);
     }
 
     ngAfterViewInit() {
@@ -34,14 +46,22 @@ export class LogsComponent implements OnInit {
     }
 
     ngOnDestroy() {
+        clearInterval(this.timerId);
     }
 
     getConsoleLogFile (): void{
 
-        this.restService.getLogFile(this.serverLogType).subscribe(data => {
-
-            this.logFileText = data["logContent"];
-
+        this.restService.getLogFile(this.logFileOffset, this.activeLogType).subscribe(data => {
+            this.logFileText += data["logContent"];
+            if (this.logFileOffset == -1) {
+                //this mean end of file is requested
+                if (data["logFileSize"] > 0) {
+                    this.logFileOffset = data["logFileSize"];
+                }
+            }
+            else {
+                this.logFileOffset +=  data["logContentSize"];
+            }
         });
 
     }
@@ -49,27 +69,15 @@ export class LogsComponent implements OnInit {
 
     logChanged(event:any){
 
+        this.logFileOffset = -1;
+        this.logFileText = "";
         if(event == this.textConsoleLog) {
-
-            this.restService.getLogFile(this.serverLogType).subscribe(data => {
-
-                this.logFileText = data["logContent"];
-
-            });
-
+            this.activeLogType = this.serverLogType;
         }
-
         if(event == this.textErrorLog){
-
-            this.restService.getLogFile(this.errorLogType).subscribe(data => {
-
-                this.logFileText = data["logContent"];
-
-            });
-
+            this.activeLogType = this.errorLogType;  
         }
-
-
+        this.getConsoleLogFile();
     }
 
 
