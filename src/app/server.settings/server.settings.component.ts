@@ -70,18 +70,15 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
         this.serverSettings = new ServerSettings(null,null, false);
 
-        this.restService.isEnterpriseEdition().subscribe(data => {
-            this.isEnterpriseEdition = data["success"];
-
-        });
-
         this.getLogLevel();
 
     }
 
     ngAfterViewInit() {
-        this.getServerSettings();
-
+        this.restService.isEnterpriseEdition().subscribe(data => {
+            this.isEnterpriseEdition = data["success"];
+            this.getServerSettings();
+        });
     }
 
     ngOnDestroy() {
