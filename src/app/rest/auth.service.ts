@@ -52,14 +52,12 @@ export class AuthService implements CanActivate {
 
     }
 
-    test(): string {
-        return 'working';
-    }
-
     initLicenseCheck(){
         //check first after 4 seconds then each 1 minute
 
         this.source = timer(4000, 60000);
+        //having 4 seconds delay above lets the isEnterpriseEdition initialized
+        //if you remove this delay, it may cause problem
         this.licenceSubscription= this.source.subscribe(val => {
                 if (this.isAuthenticated) {
                     if (this.serverSettings != null && this.isEnterpriseEdition) {
@@ -68,10 +66,8 @@ export class AuthService implements CanActivate {
                         this.getServerSettings();
                     }
                 }
-
             }
         );
-
     }
 
     login(email: string, password: string): Observable<Object> {
@@ -152,17 +148,12 @@ export class AuthService implements CanActivate {
 
     }
 
-    getServerSettings (){
-
+    getServerSettings ()
+    {
         this.restService.getServerSettings().subscribe(data => {
             this.serverSettings = <ServerSettings>data;
-
-            console.log(data);
-
             this.getLicenceStatus(this.serverSettings.licenceKey)
-
         });
-
     }
 
 

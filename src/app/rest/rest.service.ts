@@ -57,6 +57,12 @@ export class AuthInterceptor implements HttpInterceptor{
 
 @Injectable()
 export class RestService {
+
+    /**
+     * Cache server response
+     */
+    isEnterpriseObject:Object = null;
+
     constructor(private http: HttpClient, private router: Router)
     {
         HTTP_SERVER_ROOT = "//" + location.hostname + ":" + location.port + "/";
@@ -152,8 +158,23 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/broadcast/revokeSocialNetwork/'+serviceName, {});
     }
 
-    public isEnterpriseEdition(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/isEnterpriseEdition");
+    public isEnterpriseEdition(): Observable<Object> {    
+            
+        return new Observable(observer => 
+        {
+            if (this.isEnterpriseObject == null) 
+            {
+                this.http.get(REST_SERVICE_ROOT + "/isEnterpriseEdition").subscribe(data => {
+                  //cache value
+                  this.isEnterpriseObject = data;
+                  observer.next(this.isEnterpriseObject);
+                });
+            }
+            else {
+                //use the cached value 
+                observer.next(this.isEnterpriseObject);
+            }
+        });
     }
 
     public handleError(error: Response) {
