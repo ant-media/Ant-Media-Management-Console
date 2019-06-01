@@ -1,0 +1,184 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "ant-media-server-management-console": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "tsConfig": "src/tsconfig.app.json",
+            "polyfills": "src/polyfills.ts",
+            "assets": [
+              "src/assets",
+              "src/favicon.ico"
+            ],
+            "styles": [
+              "src/styles.css",
+              "node_modules/flowplayer/dist/skin/skin.css",
+              "src/assets/css/ViewModeSwitch/component.css",
+              "src/assets/css/ViewModeSwitch/default.css"
+            ],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/bootstrap/dist/js/bootstrap.js",
+              "node_modules/moment/moment.js",
+              "node_modules/chartist/dist/chartist.js",
+              "node_modules/chartist-plugin-legend/chartist-plugin-legend.js",
+              "node_modules/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js",
+              "node_modules/bootstrap-notify/bootstrap-notify.js",
+              "node_modules/easy-pie-chart/dist/jquery.easypiechart.js",
+              "node_modules/fullcalendar/dist/fullcalendar.js",
+              "src/assets/js/perfect-scrollbar.min.js",
+              "src/assets/js/jquery-jvectormap.js",
+              "node_modules/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js",
+              "node_modules/nouislider/distribute/nouislider.min.js",
+              "node_modules/datatables.net/js/jquery.dataTables.js",
+              "node_modules/datatables.net-bs/js/dataTables.bootstrap.js",
+              "node_modules/datatables.net-responsive/js/dataTables.responsive.js",
+              "node_modules/bootstrap-select/dist/js/bootstrap-select.js",
+              "node_modules/bootstrap-switch/dist/js/bootstrap-switch.js",
+              "node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.js",
+              "node_modules/jasny-bootstrap/dist/js/jasny-bootstrap.min.js",
+              "src/assets/js/sweetalert2.js",
+              "src/assets/js/ViewModeSwitch/cbpViewModeSwitch.js",
+              "src/assets/js/ViewModeSwitch/classie.js",
+              "src/assets/js/ViewModeSwitch/modernizrcustom.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ant-media-server-management-console:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ant-media-server-management-console:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ant-media-server-management-console:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "karmaConfig": "./karma.conf.js",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.spec.json",
+            "scripts": [
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/bootstrap/dist/js/bootstrap.js",
+              "node_modules/moment/moment.js",
+              "node_modules/chartist/dist/chartist.js",
+              "node_modules/chartist-plugin-legend/chartist-plugin-legend.js",
+              "node_modules/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js",
+              "node_modules/bootstrap-notify/bootstrap-notify.js",
+              "node_modules/easy-pie-chart/dist/jquery.easypiechart.js",
+              "node_modules/fullcalendar/dist/fullcalendar.js",
+              "src/assets/js/perfect-scrollbar.min.js",
+              "src/assets/js/jquery-jvectormap.js",
+              "node_modules/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js",
+              "node_modules/nouislider/distribute/nouislider.min.js",
+              "node_modules/datatables.net/js/jquery.dataTables.js",
+              "node_modules/datatables.net-bs/js/dataTables.bootstrap.js",
+              "node_modules/datatables.net-responsive/js/dataTables.responsive.js",
+              "node_modules/bootstrap-select/dist/js/bootstrap-select.js",
+              "node_modules/bootstrap-switch/dist/js/bootstrap-switch.js",
+              "node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.js",
+              "node_modules/jasny-bootstrap/dist/js/jasny-bootstrap.min.js",
+              "src/assets/js/sweetalert2.js",
+              "src/assets/js/ViewModeSwitch/cbpViewModeSwitch.js",
+              "src/assets/js/ViewModeSwitch/classie.js",
+              "src/assets/js/ViewModeSwitch/modernizrcustom.js"
+            ],
+            "styles": [
+              "src/styles.css",
+              "node_modules/flowplayer/dist/skin/skin.css",
+              "src/assets/css/ViewModeSwitch/component.css",
+              "src/assets/css/ViewModeSwitch/default.css"
+            ],
+            "assets": [
+              "src/assets",
+              "src/favicon.ico"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "src/tsconfig.app.json",
+              "src/tsconfig.spec.json"
+            ],
+            "exclude": []
+          }
+        }
+      }
+    },
+    "ant-media-server-management-console-e2e": {
+      "root": "e2e",
+      "sourceRoot": "e2e",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "./protractor.conf.js",
+            "devServerTarget": "ant-media-server-management-console:serve"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "e2e/tsconfig.e2e.json"
+            ],
+            "exclude": []
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "ant-media-server-management-console",
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "app",
+      "styleext": "css"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    }
+  }
+}

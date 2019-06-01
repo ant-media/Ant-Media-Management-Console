@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {CanActivate, Router} from '@angular/router';
 import {RestService, User} from './rest.service';
 import {Licence} from "../server.settings/server.settings.component";
