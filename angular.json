@@ -22,7 +22,6 @@
             ],
             "styles": [
               "src/styles.css",
-              "node_modules/flowplayer/dist/skin/skin.css",
               "src/assets/css/ViewModeSwitch/component.css",
               "src/assets/css/ViewModeSwitch/default.css"
             ],
@@ -125,7 +124,6 @@
             ],
             "styles": [
               "src/styles.css",
-              "node_modules/flowplayer/dist/skin/skin.css",
               "src/assets/css/ViewModeSwitch/component.css",
               "src/assets/css/ViewModeSwitch/default.css"
             ],
