@@ -49,9 +49,7 @@ const ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID = -1;
 const ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT = -2;
 
 declare function require(name: string);
-var flowplayer = require('flowplayer');
-var engine = require('flowplayer-hlsjs');
-engine(flowplayer);
+
 
 const LIVE_STREAMING_NOT_ENABLED = "LIVE_STREAMING_NOT_ENABLED";
 const AUTHENTICATION_TIMEOUT = "AUTHENTICATION_TIMEOUT";
@@ -204,7 +202,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         new HLSListType('Event', 'event'),
     ];
 
-    public displayedColumnsStreams = ['name', 'streamId' , 'status', 'viewerCount', 'social_media', 'actions'];
+    public displayedColumnsStreams = ['name' , 'status', 'viewerCount', 'social_media', 'actions'];
     public displayedColumnsVod = ['name', 'type', 'date', 'actions'];
     public displayedColumnsUserVod = ['name', 'date', 'actions'];
 
@@ -237,7 +235,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     pageChange: EventEmitter<PageEvent>;
 
     @ViewChild(MatSort) sort: MatSort;
-
 
     constructor(private route: ActivatedRoute,
                 private restService: RestService,
@@ -881,30 +878,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-    checkAndPlayLive(videoUrl: string): void {
-        this.restService.getText(videoUrl).subscribe(data => {
-                console.log("loaded...");
-                $("#playerLoading").hide();
-                flowplayer('#player', {
-                    autoplay: true,
-                    clip: {
-                        sources: [{
-                            type: 'application/x-mpegurl',
-                            src: videoUrl
-                        }]
-                    }
-                });
-
-            },
-            error => {
-                console.log("error...");
-                setTimeout(() => {
-                    this.checkAndPlayLive(videoUrl);
-                }, 5000);
-            });
-    }
-
-
     showDetectedObject(streamId: string): void {
         let dialogRef = this.dialog.open(DetectedObjectListDialog, {
             width: '500px',
@@ -993,19 +966,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
         }, 1500);
-    }
-
-    closeGridPlayers(): void {
-
-        var id;
-
-        for (var i in this.broadcastGridTableData.dataRows) {
-            id = this.broadcastGridTableData.dataRows[i]['streamId'];
-            var container = document.getElementById(id);
-            flowplayer(container).shutdown();
-            $("#" + id).html("").attr('class', +'');
-        }
-
     }
 
     downloadFile(vodName: string, type: string, vodId:string, streamId:string): void {
@@ -1522,6 +1482,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     newIPCamera(): void {
+        this.shareEndpoint = [];
         this.newLiveStreamActive = false;
         this.newIPCameraActive = true;
         this.newStreamSourceActive = false;
@@ -1686,15 +1647,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             confirmButtonText: 'OK'
                         }).then(() => {
 
-
                         }).catch(function () {
 
                         });
                     }
                 }
-
                 else{
-
                     console.log("no  camera error")
                 }
 

@@ -6,7 +6,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": [
-      "es2016"
+      "es2016",
+      "dom",
     ],
     "outDir": "../out-tsc/spec",
     "module": "commonjs",
@@ -15,10 +16,11 @@
     "types": [
       "jasmine",
       "node"
-    ]
+    ],
   },
   "files": [
-    "test.ts"
+    "test.ts",
+    "polyfills.ts"
   ],
   "include": [
     "**/*.spec.ts"

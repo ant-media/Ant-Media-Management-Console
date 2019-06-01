@@ -1,9 +1,17 @@
 language: node_js
-node_js: "8.10.0"
+node_js: "10.16.0"
 sudo: required
 cache:
   directories:
   - node_modules/
+
+addons:
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
+
 
 before_install:
   - npm install -g @angular/cli@6.0.5
@@ -12,6 +20,7 @@ install:
   - npm install
   
 script:
+  - npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
   - ng build --prod
 
 deploy:

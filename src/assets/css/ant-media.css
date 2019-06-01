@@ -91,28 +91,46 @@ select.selectpicker {
 
 @media (min-width: 768px){
     .form-horizontal .control-label {
-    text-align: left;
+        text-align: left;
     }
+    
+}
+
+@media(max-width: 768px) {
+    .mat-header-cell {
+        display: none;
     }
+
+    .mat-row { 
+        flex-direction: column;
+        align-items: start;
+      }
+    .mat-cell:first-of-type {
+        padding-left: 0px;
+    }
+}
 
 .mat-tooltip {
     font-size: 14px !important;
 }
 .stream-name-column{
-    flex: 0 0 20%!important;
-}
-.stream-id-column{
-    flex: 0 0 30%!important;
+    flex: 0 1 30%!important;
 }
 .status-column{
-    flex: 0 0 15%!important;
+    flex: 0 1 15% !important;
 }
 .viewer-column{
-    flex: 0 0 10%!important;
-}
+    flex: 0 1 20% !important;
+ }
 .social-column{
-    flex: 0 0 10%!important;
-}
+    flex: 0 1 15% !important;
+ }
 .action-column{
-    flex: 0 0 15%!important;
+    flex: 0 1 20% !important;
+    justify-content:flex-end;
 }
+.justify-flex-end {
+    justify-content:flex-end;
+}
+
+

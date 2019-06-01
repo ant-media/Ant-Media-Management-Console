@@ -37,11 +37,7 @@
 
 
                 <div class="tab-content text-center" id="my-tab-content">
-
-
                     <div class="tab-pane active" id="livestreams">
-
-
 
                                 <div>
 
@@ -49,26 +45,18 @@
                                         <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton" data-toggle="dropdown" role="button">New Live Stream
                                             <span class="caret"></span>
                                         </button>
-
                                         <ul class="dropdown-menu dropdown-menu-right">
-
                                             <li>
                                                 <a (click)="newLiveStream()" role="button">Live Stream</a>
                                             </li>
                                             <li>
                                                 <a (click)="newIPCamera()" role="button">IP Camera</a>
                                             </li>
-
-
                                             <li>
                                                 <a (click)="newStreamSource()" role="button">Stream Source</a>
                                             </li>
-
-
                                         </ul>
-
                                     </div>
-
                                     <br>
                                     <br>
                                 </div>
@@ -212,9 +200,6 @@
                                     </form>
                                 </div>
 
-
-
-
                                 <div class="card" *ngIf="newStreamSourceActive">
 
                                     <form method="post" #f="ngForm" validate (ngSubmit)="addStreamSource(f.valid)">
@@ -303,9 +288,7 @@
                                      *ngIf="broadcastTableData.dataRows.length>0">
 
                                     <div class="mat-header">
-
                                         <input (keyup)="applyFilter($event.target.value)" placeholder="Search">
-
                                     </div>
                                     <div>
                                         <button class="btn" *ngIf="isGridView" (click)="switchToListView()">
@@ -321,11 +304,9 @@
                                 <div id="broadcastTable" style="text-align: left;"
                                      *ngIf="!isGridView && broadcastTableData.dataRows.length>0">
 
-
                                     <div class="mat-container mat-elevation-z0">
 
                                         <mat-table [dataSource]="dataSource" matSort>
-
 
                                             <ng-container matColumnDef="name">
                                                 <mat-header-cell [ngClass]="'stream-name-column'" *matHeaderCellDef mat-sort-header> Stream Name </mat-header-cell>
@@ -347,23 +328,19 @@
                                                         </ng-container>
                                                     </ng-container>
 
-                                                    {{row.name}}
-                                                    <ng-container *ngIf="!row.name || row.name.length == 0">
-                                                        {{row.streamId}}
-                                                    </ng-container>
-
+                                                    <div style="padding-left: 12px;">
+                                                        {{row.name}}
+                                                        <ng-container *ngIf="!row.name || row.name.length == 0">
+                                                            [No Name]
+                                                        </ng-container>
+                                                        <div style="font-size: 10px">Stream Id: {{row.streamId}}</div>
+                                                    
+                                                    </div>
+                                                    
+                                                    
 
                                                 </mat-cell>
                                             </ng-container>
-
-                                            <ng-container matColumnDef="streamId">
-                                                <mat-header-cell  [ngClass]="'stream-id-column'" *matHeaderCellDef mat-sort-header> Stream ID </mat-header-cell>
-
-                                                <mat-cell [ngClass]="'stream-id-column'" *matCellDef="let row">
-                                                    {{row.streamId}}
-                                                </mat-cell>
-                                            </ng-container>
-
 
                                             <ng-container matColumnDef="status">
                                                 <mat-header-cell [ngClass]="'status-column'" *matHeaderCellDef mat-sort-header>Status </mat-header-cell>
@@ -434,15 +411,12 @@
                                                     </div>
                                                     <div *ngIf="row.rtmpViewerCount > 0">
                                                         <i class="ti-eye" style="color:#199826;font-size: 1.1em"> </i>
-                                                        RTMP :   {{row.rtmpViewerCount}}
+                                                        RTMP : {{row.rtmpViewerCount}}
                                                     </div>
 
                                                     <ng-container *ngIf="row.webRTCViewerCount == 0 &&row.hlsViewerCount == 0 &&row.rtmpViewerCount == 0 " >
                                                         No viewer
-
                                                     </ng-container>
-
-
                                                 </mat-cell>
 
                                             </ng-container>
@@ -482,9 +456,7 @@
                                                                 <i class="ti-control-play"></i>
                                                             </span>
                                                             <ng-container i18n="@@tablePlayButton"></ng-container>
-
                                                         </button>
-
 
                                                         <button *ngIf="row.status=='broadcasting' && appSettings.webRTCEnabled == false  && appSettings.hlsMuxingEnabled == false"
                                                                 data-toggle="tooltip" i18n-title matTooltip="Please enable HLS or WebRTC Live Streaming to watch streams."
@@ -492,10 +464,8 @@
                                                                 type="button">
                                                               <span class="btn-label">
                                                                 <i class="fa fa-info-circle "></i>
-
                                                                 </span>
                                                             <ng-container i18n="@@tablePlayButton"></ng-container>
-
                                                         </button>
 
 
@@ -509,7 +479,6 @@
                                                                 <i class="ti-stats-up"></i>
                                                             </span>
                                                             <ng-container i18n="@@tablePlayButton"></ng-container>
-
                                                         </button>
                                                         <!-- Edit Broadcast Button -->
                                                         <button *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
@@ -618,12 +587,9 @@
                                         >
                                         </mat-paginator>
                                     </div>
-
                                 </div>
 
-
                                 <div class="main">
-
 
                                     <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-list"
                                          *ngIf="broadcastTableData.dataRows.length>0 && isGridView">
@@ -790,14 +756,11 @@
 
 
                                 <div class=" text-right">
-
                                     <div>
                                         <button class="btn btn-fill btn-success" (click)="openVodUploadDialog()"
                                                 data-toggle="dropdown" role="button">Upload VoD
                                         </button>
-
                                     </div>
-
                                 </div>
 
                                 <div id="vodTable" style="text-align: left"
@@ -807,7 +770,6 @@
                                     <div class="mat-container mat-elevation-z0">
 
                                         <mat-table [dataSource]="dataSourceVod">
-
 
                                             <ng-container matColumnDef="name">
                                                 <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
@@ -845,9 +807,9 @@
                                             </ng-container>
 
                                             <ng-container matColumnDef="actions">
-                                                <mat-header-cell *matHeaderCellDef class="text-right"> Actions</mat-header-cell>
+                                                <mat-header-cell *matHeaderCellDef class="justify-flex-end"> Actions</mat-header-cell>
 
-                                                <mat-cell *matCellDef="let row" class="text-right">
+                                                <mat-cell *matCellDef="let row" class="justify-flex-end">
                                                     <button (click)="playVoD(row.vodName ,row.type,row.vodId, row.streamId, row.filePath)"
                                                             class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
                                                             type="button">
