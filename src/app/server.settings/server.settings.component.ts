@@ -152,9 +152,11 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
     }
 
-    public getLastLicenseStatus() {
-        this.licenseStatusReceiving = true;
-        if (this.isEnterpriseEdition) {
+    public getLastLicenseStatus() 
+    {
+        if (this.isEnterpriseEdition) 
+        {
+            this.licenseStatusReceiving = true;
             this.restService.getLastLicenseStatus().subscribe(data => {
                 this.licenseStatusReceiving = false;
                 this.evaluateLicenseStatus(data);
@@ -167,6 +169,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
         this.licenseStatusReceiving = true;
 
         if(this.isEnterpriseEdition){
+            this.serverSettings.licenceKey = this.serverSettings.licenceKey.trim();
             this.restService.getLicenseStatus(this.serverSettings.licenceKey ).subscribe(data => {
                 this.licenseStatusReceiving = false;
                 this.evaluateLicenseStatus(data);
