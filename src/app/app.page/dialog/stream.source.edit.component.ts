@@ -66,9 +66,6 @@ export class StreamSourceEditComponent {
             return;
         }
 
-        console.log(this.dialogRef.componentInstance.data.status + this.dialogRef.componentInstance.data.id + this.dialogRef.componentInstance.data.name + this.dialogRef.componentInstance.data.url + this.dialogRef.componentInstance.data.username);
-
-
         this.streamSource = new LiveBroadcast();
 
         this.streamSource.name = this.dialogRef.componentInstance.data.name;
@@ -78,6 +75,7 @@ export class StreamSourceEditComponent {
         this.streamSource.streamId = this.dialogRef.componentInstance.data.id;
         this.streamSource.status = this.dialogRef.componentInstance.data.status;
         this.streamSource.streamUrl=this.dialogRef.componentInstance.data.streamUrl;
+        this.streamSource.type = "streamSource";
 
         
         if (!this.restService.checkStreamName(this.streamSource.name)){
@@ -97,7 +95,7 @@ export class StreamSourceEditComponent {
 
         if(this.restService.checkStreamUrl(this.streamSource.streamUrl)){
 
-            this.restService.editCameraInfo(this.streamSource, this.dialogRef.componentInstance.data.appName, socialNetworks).subscribe(data => {
+            this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.streamSource, socialNetworks).subscribe(data => {
 
                 if (data["success"]) {
 
