@@ -66,12 +66,9 @@ export class WebRTCClientStatsComponent {
     }
 
     getWebRTCStatsTotal(appName:string, streamId:string) {
-        this.restService.getWebRTCStats(appName, streamId).subscribe(data =>
+        this.restService.getStats(appName, streamId).subscribe(data =>
         {
-            this.webrtcLenght = null;
-            for (var i in data) {
-                this.webrtcLenght++;
-            }
+            this.webrtcLenght = data["totalWebRTCWatchersCount"];   
         });
     }
 

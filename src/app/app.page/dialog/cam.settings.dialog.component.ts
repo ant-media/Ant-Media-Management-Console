@@ -62,9 +62,6 @@ export class CamSettingsDialogComponent {
             return;
         }
 
-        console.log(this.dialogRef.componentInstance.data.status + this.dialogRef.componentInstance.data.id + this.dialogRef.componentInstance.data.name + this.dialogRef.componentInstance.data.url + this.dialogRef.componentInstance.data.username);
-
-
         this.camera = new LiveBroadcast();
 
         this.camera.name = this.dialogRef.componentInstance.data.name;
@@ -74,7 +71,11 @@ export class CamSettingsDialogComponent {
         this.camera.streamId = this.dialogRef.componentInstance.data.id;
         this.camera.status = this.dialogRef.componentInstance.data.status;
         this.camera.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
+        
+        this.camera.type = "ipCamera";
         this.appName  = this.dialogRef.componentInstance.data.appName;
+
+        console.log("camera object type: " + this.camera.type);
 
         if (!this.restService.checkStreamName(this.camera.name)){
 
@@ -84,7 +85,7 @@ export class CamSettingsDialogComponent {
         this.loadingSettings = true;
 
         var socialNetworks = [];
-        this.restService.editCameraInfo(this.camera, this.dialogRef.componentInstance.data.appName, socialNetworks).subscribe(data => {
+        this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.camera, socialNetworks).subscribe(data => {
 
             if (data["success"]) {
 

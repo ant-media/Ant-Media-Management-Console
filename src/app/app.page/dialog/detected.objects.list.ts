@@ -76,7 +76,7 @@ export class DetectedObjectListDialog {
     getObjectDetectedTotal(appName:string, streamId:string) {
         this.restService.getObjectDetectedTotal(appName, streamId).subscribe(data =>
         {
-            this.detectedLenght = parseInt(data.toString());
+            this.detectedLenght = data["number"];
         });
     }
 

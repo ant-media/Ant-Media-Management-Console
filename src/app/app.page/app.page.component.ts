@@ -263,45 +263,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.timerId = null;
 
-        //  Init Bootstrap Select Picker
-        if ($(".selectpicker").length != 0) {
-            $(".selectpicker").selectpicker({
-                iconBase: "ti",
-                tickIcon: "ti-check"
-            });
-        }
-
-        $('.datepicker').datetimepicker({
-            format: 'YYYY-MM-DD', //use this format if you want the 12hours timpiecker with AM/PM toggle
-            icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-chevron-up",
-                down: "fa fa-chevron-down",
-                previous: 'fa fa-chevron-left',
-                next: 'fa fa-chevron-right',
-                today: 'fa fa-screenshot',
-                clear: 'fa fa-trash',
-                close: 'fa fa-remove'
-            }
-        });
-
-        var self = this;
-
-        this.zone.run(() => {
-
-
-            $('#selectBox').change(function () {
-
-                var val = $(this).val();
-                console.log(val);
-
-                self.filterAppLiveStreams(val);
-
-            });
-
-        });
-
         this.broadcastTableData = {
             dataRows: [],
         };
@@ -715,49 +676,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         return this.sanitizer.bypassSecurityTrustResourceUrl(oldURL);
     }
 
-
-    filterAppLiveStreams(type: String): void {
-
-        if (type == "displayAll") {
-            this.getAppLiveStreams(0, 50);
-        }
-
-        else {
-            this.restService.filterAppLiveStreams(this.appName, 0, 10, type).subscribe(data => {
-                //console.log(data);
-                this.broadcastTableData.dataRows = [];
-                console.log("type of data -> " + typeof data);
-
-                for (var i in data) {
-
-                    this.broadcastTableData.dataRows.push(data[i]);
-
-                }
-
-
-                if (this.isGridView) {
-                    setTimeout(() => {
-                        this.openGridPlayers(0, 4);
-                    }, 500);
-
-                }
-
-
-                setTimeout(function () {
-                    $('[data-toggle="tooltip"]').tooltip();
-                }, 500);
-
-
-            });
-        }
-
-    }
-
     getAppLiveStreamsNumber(): void {
         this.restService.getTotalBroadcastNumber(this.appName).subscribe(
             data => {
 
-                this.listLength = data;
+                this.listLength = data["number"];
             });
     }
 
@@ -770,7 +693,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         //this for getting full length of vod streams for paginations
 
         this.restService.getTotalVodNumber(this.appName).subscribe(data => {
-            this.vodLength = data;
+            this.vodLength = data["number"];
         });
 
 
@@ -805,77 +728,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return true;
         }
         return false;
-    }
-
-    importLiveStreams2Stalker(): void {
-        this.importingLiveStreams = true;
-        this.restService.importLiveStreams2Stalker(this.appName).subscribe(data => {
-            console.log(data);
-            this.importingLiveStreams = false;
-            var message = Locale.getLocaleInterface().streams_imported_successfully;
-            var type = "success";
-            var delay = 500;
-            var icon = "ti-save";
-            if (!data["success"]) {
-                icon = "ti-alert";
-                if (data["errorId"] == 404) {
-                    message = Locale.getLocaleInterface().missing_configuration_parameter_for_stalker;
-                }
-                else {
-                    message = Locale.getLocaleInterface().error_occured;
-                }
-                type = "warning";
-                delay = 1900;
-            }
-
-            $.notify({
-                icon: icon,
-                message: message
-            }, {
-                type: type,
-                delay: delay,
-                placement: {
-                    from: 'top',
-                    align: 'right'
-                }
-            });
-
-        });
-    }
-
-    importVoDStreams2Stalker(): void {
-        this.importingVoDStreams = true;
-        this.restService.importVoDStreams2Stalker(this.appName).subscribe(data => {
-            console.log(data);
-            this.importingVoDStreams = false;
-            var message = Locale.getLocaleInterface().streams_imported_successfully;
-            var type = "success";
-            var delay = 500;
-            var icon = "ti-save";
-            if (!data["success"]) {
-                icon = "ti-alert";
-                if (data["errorId"] == 404) {
-                    message = Locale.getLocaleInterface().missing_configuration_parameter_for_stalker;
-                }
-                else {
-                    message = Locale.getLocaleInterface().error_occured;
-                }
-                type = "warning";
-                delay = 1900;
-            }
-
-            $.notify({
-                icon: icon,
-                message: message
-            }, {
-                type: type,
-                delay: delay,
-                placement: {
-                    from: 'top',
-                    align: 'right'
-                }
-            });
-        });
     }
 
     showDetectedObject(streamId: string): void {
@@ -939,7 +791,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     openGridPlayers(index: number, size: number): void {
-        var id, name, srcFile, iframeSource;
+        var id;
 
 
         index = index * size;
@@ -1205,8 +1057,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.restService.deleteBroadcast(this.appName, streamId)
                 .subscribe(data => {
                     if (data["success"] == true) {
-
-                        this.restService.stopBroadcast(this.appName,streamId);
 
                         $.notify({
                             icon: "ti-save",
@@ -1522,7 +1372,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 socialNetworks.push(this.videoServiceEndpoints[index].id);
             }
         });
-        this.restService.addStreamSource(this.appName, this.liveBroadcast, socialNetworks.join(","))
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
@@ -1697,7 +1547,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
 
-        this.restService.addStreamSource(this.appName, this.liveBroadcast, socialNetworks.join(","))
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
@@ -2239,89 +2089,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             }
         });
-    }
-
-
-    filterVod() {
-
-        this.searchWarning = false;
-
-
-        if ($("#start").val()) {
-            this.requestedStartDate = this.convertStartUnixTime($("#start").val());
-
-        } else {
-            this.requestedStartDate = 0;
-
-        }
-        if ($("#end").val()) {
-            this.requestedEndDate = this.convertEndUnixTime($("#end").val());
-
-        } else {
-            this.requestedEndDate = 9999999999999;
-
-        }
-
-        this.searchParam.keyword = this.keyword;
-        this.searchParam.endDate = this.requestedEndDate;
-        this.searchParam.startDate = this.requestedStartDate;
-
-
-        if (this.searchParam.endDate > this.searchParam.startDate) {
-
-            console.log("");
-
-            this.restService.filterVod(this.appName, 0, 10, this.searchParam).subscribe(data => {
-                this.vodTableData.dataRows = [];
-                for (var i in data) {
-                    this.vodTableData.dataRows.push(data[i]);
-                }
-
-                console.log("filtered vod:  " + this.vodTableData.dataRows.length.toString());
-
-                this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
-
-            });
-
-        } else if (this.searchParam.endDate < this.searchParam.startDate) {
-
-            this.searchWarning = true;
-        }
-        console.log("search param start:  " + this.searchParam.startDate);
-        console.log("search param end:  " + this.searchParam.endDate);
-        console.log("search param keyword:  " + this.searchParam.keyword);
-
-        console.log("req start: " + this.requestedStartDate);
-        console.log("req end: " + this.requestedEndDate);
-        console.log("req keyword: " + this.keyword);
-
-        if (!$("#keyword").val() || $("#keyword").val() == " ") {
-
-            this.keyword = null;
-        }
-    }
-
-
-    convertStartUnixTime(date: string) {
-
-        var d = date + 'T00:00:00.000Z';
-
-        var convertedTime = new Date(d).valueOf();
-        console.log(new Date(d).valueOf());
-
-        return convertedTime;
-
-    }
-
-    convertEndUnixTime(date: string) {
-
-        var d = date + 'T23:59:59.000Z';
-
-        var convertedTime = new Date(d).valueOf();
-        console.log(new Date(d).valueOf());
-
-        return convertedTime;
-
     }
 
 
