@@ -752,10 +752,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     playLive(streamId: string): void {
+        let currentUnixTime : number = Math.floor(Date.now() / 1000)
+        let expireDate : number = currentUnixTime + 100;
 
         if(this.appSettings.tokenControlEnabled) 
         {
-            this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
+            this.restService.getToken (this.appName, streamId, expireDate ).subscribe(data => {
                 this.token = <Token>data;
                 this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", this.token.tokenId);
             });
@@ -873,7 +875,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         if (tokenParam != null) {
-            this.restService.getToken (this.appName, tokenParam, 0).subscribe(data => {
+
+            let currentUnixTime : number = Math.floor(Date.now() / 1000)
+            let expireDate : number = currentUnixTime + 100;
+
+            this.restService.getToken (this.appName, tokenParam, expireDate).subscribe(data => {
                 this.token = <Token>data;
                             
                 this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", this.token.tokenId)
@@ -1247,14 +1253,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    getToken(streamId:string): void {
-        this.token = null;
-
-        this.restService.getToken (this.appName, streamId, 0).subscribe(data => {
-            this.token = <Token>data;
-        });
-
-    }
 
     changeSettings(valid: boolean): void {
 
