@@ -752,15 +752,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     playLive(streamId: string): void {
-        let currentUnixTime : number = Math.floor(Date.now() / 1000)
-        let expireDate : number = currentUnixTime + 100;
+
 
         if(this.appSettings.tokenControlEnabled) 
         {
-            this.restService.getToken (this.appName, streamId, expireDate ).subscribe(data => {
-                this.token = <Token>data;
-                this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", this.token.tokenId);
-            });
+            this.openPlayerWithToken(streamId, streamId,"640px", streamId);
         }
         else 
         {
@@ -876,19 +872,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if (tokenParam != null) {
 
-            let currentUnixTime : number = Math.floor(Date.now() / 1000)
-            let expireDate : number = currentUnixTime + 100;
-
-            this.restService.getToken (this.appName, tokenParam, expireDate).subscribe(data => {
-                this.token = <Token>data;
-                            
-                this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", this.token.tokenId)
-            });
+            this.openPlayerWithToken(vodId, filePath,"640px", tokenParam);
         }
         else {
-            swal({
 
-            });
             swal({
                 title: "Undefined VoD Type",
                 text: "It cannot get token for Undefined VoD type",
@@ -900,6 +887,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }).catch(function () {
             });
         }
+    }
+
+
+    openPlayerWithToken(id: string, path: string,width: string, tokenParam:string){
+
+        let currentUnixTime : number = Math.floor(Date.now() / 1000)
+        let expireDate : number = currentUnixTime + 100;
+
+        this.restService.getToken (this.appName, tokenParam, expireDate).subscribe(data => {
+            this.token = <Token>data;
+
+            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
+        });
+
     }
 
     deleteVoD(fileName: string, vodId: number, type: string): void {
