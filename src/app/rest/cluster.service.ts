@@ -32,14 +32,6 @@ export class ClusterRestService {
         return this.http.get(this.getRestServiceRoot() + '/nodes');
     }
 
-    public updateClusterNodes(node: ClusterNodeInfo): Observable<Object> {
-        return this.http.post(this.getRestServiceRoot() + '/updateNode/'+ node.id, node);
-    }
-
-    public addClusterNodes(node: ClusterNodeInfo): Observable<Object> {
-        return this.http.post(this.getRestServiceRoot() + '/nodes', node);
-    }
-
     public deleteClusterNodes(node: ClusterNodeInfo): Observable<Object> {
         return this.http.get(this.getRestServiceRoot() + '/deleteNode/'+ node.id);
     }

@@ -26,41 +26,41 @@
                                                 </mat-cell>
                                             </ng-container>
                                             
-                                            <ng-container matColumnDef="lastUpdateTime">
-                                                <mat-header-cell *matHeaderCellDef> Last Update </mat-header-cell>
-
-                                                <mat-cell *matCellDef="let row">
-                                                	{{row.lastUpdateTime | date:'yyyy-MM-dd HH:mm:ss'}}
-                                                </mat-cell>
-                                            </ng-container>
-                                            
                                             <ng-container matColumnDef="cpu">
-                                                <mat-header-cell *matHeaderCellDef> CPU Usage (%) </mat-header-cell>
+                                                <mat-header-cell *matHeaderCellDef> CPU(%) </mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
                                                 	{{row.cpu}}
                                                 </mat-cell>
                                             </ng-container>
                                             
-                                            <ng-container matColumnDef="memory">
-                                                <mat-header-cell *matHeaderCellDef> Memory Usage (MB) </mat-header-cell>
+                                            <ng-container matColumnDef="memory" >
+                                                <mat-header-cell *matHeaderCellDef> Memory(MB) </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row" >
+                                                	{{row.memory}}
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="lastUpdateTime">
+                                                <mat-header-cell *matHeaderCellDef> Last Heartbeat </mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
-                                                	{{row.memory}}
+                                                	{{row.lastUpdateTime | date:'yyyy-MM-dd HH:mm:ss'}}
                                                 </mat-cell>
                                             </ng-container>
                                             
                                             <ng-container matColumnDef="inTheCluster">
-                                                <mat-header-cell *matHeaderCellDef> Cluster Status </mat-header-cell>
+                                                <mat-header-cell *matHeaderCellDef>Status </mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
                                         
-                                                    <ng-container *ngIf="row.inTheCluster == true; else showDead">
-                                                        <span class="dot btn-success"></span> Accessible
+                                                    <ng-container *ngIf="row.status == 'alive'; else showDead">
+                                                        <span class="dot btn-success"></span>&nbsp; Live
                                                     </ng-container>
 
                                                     <ng-template #showDead>
-                                                        <span class="dot btn-danger"></span> Inaccessible
+                                                        <span class="dot btn-danger"></span>&nbsp; Inaccessible
                                                     </ng-template>
                                                     
                                                                                                   
@@ -105,14 +105,7 @@
                                     There is no cluster node.
                                 </p>
                         <div class="footer">
-                            <!--
-                        <hr />
-
-                        <div class="stats">
-                               <button class="btn btn-primary btn-simple btn-sm" (click)="updateCPULoad()">
-                                   <i class="ti-reload"></i>Update now</button>
-                        </div>
-                    -->
+                    
                         </div>
                     </div>
                 </div>

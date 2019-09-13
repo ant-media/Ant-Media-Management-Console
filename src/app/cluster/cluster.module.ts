@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {CreateNodeComponent, EditNodeComponent} from './cluster.component';
 
 import {HttpClientModule} from '@angular/common/http';
 import {ClusterComponent} from './cluster.component';
@@ -56,14 +55,9 @@ export const ClusterRoutes: Routes = [
 
     declarations: [
         ClusterComponent, 
-        CreateNodeComponent,
-        EditNodeComponent
     ],
 
     entryComponents: [
-        CreateNodeComponent,
-        EditNodeComponent
-
     ],
 
     imports: [

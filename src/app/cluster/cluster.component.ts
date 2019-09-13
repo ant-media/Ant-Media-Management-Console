@@ -51,7 +51,7 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
     public nodeTableData: ClusterInfoTable;
     public timerId: any;
  
-    public nodeColumns = ['nodeIp', 'lastUpdateTime', 'cpu', 'memory', 'inTheCluster', 'actions'];
+    public nodeColumns = ['nodeIp', 'cpu', 'memory', 'lastUpdateTime', 'inTheCluster', 'actions'];
 
     public dataSourceNode: MatTableDataSource<ClusterNodeInfo>;
 
@@ -142,43 +142,6 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-    openNodeEditDialog(nodeId: string): void {
-    	let node = this.nodeTableData.dataRows.find(n => n.id == nodeId);
-
-
-     	let dialogRef = this.dialog.open(EditNodeComponent, {
-            data: { 
-            	node: node,
-             },
-            width: '300px'
-
-        });
-
-
-        dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed');
-            this.getClusterNodes();
-        });   
-    }
-
-    openNodeCreateDialog(): void {
-    	
-     	let dialogRef = this.dialog.open(CreateNodeComponent, {
-            data: { 
-            	
-             },
-            width: '300px'
-
-        });
-
-
-        dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed');
-            this.getClusterNodes();
-        });   
-    }
-
-
     deleteNode(nodeId: string): void {
 
 
@@ -227,140 +190,5 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
 }
 
 
-
-
-@Component({
-    selector: 'edit-node-dialog',
-    templateUrl: 'edit-node-dialog.html',
-})
-
-
-export class EditNodeComponent {
-
-
-	public node : ClusterNodeInfo;
-	public progressing = false;
-
-    constructor(
-        public dialogRef: MatDialogRef<EditNodeComponent>, 
-        public clusterRestService: ClusterRestService,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
-
-    	this.node = data.node;
-
-    }
-
-    cancel(): void {
-        this.dialogRef.close();
-    }
-
-
-    updateNode() {
-
-    		this.progressing = true;
-    		
-            this.clusterRestService.updateClusterNodes(this.node).subscribe(data => {
-
-                if (data["success"] == true) {
-
-                    this.progressing = false;
-
-                    this.dialogRef.close();
-                    swal({
-                        type: "success",
-                        title: " Node is successfully updated!",
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-success"
-
-                    });
-
-                } 
-                 else {
-                    this.progressing = false;
-
-                    this.dialogRef.close();
-                    swal({
-                        type: "error",
-                        title: "An Error Occured!",
-
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-error"
-
-                    });
-
-
-                }
-                
-            });
-        }
-}
-
-
-
-@Component({
-    selector: 'create-node-dialog',
-    templateUrl: 'create-node-dialog.html',
-})
-
-
-export class CreateNodeComponent {
-
-
-	public node : ClusterNodeInfo;
-	public progressing = false;
-
-    constructor(
-        public dialogRef: MatDialogRef<CreateNodeComponent>, 
-        public clusterRestService: ClusterRestService,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
-    	
-    	this.node = {id:'', ip:'', status: '', lastUpdateTime: "", inTheCluster: "", memory: "", cpu:""};
-    }
-
-    cancel(): void {
-        this.dialogRef.close();
-    }
-
-
-        createNode() {
-
-    		this.progressing = true;
-    		
-            this.clusterRestService.addClusterNodes(this.node).subscribe(data => {
-
-                if (data["success"] == true) {
-
-                    this.progressing = false;
-
-                    this.dialogRef.close();
-                    swal({
-                        type: "success",
-                        title: " Node is successfully added!",
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-success"
-
-                    });
-
-                } 
-                 else {
-                    this.progressing = false;
-
-                    this.dialogRef.close();
-                    swal({
-                        type: "error",
-                        title: "An Error Occured!",
-
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-error"
-
-                    });
-
-
-                }
-                
-            });
-        }
-
-}
 
 
