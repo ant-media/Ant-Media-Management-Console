@@ -342,9 +342,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     onListPaginateChange(event) {
 
 
-        console.log("page index:" + event.pageIndex);
-        console.log("length:" + event.length);
-        console.log("page size:" + event.pageSize);
+        console.log("list page index:" + event.pageIndex + " length:" + event.length + " page size:" + event.pageSize);
 
         this.pageSize = event.pageSize;
         this.streamListOffset = event.pageIndex;
@@ -353,12 +351,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     onGridPaginateChange(event) {
-        console.log("page index:" + event.pageIndex);
-        console.log("length:" + event.length);
-        console.log("page size:" + event.pageSize);
+        console.log("grid page index:" + event.pageIndex + " length:" + event.length + " page size:" + event.pageSize);
 
         this.pageSize = event.pageSize;
-
 
         this.openGridPlayers(event.pageIndex, this.pageSize);
 

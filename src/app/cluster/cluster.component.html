@@ -2,113 +2,104 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12 col-sm-12">
-                <div class="card">
-                    <div class="card-content">
-                       
-                                <div class="container">
 
-                                </div>
+                <div id="nodeTable" style="text-align: left"
+                        *ngIf=" nodeTableData.dataRows.length>0">
 
-                                <div id="nodeTable" style="text-align: left"
-                                     *ngIf=" nodeTableData.dataRows.length>0">
+                    <div class="mat-container mat-elevation-z1">
 
-                                    <br>
-                                    <div class="mat-container mat-elevation-z1">
+                        <mat-table [dataSource]="dataSourceNode"> 
 
-                                        <mat-table [dataSource]="dataSourceNode"> 
+                            <ng-container matColumnDef="nodeIp">
+                                <mat-header-cell *matHeaderCellDef> Node IP </mat-header-cell>
 
-                                            <ng-container matColumnDef="nodeIp">
-                                                <mat-header-cell *matHeaderCellDef> Node IP </mat-header-cell>
+                                <mat-cell *matCellDef="let row">
+                                    {{row.ip}}
 
-                                                <mat-cell *matCellDef="let row">
-                                                    {{row.ip}}
+                                </mat-cell>
+                            </ng-container>
+                            
+                            <ng-container matColumnDef="cpu">
+                                <mat-header-cell *matHeaderCellDef> CPU(%) </mat-header-cell>
 
-                                                </mat-cell>
-                                            </ng-container>
-                                            
-                                            <ng-container matColumnDef="cpu">
-                                                <mat-header-cell *matHeaderCellDef> CPU(%) </mat-header-cell>
+                                <mat-cell *matCellDef="let row">
+                                    {{row.cpu}}
+                                </mat-cell>
+                            </ng-container>
+                            
+                            <ng-container matColumnDef="memory" >
+                                <mat-header-cell *matHeaderCellDef> Memory(MB) </mat-header-cell>
 
-                                                <mat-cell *matCellDef="let row">
-                                                	{{row.cpu}}
-                                                </mat-cell>
-                                            </ng-container>
-                                            
-                                            <ng-container matColumnDef="memory" >
-                                                <mat-header-cell *matHeaderCellDef> Memory(MB) </mat-header-cell>
+                                <mat-cell *matCellDef="let row" >
+                                    {{row.memory}}
+                                </mat-cell>
+                            </ng-container>
 
-                                                <mat-cell *matCellDef="let row" >
-                                                	{{row.memory}}
-                                                </mat-cell>
-                                            </ng-container>
+                            <ng-container matColumnDef="lastUpdateTime">
+                                <mat-header-cell *matHeaderCellDef> Last Heartbeat </mat-header-cell>
 
-                                            <ng-container matColumnDef="lastUpdateTime">
-                                                <mat-header-cell *matHeaderCellDef> Last Heartbeat </mat-header-cell>
+                                <mat-cell *matCellDef="let row">
+                                    {{row.lastUpdateTime | date:'yyyy-MM-dd HH:mm:ss'}}
+                                </mat-cell>
+                            </ng-container>
+                            
+                            <ng-container matColumnDef="inTheCluster">
+                                <mat-header-cell *matHeaderCellDef>Status </mat-header-cell>
 
-                                                <mat-cell *matCellDef="let row">
-                                                	{{row.lastUpdateTime | date:'yyyy-MM-dd HH:mm:ss'}}
-                                                </mat-cell>
-                                            </ng-container>
-                                            
-                                            <ng-container matColumnDef="inTheCluster">
-                                                <mat-header-cell *matHeaderCellDef>Status </mat-header-cell>
+                                <mat-cell *matCellDef="let row">
+                        
+                                    <ng-container *ngIf="row.status == 'alive'; else showDead">
+                                        <span class="dot btn-success"></span>&nbsp; Live
+                                    </ng-container>
 
-                                                <mat-cell *matCellDef="let row">
-                                        
-                                                    <ng-container *ngIf="row.status == 'alive'; else showDead">
-                                                        <span class="dot btn-success"></span>&nbsp; Live
-                                                    </ng-container>
+                                    <ng-template #showDead>
+                                        <span class="dot btn-danger"></span>&nbsp; Inaccessible
+                                    </ng-template>
+                                    
+                                                                                    
+                                </mat-cell>
+                            </ng-container>
 
-                                                    <ng-template #showDead>
-                                                        <span class="dot btn-danger"></span>&nbsp; Inaccessible
-                                                    </ng-template>
-                                                    
-                                                                                                  
-                                                </mat-cell>
-                                            </ng-container>
+                            <ng-container matColumnDef="actions">
+                                <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
 
-                                            <ng-container matColumnDef="actions">
-                                                <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
+                                <mat-cell *matCellDef="let row">
 
-                                                <mat-cell *matCellDef="let row">
+                                    <button (click)="deleteNode(row.id)" class="btn btn-simple btn-magnify btn-danger" type="button">
+                                        <span class="btn-label">
+                                            <i class="ti-close"></i>
+                                        </span>
+                                        <ng-container i18n="@@deleteNodeButton">Delete</ng-container>
+                                    </button>
 
-                                                    <button (click)="deleteNode(row.id)" class="btn btn-simple btn-magnify btn-danger" type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-close"></i>
-                                                        </span>
-                                                        <ng-container i18n="@@deleteNodeButton">Delete</ng-container>
-                                                    </button>
+                                </mat-cell>
+                            </ng-container>
 
-                                                </mat-cell>
-                                            </ng-container>
-
-                                            <mat-header-row *matHeaderRowDef="nodeColumns"></mat-header-row>
-                                            <mat-row *matRowDef="let row; columns: nodeColumns;">
-                                            </mat-row>
-                                        </mat-table>
+                            <mat-header-row *matHeaderRowDef="nodeColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: nodeColumns;">
+                            </mat-row>
+                        </mat-table>
 
 
-                                        <mat-paginator [length]="nodeLength"
-                                                       [pageSize]="pageSize"
-                                                       [pageSizeOptions]="pageSizeOptions"
-                                                       (page)="onPaginateChange($event)"
-                                        >
-                                        </mat-paginator>
+                        <mat-paginator [length]="nodeLength"
+                                        [pageSize]="pageSize"
+                                        [pageSizeOptions]="pageSizeOptions"
+                                        (page)="onPaginateChange($event)"
+                        >
+                        </mat-paginator>
+                    </div>
+
+                </div>
 
 
-                                    </div>
-
-                                </div>
-
-
-                                <p *ngIf="nodeTableData.dataRows.length == 0" i18n="no cluster node | text messages appears when no node@@noNodeExistsMessage">
-                                    There is no cluster node.
-                                </p>
-                        <div class="footer">
-                    
-                        </div>
+                <div class="card" *ngIf="nodeTableData.dataRows.length == 0">
+                    <div class="card-content text-center">
+                        <p  i18n="no cluster node | text messages appears when no node@@noNodeExistsMessage">
+                            There is no cluster node.
+                        </p>
                     </div>
                 </div>
+                    
             </div>
         </div>
     </div>

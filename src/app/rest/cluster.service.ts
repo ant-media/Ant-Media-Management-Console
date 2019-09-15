@@ -28,8 +28,12 @@ export class ClusterRestService {
         return REST_SERVICE_ROOT + "/cluster";
     }
 
-    public getClusterNodes(): Observable<Object> {
-        return this.http.get(this.getRestServiceRoot() + '/nodes');
+    public getClusterNodeCount() : Observable<Object> {
+        return this.http.get(this.getRestServiceRoot() + "/node-count");
+    }
+
+    public getClusterNodes(offset: number, size: number): Observable<Object> {
+        return this.http.get(this.getRestServiceRoot() + '/nodes/'+offset+'/'+size);
     }
 
     public deleteClusterNodes(node: ClusterNodeInfo): Observable<Object> {

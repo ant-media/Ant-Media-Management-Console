@@ -16,9 +16,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ClusterRestService} from '../rest/cluster.service';
 import {Locale} from "../locale/locale";
 import {
-    MAT_DIALOG_DATA,
     MatDialog,
-    MatDialogRef,
     MatPaginatorIntl,
     MatSort,
     MatTableDataSource,
@@ -55,12 +53,13 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
 
     public dataSourceNode: MatTableDataSource<ClusterNodeInfo>;
 
-    public pageSize = 5;
-    public pageSizeOptions = [5, 10, 25];
+    public pageSize = 10;
+    public pageSizeOptions = [10, 25, 50];
     public pageIndex = 0;
     public nodeLength: any;
 
-    // MatPaginator Output
+
+    public currentOffset = 0;
 
     @Input() pageEvent: PageEvent;
 
@@ -91,30 +90,30 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit() {
 
-        var self = this;
-
        this.nodeTableData = {
             dataRows: []
         };
     }
 
     onPaginateChange(event) {
-        console.log("page index:" + event.pageIndex);
-        console.log("length:" + event.length);
-        console.log("page size:" + event.pageSize);
+        console.log("cluster page index:" + event.pageIndex + " length: " + event.length + " pageSize:" + event.pageSize);
 
         this.pageIndex = event.pageIndex;
-        this.updateTable();
+        this.pageSize = event.pageSize;
+        this.currentOffset = event.pageIndex * this.pageSize;
+
+        this.getClusterNodes(this.currentOffset, this.pageSize);
     }
 
-    ngAfterViewInit() {
 
-        setTimeout(() => {
-            this.getClusterNodes(); 
-        }, 500);
-
+    ngAfterViewInit() 
+    {
+        this.getClusterNodeCount();
+        this.getClusterNodes(0, this.pageSize); 
+       
 		this.timerId = window.setInterval(() => {
-        	this.getClusterNodes();
+            this.getClusterNodeCount();
+        	this.getClusterNodes(this.currentOffset, this.pageSize);
         }, 10000);
     }
 
@@ -124,21 +123,20 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    updateTable()
-    {
-    	var start = this.pageIndex * this.pageSize;
-    	var end = start + this.pageSize; 
-    	this.dataSourceNode = new MatTableDataSource(this.nodeTableData.dataRows.slice(start, end));
+    getClusterNodeCount() {
+        this.clusterRestService.getClusterNodeCount().subscribe( data => {
+            this.nodeLength = data["number"];
+        });
     }
    
-    getClusterNodes(): void {
-        this.clusterRestService.getClusterNodes().subscribe(data => {
+    getClusterNodes(offset: number, size:number): void {
+        this.clusterRestService.getClusterNodes(offset, size).subscribe(data => {
             this.nodeTableData.dataRows = [];
             for (var i in data) {
                 this.nodeTableData.dataRows.push(data[i]);
             }
-        	this.nodeLength = this.nodeTableData.dataRows.length;
-        	this.updateTable();
+        	
+            this.dataSourceNode = new MatTableDataSource(this.nodeTableData.dataRows);
         });
     }
 
@@ -164,7 +162,7 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
                 else {
                     this.showNodeNotDeleted();
                 };
-                this.getClusterNodes();
+                this.getClusterNodes(this.currentOffset, this.pageSize);
             });
 
         }).catch(function () {
