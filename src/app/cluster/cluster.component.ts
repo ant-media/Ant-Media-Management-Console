@@ -16,9 +16,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ClusterRestService} from '../rest/cluster.service';
 import {Locale} from "../locale/locale";
 import {
-    MAT_DIALOG_DATA,
     MatDialog,
-    MatDialogRef,
     MatPaginatorIntl,
     MatSort,
     MatTableDataSource,
@@ -51,16 +49,17 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
     public nodeTableData: ClusterInfoTable;
     public timerId: any;
  
-    public nodeColumns = ['nodeIp', 'lastUpdateTime', 'cpu', 'memory', 'inTheCluster', 'actions'];
+    public nodeColumns = ['nodeIp', 'cpu', 'memory', 'lastUpdateTime', 'inTheCluster', 'actions'];
 
     public dataSourceNode: MatTableDataSource<ClusterNodeInfo>;
 
-    public pageSize = 5;
-    public pageSizeOptions = [5, 10, 25];
+    public pageSize = 10;
+    public pageSizeOptions = [10, 25, 50];
     public pageIndex = 0;
     public nodeLength: any;
 
-    // MatPaginator Output
+
+    public currentOffset = 0;
 
     @Input() pageEvent: PageEvent;
 
@@ -91,30 +90,30 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit() {
 
-        var self = this;
-
        this.nodeTableData = {
             dataRows: []
         };
     }
 
     onPaginateChange(event) {
-        console.log("page index:" + event.pageIndex);
-        console.log("length:" + event.length);
-        console.log("page size:" + event.pageSize);
+        console.log("cluster page index:" + event.pageIndex + " length: " + event.length + " pageSize:" + event.pageSize);
 
         this.pageIndex = event.pageIndex;
-        this.updateTable();
+        this.pageSize = event.pageSize;
+        this.currentOffset = event.pageIndex * this.pageSize;
+
+        this.getClusterNodes(this.currentOffset, this.pageSize);
     }
 
-    ngAfterViewInit() {
 
-        setTimeout(() => {
-            this.getClusterNodes(); 
-        }, 500);
-
+    ngAfterViewInit() 
+    {
+        this.getClusterNodeCount();
+        this.getClusterNodes(0, this.pageSize); 
+       
 		this.timerId = window.setInterval(() => {
-        	this.getClusterNodes();
+            this.getClusterNodeCount();
+        	this.getClusterNodes(this.currentOffset, this.pageSize);
         }, 10000);
     }
 
@@ -124,60 +123,22 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    updateTable()
-    {
-    	var start = this.pageIndex * this.pageSize;
-    	var end = start + this.pageSize; 
-    	this.dataSourceNode = new MatTableDataSource(this.nodeTableData.dataRows.slice(start, end));
+    getClusterNodeCount() {
+        this.clusterRestService.getClusterNodeCount().subscribe( data => {
+            this.nodeLength = data["number"];
+        });
     }
    
-    getClusterNodes(): void {
-        this.clusterRestService.getClusterNodes().subscribe(data => {
+    getClusterNodes(offset: number, size:number): void {
+        this.clusterRestService.getClusterNodes(offset, size).subscribe(data => {
             this.nodeTableData.dataRows = [];
             for (var i in data) {
                 this.nodeTableData.dataRows.push(data[i]);
             }
-        	this.nodeLength = this.nodeTableData.dataRows.length;
-        	this.updateTable();
+        	
+            this.dataSourceNode = new MatTableDataSource(this.nodeTableData.dataRows);
         });
     }
-
-    openNodeEditDialog(nodeId: string): void {
-    	let node = this.nodeTableData.dataRows.find(n => n.id == nodeId);
-
-
-     	let dialogRef = this.dialog.open(EditNodeComponent, {
-            data: { 
-            	node: node,
-             },
-            width: '300px'
-
-        });
-
-
-        dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed');
-            this.getClusterNodes();
-        });   
-    }
-
-    openNodeCreateDialog(): void {
-    	
-     	let dialogRef = this.dialog.open(CreateNodeComponent, {
-            data: { 
-            	
-             },
-            width: '300px'
-
-        });
-
-
-        dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed');
-            this.getClusterNodes();
-        });   
-    }
-
 
     deleteNode(nodeId: string): void {
 
@@ -201,7 +162,7 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
                 else {
                     this.showNodeNotDeleted();
                 };
-                this.getClusterNodes();
+                this.getClusterNodes(this.currentOffset, this.pageSize);
             });
 
         }).catch(function () {
@@ -227,140 +188,5 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
 }
 
 
-
-
-@Component({
-    selector: 'edit-node-dialog',
-    templateUrl: 'edit-node-dialog.html',
-})
-
-
-export class EditNodeComponent {
-
-
-	public node : ClusterNodeInfo;
-	public progressing = false;
-
-    constructor(
-        public dialogRef: MatDialogRef<EditNodeComponent>, 
-        public clusterRestService: ClusterRestService,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
-
-    	this.node = data.node;
-
-    }
-
-    cancel(): void {
-        this.dialogRef.close();
-    }
-
-
-    updateNode() {
-
-    		this.progressing = true;
-    		
-            this.clusterRestService.updateClusterNodes(this.node).subscribe(data => {
-
-                if (data["success"] == true) {
-
-                    this.progressing = false;
-
-                    this.dialogRef.close();
-                    swal({
-                        type: "success",
-                        title: " Node is successfully updated!",
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-success"
-
-                    });
-
-                } 
-                 else {
-                    this.progressing = false;
-
-                    this.dialogRef.close();
-                    swal({
-                        type: "error",
-                        title: "An Error Occured!",
-
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-error"
-
-                    });
-
-
-                }
-                
-            });
-        }
-}
-
-
-
-@Component({
-    selector: 'create-node-dialog',
-    templateUrl: 'create-node-dialog.html',
-})
-
-
-export class CreateNodeComponent {
-
-
-	public node : ClusterNodeInfo;
-	public progressing = false;
-
-    constructor(
-        public dialogRef: MatDialogRef<CreateNodeComponent>, 
-        public clusterRestService: ClusterRestService,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
-    	
-    	this.node = {id:'', ip:'', status: '', lastUpdateTime: "", inTheCluster: "", memory: "", cpu:""};
-    }
-
-    cancel(): void {
-        this.dialogRef.close();
-    }
-
-
-        createNode() {
-
-    		this.progressing = true;
-    		
-            this.clusterRestService.addClusterNodes(this.node).subscribe(data => {
-
-                if (data["success"] == true) {
-
-                    this.progressing = false;
-
-                    this.dialogRef.close();
-                    swal({
-                        type: "success",
-                        title: " Node is successfully added!",
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-success"
-
-                    });
-
-                } 
-                 else {
-                    this.progressing = false;
-
-                    this.dialogRef.close();
-                    swal({
-                        type: "error",
-                        title: "An Error Occured!",
-
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-error"
-
-                    });
-
-
-                }
-                
-            });
-        }
-
-}
 
 
