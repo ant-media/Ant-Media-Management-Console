@@ -20,7 +20,8 @@ export class Licence {
     endDate: number;
     type: string;
     licenceCount: string;
-    owner: string;}
+    owner: string;
+    status: string;}
 
 @Component({
     moduleId: module.id,
@@ -58,6 +59,11 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     public logLevelWarn : string = "WARN";
     public logLevelError : string = "ERROR";
     public logLevelOff : string = "OFF";
+
+    public allLicensesUsedError : string = "ALL_LICENSES_ARE_USED";
+    public noLicenseFounrError: string = "NO_LICENSE_FOUND";
+    public licenseExpireError : string = "LICENSE_EXPIRED";
+    public licenseServerRequestError : string = "serverRequestError";
 
 
 
@@ -152,9 +158,9 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
     }
 
-    public getLastLicenseStatus() 
+    public getLastLicenseStatus()
     {
-        if (this.isEnterpriseEdition) 
+        if (this.isEnterpriseEdition)
         {
             this.licenseStatusReceiving = true;
             this.restService.getLastLicenseStatus().subscribe(data => {
@@ -181,6 +187,9 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     }
 
     public evaluateLicenseStatus(data:Object) {
+        var licenseErrorTitle = "Invalid License";
+        var licenseStatusExplaination = "Please Validate Your License";
+
         if (data != null) {
             this.currentLicence  = <Licence>data;
         }
@@ -189,11 +198,38 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
             this.licenseStatus = "Invalid";
             console.log("invalid license");
 
+            if (this.currentLicence.status == this.licenseServerRequestError){
+
+                licenseErrorTitle = "Could Not Connect To License Server"
+                licenseStatusExplaination = "Please Check Your Connection"
+            }
+
+            var statusJson:string = this.currentLicence.status;
+
+            JSON.parse(statusJson, (key, value) => {
+
+                if (key == "result" && value == this.allLicensesUsedError ){
+
+                    licenseStatusExplaination = "Your license is granted to another instance";
+                }
+
+                if (key == "refreshInterval" ){
+
+                    licenseStatusExplaination += ", please close your other instance, wait "+ value + " minutes and try again.";
+                }
+
+                if (key == "result" && value == this.licenseExpireError){
+
+                    licenseStatusExplaination = "Your license is expired, please renew it.";
+                }
+
+            });
+
             if (this.authService.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
 
                 swal({
-                    title: "Invalid License",
-                    text: "Please Validate Your License ",
+                    title: licenseErrorTitle,
+                    text: licenseStatusExplaination,
                     type: 'error',
 
                     confirmButtonColor: '#3085d6',
