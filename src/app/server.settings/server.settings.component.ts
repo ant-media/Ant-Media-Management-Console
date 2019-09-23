@@ -20,16 +20,14 @@ export class Licence {
     endDate: number;
     type: string;
     licenceCount: string;
-    owner: string;}
+    owner: string;
+    status: string;}
 
 @Component({
     moduleId: module.id,
     selector: 'server.settings',
     templateUrl: './server.settings.component.html'
 })
-
-
-
 
 @Injectable()
 export class ServerSettingsComponent implements OnInit, AfterViewInit{
@@ -59,7 +57,10 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     public logLevelError : string = "ERROR";
     public logLevelOff : string = "OFF";
 
-
+    public allLicensesUsedError : string = "ALL_LICENSES_ARE_USED";
+    public noLicenseFounrError: string = "NO_LICENSE_FOUND";
+    public licenseExpireError : string = "LICENSE_EXPIRED";
+    public licenseServerRequestError : string = "serverRequestError";
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
                 private restService: RestService,
@@ -111,8 +112,6 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
         if(event == this.logLevelOff) {
             this.currentLogLevel = this.logLevelOff;
         }
-
-
     }
 
     changeLogLevel(valid: boolean): void {
@@ -149,12 +148,11 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
             }
         });
 
-
     }
 
-    public getLastLicenseStatus() 
+    public getLastLicenseStatus()
     {
-        if (this.isEnterpriseEdition) 
+        if (this.isEnterpriseEdition)
         {
             this.licenseStatusReceiving = true;
             this.restService.getLastLicenseStatus().subscribe(data => {
@@ -176,11 +174,13 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
             });
 
         }
-
         return this.currentLicence;
     }
 
     public evaluateLicenseStatus(data:Object) {
+        var licenseErrorTitle = "Invalid License";
+        var licenseStatusExplaination = "Please Validate Your License";
+
         if (data != null) {
             this.currentLicence  = <Licence>data;
         }
@@ -189,11 +189,31 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
             this.licenseStatus = "Invalid";
             console.log("invalid license");
 
+            if (this.currentLicence.status == this.licenseServerRequestError){
+
+                licenseErrorTitle = "Could Not Connect To License Server"
+                licenseStatusExplaination = "Please Check Your Connection"
+            }
+            else{
+                var statusJson:string = this.currentLicence.status;
+
+                JSON.parse(statusJson, (key, value) => {
+                    if (key == "refreshInterval" ){
+
+                        licenseStatusExplaination = "Your license is granted to another instance, please close your other instances, wait "+ value + " minutes and try again.";
+                    }
+
+                    if (key == "result" && value == this.licenseExpireError){
+
+                        licenseStatusExplaination = "Your license is expired, please renew it.";
+                    }
+                });
+            }
             if (this.authService.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
 
                 swal({
-                    title: "Invalid License",
-                    text: "Please Validate Your License ",
+                    title: licenseErrorTitle,
+                    text: licenseStatusExplaination,
                     type: 'error',
 
                     confirmButtonColor: '#3085d6',
@@ -208,7 +228,6 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
                 });
             }
-
         }
         else{
 
@@ -242,7 +261,6 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
                 });
 
                 this.authService.licenceWarningDisplay = false;
-
             }
         }
     }
