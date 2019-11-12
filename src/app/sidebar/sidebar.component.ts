@@ -47,6 +47,11 @@ export const ROUTES: RouteInfo[] = [{
     title: 'Settings',
     type: 'link',
     icontype: 'ti-settings',
+}, {
+    path: '/support',
+    title: 'Support',
+    type: 'link',
+    icontype: 'ti-support',
 }
 ];
 

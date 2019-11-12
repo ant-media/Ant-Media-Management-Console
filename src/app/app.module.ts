@@ -15,7 +15,8 @@ import {AuthLayoutComponent} from './layouts/auth/auth-layout.component';
 import {AppRoutes} from './app.routing';
 import {AuthService} from './rest/auth.service';
 import {AuthInterceptor, RestService,} from './rest/rest.service';
-import {ClusterRestService,} from './rest/cluster.service';
+import {ClusterRestService} from './rest/cluster.service';
+import {SupportRestService} from './rest/support.service';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 //import { AuthInterceptor } from './rest/auth.interceptor';
 import {ClipboardModule} from 'ngx-clipboard';
@@ -45,6 +46,7 @@ import {DataService} from "./rest/data.service";
         AuthService,
         RestService,
         ClusterRestService,
+        SupportRestService,
         Locale,
         DataService,
         DatePipe,

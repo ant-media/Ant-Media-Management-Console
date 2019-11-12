@@ -1,0 +1,89 @@
+<div class="main-content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-lg-12 col-sm-12">
+				<div class="card">
+					<div class="card-content">
+						<div class="row">
+							<div class="col-sm-12 col-md-12">
+								<div class="card-header">
+									<legend class="text-left"> Create a Support Request </legend>
+								</div>
+								<form #requestForm="ngForm" (ngSubmit)="sendRequest(requestForm)" class="form-horizontal" method="post">
+									<div class="form-group">
+										<div class="col-xs-12">
+											<label> Name <a matTooltip="Please write your name."><i
+													class="fa fa-info-circle"></i></a>
+											</label>
+											<div>
+												<input type="textarea" name="userName" id="userName" (ngModel)="(userName)"
+													class="form-control"
+													placeholder="Your name">
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-xs-12">
+											<label> Email <a matTooltip="Please write your email."><i
+													class="fa fa-info-circle"></i></a>
+											</label>
+											<div>
+												<input type="textarea" name="userEmail" id="userEmail" (ngModel)="(userEmail)"
+													class="form-control"
+													placeholder="Your email">
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-xs-12">
+											<label> Title <a matTooltip="Please write a title for request."><i
+													class="fa fa-info-circle"></i></a>
+											</label>
+											<div>
+												<input type="textarea" name="title" id="title" (ngModel)="(title)"
+													class="form-control"
+													placeholder="Title">
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-xs-12">
+											<label> Description  <a matTooltip="Please write a description about your request.
+											If your report is about a bug please write
+											Expected behaviour,
+											Actual behaviour,
+											and Reproduce scenario step by step">
+											<i class="fa fa-info-circle"></i></a>
+											</label>
+											<div>
+												<textarea type="textarea" name="description"
+													id="description" (ngModel)="(description)"
+													class="form-control"
+													placeholder="{{'Please write a description about your request.\nIf your report is about a bug please write \nExpected behaviour, \nActual behaviour,\nReproduce scenario (step by step)'}}"
+													rows="5"></textarea>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-12 col-md-12">
+											<div class="checkbox">
+												<input id="sendSysInfo" name="sendSysInfo" (ngModel)="sendSysInfo" type="checkbox" unchecked>
+												<label for="sendSysInfo"> Send System Info </label>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-md-12">
+										<div class="text-center">
+											<button class="btn btn-info" i18n="@@sendRequest"
+												style="margin: 15px" type="submit">Send</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

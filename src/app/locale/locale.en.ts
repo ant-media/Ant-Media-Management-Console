@@ -33,5 +33,5 @@ export let Locale_English: LocaleInterface =
     streams_imported_successfully: "Streams are imported successfully",
     missing_configuration_parameter_for_stalker: "Configuration params are missing. Please contact system admin",
     vod_deleted: "Vod file deleted successfully",
-
+    support: "Support",
 }

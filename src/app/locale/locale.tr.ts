@@ -34,4 +34,5 @@ export let Locale_Turkish: LocaleInterface =
     missing_configuration_parameter_for_stalker: "Konfigurasyon parametreleri girilmemiş. Lütfen sistem yönetici ile görüşünüz.",
     vod_deleted: "Vod başarıyla silindi.",
     cluster: "Cluster",
+    support: "Destek",
 }
