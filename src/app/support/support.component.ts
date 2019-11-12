@@ -46,6 +46,12 @@ declare function require(name: string);
 export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
 
     public timerId: any;
+    public userName : string;
+    public userEmail : string;
+    public title : string;
+    public description : string;
+    public sendSystemInfo : boolean;
+
     constructor(private http: HttpClient, 
     			private route: ActivatedRoute,
                 private supportRestService: SupportRestService,
@@ -77,11 +83,11 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
 
         var request = new SupportRequest();
         
-        request.name = requestForm.form.value['userName'];
-        request.email = requestForm.form.value['userEmail'];
-        request.title = requestForm.form.value['title'];
-        request.description = requestForm.form.value['description'];
-        request.sendSystemInfo = requestForm.form.value['sendSysInfo'];
+        request.name = this.userName;
+        request.email = this.userEmail;
+        request.title = this.title;
+        request.description = this.description;
+        request.sendSystemInfo = this.sendSystemInfo;
         
         this.supportRestService.sendRequest(request).subscribe(data => {
             if (data["success"] == true) {

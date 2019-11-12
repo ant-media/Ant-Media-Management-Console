@@ -16,7 +16,7 @@
 													class="fa fa-info-circle"></i></a>
 											</label>
 											<div>
-												<input type="textarea" name="userName" id="userName" (ngModel)="(userName)"
+												<input type="textarea" name="userName" id="userName" [(ngModel)]="userName"
 													class="form-control"
 													placeholder="Your name">
 											</div>
@@ -28,7 +28,7 @@
 													class="fa fa-info-circle"></i></a>
 											</label>
 											<div>
-												<input type="textarea" name="userEmail" id="userEmail" (ngModel)="(userEmail)"
+												<input type="textarea" name="userEmail" id="userEmail" [(ngModel)]="userEmail"
 													class="form-control"
 													placeholder="Your email">
 											</div>
@@ -40,7 +40,7 @@
 													class="fa fa-info-circle"></i></a>
 											</label>
 											<div>
-												<input type="textarea" name="title" id="title" (ngModel)="(title)"
+												<input type="textarea" name="title" id="title" [(ngModel)]="title"
 													class="form-control"
 													placeholder="Title">
 											</div>
@@ -57,7 +57,7 @@
 											</label>
 											<div>
 												<textarea type="textarea" name="description"
-													id="description" (ngModel)="(description)"
+													id="description" [(ngModel)]="description"
 													class="form-control"
 													placeholder="{{'Please write a description about your request.\nIf your report is about a bug please write \nExpected behaviour, \nActual behaviour,\nReproduce scenario (step by step)'}}"
 													rows="5"></textarea>
@@ -67,7 +67,7 @@
 									<div class="form-group">
 										<div class="col-sm-12 col-md-12">
 											<div class="checkbox">
-												<input id="sendSysInfo" name="sendSysInfo" (ngModel)="sendSysInfo" type="checkbox" unchecked>
+												<input id="sendSysInfo" name="sendSysInfo" [(ngModel)]="sendSystemInfo" type="checkbox" unchecked>
 												<label for="sendSysInfo"> Send System Info </label>
 											</div>
 										</div>
