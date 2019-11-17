@@ -14,6 +14,7 @@ import {
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SupportRestService} from '../rest/support.service';
+import {RestService} from '../rest/rest.service';
 import {Locale} from "../locale/locale";
 import {
     MatDialog,
@@ -51,10 +52,13 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
     public title : string;
     public description : string;
     public sendSystemInfo : boolean;
+    public isEnterpriseEdition = false;
+    public isMarketBuild = false;
 
     constructor(private http: HttpClient, 
     			private route: ActivatedRoute,
                 private supportRestService: SupportRestService,
+                private restService: RestService,
                 private renderer: Renderer,
                 public router: Router,
                 public dialog: MatDialog,
@@ -65,7 +69,13 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnInit() {
-
+        this.restService.isEnterpriseEdition().subscribe(data => {
+            this.isEnterpriseEdition = data["success"];
+        });
+        
+        this.restService.getServerSettings().subscribe(data => {
+            this.isMarketBuild = data["buildForMarket"];
+        });
     }
 
     ngAfterViewInit() 
@@ -93,7 +103,7 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
             if (data["success"] == true) {
                 $.notify({
                     icon: "ti-email",
-                    message: "Request Sent"
+                    message: "Your request has been sent. Support team will contact through your e-mail soon."
                 }, {
                     type: "success",
                     delay: 900,
@@ -105,7 +115,7 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
             } else {
                 $.notify({
                     icon: "ti-alert",
-                    message: "Request couln't be sent"
+                    message: "Your request couldn't be sent. Please try again or send email to contact@antmedia.io"
                 }, {
                     type: 'warning',
                     delay: 1900,
