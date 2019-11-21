@@ -1096,12 +1096,12 @@
                                                             <div class="col-sm-12 col-md-12">
                                                                 <div class="checkbox">
 
-                                                                    <input [(ngModel)]="appSettings.objectDetectionEnabled"
+                                                                    <input [disabled]="encoderSettings.length==0"  [(ngModel)]="appSettings.objectDetectionEnabled"
                                                                            id="objectDetection" name="objectDetection"
                                                                            type="checkbox">
 
                                                                     <label for="objectDetection">
-                                                                        Use Object Detection
+                                                                        Use Object Detection <a  matTooltip="If you use this feature, you should add Adaptive Streaming. If you still have a problem, review FAQ page in docs.antmedia.io"><i class="fa fa-info-circle"></i></a>
                                                                     </label>
 
                                                                 </div>
