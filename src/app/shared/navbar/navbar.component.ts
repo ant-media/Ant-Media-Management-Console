@@ -129,6 +129,9 @@ export class NavbarComponent implements OnInit{
                 if (first_child == "logs") {
                     return "Log Settings";
                 }
+                if (first_child == "support") {
+                    return Locale.getLocaleInterface().support;
+                }
                 /*
                 var children_from_url = titlee.split("/")[1];
                 

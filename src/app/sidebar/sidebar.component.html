@@ -152,7 +152,13 @@
                 <p i18n="@@dashboardMenuItem">Logs</p>
             </a>
         </li>
-
+        
+         <li routerLinkActive="active">
+            <a routerLink="/support">
+                <i class="ti-support"></i>
+                <p i18n="@@dashboardMenuItem">Support</p>
+            </a>
+        </li>
 
         <li *ngIf="isNotMobileMenu()">
                 <a data-toggle="collapse" href="#UserAccount">

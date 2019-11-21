@@ -31,4 +31,5 @@ export interface LocaleInterface {
     streams_imported_successfully: string;
     missing_configuration_parameter_for_stalker: string;
     vod_deleted: string;
+    support: string;
 }
