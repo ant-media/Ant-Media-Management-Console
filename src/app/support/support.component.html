@@ -47,12 +47,15 @@
 											</div>
 									</div>
 									<div class="form-group">
-											<label> Email
+											<label> Email*
 											</label>
 											<div>
-												<input type="textarea" name="userEmail" id="userEmail" [(ngModel)]="userEmail"
-													class="form-control"
+												<input type="textarea" required name="userEmail" id="userEmail" [(ngModel)]="userEmail"
+													class="form-control" #userEmailModel="ngModel"
 													placeholder="Please write your e-mail address">
+												<small [hidden]="userEmailModel.valid || (!requestForm.submitted)" class="text-danger">
+														Please write your e-mail address
+												</small>
 											</div>
 									</div>
 									<div class="form-group">
@@ -65,14 +68,17 @@
 											</div>
 									</div>
 									<div class="form-group">
-											<label> Description 
+											<label> Description* 
 											</label>
 											<div>
-												<textarea type="textarea" name="description"
+												<textarea type="textarea" required name="description"
 													id="description" [(ngModel)]="description"
-													class="form-control" 
+													class="form-control"  #descriptionModel="ngModel"
 													placeholder="{{'Please write a description about your request.\n\nIf you send a bug report, \nplease write the scenario(step by step) to reproduce the case\n1... \n2... \n3..., \nExpected behaviour: \n\nActual behaviour:\n'}}"
 													rows="8"></textarea>
+												<small [hidden]="descriptionModel.valid || (!requestForm.submitted)" class="text-danger">
+														Please write the description of your request
+												</small>	
 											</div>
 									</div>
 									<div class="form-group">
@@ -83,8 +89,9 @@
 									</div>
 									<div class="form-group">
 										<div class="text-center">
-											<button class="btn btn-info" i18n="@@sendRequest"
-												style="margin: 15px" type="submit">Send</button>
+											<button class="btn btn-info" i18n="@@sendRequest" [disabled]='processing'
+												style="margin: 15px" type="submit">
+												<i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="processing" aria-hidden="true"></i>Send</button>
 										</div>
 									</div>
 								</div>
