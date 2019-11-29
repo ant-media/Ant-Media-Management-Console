@@ -2,99 +2,103 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-lg-12 col-sm-12">
-				<div *ngIf=(!isEnterpriseEdition)&&(!isMarketBuild) class="card">
-					<div class="col-xs-12">
-						<div class="form-group">
-							Support request is an Enterprise Edition feature. If you want to get professional support please <a href="https://antmedia.io/#products">upgrade</a>.
-							You can still get community support as a Community Edition user from the following channels.
+				<div *ngIf="(!isEnterpriseEdition)&&(!isMarketBuild)" class="card">
+					<div class="card">
+						<div class="card-content text-center">
+							<p>
+							Support request is an Enterprise Edition feature. 
+							<br>If you want to get professional support, please <a href="https://antmedia.io/#products">upgrade to Enterprise Edition</a>.
+							<br>You can still get community support from the following channels.
+							</p>
+							<p >
+								<a href="https://groups.google.com/forum/#!forum/ant-media-server">Google Groups</a> - 
+								<a href="https://stackoverflow.com/questions/tagged/ant-media-server">Stackoverflow</a> - 
+								<a href="https://github.com/ant-media/Ant-Media-Server/issues/new/choose">Github</a>
+							</p>
 						</div>
-					    <div class="form-group col-lg-4 col-xs-12">
-						    <a class="list-group-item" href="https://github.com/ant-media/Ant-Media-Server/issues/new/choose">Github</a>
-						    <a class="list-group-item" href="https://groups.google.com/forum/#!forum/ant-media-server">Google Groups</a>
-						    <a class="list-group-item" href="https://stackoverflow.com/questions/tagged/ant-media-server">Stackoverflow</a>
-	 					</div>
+					    
  					</div>
 				</div>
-				<div *ngIf=isEnterpriseEdition||isMarketBuild class="card">
-					<div class="card-content">
-						<div class="row">
-							<div class="col-sm-12 col-md-12">
+				<div *ngIf="sentSuccess">
+					<div class="card">
+						<div class="card-content text-center">
+							<p>
+								Your request has been sent successfully. <br/>Support team will contact through your e-mail soon.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div *ngIf="(isEnterpriseEdition || isMarketBuild) && !sentSuccess">
+					
+						<div class="card">
+							<form #requestForm="ngForm" (ngSubmit)="sendRequest(requestForm)" method="post">
+								
 								<div class="card-header">
 									<legend class="text-left"> Create a Support Request </legend>
 								</div>
-								<form #requestForm="ngForm" (ngSubmit)="sendRequest(requestForm)" class="form-horizontal" method="post">
+								<div class="card-content">
 									<div class="form-group">
-										<div class="col-xs-12">
-											<label> Name <a matTooltip="Please write your name."><i
-													class="fa fa-info-circle"></i></a>
+											<label> Name
 											</label>
 											<div>
 												<input type="textarea" name="userName" id="userName" [(ngModel)]="userName"
 													class="form-control"
-													placeholder="Your name">
+													placeholder="Please write your name">
 											</div>
-										</div>
 									</div>
 									<div class="form-group">
-										<div class="col-xs-12">
-											<label> Email <a matTooltip="Please write your email."><i
-													class="fa fa-info-circle"></i></a>
+											<label> Email*
 											</label>
 											<div>
-												<input type="textarea" name="userEmail" id="userEmail" [(ngModel)]="userEmail"
-													class="form-control"
-													placeholder="Your email">
+												<input type="textarea" required name="userEmail" id="userEmail" [(ngModel)]="userEmail"
+													class="form-control" #userEmailModel="ngModel"
+													placeholder="Please write your e-mail address">
+												<small [hidden]="userEmailModel.valid || (!requestForm.submitted)" class="text-danger">
+														Please write your e-mail address
+												</small>
 											</div>
-										</div>
 									</div>
 									<div class="form-group">
-										<div class="col-xs-12">
-											<label> Title <a matTooltip="Please write a title for request."><i
-													class="fa fa-info-circle"></i></a>
+											<label> Title
 											</label>
 											<div>
 												<input type="textarea" name="title" id="title" [(ngModel)]="title"
 													class="form-control"
-													placeholder="Title">
+													placeholder="Please write title of your request">
 											</div>
-										</div>
 									</div>
 									<div class="form-group">
-										<div class="col-xs-12">
-											<label> Description  <a matTooltip="Please write a description about your request.
-											If your report is about a bug please write
-											Expected behaviour,
-											Actual behaviour,
-											and Reproduce scenario step by step">
-											<i class="fa fa-info-circle"></i></a>
+											<label> Description* 
 											</label>
 											<div>
-												<textarea type="textarea" name="description"
+												<textarea type="textarea" required name="description"
 													id="description" [(ngModel)]="description"
-													class="form-control"
-													placeholder="{{'Please write a description about your request.\nIf your report is about a bug please write \nExpected behaviour, \nActual behaviour,\nReproduce scenario (step by step)'}}"
-													rows="5"></textarea>
+													class="form-control"  #descriptionModel="ngModel"
+													placeholder="{{'Please write a description about your request.\n\nIf you send a bug report, \nplease write the scenario(step by step) to reproduce the case\n1... \n2... \n3..., \nExpected behaviour: \n\nActual behaviour:\n'}}"
+													rows="8"></textarea>
+												<small [hidden]="descriptionModel.valid || (!requestForm.submitted)" class="text-danger">
+														Please write the description of your request
+												</small>	
 											</div>
-										</div>
 									</div>
 									<div class="form-group">
-										<div class="col-sm-12 col-md-12">
 											<div class="checkbox">
 												<input id="sendSysInfo" name="sendSysInfo" [(ngModel)]="sendSystemInfo" type="checkbox" unchecked>
 												<label for="sendSysInfo"> Send System Info </label>
 											</div>
-										</div>
 									</div>
-									<div class="col-sm-12 col-md-12">
+									<div class="form-group">
 										<div class="text-center">
-											<button class="btn btn-info" i18n="@@sendRequest"
-												style="margin: 15px" type="submit">Send</button>
+											<button class="btn btn-info" i18n="@@sendRequest" [disabled]='processing'
+												style="margin: 15px" type="submit">
+												<i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="processing" aria-hidden="true"></i>Send</button>
 										</div>
 									</div>
+								</div>
 								</form>
-							</div>
+							
 						</div>
-					</div>
+					
 				</div>
 			</div>
 		</div>

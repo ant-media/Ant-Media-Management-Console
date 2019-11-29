@@ -54,6 +54,8 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
     public sendSystemInfo : boolean;
     public isEnterpriseEdition = false;
     public isMarketBuild = false;
+    public sentSuccess = false;
+    public processing = false;
 
     constructor(private http: HttpClient, 
     			private route: ActivatedRoute,
@@ -98,9 +100,13 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
         request.title = this.title;
         request.description = this.description;
         request.sendSystemInfo = this.sendSystemInfo;
+
+        this.processing = true;
         
         this.supportRestService.sendRequest(request).subscribe(data => {
+            this.processing = false;
             if (data["success"] == true) {
+                this.sentSuccess = true;
                 $.notify({
                     icon: "ti-email",
                     message: "Your request has been sent. Support team will contact through your e-mail soon."
