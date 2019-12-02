@@ -274,8 +274,9 @@ export class RestService {
     }
 
 
-    public getVodList(appName:string, offset:Number, size:Number): Observable<Object>  {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/v2/vods/list/'+offset+"/"+size,{});
+    public getVodList(appName:string, offset:Number, size:Number, sortBy: String, orderBy: String): Observable<Object>  {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/v2/vods/list/'+offset+"/"+size
+                +"&sort_by="+sortBy+"&order_by="+orderBy,{});
 
     }
 

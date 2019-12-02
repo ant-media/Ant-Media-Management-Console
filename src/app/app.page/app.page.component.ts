@@ -228,6 +228,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public importingVoDStreams = false;
     private tokenData: Observable<Token>;
     // MatPaginator Output
+    
+    private vodSortBy = "";
+    private vodOrderBy = "";
 
     @Input() pageEvent: PageEvent;
 
@@ -327,7 +330,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.keyword = null;
 
-        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize).subscribe(data => {
+        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy).subscribe(data => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
@@ -679,6 +682,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
     }
 
+    sortVodList(e) {
+      // save cookie with table sort data here
+     this.vodSortBy = e.active;
+     this.vodOrderBy = e.direction;
+     this.getVoDStreams();
+      console.log(e);
+    }
 
     getVoDStreams(): void {
 
@@ -692,7 +702,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
 
-        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize).subscribe(data => {
+        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy).subscribe(data => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
