@@ -423,6 +423,80 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.dataSourceVod.filter = filterValue;
     }
 
+
+    stopStreams(streamId: string): void {
+
+        this.restService.stopStream(this.appName, streamId).subscribe(data => {
+
+            if (data["success"] == true) {
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Stream Stopped"
+                }, {
+                    type: "success",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else{
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Stream Stop Failed"
+                }, {
+                    type: "warning",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+
+        });
+    }
+
+    startStreams(streamId: string): void {
+
+        this.restService.startStream(this.appName, streamId).subscribe(data => {
+
+            if (data["success"] == true) {
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Stream Started"
+                }, {
+                    type: "success",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else{
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Stream Start Failed"
+                }, {
+                    type: "warning",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+
+            }
+
+        });
+    }
+
     openSettingsDialog(selected: LiveBroadcast): void {
 
 
@@ -446,6 +520,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             });
         }
+
+
 
 
         this.selectedBroadcast = selected;
