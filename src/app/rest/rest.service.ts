@@ -134,12 +134,12 @@ export class RestService {
             broadcast);
     }
 
-    public stopStream(appName: string, id: string): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + id + "/stop", id);
+    public stopStream(appName: string, streamId: string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/stop", {});
     }
 
-    public startStream(appName: string, id: string): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + id + "/start", id);
+    public startStream(appName: string, streamId: string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/start", {});
     }
 
     public deleteBroadcast(appName: string, streamId:string): Observable<Object> {

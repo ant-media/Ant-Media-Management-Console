@@ -432,7 +432,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 $.notify({
                     icon: "ti-save",
-                    message: "Stream Stopped"
+                    message: "Stream Stopping"
                 }, {
                     type: "success",
                     delay: 900,
@@ -468,7 +468,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 $.notify({
                     icon: "ti-save",
-                    message: "Stream Started"
+                    message: "Stream Starting"
                 }, {
                     type: "success",
                     delay: 900,

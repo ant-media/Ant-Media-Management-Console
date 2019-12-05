@@ -448,7 +448,7 @@
                                                     <div style="font-size: 1.1em">
                                                         <!-- Play Button -->
                                                         <button *ngIf="row.status=='broadcasting' && (appSettings.webRTCEnabled == true|| appSettings.hlsMuxingEnabled == true) "
-                                                                data-toggle="tooltip" i18n-title title="Play Stream"
+                                                                data-toggle="tooltip" i18n-title title="Watch Stream"
                                                                 (click)="playLive(row.streamId)"
                                                                 class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
                                                                 type="button">
@@ -865,6 +865,7 @@
                                                 <mat-cell *matCellDef="let row" class="justify-flex-end">
                                                     <button (click)="playVoD(row.vodName ,row.type,row.vodId, row.streamId, row.filePath)"
                                                             class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
+                                                            title="Watch VoD Video"
                                                             type="button">
                                                         <span class="btn-label">
                                                             <i class="ti-eye"></i>
