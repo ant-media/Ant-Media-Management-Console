@@ -495,7 +495,7 @@
                                                         </button>
 
 
-                                                        <!-- Stop button IP Camera fetching -->
+                                                        <!-- Stop button IP Camera & Stream Source-->
                                                         <button *ngIf="(row.type== 'streamSource' || row.type=='ipCamera') && row.status=='broadcasting'"
                                                                 (click)="stopStreams(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -508,7 +508,7 @@
                                                             <ng-container i18n="@@tableSettings"></ng-container>
                                                         </button>
 
-                                                        <!-- Start button IP Camera fetching -->
+                                                        <!-- Start button IP Camera & Stream Source -->
                                                         <button *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status!='broadcasting'"
                                                                 (click)="startStreams(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
