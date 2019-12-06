@@ -496,20 +496,7 @@
 
 
                                                         <!-- Stop button IP Camera fetching -->
-                                                        <button *ngIf="row.type=='ipCamera' && row.status=='broadcasting'"
-                                                                (click)="stopStreams(row.streamId)"
-                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
-                                                                type="button" data-toggle="tooltip" i18n-title
-                                                                title="Stop Stream" >
-                                                            <span class="btn-label" style="float: right;">
-                                                                <i class="ti-control-pause"></i>
-                                                            </span>
-
-                                                            <ng-container i18n="@@tableSettings"></ng-container>
-                                                        </button>
-
-                                                        <!-- Stop button Stream Source fetching -->
-                                                        <button *ngIf="row.type=='streamSource' && row.status=='broadcasting'"
+                                                        <button *ngIf="(row.type== 'streamSource' || row.type=='ipCamera') && row.status=='broadcasting'"
                                                                 (click)="stopStreams(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button" data-toggle="tooltip" i18n-title
@@ -522,7 +509,7 @@
                                                         </button>
 
                                                         <!-- Start button IP Camera fetching -->
-                                                        <button *ngIf="row.type=='ipCamera' && row.status!='broadcasting'"
+                                                        <button *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status!='broadcasting'"
                                                                 (click)="startStreams(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button" data-toggle="tooltip" i18n-title
@@ -533,20 +520,6 @@
 
                                                             <ng-container i18n="@@tableSettings"></ng-container>
                                                         </button>
-
-                                                        <!-- Start IP Camera fetching -->
-                                                        <button *ngIf="row.type=='streamSource' && row.status!='broadcasting'"
-                                                                (click)="startStreams(row.streamId)"
-                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
-                                                                type="button" data-toggle="tooltip" i18n-title
-                                                                title="Start Stream" >
-                                                            <span class="btn-label" style="float: right;">
-                                                                <i class="ti-control-play"></i>
-                                                            </span>
-
-                                                            <ng-container i18n="@@tableSettings"></ng-container>
-                                                        </button>
-
 
                                                         <button *ngIf="row.type=='ipCamera'"
                                                                 (click)="openSettingsDialog(row)"
