@@ -453,7 +453,7 @@
                                                                 class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
                                                                 type="button">
                                                             <span class="btn-label">
-                                                                <i class="ti-eye"></i>
+                                                                <i class="ti-control-play"></i>
                                                             </span>
                                                             <ng-container i18n="@@tablePlayButton"></ng-container>
                                                         </button>
@@ -494,9 +494,8 @@
 
                                                         </button>
 
-
                                                         <!-- Stop button IP Camera & Stream Source-->
-                                                        <button *ngIf="(row.type== 'streamSource' || row.type=='ipCamera') && row.status=='broadcasting'"
+                                                        <button *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status=='broadcasting'"
                                                                 (click)="stopStreams(row.streamId)"
                                                                 class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                 type="button" data-toggle="tooltip" i18n-title
@@ -505,7 +504,6 @@
                                                                 <i class="ti-control-pause"></i>
                                                             </span>
 
-                                                            <ng-container i18n="@@tableSettings"></ng-container>
                                                         </button>
 
                                                         <!-- Start button IP Camera & Stream Source -->
@@ -515,10 +513,9 @@
                                                                 type="button" data-toggle="tooltip" i18n-title
                                                                 title="Start Stream" >
                                                             <span class="btn-label" style="float: right;">
-                                                                <i class="ti-control-play"></i>
+                                                                <i class="fa fa-plug"></i>
                                                             </span>
 
-                                                            <ng-container i18n="@@tableSettings"></ng-container>
                                                         </button>
 
                                                         <button *ngIf="row.type=='ipCamera'"
@@ -741,7 +738,7 @@
 
                                                             <button *ngIf="row.type=='streamSource'"
                                                                     (click)="openStreamSourceSettingsDialog(row)"
-                                                                    class="btn btn-simple btn-magnify btn-info btn-xs "
+                                                                    class="btn btn-simple btn-magnify btn-info btn-xs"
                                                                     type="button" data-toggle="tooltip" i18n-title
                                                                     title="Settings" style="float: right;font-size: 1.2em;">
                                                             <span class="btn-label" >
@@ -749,6 +746,30 @@
                                                             </span>
 
                                                                 <ng-container i18n="@@tableSettings"></ng-container>
+                                                            </button>
+
+                                                            <!-- Stop button IP Camera & Stream Source-->
+                                                            <button *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status=='broadcasting'"
+                                                                    (click)="stopStreams(row.streamId)"
+                                                                    class="btn btn-simple btn-magnify btn-info btn-xs"
+                                                                    type="button" data-toggle="tooltip" i18n-title
+                                                                    title="Stop Stream" style="float: right;font-size: 1.2em;" >
+                                                            <span class="btn-label">
+                                                                <i class="ti-control-pause"></i>
+                                                            </span>
+
+                                                            </button>
+
+                                                            <!-- Start button IP Camera & Stream Source -->
+                                                            <button *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status!='broadcasting'"
+                                                                    (click)="startStreams(row.streamId)"
+                                                                    class="btn btn-simple btn-magnify btn-info btn-xs"
+                                                                    type="button" data-toggle="tooltip" i18n-title
+                                                                    title="Start Stream" style="float: right;font-size: 1.2em;">
+                                                            <span class="btn-label">
+                                                                <i class="fa fa-plug"></i>
+                                                            </span>
+
                                                             </button>
 
                                                         </div>
@@ -841,7 +862,7 @@
                                                             title="Watch VoD Video"
                                                             type="button">
                                                         <span class="btn-label">
-                                                            <i class="ti-eye"></i>
+                                                            <i class="ti-control-play"></i>
                                                         </span>
                                                     </button>
 
