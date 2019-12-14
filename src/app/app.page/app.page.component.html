@@ -494,6 +494,20 @@
 
                                                         </button>
 
+                                                        <!-- Open RTMP Endpoint Dialog -->
+                                                        <button
+                                                                (click)="openRTMPEndpointDialog(row)" title="Add RTMP Endpoint"
+                                                                data-toggle="tooltip"
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
+                                                                type="button"
+                                                        >
+                                                            <span class="btn-label">
+                                                                <i class="fa fa-podcast"></i>
+                                                            </span>
+                                                            <ng-container i18n="@@tableRTMPEndpoint"></ng-container>
+
+                                                        </button>
+
 
                                                         <button *ngIf="row.type=='ipCamera'"
                                                                 (click)="openSettingsDialog(row)"

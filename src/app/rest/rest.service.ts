@@ -142,6 +142,14 @@ export class RestService {
         return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/vods/'+id, {});
     }
 
+    public removeRTMPEndpoint(appName: string,id:number, rtmpUrl:string) {
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint?rtmpUrl='+rtmpUrl, {});
+    }
+
+    public addRTMPEndpoint(appName: string,id:number, rtmpUrl:string) {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint?rtmpUrl='+rtmpUrl, {});
+    }
+
     public revokeSocialNetwork(appName: string, serviceId:string): Observable<Object> {
         return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/social-networks/'+serviceId, {});
     }

@@ -36,6 +36,7 @@ import {BroadcastEditComponent} from './dialog/broadcast.edit.dialog.component';
 import {CamSettingsDialogComponent} from './dialog/cam.settings.dialog.component';
 import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
+import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialog.component';
 import {Observable} from "rxjs";
 import "rxjs/add/observable/of";
 
@@ -2186,6 +2187,46 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             disableClose: true,
         });
     }
+
+
+    openRTMPEndpointDialog(stream: BroadcastInfo): void {
+
+        if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId || stream.name != this.liveStreamEditing.name) {
+            this.liveStreamEditing = new LiveBroadcast();
+            this.liveStreamEditing.streamId = stream.streamId;
+            this.liveStreamEditing.name = stream.name;
+            this.liveStreamEditing.description = "";
+        }
+
+
+        if (this.liveStreamEditing) {
+            let dialogRef = this.dialog.open(RtmpEndpointEditDialogComponent, {
+
+                height: '300px',
+                maxHeight: '500px',
+                width: '600px',
+                maxWidth: '600px',
+
+                data: {
+                    name: this.liveStreamEditing.name,
+                    streamId: this.liveStreamEditing.streamId,
+                    appName: this.appName,
+                    endpointList: stream.endPointList,
+                }
+
+            });
+
+
+            dialogRef.afterClosed().subscribe(result => {
+                console.log('The dialog was closed');
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                this.getAppLiveStreamsNumber();
+            });
+
+        }
+    }
+
+
 
 }
 

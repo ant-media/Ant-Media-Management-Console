@@ -49,7 +49,7 @@ import {BroadcastEditComponent} from './dialog/broadcast.edit.dialog.component';
 import {CamSettingsDialogComponent} from './dialog/cam.settings.dialog.component';
 import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
-
+import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialog.component';
 
 export const AppPageRoutes: Routes = [
     {
@@ -74,6 +74,7 @@ export const AppPageRoutes: Routes = [
                     StreamSourceEditComponent,
                     SocialMediaStatsComponent,
                     WebRTCClientStatsComponent,
+                    RtmpEndpointEditDialogComponent,
                 ],
 
     entryComponents: [
@@ -85,6 +86,7 @@ export const AppPageRoutes: Routes = [
                         StreamSourceEditComponent,
                         SocialMediaStatsComponent,
                         WebRTCClientStatsComponent,
+                        RtmpEndpointEditDialogComponent,
                     ],
     bootstrap: [AppPageComponent],
 

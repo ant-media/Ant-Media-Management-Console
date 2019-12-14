@@ -1,6 +1,7 @@
 export declare interface Endpoint {
     type: string;
     endpointServiceId: string;
+    rtmpUrl: string;
 }
 export declare interface User {
 
