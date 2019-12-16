@@ -36,7 +36,6 @@ export class RtmpEndpointEditDialogComponent {
 
                 if (this.endpointList[i].type == "generic") {
                     this.isEmptyEndpoint = false;
-                    console.log("1- this.isEmptyEndpoint  " + this.isEmptyEndpoint);
                     break;
                 }
             }
@@ -52,6 +51,8 @@ export class RtmpEndpointEditDialogComponent {
 
             if (data["success"]) {
 
+                this.endpointList = this.endpointList || [];
+
                 this.endpointList.push({
                     rtmpUrl: rtmpUrl,
                     type:"generic",
@@ -62,7 +63,6 @@ export class RtmpEndpointEditDialogComponent {
 
                     if (this.endpointList[i].type == "generic") {
                         this.isEmptyEndpoint = false;
-                        console.log("add- this.isEmptyEndpoint  " + this.isEmptyEndpoint);
                         break;
                     }
                 }
