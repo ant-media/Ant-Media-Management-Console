@@ -24,6 +24,8 @@ export class StreamSourceEditComponent {
     public shareEndpoint: boolean[];
     public videoServiceEndPoints: VideoServiceEndpoint[];
     public streamNameEmpty = false;
+    public endpointList: Endpoint[];
+    public genericRTMPEndpointCount = 0 ;
 
 
     constructor(
@@ -33,11 +35,19 @@ export class StreamSourceEditComponent {
         this.shareEndpoint = [];
         this.videoServiceEndPoints = data.videoServiceEndpoints;
 
-        let endpointList: Endpoint[] = data.endpointList;
+        this.endpointList= data.endpointList;
+
+        // Detect How many generic Endpoint added.
+        for (var i  in this.endpointList) {
+            if (this.endpointList[i].type == "generic") {
+                this.genericRTMPEndpointCount++;
+            }
+        }
+
         this.videoServiceEndPoints.forEach((item, index) => {
             let foundService: boolean = false;
-            for (var i  in endpointList) {
-                if (endpointList[i].endpointServiceId == item.id) {
+            for (var i  in this.endpointList) {
+                if (this.endpointList[i].endpointServiceId == item.id) {
                     this.shareEndpoint.push(true);
                     foundService = true;
                     break;
@@ -97,6 +107,19 @@ export class StreamSourceEditComponent {
 
             this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.streamSource, socialNetworks).subscribe(data => {
 
+                if (data["success"]) {
+                    if (this.genericRTMPEndpointCount != 0) {
+                         for (var i  in this.endpointList) {
+                            if (this.endpointList[i].type == "generic") {
+                                this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, this.endpointList[i].rtmpUrl).subscribe(data2 => {
+                                    if (!data2["success"]) {
+                                        data["success"] = false;
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
                 if (data["success"]) {
 
                     this.dialogRef.close();

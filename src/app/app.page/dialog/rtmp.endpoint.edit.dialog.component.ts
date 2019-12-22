@@ -19,6 +19,7 @@ export class RtmpEndpointEditDialogComponent {
     public shareEndpoint: boolean[];
     public endpointList: Endpoint[];
     public isEmptyEndpoint: boolean = true;
+    public rtmpEndpointName;
 
 
     constructor(
@@ -47,6 +48,20 @@ export class RtmpEndpointEditDialogComponent {
 
     addRtmpEndpoint(rtmpUrl:string){
 
+        let resultMessage = "";
+
+        for (var i  in this.endpointList){
+
+            if (this.endpointList[i].rtmpUrl == rtmpUrl) {
+
+                rtmpUrl = "";
+                resultMessage = "RTMP URL Already added";
+            }
+
+        }
+
+
+
         this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, rtmpUrl).subscribe(data => {
 
             if (data["success"]) {
@@ -67,9 +82,14 @@ export class RtmpEndpointEditDialogComponent {
                     }
                 }
 
+                resultMessage = "RTMP URL Added Successfully";
+
+                this.rtmpEndpointName = "";
+
+
                 $.notify({
                     icon: "ti-save",
-                    message: "RTMP Endpoint added"
+                    message: resultMessage,
                 }, {
                     type: "success",
                     delay: 900,
@@ -81,9 +101,10 @@ export class RtmpEndpointEditDialogComponent {
 
             }
             else {
+                resultMessage ="RTMP Endpoint is not be saved";
                 $.notify({
                     icon: "ti-alert",
-                    message: "RTMP Endpoint is not be saved"
+                    message: resultMessage
                 }, {
                     type: "warning",
                     delay: 900,

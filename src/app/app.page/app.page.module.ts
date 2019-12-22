@@ -95,7 +95,6 @@ export const AppPageRoutes: Routes = [
         CommonModule,
         MatFormFieldModule,
         MatInputModule,
-
         MatCheckboxModule,
         MatDialogModule,
         RouterModule.forChild(AppPageRoutes),

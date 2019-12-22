@@ -2226,8 +2226,78 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
+    stopStreams(streamId: string): void {
 
+        this.restService.stopStream(this.appName, streamId).subscribe(data => {
 
+            if (data["success"] == true) {
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Please wait, stream stopping"
+                }, {
+                    type: "success",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else{
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Stream Stop Failed"
+                }, {
+                    type: "warning",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+
+        });
+    }
+
+    startStreams(streamId: string): void {
+
+        this.restService.startStream(this.appName, streamId).subscribe(data => {
+
+            if (data["success"] == true) {
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Please wait, stream starting."
+                }, {
+                    type: "success",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else{
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Stream Start Failed"
+                }, {
+                    type: "warning",
+                    delay: 900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+
+            }
+
+        });
+    }
 }
 
 
