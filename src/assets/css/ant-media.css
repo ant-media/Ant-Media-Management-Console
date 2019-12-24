@@ -1,3 +1,6 @@
+.dropdown-link{
+ cursor: pointer;
+}
 .vcenter {
     float: none;
     vertical-align: middle;

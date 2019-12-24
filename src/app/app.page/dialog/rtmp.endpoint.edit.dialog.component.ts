@@ -19,7 +19,7 @@ export class RtmpEndpointEditDialogComponent {
     public shareEndpoint: boolean[];
     public endpointList: Endpoint[];
     public isEmptyEndpoint: boolean = true;
-    public rtmpEndpointName;
+    public rtmpEndpointName: any;
 
 
     constructor(
@@ -31,19 +31,15 @@ export class RtmpEndpointEditDialogComponent {
 
         this.isEmptyEndpoint = true;
 
-            for (var i  in this.endpointList) {
+        for (var i  in this.endpointList) {
 
-                console.log("this.endpointList[i].type  " + this.endpointList[i].type);
+            console.log("this.endpointList[i].type  " + this.endpointList[i].type);
 
-                if (this.endpointList[i].type == "generic") {
-                    this.isEmptyEndpoint = false;
-                    break;
-                }
+            if (this.endpointList[i].type == "generic") {
+                this.isEmptyEndpoint = false;
+                break;
             }
-
-
-
-
+        }
     }
 
     addRtmpEndpoint(rtmpUrl:string){
@@ -66,6 +62,10 @@ export class RtmpEndpointEditDialogComponent {
 
             if (data["success"]) {
 
+                resultMessage = "RTMP URL Added Successfully";
+
+                this.rtmpEndpointName = "";
+
                 this.endpointList = this.endpointList || [];
 
                 this.endpointList.push({
@@ -81,11 +81,6 @@ export class RtmpEndpointEditDialogComponent {
                         break;
                     }
                 }
-
-                resultMessage = "RTMP URL Added Successfully";
-
-                this.rtmpEndpointName = "";
-
 
                 $.notify({
                     icon: "ti-save",
@@ -120,7 +115,7 @@ export class RtmpEndpointEditDialogComponent {
 
     removeRTMPEndpoint(rtmpUrl:string,index: number){
 
-        this.restService.removeRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, rtmpUrl).subscribe(data => {
+        this.restService.deleteRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, rtmpUrl).subscribe(data => {
 
             if (data["success"]) {
 

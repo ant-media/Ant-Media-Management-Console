@@ -40,7 +40,8 @@ export class BroadcastEditComponent {
             if (this.endpointList[i].type == "generic") {
                 this.genericRTMPEndpointCount++;
             }
-            }
+        }
+
         this.videoServiceEndPoints.forEach((item, index) => {
             let foundService: boolean = false;
             for (var i  in this.endpointList) {

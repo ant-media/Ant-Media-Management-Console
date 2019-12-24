@@ -120,6 +120,7 @@ export class StreamSourceEditComponent {
                         }
                     }
                 }
+                
                 if (data["success"]) {
 
                     this.dialogRef.close();

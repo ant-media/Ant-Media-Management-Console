@@ -306,7 +306,7 @@
 
                                     <div class="mat-container mat-elevation-z0">
 
-                                        <mat-table style="overflow: visible !important;"  [dataSource]="dataSource" matSort>
+                                        <mat-table style="overflow: visible !important;" [dataSource]="dataSource"  matSort >
 
                                             <ng-container matColumnDef="name">
                                                 <mat-header-cell [ngClass]="'stream-name-column'" *matHeaderCellDef mat-sort-header> Stream Name </mat-header-cell>
@@ -421,7 +421,6 @@
 
                                             </ng-container>
 
-
                                             <ng-container  matColumnDef="social_media">
                                                 <mat-header-cell [ngClass]="'social-column'"  *matHeaderCellDef> Social Share</mat-header-cell>
                                                 <mat-cell [ngClass]="'social-column'"  *matCellDef="let row">
@@ -447,8 +446,8 @@
 
                                                     <div style="font-size: 1.1em">
 
-                                                        <ul   class="nav navbar-nav navbar-right">
-                                                            <li  class="dropdown">
+                                                        <ul  class="nav navbar-right">
+                                                            <li (click)="contextDropdownClicked()" class="dropdown">
                                                                 <a href="#" class="dropdown-toggle btn-magnify" data-toggle="dropdown">
                                                                     <i class="ti-user"></i>
                                                                     <span class="notification"></span>
@@ -458,82 +457,37 @@
                                                                 </a>
                                                                 <ul class="dropdown-menu">
 
-                                                                    <!-- Stop button IP Camera & Stream Source-->
-
-                                                                    <li *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status=='broadcasting'">
-                                                                        <a       (click)="stopStreams(row.streamId)"
-                                                                                routerLink="#" routerLinkActive="active">
-                                                                            <i class="ti-angle-double-right"></i>
-                                                                            <ng-container i18n="@@stopBroadcast">Stop Broadcast</ng-container>
-                                                                        </a>
-
-                                                                    </li>
-
-
                                                                     <!-- Start button IP Camera & Stream Source -->
 
-                                                                    <li  *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status!='broadcasting'">
-                                                                        <a       (click)="startStreams(row.streamId)"
-                                                                                 routerLink="#" routerLinkActive="active">
+                                                                    <li *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status!='broadcasting'">
+                                                                        <a class="dropdown-link"   (click)="startStreams(row.streamId)">
                                                                             <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@startBroadcast">Start Broadcast</ng-container>
                                                                         </a>
+                                                                    </li>
 
+                                                                    <!-- Stop button IP Camera & Stream Source-->
+
+                                                                    <li *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status=='broadcasting'">
+                                                                        <a class="dropdown-link"    (click)="stopStreams(row.streamId)">
+                                                                            <i class="ti-angle-double-right"></i>
+                                                                            <ng-container i18n="@@stopBroadcast">Stop Broadcast</ng-container>
+                                                                        </a>
                                                                     </li>
 
                                                                     <!-- Edit RTMP Endpoints -->
 
                                                                     <li>
-                                                                        <a       (click)="openRTMPEndpointDialog(row)"
-                                                                                 routerLink="#" routerLinkActive="active">
+                                                                        <a class="dropdown-link"  (click)="openRTMPEndpointDialog(row)" >
                                                                             <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@editRTMPEndpoint">Edit RTMP Endpoints</ng-container>
                                                                         </a>
-
                                                                     </li>
-
-
-                                                                    <!-- Edit Live Stream Broadcast-->
-                                                                    <!--
-                                                                    <li *ngIf="row.status!='broadcasting'&& row.type=='liveStream'">
-                                                                        <a      (click)="openBroadcastEditDialog(row)"
-                                                                                routerLink="#" routerLinkActive="active">
-                                                                            <i class="ti-angle-double-right"></i>
-                                                                            <ng-container i18n="@@editBroadcast">Edit Broadcast</ng-container>
-                                                                        </a>
-
-                                                                    </li>
-                                                                    -->
-                                                                    <!-- Edit IP Camera Broadcast -->
-                                                                    <!--
-                                                                    <li *ngIf="row.type=='ipCamera'"
-                                                                        >
-                                                                        <a     (click)="openSettingsDialog(row)"
-                                                                                routerLink="#" routerLinkActive="active">
-                                                                            <i class="ti-angle-double-right"></i>
-                                                                            <ng-container i18n="@@editBroadcast">Edit Broadcast</ng-container>
-                                                                        </a>
-
-                                                                    </li>
-                                                                    -->
-
-                                                                    <!-- Edit Stream Source Broadcast -->
-                                                                    <!--
-                                                                    <li *ngIf="row.type=='streamSource'"
-                                                                    >
-                                                                        <a     (click)="openStreamSourceSettingsDialog(row)"
-                                                                               routerLink="#" routerLinkActive="active">
-                                                                            <i class="ti-angle-double-right"></i>
-                                                                            <ng-container i18n="@@editBroadcast">Edit Broadcast</ng-container>
-                                                                        </a>
-
-                                                                    </li>
-                                                                    -->
 
                                                                     <!-- Copy Live Embed Code -->
 
                                                                     <li>
-                                                                        <a (click)="copyLiveEmbedCode(row.streamId)" routerLink="#" routerLinkActive="active">
+                                                                        <a class="dropdown-link"   (click)="copyLiveEmbedCode(row.streamId)">
                                                                             <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@tableEmbedCode">Copy Live Embed Code to Clipboard</ng-container>
                                                                         </a>
@@ -542,40 +496,29 @@
                                                                     <!-- Copy Publish URL to Clipboard -->
 
                                                                     <li *ngIf="row.status!='broadcasting'">
-                                                                        <a  (click)="copyPublishUrl(row.streamId)" routerLink="#" routerLinkActive="active">
+                                                                        <a class="dropdown-link"   (click)="copyPublishUrl(row.streamId)">
                                                                             <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@copyPublishUrl">Copy Publish URL to Clipboard</ng-container>
                                                                         </a>
-
                                                                     </li>
 
                                                                     <!-- Delete Broadcast -->
 
-                                                                    <li (click)="deleteLiveBroadcast(row.streamId)" class="text-left">
-                                                                        <a routerLink="#" routerLinkActive="active">
-
+                                                                    <li>
+                                                                        <a class="dropdown-link" (click)="deleteLiveBroadcast(row.streamId)" >
                                                                             <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@tableDeleteButton">Delete Broadcast</ng-container>
-
                                                                         </a>
-
                                                                     </li>
 
                                                                     <!-- Object Detected Button -->
 
                                                                     <li *ngIf="appSettings.objectDetectionEnabled==true" class="text-left">
-                                                                        <a (click)="showDetectedObject(row.streamId)" routerLink="#" routerLinkActive="active">
-
+                                                                        <a (click)="showDetectedObject(row.streamId)">
                                                                             <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@tableObjectDetected">Detected Objects</ng-container>
-
                                                                         </a>
-
                                                                     </li>
-
-
-
-
                                                                 </ul>
                                                             </li>
 
@@ -607,23 +550,10 @@
                                                         </button>
 
 
-                                                        <!--  Social media stats Button -->
-                                                        <!--
-                                                        <button *ngIf="row.status=='broadcasting' && hasSocialEndpoint(row)"
-                                                                data-toggle="tooltip" i18n-title title="Comments on Social Media"
-                                                                (click)="showLiveComments(row)"
-                                                                class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
-                                                                type="button">
-                                                            <span class="btn-label">
-                                                                <i class="ti-stats-up"></i>
-                                                            </span>
-                                                            <ng-container i18n="@@tablePlayButton"></ng-container>
-                                                        </button>
--->
 
                                                         <!-- Edit Broadcast Button -->
 
-                                                       <button *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
+                                                        <button *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
                                                                (click)="openBroadcastEditDialog(row)" title="Edit"
                                                                data-toggle="tooltip"
                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -637,7 +567,7 @@
                                                        </button>
 
 
-                                                       <button *ngIf="row.type=='ipCamera'"
+                                                        <button *ngIf="row.type=='ipCamera'"
                                                                (click)="openSettingsDialog(row)"
                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                                type="button" data-toggle="tooltip" i18n-title
@@ -663,68 +593,18 @@
                                                         </button>
 
 
+                                                        <!--  Social media stats Button -->
 
-                                                        <!--
-
-                                                        <button (click)="copyLiveEmbedCode(row.streamId)"
-                                                                data-toggle="tooltip" i18n-title
-                                                                title="Copy Live Embed Code to Clipboard"
-                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
-                                                                type="button"
-                                                        >
+                                                        <button *ngIf="row.status=='broadcasting' && hasSocialEndpoint(row)"
+                                                                data-toggle="tooltip" i18n-title title="Comments on Social Media"
+                                                                (click)="showLiveComments(row)"
+                                                                class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
+                                                                type="button">
                                                             <span class="btn-label">
-                                                                <i class="ti-share"></i>
+                                                                <i class="ti-stats-up"></i>
                                                             </span>
-                                                            <ng-container i18n="@@tableEmbedCode"></ng-container>
+                                                            <ng-container i18n="@@tablePlayButton"></ng-container>
                                                         </button>
-
--->
-                                                        <!--
-
-                                                        <button *ngIf="row.status!='broadcasting'"
-                                                                id="copyPublishUrlButton"
-                                                                (click)="copyPublishUrl(row.streamId)"
-                                                                data-toggle="tooltip"
-                                                                [title]="'Copy Publish URL to Clipboard : ' + getRtmpUrl(row.streamId)"
-                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
-                                                                type="button"
-                                                        >
-                                                            <span class="btn-label">
-                                                                <i class="ti-clipboard"></i>
-                                                            </span>
-                                                            <ng-container i18n="@@copyPublishUrl"></ng-container>
-                                                        </button>
-
--->
-
-                                                        <!--
-
-                                                        <button (click)="deleteLiveBroadcast(row.streamId)"
-                                                                class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
-                                                                type="button" data-toggle="tooltip"
-                                                                i18n-title title="Delete" >
-                                                            <span class="btn-label">
-                                                                <i class="ti-close"></i>
-                                                            </span>
-                                                            <ng-container i18n="@@tableDeleteButton"></ng-container>
-                                                        </button>
-
--->
-
-                                                        <!--
-
-                                                        <button *ngIf="appSettings.objectDetectionEnabled==true"
-                                                                (click)="showDetectedObject(row.streamId)"
-                                                                class="btn btn-simple btn-magnify btn-danger btn-xs "
-                                                                type="button" data-toggle="tooltip"
-                                                                i18n-title title="Object Detected" style="font-size: 1.1em">
-                                                            <span class="btn-label">
-                                                                <i class="ti-target"></i>
-                                                            </span>
-                                                        </button>
-
--->
-
 
                                                     </div>
                                                 </mat-cell>
@@ -734,7 +614,7 @@
                                             <mat-header-row *matHeaderRowDef="displayedColumnsStreams"></mat-header-row>
                                             <mat-row *matRowDef="let row; columns: displayedColumnsStreams;">
                                             </mat-row>
-                                        </mat-table>
+                                       </mat-table>
 
                                         <mat-paginator
                                                 [pageSizeOptions]="pageSizeOptions"
@@ -759,10 +639,6 @@
 
 
                                                     <div class="card-content">
-
-                                                        <!--   <div id="{{row.streamId}}"></div>
-                                                        src="http://localhost:5080/LiveApp/play.html?name=711790025373335366896087"-->
-
 
                                                         <div class="embed-container">
 
@@ -793,55 +669,87 @@
 
                                                             <span style="float: left;"> {{row.name}}</span>
 
+                                                            <!-- Context Menu Icon -->
 
+                                                            <ul class="nav navbar-right">
+                                                                <li (click)="contextDropdownClicked()" class="dropdown">
+                                                                    <a href="#" class="dropdown-toggle btn-magnify" data-toggle="dropdown">
+                                                                        <i class="ti-user"></i>
+                                                                        <span class="notification"></span>
+                                                                        <b class="caret"></b>
+                                                                        <p class="hidden-md hidden-lg">
+                                                                        </p>
+                                                                    </a>
+                                                                    <ul class="dropdown-menu">
 
-                                                            <button *ngIf="appSettings.objectDetectionEnabled==true"
-                                                                    (click)="showDetectedObject(row.streamId)"
-                                                                    class="btn btn-simple btn-magnify btn-danger btn-xs "
-                                                                    type="button" data-toggle="tooltip"
-                                                                    i18n-title title="Object Detected" style="float: right;font-size: 1.1em">
-                                                                <span class="btn-label">
-                                                                    <i class="ti-target"></i>
-                                                                </span>
-                                                                <ng-container i18n="@@tableObjectDetectButton"></ng-container>
-                                                            </button>
+                                                                        <!-- Start button IP Camera & Stream Source -->
 
+                                                                        <li *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status!='broadcasting'">
+                                                                            <a class="dropdown-link"   (click)="startStreams(row.streamId)">
+                                                                                <i class="ti-angle-double-right"></i>
+                                                                                <ng-container i18n="@@startBroadcast">Start Broadcast</ng-container>
+                                                                            </a>
+                                                                        </li>
 
+                                                                        <!-- Stop button IP Camera & Stream Source-->
 
+                                                                        <li *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status=='broadcasting'">
+                                                                            <a class="dropdown-link"    (click)="stopStreams(row.streamId)">
+                                                                                <i class="ti-angle-double-right"></i>
+                                                                                <ng-container i18n="@@stopBroadcast">Stop Broadcast</ng-container>
+                                                                            </a>
+                                                                        </li>
 
-                                                            <button (click)="deleteLiveBroadcast(row.streamId)"
-                                                                    class="btn btn-simple btn-magnify btn-danger btn-xs "
-                                                                    type="button" data-toggle="tooltip"
-                                                                    i18n-title title="Delete"
-                                                                    style="float: right;font-size: 1.2em;">
-                                                                <span class="btn-label">
-                                                                    <i class="ti-close"></i>
-                                                                </span>
-                                                                <ng-container i18n="@@tableDeleteButton"></ng-container>
-                                                            </button>
+                                                                        <!-- Edit RTMP Endpoints -->
 
+                                                                        <li>
+                                                                            <a class="dropdown-link"  (click)="openRTMPEndpointDialog(row)" >
+                                                                                <i class="ti-angle-double-right"></i>
+                                                                                <ng-container i18n="@@editRTMPEndpoint">Edit RTMP Endpoints</ng-container>
+                                                                            </a>
+                                                                        </li>
 
-                                                            <button (click)="copyLiveEmbedCode(row.streamId)"
-                                                                    data-toggle="tooltip" i18n-title
-                                                                    title="Copy Live Embed Code to Clipboard"
-                                                                    class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                    type="button"
-                                                                    style="float: right;font-size: 1.2em;">
-                                                                <span class="btn-label">
-                                                                    <i class="ti-share"></i>
-                                                                </span>
-                                                                <ng-container i18n="@@tableEmbedCode"></ng-container>
-                                                            </button>
-                                                            <button *ngIf="row.status!='broadcasting'" id="copyPublishUrlButton" (click)="copyPublishUrl(row.streamId)" data-toggle="tooltip"
-                                                                    [title]="'Copy Publish URL to Clipboard : ' + getRtmpUrl(row.streamId)"
-                                                                    class="btn btn-simple btn-magnify btn-info btn-xs "
-                                                                    type="button"
-                                                                    style="float: right;font-size: 1.2em;">
-                                                                <span class="btn-label">
-                                                                    <i class="ti-clipboard"></i>
-                                                                </span>
-                                                                <ng-container i18n="@@copyPublishUrl"></ng-container>
-                                                            </button>
+                                                                        <!-- Copy Live Embed Code -->
+
+                                                                        <li>
+                                                                            <a class="dropdown-link"   (click)="copyLiveEmbedCode(row.streamId)">
+                                                                                <i class="ti-angle-double-right"></i>
+                                                                                <ng-container i18n="@@tableEmbedCode">Copy Live Embed Code to Clipboard</ng-container>
+                                                                            </a>
+                                                                        </li>
+
+                                                                        <!-- Copy Publish URL to Clipboard -->
+
+                                                                        <li *ngIf="row.status!='broadcasting'">
+                                                                            <a class="dropdown-link"   (click)="copyPublishUrl(row.streamId)">
+                                                                                <i class="ti-angle-double-right"></i>
+                                                                                <ng-container i18n="@@copyPublishUrl">Copy Publish URL to Clipboard</ng-container>
+                                                                            </a>
+                                                                        </li>
+
+                                                                        <!-- Delete Broadcast -->
+
+                                                                        <li>
+                                                                            <a class="dropdown-link" (click)="deleteLiveBroadcast(row.streamId)" >
+                                                                                <i class="ti-angle-double-right"></i>
+                                                                                <ng-container i18n="@@tableDeleteButton">Delete Broadcast</ng-container>
+                                                                            </a>
+                                                                        </li>
+
+                                                                        <!-- Object Detected Button -->
+
+                                                                        <li *ngIf="appSettings.objectDetectionEnabled==true" class="text-left">
+                                                                            <a (click)="showDetectedObject(row.streamId)">
+                                                                                <i class="ti-angle-double-right"></i>
+                                                                                <ng-container i18n="@@tableObjectDetected">Detected Objects</ng-container>
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </li>
+
+                                                            </ul>
+
+                                                            <!-- Edit Broadcast Live Stream -->
 
                                                             <button *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
                                                                     (click)="openBroadcastEditDialog(row)" title="Edit"
@@ -852,10 +760,10 @@
                                                                 <span class="btn-label">
                                                                     <i class="ti-pencil"></i>
                                                                 </span>
-                                                                <ng-container i18n="@@tableEditButton"></ng-container>
 
                                                             </button>
 
+                                                            <!-- Edit Broadcast IP Camera -->
 
                                                             <button *ngIf="row.type=='ipCamera'"
                                                                     (click)="openSettingsDialog(row)"
@@ -866,9 +774,9 @@
                                                                 <i class="ti-settings"></i>
                                                             </span>
 
-                                                                <ng-container i18n="@@tableSettings"></ng-container>
                                                             </button>
 
+                                                            <!-- Edit Broadcast Stream Source -->
 
                                                             <button *ngIf="row.type=='streamSource'"
                                                                     (click)="openStreamSourceSettingsDialog(row)"
@@ -879,7 +787,18 @@
                                                                 <i class="ti-settings"></i>
                                                             </span>
 
-                                                                <ng-container i18n="@@tableSettings"></ng-container>
+                                                            </button>
+
+                                                            <!--  Social media stats Button -->
+
+                                                            <button *ngIf="row.status=='broadcasting' && hasSocialEndpoint(row)"
+                                                                    data-toggle="tooltip" i18n-title title="Comments on Social Media"
+                                                                    (click)="showLiveComments(row)"
+                                                                    class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
+                                                                    type="button">
+                                                            <span class="btn-label">
+                                                                <i class="ti-stats-up"></i>
+                                                            </span>
                                                             </button>
 
                                                         </div>

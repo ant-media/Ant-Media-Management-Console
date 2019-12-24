@@ -191,6 +191,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public streamNameEmpty=false;
     public encoderSettings:EncoderSettings[];
     public acceptAllStreams : boolean;
+    public dropdownTimer: any;
 
 
 
@@ -266,6 +267,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     ngOnInit() {
 
         this.timerId = null;
+        this.dropdownTimer = null;
 
         this.broadcastTableData = {
             dataRows: [],
@@ -302,10 +304,36 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.getInitParams();
 
+        this.callTimer();
+
+    }
+
+    contextDropdownClicked(){
+
+        this.clearTimer();
+
+        this.dropdownTimer = window.setInterval(() => {
+            if(this.authService.isAuthenticated) {
+                if(this.appName != "undefined"){
+                    this.callTimer();
+                }
+            }
+
+        }, 10000);
+    }
+
+    callTimer(){
+
+        console.log("Timer Started");
+
+        if(this.dropdownTimer != null){
+            clearInterval(this.dropdownTimer);
+            this.dropdownTimer= null;
+        }
 
         //this timer gets the related information according to active application
         //so that it checks appname whether it is undefined
-        this.timerId = window.setInterval(() => {
+            this.timerId = window.setInterval(() => {
             if(this.authService.isAuthenticated) {
                 if(this.appName != "undefined"){
 
@@ -315,7 +343,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             }
 
-        }, 5000);
+            }, 5000);
     }
 
     onPaginateChange(event) {
@@ -647,13 +675,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         alert("test");
     }
 
-
     getAppLiveStreams(offset: number, size: number): void {
 
         offset = offset * size;
 
         this.restService.getAppLiveStreams(this.appName, offset, size).subscribe(data => {
+
             this.broadcastTableData.dataRows = [];
+
             for (var i in data) {
 
                 var endpoint = [];
@@ -665,9 +694,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.broadcastTableData.dataRows[i].iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + this.broadcastTableData.dataRows[i].streamId + "&autoplay=true";
 
             }
+
             this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
+
         });
+
     }
+
+
+
 
 
     cleanURL(oldURL: string): SafeResourceUrl {
@@ -713,11 +748,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     clearTimer() {
-        if (this.timerId) {
-            console.log("clearing interval: " + this.timerId);
-            clearInterval(this.timerId);
-        }
 
+            console.log("this.timerId: " + this.timerId);
+            console.log("this.dropdownTimer: " + this.dropdownTimer);
+
+            clearInterval(this.timerId);
+            clearInterval(this.dropdownTimer);
     }
 
     ngOnDestroy() {
@@ -2218,7 +2254,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
             dialogRef.afterClosed().subscribe(result => {
-                console.log('The dialog was closed');
                 this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                 this.getAppLiveStreamsNumber();
             });
