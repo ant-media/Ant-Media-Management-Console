@@ -2267,6 +2267,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             if (data["success"] == true) {
 
+                if(!this.isGridView){
+                    this.broadcastTableData.dataRows[this.findIndexBroadcastTableThis(streamId)].status = "finished";
+                }
+                else{
+                    this.broadcastGridTableData.dataRows[this.findIndexGridTableThis(streamId)].status = "finished";
+                }
+
                 $.notify({
                     icon: "ti-save",
                     message: "Please wait, stream stopping"
@@ -2303,6 +2310,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             if (data["success"] == true) {
 
+                if(!this.isGridView){
+                    this.broadcastTableData.dataRows[this.findIndexBroadcastTableThis(streamId)].status = "broadcasting";
+                }
+                else{
+                    this.broadcastGridTableData.dataRows[this.findIndexGridTableThis(streamId)].status = "broadcasting";
+                }
+
                 $.notify({
                     icon: "ti-save",
                     message: "Please wait, stream starting."
@@ -2332,6 +2346,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
         });
+    }
+
+    findIndexBroadcastTableThis(streamId: string){
+
+        return this.broadcastTableData.dataRows.findIndex(item=>item.streamId == streamId);
+
+    }
+
+    findIndexGridTableThis(streamId: string){
+
+        return this.broadcastGridTableData.dataRows.findIndex(item=>item.streamId == streamId);
+
     }
 }
 

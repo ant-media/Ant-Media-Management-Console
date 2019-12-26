@@ -31,9 +31,9 @@ export class RtmpEndpointEditDialogComponent {
 
         this.isEmptyEndpoint = true;
 
-        for (var i  in this.endpointList) {
+        // Check is null Generic endpoint list
 
-            console.log("this.endpointList[i].type  " + this.endpointList[i].type);
+        for (var i  in this.endpointList) {
 
             if (this.endpointList[i].type == "generic") {
                 this.isEmptyEndpoint = false;
@@ -46,17 +46,14 @@ export class RtmpEndpointEditDialogComponent {
 
         let resultMessage = "";
 
+        // Check Generic Endpoint Already Added
+
         for (var i  in this.endpointList){
-
             if (this.endpointList[i].rtmpUrl == rtmpUrl) {
-
                 rtmpUrl = "";
                 resultMessage = "RTMP URL Already added";
             }
-
         }
-
-
 
         this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, rtmpUrl).subscribe(data => {
 
@@ -75,7 +72,6 @@ export class RtmpEndpointEditDialogComponent {
                 });
 
                 for (var i  in this.endpointList) {
-
                     if (this.endpointList[i].type == "generic") {
                         this.isEmptyEndpoint = false;
                         break;
@@ -134,23 +130,19 @@ export class RtmpEndpointEditDialogComponent {
                 });
 
                 if(this.endpointList.length == 0){
-
                     this.isEmptyEndpoint = true;
-
                 }
 
                 else{
 
-                for (var i  in this.endpointList) {
+                    for (var i  in this.endpointList) {
 
-                    if (this.endpointList[i].type == "generic") {
-                        this.isEmptyEndpoint = false;
-                        break;
+                        if (this.endpointList[i].type == "generic") {
+                            this.isEmptyEndpoint = false;
+                            break;
                     }
-
                     this.isEmptyEndpoint = true;
-                }
-
+                    }
                 }
 
             }
@@ -169,8 +161,6 @@ export class RtmpEndpointEditDialogComponent {
             }
 
         });
-
-
     }
 
     cancelRTMPEndpoint(): void {
