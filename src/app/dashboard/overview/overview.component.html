@@ -20,11 +20,6 @@
                     </div>
                     <div class="card-footer">
                         <hr />
-                        <!--
-                        <div class="stats">
-                            <i class="ti-reload"></i> Updated now
-                        </div>
-                    -->
                     </div>
                 </div>
             </div>
@@ -82,7 +77,7 @@
         -->
         </div>
         <div class="row">
-            <div class="col-lg-6 col-sm-6">
+            <div class="col-lg-4 col-sm-4">
                 <div class="card card-circle-chart">
                     <div class="card-header text-center">
                         <h5 class="card-title" i18n="@@diskUsageLabel">Disk Usage</h5>
@@ -93,14 +88,25 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 col-sm-6">
+            <div class="col-lg-4 col-sm-4">
+                <div class="card card-circle-chart">
+                    <div class="card-header text-center">
+                        <h5 class="card-title" i18n="@@serverMemoryUsageLabel">Native Ram Usage</h5>
+                        <p class="description">{{niceBytes(systemRamInUse)}} / {{niceBytes(systemRamTotalSpace)}}</p>
+                    </div>
+                    <div class="card-content">
+                        <div id="chartSystemRamUsage" class="chart-circle">{{systemRamUsagePercent}}%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-4">
                 <div class="card card-circle-chart">
                     <div class="card-header text-center">
                         <h5 class="card-title" i18n="@@serverMemoryUsageLabel">Reserved Heap Usage</h5>
-                        <p class="description">{{niceBytes(memoryInUseSpace)}} / {{niceBytes(memoryTotalSpace)}}</p>
+                        <p class="description">{{niceBytes(jvmMemoryInUseSpace)}} / {{niceBytes(jvmMemoryTotalSpace)}}</p>
                     </div>
                     <div class="card-content">
-                        <div id="chartMemoryUsage" class="chart-circle">{{memoryUsagePercent}}%</div>
+                        <div id="chartJvmMemoryUsage" class="chart-circle">{{jvmMemoryUsagePercent}}%</div>
                     </div>
                 </div>
             </div>

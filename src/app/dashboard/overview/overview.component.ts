@@ -34,15 +34,20 @@ export class OverviewComponent implements OnInit {
     public cpuLoad: number;
     public liveStreamSize: number;
     public watcherSize: number;
-    public chartSystemMemory: any;
     public diskUsagePercent: any;
-    public memoryUsagePercent: any;
+    public jvmMemoryUsagePercent: any;
+    public systemRamUsagePercent: any;
     public diskTotalSpace: any;
     public diskInUseSpace: any;
-    public memoryTotalSpace: any;
-    public memoryInUseSpace: any;
+    public jvmMemoryTotalSpace: any;
+    public jvmMemoryInUseSpace: any;
     public systemMemoryInUse: any;
     public systemMemoryTotal: any;
+    public systemRamInUse: any;
+    public systemRamTotalSpace: any;
+
+
+
 
     public cpuLoadIntervalId = 0;
     public systemMemoryUsagePercent = 0;
@@ -69,7 +74,7 @@ export class OverviewComponent implements OnInit {
     }
 
     initCirclePercentage() {
-        $('#chartSystemMemory, #chartDiskUsage, #chartMemoryUsage').easyPieChart({
+        $('#chartDiskUsage,#chartJvmMemoryUsage,#chartSystemRamUsage').easyPieChart({
             lineWidth: 9,
             size: 160,
             scaleColor: false,
@@ -135,11 +140,21 @@ export class OverviewComponent implements OnInit {
 
             //getJVMMemoryInfo
 
-             this.memoryInUseSpace = Number(data["jvmMemoryUsage"]["inUseMemory"]);
-             this.memoryTotalSpace = Number(data["jvmMemoryUsage"]["maxMemory"]);
-             this.memoryUsagePercent = Math.round(Number(this.memoryInUseSpace * 100 / this.memoryTotalSpace));
+             this.jvmMemoryInUseSpace = Number(data["jvmMemoryUsage"]["inUseMemory"]);
+             this.jvmMemoryTotalSpace = Number(data["jvmMemoryUsage"]["maxMemory"]);
+             this.jvmMemoryUsagePercent = Math.round(Number(this.jvmMemoryInUseSpace * 100 / this.jvmMemoryTotalSpace));
 
-             $("#chartMemoryUsage").data('easyPieChart').update(this.memoryUsagePercent);
+             $("#chartJvmMemoryUsage").data('easyPieChart').update(this.jvmMemoryUsagePercent);
+
+             //getSystemRamInfo
+
+             this.systemRamInUse = Number(data["systemMemoryInfo"]["inUseMemory"]);
+             this.systemRamTotalSpace = Number(data["systemMemoryInfo"]["totalMemory"]);
+             this.systemRamUsagePercent = Math.round(Number(this.systemRamInUse * 100 / this.systemRamTotalSpace));
+
+             $("#chartSystemRamUsage").data('easyPieChart').update(this.systemRamUsagePercent);
+
+
 
         },
             this.handleError);
