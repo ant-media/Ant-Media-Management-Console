@@ -91,18 +91,18 @@
             <div class="col-lg-4 col-sm-4">
                 <div class="card card-circle-chart">
                     <div class="card-header text-center">
-                        <h5 class="card-title" i18n="@@serverMemoryUsageLabel">Native Ram Usage</h5>
-                        <p class="description">{{niceBytes(systemRamInUse)}} / {{niceBytes(systemRamTotalSpace)}}</p>
+                        <h5 class="card-title" i18n="@@serverMemoryUsageLabel">Native Memory Usage</h5>
+                        <p class="description">{{niceBytes(nativeRamInUse)}} / {{niceBytes(nativeRamTotalSpace)}}</p>
                     </div>
                     <div class="card-content">
-                        <div id="chartSystemRamUsage" class="chart-circle">{{systemRamUsagePercent}}%</div>
+                        <div id="chartNativeRamUsage" class="chart-circle">{{nativeRamUsagePercent}}%</div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-sm-4">
                 <div class="card card-circle-chart">
                     <div class="card-header text-center">
-                        <h5 class="card-title" i18n="@@serverMemoryUsageLabel">Reserved Heap Usage</h5>
+                        <h5 class="card-title" i18n="@@serverMemoryUsageLabel">JVM Memory Usage</h5>
                         <p class="description">{{niceBytes(jvmMemoryInUseSpace)}} / {{niceBytes(jvmMemoryTotalSpace)}}</p>
                     </div>
                     <div class="card-content">

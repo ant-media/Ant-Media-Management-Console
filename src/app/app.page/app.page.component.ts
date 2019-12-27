@@ -190,7 +190,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public streamNameEmpty=false;
     public encoderSettings:EncoderSettings[];
     public acceptAllStreams : boolean;
-
+    public enterpriseEditionText : any;
 
 
 
@@ -392,8 +392,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
-            });
 
+                if(this.isEnterpriseEdition){
+                    this.enterpriseEditionText = "";
+                }
+                else{
+                    this.enterpriseEditionText = "<div class=\" text-center isEnterprise\" ><label>Get <a target=\"_blank\" href=\"https://antmedia.io/#contact\">Enterprise Edition</a> for Ultra Low Latency Streaming</label></div>";
+                }
+
+            });
 
             this.getAppLiveStreamsNumber();
             this.getVoDStreams();

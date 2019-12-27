@@ -36,15 +36,15 @@ export class OverviewComponent implements OnInit {
     public watcherSize: number;
     public diskUsagePercent: any;
     public jvmMemoryUsagePercent: any;
-    public systemRamUsagePercent: any;
+    public nativeRamUsagePercent: any;
     public diskTotalSpace: any;
     public diskInUseSpace: any;
     public jvmMemoryTotalSpace: any;
     public jvmMemoryInUseSpace: any;
     public systemMemoryInUse: any;
     public systemMemoryTotal: any;
-    public systemRamInUse: any;
-    public systemRamTotalSpace: any;
+    public nativeRamInUse: any;
+    public nativeRamTotalSpace: any;
 
 
 
@@ -66,15 +66,15 @@ export class OverviewComponent implements OnInit {
 
     niceBytes(x): string {
         let l = 0, n = parseInt(x, 10) || 0;
-        while (n >= 1000) {
-            n = n / 1000;
+        while (n >= 1024) {
+            n = n / 1024;
             l++;
         }
         return (n.toFixed(n >= 10 || l < 1 ? 0 : 1) + ' ' + this.units[l]);
     }
 
     initCirclePercentage() {
-        $('#chartDiskUsage,#chartJvmMemoryUsage,#chartSystemRamUsage').easyPieChart({
+        $('#chartDiskUsage,#chartJvmMemoryUsage,#chartNativeRamUsage').easyPieChart({
             lineWidth: 9,
             size: 160,
             scaleColor: false,
@@ -146,15 +146,13 @@ export class OverviewComponent implements OnInit {
 
              $("#chartJvmMemoryUsage").data('easyPieChart').update(this.jvmMemoryUsagePercent);
 
-             //getSystemRamInfo
+             //getNativeSystemRamInfo
 
-             this.systemRamInUse = Number(data["systemMemoryInfo"]["inUseMemory"]);
-             this.systemRamTotalSpace = Number(data["systemMemoryInfo"]["totalMemory"]);
-             this.systemRamUsagePercent = Math.round(Number(this.systemRamInUse * 100 / this.systemRamTotalSpace));
+             this.nativeRamInUse = Number(data["nativeRamMemoryUsage"]["inUseNativeMemory"]);
+             this.nativeRamTotalSpace = Number(data["nativeRamMemoryUsage"]["totalNativeMemory"]);
+             this.nativeRamUsagePercent = Math.round(Number(this.nativeRamInUse * 100 / this.nativeRamTotalSpace));
 
-             $("#chartSystemRamUsage").data('easyPieChart').update(this.systemRamUsagePercent);
-
-
+             $("#chartNativeRamUsage").data('easyPieChart').update(this.nativeRamUsagePercent);
 
         },
             this.handleError);

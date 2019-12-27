@@ -1,3 +1,10 @@
+.isEnterprise{
+
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 15px;
+
+}
 .vcenter {
     float: none;
     vertical-align: middle;
