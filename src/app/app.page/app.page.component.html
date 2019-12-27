@@ -449,7 +449,7 @@
                                                         <ul  class="nav navbar-right">
                                                             <li (click)="contextDropdownClicked()" class="dropdown">
                                                                 <a href="#" class="dropdown-toggle btn-magnify" data-toggle="dropdown">
-                                                                    <i class="ti-user"></i>
+                                                                    <i class="ti-menu-alt"></i>
                                                                     <span class="notification"></span>
                                                                     <b class="caret"></b>
                                                                     <p class="hidden-md hidden-lg">
@@ -461,7 +461,6 @@
 
                                                                     <li *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status!='broadcasting'">
                                                                         <a class="dropdown-link"   (click)="startStreams(row.streamId)">
-                                                                            <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@startBroadcast">Start Broadcast</ng-container>
                                                                         </a>
                                                                     </li>
@@ -470,7 +469,6 @@
 
                                                                     <li *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status=='broadcasting'">
                                                                         <a class="dropdown-link"    (click)="stopStreams(row.streamId)">
-                                                                            <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@stopBroadcast">Stop Broadcast</ng-container>
                                                                         </a>
                                                                     </li>
@@ -479,7 +477,6 @@
 
                                                                     <li>
                                                                         <a class="dropdown-link"  (click)="openRTMPEndpointDialog(row)" >
-                                                                            <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@editRTMPEndpoint">Edit RTMP Endpoints</ng-container>
                                                                         </a>
                                                                     </li>
@@ -488,7 +485,6 @@
 
                                                                     <li>
                                                                         <a class="dropdown-link"   (click)="copyLiveEmbedCode(row.streamId)">
-                                                                            <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@tableEmbedCode">Copy Live Embed Code to Clipboard</ng-container>
                                                                         </a>
                                                                     </li>
@@ -497,7 +493,6 @@
 
                                                                     <li *ngIf="row.status!='broadcasting'">
                                                                         <a class="dropdown-link"   (click)="copyPublishUrl(row.streamId)">
-                                                                            <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@copyPublishUrl">Copy Publish URL to Clipboard</ng-container>
                                                                         </a>
                                                                     </li>
@@ -506,7 +501,6 @@
 
                                                                     <li>
                                                                         <a class="dropdown-link" (click)="deleteLiveBroadcast(row.streamId)" >
-                                                                            <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@tableDeleteButton">Delete Broadcast</ng-container>
                                                                         </a>
                                                                     </li>
@@ -515,7 +509,6 @@
 
                                                                     <li *ngIf="appSettings.objectDetectionEnabled==true" class="text-left">
                                                                         <a (click)="showDetectedObject(row.streamId)">
-                                                                            <i class="ti-angle-double-right"></i>
                                                                             <ng-container i18n="@@tableObjectDetected">Detected Objects</ng-container>
                                                                         </a>
                                                                     </li>
@@ -674,7 +667,7 @@
                                                             <ul class="nav navbar-right">
                                                                 <li (click)="contextDropdownClicked()" class="dropdown">
                                                                     <a href="#" class="dropdown-toggle btn-magnify" data-toggle="dropdown">
-                                                                        <i class="ti-user"></i>
+                                                                        <i class="ti-menu-alt"></i>
                                                                         <span class="notification"></span>
                                                                         <b class="caret"></b>
                                                                         <p class="hidden-md hidden-lg">
@@ -686,7 +679,6 @@
 
                                                                         <li *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status!='broadcasting'">
                                                                             <a class="dropdown-link"   (click)="startStreams(row.streamId)">
-                                                                                <i class="ti-angle-double-right"></i>
                                                                                 <ng-container i18n="@@startBroadcast">Start Broadcast</ng-container>
                                                                             </a>
                                                                         </li>
@@ -695,7 +687,6 @@
 
                                                                         <li *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status=='broadcasting'">
                                                                             <a class="dropdown-link"    (click)="stopStreams(row.streamId)">
-                                                                                <i class="ti-angle-double-right"></i>
                                                                                 <ng-container i18n="@@stopBroadcast">Stop Broadcast</ng-container>
                                                                             </a>
                                                                         </li>
@@ -704,7 +695,6 @@
 
                                                                         <li>
                                                                             <a class="dropdown-link"  (click)="openRTMPEndpointDialog(row)" >
-                                                                                <i class="ti-angle-double-right"></i>
                                                                                 <ng-container i18n="@@editRTMPEndpoint">Edit RTMP Endpoints</ng-container>
                                                                             </a>
                                                                         </li>
@@ -713,7 +703,6 @@
 
                                                                         <li>
                                                                             <a class="dropdown-link"   (click)="copyLiveEmbedCode(row.streamId)">
-                                                                                <i class="ti-angle-double-right"></i>
                                                                                 <ng-container i18n="@@tableEmbedCode">Copy Live Embed Code to Clipboard</ng-container>
                                                                             </a>
                                                                         </li>
@@ -722,7 +711,6 @@
 
                                                                         <li *ngIf="row.status!='broadcasting'">
                                                                             <a class="dropdown-link"   (click)="copyPublishUrl(row.streamId)">
-                                                                                <i class="ti-angle-double-right"></i>
                                                                                 <ng-container i18n="@@copyPublishUrl">Copy Publish URL to Clipboard</ng-container>
                                                                             </a>
                                                                         </li>
@@ -731,7 +719,6 @@
 
                                                                         <li>
                                                                             <a class="dropdown-link" (click)="deleteLiveBroadcast(row.streamId)" >
-                                                                                <i class="ti-angle-double-right"></i>
                                                                                 <ng-container i18n="@@tableDeleteButton">Delete Broadcast</ng-container>
                                                                             </a>
                                                                         </li>
@@ -740,7 +727,6 @@
 
                                                                         <li *ngIf="appSettings.objectDetectionEnabled==true" class="text-left">
                                                                             <a (click)="showDetectedObject(row.streamId)">
-                                                                                <i class="ti-angle-double-right"></i>
                                                                                 <ng-container i18n="@@tableObjectDetected">Detected Objects</ng-container>
                                                                             </a>
                                                                         </li>

@@ -310,26 +310,25 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     contextDropdownClicked(){
 
+        console.log("dropdown context clicked");
+
         this.clearTimer();
 
-        this.dropdownTimer = window.setInterval(() => {
+        this.dropdownTimer = window.setInterval( () => {
             if(this.authService.isAuthenticated) {
                 if(this.appName != "undefined"){
                     this.callTimer();
                 }
             }
 
-        }, 10000);
+        }, 8000);
     }
 
     callTimer(){
 
         console.log("Timer Started");
 
-        if(this.dropdownTimer != null){
-            clearInterval(this.dropdownTimer);
-            this.dropdownTimer= null;
-        }
+        this.clearTimer();
 
         //this timer gets the related information according to active application
         //so that it checks appname whether it is undefined
@@ -749,11 +748,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     clearTimer() {
 
-            console.log("this.timerId: " + this.timerId);
-            console.log("this.dropdownTimer: " + this.dropdownTimer);
+        clearInterval(this.timerId);
+        clearInterval(this.dropdownTimer);
 
-            clearInterval(this.timerId);
-            clearInterval(this.dropdownTimer);
+        this.timerId = null ;
+        this.dropdownTimer = null ;
+
     }
 
     ngOnDestroy() {
@@ -2267,19 +2267,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             if (data["success"] == true) {
 
-                if(!this.isGridView){
-                    this.broadcastTableData.dataRows[this.findIndexBroadcastTableThis(streamId)].status = "finished";
-                }
-                else{
-                    this.broadcastGridTableData.dataRows[this.findIndexGridTableThis(streamId)].status = "finished";
-                }
-
                 $.notify({
                     icon: "ti-save",
-                    message: "Please wait, stream stopping"
+                    message: "Stream's stopping, please wait a few seconds."
                 }, {
                     type: "success",
-                    delay: 900,
+                    delay: 3000,
                     placement: {
                         from: 'top',
                         align: 'right'
@@ -2293,15 +2286,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     message: "Stream Stop Failed"
                 }, {
                     type: "warning",
-                    delay: 900,
+                    delay: 3000,
                     placement: {
                         from: 'top',
                         align: 'right'
                     }
                 });
             }
-
+            this.callTimer();
         });
+
     }
 
     startStreams(streamId: string): void {
@@ -2310,19 +2304,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             if (data["success"] == true) {
 
-                if(!this.isGridView){
-                    this.broadcastTableData.dataRows[this.findIndexBroadcastTableThis(streamId)].status = "broadcasting";
-                }
-                else{
-                    this.broadcastGridTableData.dataRows[this.findIndexGridTableThis(streamId)].status = "broadcasting";
-                }
-
                 $.notify({
                     icon: "ti-save",
-                    message: "Please wait, stream starting."
+                    message: "Stream's starting, please wait a few seconds."
                 }, {
                     type: "success",
-                    delay: 900,
+                    delay: 3000,
                     placement: {
                         from: 'top',
                         align: 'right'
@@ -2336,7 +2323,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     message: "Stream Start Failed"
                 }, {
                     type: "warning",
-                    delay: 900,
+                    delay: 3000,
                     placement: {
                         from: 'top',
                         align: 'right'
@@ -2344,21 +2331,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 });
 
             }
-
+            this.callTimer();
         });
     }
 
-    findIndexBroadcastTableThis(streamId: string){
-
-        return this.broadcastTableData.dataRows.findIndex(item=>item.streamId == streamId);
-
-    }
-
-    findIndexGridTableThis(streamId: string){
-
-        return this.broadcastGridTableData.dataRows.findIndex(item=>item.streamId == streamId);
-
-    }
 }
 
 
