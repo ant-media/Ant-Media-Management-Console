@@ -310,8 +310,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     contextDropdownClicked(){
 
-        console.log("dropdown context clicked");
-
         this.clearTimer();
 
         this.dropdownTimer = window.setInterval( () => {
