@@ -87,7 +87,6 @@ export class StreamSourceEditComponent {
         this.streamSource.streamUrl=this.dialogRef.componentInstance.data.streamUrl;
         this.streamSource.type = "streamSource";
 
-        
         if (!this.restService.checkStreamName(this.streamSource.name)){
 
             this.streamNameEmpty = true;
@@ -101,29 +100,25 @@ export class StreamSourceEditComponent {
                 socialNetworks.push(this.videoServiceEndPoints[index].id);
             }
         });
-        
 
         if(this.restService.checkStreamUrl(this.streamSource.streamUrl)){
 
             this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.streamSource, socialNetworks).subscribe(data => {
 
                 if (data["success"]) {
+
                     if (this.genericRTMPEndpointCount != 0) {
-                         for (var i  in this.endpointList) {
+                        for (var i  in this.endpointList) {
                             if (this.endpointList[i].type == "generic") {
-                                this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, this.endpointList[i].rtmpUrl).subscribe(data2 => {
+                                this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.id, this.endpointList[i].rtmpUrl).subscribe(data2 => {
                                     if (!data2["success"]) {
                                         data["success"] = false;
                                     }
                                 });
                             }
                         }
-                    }
-                }
-                
-                if (data["success"]) {
 
-                    this.dialogRef.close();
+                    }
 
                     $.notify({
                         icon: "ti-save",
@@ -136,6 +131,9 @@ export class StreamSourceEditComponent {
                             align: 'right'
                         }
                     });
+
+                    this.dialogRef.close();
+
                 }
                 else {
                     $.notify({

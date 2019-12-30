@@ -97,10 +97,11 @@ export class CamSettingsDialogComponent {
         this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.camera, socialNetworks).subscribe(data => {
 
             if (data["success"]) {
+
                 if(this.genericRTMPEndpointCount != 0){
                     for (var i  in this.endpointList) {
                         if (this.endpointList[i].type == "generic") {
-                            this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId,this.endpointList[i].rtmpUrl).subscribe(data2 => {
+                            this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.id,this.endpointList[i].rtmpUrl).subscribe(data2 => {
                                 if(!data2["success"]){
                                     data["success"] = false;
                                 }
@@ -108,11 +109,6 @@ export class CamSettingsDialogComponent {
                         }
                     }
                 }
-            }
-
-            if (data["success"]) {
-
-                this.dialogRef.close();
 
                 $.notify({
                     icon: "ti-save",
@@ -125,6 +121,9 @@ export class CamSettingsDialogComponent {
                         align: 'right'
                     }
                 });
+
+                this.dialogRef.close();
+
             }
             else {
                 $.notify({

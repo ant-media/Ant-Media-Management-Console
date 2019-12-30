@@ -71,7 +71,6 @@ export class BroadcastEditComponent {
         this.liveStreamEditing.name = this.dialogRef.componentInstance.data.name;
         this.liveStreamEditing.streamId = this.dialogRef.componentInstance.data.streamId;
 
-
         var socialNetworks = [];
         this.shareEndpoint.forEach((value, index) => {
             if (value === true) {
@@ -91,6 +90,7 @@ export class BroadcastEditComponent {
             this.liveStreamUpdating = false;
 
             if (data["success"]) {
+
                 if (this.genericRTMPEndpointCount != 0) {
                     for (var i  in this.endpointList) {
                         if (this.endpointList[i].type == "generic") {
@@ -102,11 +102,9 @@ export class BroadcastEditComponent {
                         }
                     }
                 }
-            }
 
-            if (data["success"]) {
 
-                this.dialogRef.close();
+
 
                 $.notify({
                     icon: "ti-save",
@@ -119,6 +117,9 @@ export class BroadcastEditComponent {
                         align: 'right'
                     }
                 });
+
+                this.dialogRef.close();
+
             }
             else {
                 $.notify({
