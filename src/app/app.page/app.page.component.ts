@@ -157,7 +157,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public newStreamSourceWarn = false;
     public discoveryStarted = false;
     public newSourceAdding = false;
-    public isEnterpriseEdition = false;
+    public isEnterpriseEdition = true;
 
     public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
@@ -392,14 +392,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
-
-                if(this.isEnterpriseEdition){
-                    this.enterpriseEditionText = "";
-                }
-                else{
-                    this.enterpriseEditionText = "<div class=\" text-center isEnterprise\" ><label>Get <a target=\"_blank\" href=\"https://antmedia.io/#contact\">Enterprise Edition</a> for Ultra Low Latency Streaming</label></div>";
-                }
-
             });
 
             this.getAppLiveStreamsNumber();
