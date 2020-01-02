@@ -74,7 +74,7 @@ export class OverviewComponent implements OnInit {
             n = n / 1024;
             l++;
         }
-        return (n.toFixed(n >= 10 || l < 1 ? 0 : 1) + ' ' + this.units[l]);
+        return (n.toFixed(n >= 100 || l < 1 ? 0 : 1) + ' ' + this.units[l]);
     }
 
     initCirclePercentage() {
