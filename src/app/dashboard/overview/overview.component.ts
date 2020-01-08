@@ -34,15 +34,24 @@ export class OverviewComponent implements OnInit {
     public cpuLoad: number;
     public liveStreamSize: number;
     public watcherSize: number;
-    public chartSystemMemory: any;
     public diskUsagePercent: any;
-    public memoryUsagePercent: any;
+    public jvmHeapUsagePercent: any;
+    public nativeMemoryUsagePercent: any;
+    public jvmNativeUsagePercent: any;
     public diskTotalSpace: any;
     public diskInUseSpace: any;
-    public memoryTotalSpace: any;
-    public memoryInUseSpace: any;
+    public jvmHeapTotalSpace: any;
+    public jvmHeapInUseSpace: any;
     public systemMemoryInUse: any;
     public systemMemoryTotal: any;
+    public nativeMemoryInUse: any;
+    public nativeMemoryTotalSpace: any;
+    public jvmNativeInUse: any;
+    public jvmNativeMax: any;
+
+
+
+
 
     public cpuLoadIntervalId = 0;
     public systemMemoryUsagePercent = 0;
@@ -61,15 +70,15 @@ export class OverviewComponent implements OnInit {
 
     niceBytes(x): string {
         let l = 0, n = parseInt(x, 10) || 0;
-        while (n >= 1000) {
-            n = n / 1000;
+        while (n >= 1024) {
+            n = n / 1024;
             l++;
         }
-        return (n.toFixed(n >= 10 || l < 1 ? 0 : 1) + ' ' + this.units[l]);
+        return (n.toFixed(n >= 100 || l < 1 ? 0 : 1) + ' ' + this.units[l]);
     }
 
     initCirclePercentage() {
-        $('#chartSystemMemory, #chartDiskUsage, #chartMemoryUsage').easyPieChart({
+        $('#chartDiskUsage,#chartJvmHeapUsage,#chartNativeMemoryUsage,#chartJVMNativeUsage').easyPieChart({
             lineWidth: 9,
             size: 160,
             scaleColor: false,
@@ -133,13 +142,29 @@ export class OverviewComponent implements OnInit {
 
             $("#chartDiskUsage").data('easyPieChart').update(this.diskUsagePercent);
 
-            //getJVMMemoryInfo
+             //getNativeMemoryUsage
 
-             this.memoryInUseSpace = Number(data["jvmMemoryUsage"]["inUseMemory"]);
-             this.memoryTotalSpace = Number(data["jvmMemoryUsage"]["maxMemory"]);
-             this.memoryUsagePercent = Math.round(Number(this.memoryInUseSpace * 100 / this.memoryTotalSpace));
+             this.nativeMemoryInUse = Number(data["nativeMemoryUsage"]["inUseNativeMemory"]);
+             this.nativeMemoryTotalSpace = Number(data["nativeMemoryUsage"]["totalNativeMemory"]);
+             this.nativeMemoryUsagePercent = Math.round(Number(this.nativeMemoryInUse * 100 / this.nativeMemoryTotalSpace));
 
-             $("#chartMemoryUsage").data('easyPieChart').update(this.memoryUsagePercent);
+             $("#chartNativeMemoryUsage").data('easyPieChart').update(this.nativeMemoryUsagePercent);
+
+             //getJVMNativeUsage
+
+             this.jvmNativeInUse = Number(data["jvmNativeMemoryUsage"]["inUseMemory"]);
+             this.jvmNativeMax = Number(data["jvmNativeMemoryUsage"]["maxMemory"]);
+             this.jvmNativeUsagePercent = Math.round(Number(this.jvmNativeInUse * 100 / this.jvmNativeMax));
+
+             $("#chartJVMNativeUsage").data('easyPieChart').update(this.jvmNativeUsagePercent);
+
+             //getJvmHeapUsage
+
+             this.jvmHeapInUseSpace = Number(data["jvmMemoryUsage"]["inUseMemory"]);
+             this.jvmHeapTotalSpace = Number(data["jvmMemoryUsage"]["maxMemory"]);
+             this.jvmHeapUsagePercent = Math.round(Number(this.jvmHeapInUseSpace * 100 / this.jvmHeapTotalSpace));
+
+             $("#chartJvmHeapUsage").data('easyPieChart').update(this.jvmHeapUsagePercent);
 
         },
             this.handleError);

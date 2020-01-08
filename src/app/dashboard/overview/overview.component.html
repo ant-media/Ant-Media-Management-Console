@@ -20,11 +20,6 @@
                     </div>
                     <div class="card-footer">
                         <hr />
-                        <!--
-                        <div class="stats">
-                            <i class="ti-reload"></i> Updated now
-                        </div>
-                    -->
                     </div>
                 </div>
             </div>
@@ -82,10 +77,10 @@
         -->
         </div>
         <div class="row">
-            <div class="col-lg-6 col-sm-6">
+            <div class="col-lg-3 col-sm-3">
                 <div class="card card-circle-chart">
                     <div class="card-header text-center">
-                        <h5 class="card-title" i18n="@@diskUsageLabel">Disk Usage</h5>
+                        <h5 class="card-title" i18n="@@diskUsageLabel">System Disk</h5>
                         <p class="description">{{niceBytes(diskInUseSpace)}} / {{niceBytes(diskTotalSpace)}}</p>
                     </div>
                     <div class="card-content">
@@ -93,14 +88,36 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 col-sm-6">
+            <div class="col-lg-3 col-sm-3">
                 <div class="card card-circle-chart">
                     <div class="card-header text-center">
-                        <h5 class="card-title" i18n="@@serverMemoryUsageLabel">Reserved Heap Usage</h5>
-                        <p class="description">{{niceBytes(memoryInUseSpace)}} / {{niceBytes(memoryTotalSpace)}}</p>
+                        <h5 class="card-title" i18n="@@serverMemoryUsageLabel">System Memory</h5>
+                        <p class="description">{{niceBytes(nativeMemoryInUse)}} / {{niceBytes(nativeMemoryTotalSpace)}}</p>
                     </div>
                     <div class="card-content">
-                        <div id="chartMemoryUsage" class="chart-circle">{{memoryUsagePercent}}%</div>
+                        <div id="chartNativeMemoryUsage" class="chart-circle">{{nativeMemoryUsagePercent}}%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-3">
+                <div class="card card-circle-chart">
+                    <div class="card-header text-center">
+                        <h5 class="card-title" i18n="@@jvmNativeUsageLabel">JVM Native Memory</h5>
+                        <p class="description">{{niceBytes(jvmNativeInUse)}} / {{niceBytes(jvmNativeMax)}}</p>
+                    </div>
+                    <div class="card-content">
+                        <div id="chartJVMNativeUsage" class="chart-circle">{{jvmNativeUsagePercent}}%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-3">
+                <div class="card card-circle-chart">
+                    <div class="card-header text-center">
+                        <h5 class="card-title" i18n="@@serverMemoryUsageLabel">JVM Heap Memory</h5>
+                        <p class="description">{{niceBytes(jvmHeapInUseSpace)}} / {{niceBytes(jvmHeapTotalSpace)}}</p>
+                    </div>
+                    <div class="card-content">
+                        <div id="chartJvmHeapUsage" class="chart-circle">{{jvmHeapUsagePercent}}%</div>
                     </div>
                 </div>
             </div>
