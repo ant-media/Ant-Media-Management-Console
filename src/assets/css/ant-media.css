@@ -1,8 +1,11 @@
+.dropdown-link{
+ cursor: pointer;
+}
+
 .isEnterprise{
     font-size: 14px;
     color: #777;
     margin-bottom: 15px;
-
 }
 .vcenter {
     float: none;

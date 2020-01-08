@@ -134,12 +134,28 @@ export class RestService {
             broadcast);
     }
 
+    public stopStream(appName: string, streamId: string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/stop", {});
+    }
+
+    public startStream(appName: string, streamId: string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/start", {});
+    }
+
     public deleteBroadcast(appName: string, streamId:string): Observable<Object> {
         return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+streamId, {});
     }
 
     public deleteVoDFile(appName: string, vodName:string,id:number, type:string) {
         return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/vods/'+id, {});
+    }
+
+    public deleteRTMPEndpoint(appName: string, id:number, rtmpUrl:string) {
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint?rtmpUrl='+rtmpUrl, {});
+    }
+
+    public addRTMPEndpoint(appName: string,id:number, rtmpUrl:string) {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint?rtmpUrl='+rtmpUrl, {});
     }
 
     public revokeSocialNetwork(appName: string, serviceId:string): Observable<Object> {

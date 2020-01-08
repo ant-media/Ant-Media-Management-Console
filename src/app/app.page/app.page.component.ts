@@ -36,6 +36,7 @@ import {BroadcastEditComponent} from './dialog/broadcast.edit.dialog.component';
 import {CamSettingsDialogComponent} from './dialog/cam.settings.dialog.component';
 import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
+import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialog.component';
 import {Observable} from "rxjs";
 import "rxjs/add/observable/of";
 
@@ -190,6 +191,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public streamNameEmpty=false;
     public encoderSettings:EncoderSettings[];
     public acceptAllStreams : boolean;
+    public dropdownTimer: any;
     public enterpriseEditionText : any;
 
 
@@ -265,6 +267,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     ngOnInit() {
 
         this.timerId = null;
+        this.dropdownTimer = null;
 
         this.broadcastTableData = {
             dataRows: [],
@@ -301,10 +304,33 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.getInitParams();
 
+        this.callTimer();
+
+    }
+
+    contextDropdownClicked(){
+
+        this.clearTimer();
+
+        this.dropdownTimer = window.setInterval( () => {
+            if(this.authService.isAuthenticated) {
+                if(this.appName != "undefined"){
+                    this.callTimer();
+                }
+            }
+
+        }, 8000);
+    }
+
+    callTimer(){
+
+        console.log("Timer Started");
+
+        this.clearTimer();
 
         //this timer gets the related information according to active application
         //so that it checks appname whether it is undefined
-        this.timerId = window.setInterval(() => {
+            this.timerId = window.setInterval(() => {
             if(this.authService.isAuthenticated) {
                 if(this.appName != "undefined"){
 
@@ -314,7 +340,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             }
 
-        }, 5000);
+            }, 5000);
     }
 
     onPaginateChange(event) {
@@ -645,13 +671,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         alert("test");
     }
 
-
     getAppLiveStreams(offset: number, size: number): void {
 
         offset = offset * size;
 
         this.restService.getAppLiveStreams(this.appName, offset, size).subscribe(data => {
+
             this.broadcastTableData.dataRows = [];
+
             for (var i in data) {
 
                 var endpoint = [];
@@ -663,9 +690,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.broadcastTableData.dataRows[i].iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + this.broadcastTableData.dataRows[i].streamId + "&autoplay=true";
 
             }
+
             this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
+
         });
+
     }
+
+
+
 
 
     cleanURL(oldURL: string): SafeResourceUrl {
@@ -711,10 +744,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     clearTimer() {
-        if (this.timerId) {
-            console.log("clearing interval: " + this.timerId);
-            clearInterval(this.timerId);
-        }
+
+        clearInterval(this.timerId);
+        clearInterval(this.dropdownTimer);
+
+        this.timerId = null ;
+        this.dropdownTimer = null ;
 
     }
 
@@ -2183,6 +2218,117 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 streamId: broadcast.streamId,
             },
             disableClose: true,
+        });
+    }
+
+
+    openRTMPEndpointDialog(stream: BroadcastInfo): void {
+
+        if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId || stream.name != this.liveStreamEditing.name) {
+            this.liveStreamEditing = new LiveBroadcast();
+            this.liveStreamEditing.streamId = stream.streamId;
+            this.liveStreamEditing.name = stream.name;
+            this.liveStreamEditing.description = "";
+        }
+
+
+        if (this.liveStreamEditing) {
+            let dialogRef = this.dialog.open(RtmpEndpointEditDialogComponent, {
+
+                height: '300px',
+                maxHeight: '500px',
+                width: '600px',
+                maxWidth: '600px',
+
+                data: {
+                    name: this.liveStreamEditing.name,
+                    streamId: this.liveStreamEditing.streamId,
+                    appName: this.appName,
+                    endpointList: stream.endPointList,
+                }
+
+            });
+
+
+            dialogRef.afterClosed().subscribe(result => {
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                this.getAppLiveStreamsNumber();
+            });
+
+        }
+    }
+
+    stopStreams(streamId: string): void {
+
+        this.restService.stopStream(this.appName, streamId).subscribe(data => {
+
+            if (data["success"] == true) {
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Stream's stopping, please wait a few seconds."
+                }, {
+                    type: "success",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else{
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Stream Stop Failed"
+                }, {
+                    type: "warning",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            this.callTimer();
+        });
+
+    }
+
+    startStreams(streamId: string): void {
+
+        this.restService.startStream(this.appName, streamId).subscribe(data => {
+
+            if (data["success"] == true) {
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Stream's starting, please wait a few seconds."
+                }, {
+                    type: "success",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else{
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Stream Start Failed"
+                }, {
+                    type: "warning",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+
+            }
+            this.callTimer();
         });
     }
 

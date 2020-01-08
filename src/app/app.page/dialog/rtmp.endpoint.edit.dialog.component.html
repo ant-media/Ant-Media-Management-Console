@@ -1,0 +1,52 @@
+        <div class="card-content" style="padding-top:0px">
+
+            <h4 class="card-title text-left" i18n="@@addRTMPEndpointCardTitle">
+                Add RTMP Endpoint
+            </h4>
+
+            <input  [(ngModel)]="rtmpEndpointName" type="text" name="rtmpEndpointName" i18n-placeholder="@@rtmp_endpoint_name_place_holder" placeholder="RTMP Endpoint Name"
+                   class="form-control">
+
+            <div class="form-group text-center" style="margin-top: 20px;">
+                <button type="button" class="btn btn-fill btn-success" i18n="@@addRTMPEndpointAddButton" (click)="addRtmpEndpoint(rtmpEndpointName)">Add RTMP Endpoint</button>
+            </div>
+
+            <div *ngIf=!this.isEmptyEndpoint  class="text-left" >
+
+            <h4 class="card-title text-left" i18n="@@RTMPEndpointListCardTitle">
+                RTMP Endpoint List
+            </h4>
+
+                <div class="row">
+
+                <ng-container *ngFor="let endpoint of endpointList; let i = index">
+
+                    <div *ngIf="endpoint.type=='generic'" class=" text-left" style="">
+
+                        <div class="col-xs-10 text-left">
+
+                        <label style="margin-top: 5px;" >
+
+                        {{endpoint.rtmpUrl}}
+
+                        </label>
+                        </div>
+
+                        <div class="col-xs-2 text-left">
+                        <button (click)="removeRTMPEndpoint(endpoint.rtmpUrl,i)" class="btn btn-icon btn-simple btn-danger btn-minus" type="button">
+                            <i class="ti-close"></i>
+                        </button>
+                        </div>
+
+                    </div>
+
+                </ng-container>
+                </div>
+
+            </div>
+
+            <div class="form-group text-center">
+                <button type="button" class="btn btn-fill" i18n="@@RTMPEndpointCancelButton" (click)="cancelRTMPEndpoint()">Close</button>
+            </div>
+
+        </div>

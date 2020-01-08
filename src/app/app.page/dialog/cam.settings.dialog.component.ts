@@ -20,6 +20,8 @@ export class CamSettingsDialogComponent {
     public videoServiceEndPoints: VideoServiceEndpoint[];
     public appName:string;
     public streamNameEmpty = false;
+    public endpointList: Endpoint[];
+    public genericRTMPEndpointCount = 0;
 
 
     constructor(
@@ -30,12 +32,19 @@ export class CamSettingsDialogComponent {
 
         this.videoServiceEndPoints = data.videoServiceEndpoints;
 
+        this.endpointList= data.endpointList;
 
-        let endpointList: Endpoint[] = data.endpointList;
+        // Detect How many generic Endpoint added.
+        for (var i  in this.endpointList) {
+            if (this.endpointList[i].type == "generic") {
+                this.genericRTMPEndpointCount++;
+            }
+        }
+
         this.videoServiceEndPoints.forEach((item, index) => {
             let foundService: boolean = false;
-            for (var i  in endpointList) {
-                if (endpointList[i].endpointServiceId == item.id) {
+            for (var i  in this.endpointList) {
+                if (this.endpointList[i].endpointServiceId == item.id) {
                     this.shareEndpoint.push(true);
                     foundService = true;
                     break;
@@ -89,7 +98,17 @@ export class CamSettingsDialogComponent {
 
             if (data["success"]) {
 
-                this.dialogRef.close();
+                if(this.genericRTMPEndpointCount != 0){
+                    for (var i  in this.endpointList) {
+                        if (this.endpointList[i].type == "generic") {
+                            this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.id,this.endpointList[i].rtmpUrl).subscribe(data2 => {
+                                if(!data2["success"]){
+                                    data["success"] = false;
+                                }
+                            });
+                        }
+                    }
+                }
 
                 $.notify({
                     icon: "ti-save",
@@ -102,6 +121,9 @@ export class CamSettingsDialogComponent {
                         align: 'right'
                     }
                 });
+
+                this.dialogRef.close();
+
             }
             else {
                 $.notify({
