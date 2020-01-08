@@ -158,7 +158,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public newStreamSourceWarn = false;
     public discoveryStarted = false;
     public newSourceAdding = false;
-    public isEnterpriseEdition = false;
+    public isEnterpriseEdition = true;
 
     public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
@@ -192,7 +192,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public encoderSettings:EncoderSettings[];
     public acceptAllStreams : boolean;
     public dropdownTimer: any;
-
+    public enterpriseEditionText : any;
 
 
 
@@ -419,7 +419,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
             });
-
 
             this.getAppLiveStreamsNumber();
             this.getVoDStreams();
