@@ -36,7 +36,6 @@ export class OverviewComponent implements OnInit {
     public watcherSize: number;
     public diskUsagePercent: any;
     public jvmHeapUsagePercent: any;
-    public nativeMemoryUsagePercent: any;
     public jvmNativeUsagePercent: any;
     public diskTotalSpace: any;
     public diskInUseSpace: any;
@@ -44,8 +43,6 @@ export class OverviewComponent implements OnInit {
     public jvmHeapInUseSpace: any;
     public systemMemoryInUse: any;
     public systemMemoryTotal: any;
-    public nativeMemoryInUse: any;
-    public nativeMemoryTotalSpace: any;
     public jvmNativeInUse: any;
     public jvmNativeMax: any;
 
@@ -141,15 +138,7 @@ export class OverviewComponent implements OnInit {
             this.diskUsagePercent = Math.round(this.diskInUseSpace * 100 / this.diskTotalSpace);
 
             $("#chartDiskUsage").data('easyPieChart').update(this.diskUsagePercent);
-
-             //getNativeMemoryUsage
-
-             this.nativeMemoryInUse = Number(data["nativeMemoryUsage"]["inUseNativeMemory"]);
-             this.nativeMemoryTotalSpace = Number(data["nativeMemoryUsage"]["totalNativeMemory"]);
-             this.nativeMemoryUsagePercent = Math.round(Number(this.nativeMemoryInUse * 100 / this.nativeMemoryTotalSpace));
-
-             $("#chartNativeMemoryUsage").data('easyPieChart').update(this.nativeMemoryUsagePercent);
-
+         
              //getJVMNativeUsage
 
              this.jvmNativeInUse = Number(data["jvmNativeMemoryUsage"]["inUseMemory"]);

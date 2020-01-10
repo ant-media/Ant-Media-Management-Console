@@ -42,42 +42,12 @@
                     </div>
                     <div class="card-footer">
                         <hr />
-                        <!--
-                        <div class="stats">
-                            <i class="ti-calendar"></i> Last day
-                        </div>
-                    -->
                     </div>
                 </div>
             </div>
-            <!--
-            <div class="col-lg-4 col-sm-6">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="row">
-                            <div class="col-xs-5">
-                                <div class="icon-big icon-danger text-center">
-                                    <i class="ti-pulse"></i>
-                                </div>
-                            </div>
-                            <div class="col-xs-7">
-                                <div class="numbers">
-                                    <p i18n="@@liveWatchersCountLabel">Live Watchers</p>
-                                    {{watcherSize}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <hr />
-                  
-                    </div>
-                </div>
-            </div>
-        -->
         </div>
         <div class="row">
-            <div class="col-lg-3 col-sm-3">
+            <div class="col-lg-4 col-sm-4">
                 <div class="card card-circle-chart">
                     <div class="card-header text-center">
                         <h5 class="card-title" i18n="@@diskUsageLabel">System Disk</h5>
@@ -88,18 +58,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-3">
-                <div class="card card-circle-chart">
-                    <div class="card-header text-center">
-                        <h5 class="card-title" i18n="@@serverMemoryUsageLabel">System Memory</h5>
-                        <p class="description">{{niceBytes(nativeMemoryInUse)}} / {{niceBytes(nativeMemoryTotalSpace)}}</p>
-                    </div>
-                    <div class="card-content">
-                        <div id="chartNativeMemoryUsage" class="chart-circle">{{nativeMemoryUsagePercent}}%</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-3">
+            <div class="col-lg-4 col-sm-4">
                 <div class="card card-circle-chart">
                     <div class="card-header text-center">
                         <h5 class="card-title" i18n="@@jvmNativeUsageLabel">JVM Native Memory</h5>
@@ -110,7 +69,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-3">
+            <div class="col-lg-4 col-sm-4">
                 <div class="card card-circle-chart">
                     <div class="card-header text-center">
                         <h5 class="card-title" i18n="@@serverMemoryUsageLabel">JVM Heap Memory</h5>
@@ -121,19 +80,6 @@
                     </div>
                 </div>
             </div>
-            <!--
-            <div class="col-lg-4 col-sm-6">
-                <div class="card card-circle-chart">
-                    <div class="card-header text-center">
-                        <h5 class="card-title" i18n="@@systemMemoryUsageLabel">System Memory Usage</h5>
-                        <p class="description">{{niceBytes(systemMemoryInUse)}} / {{niceBytes(systemMemoryTotal)}}</p>
-                    </div>
-                    <div class="card-content">
-                        <div id="chartSystemMemory" class="chart-circle">{{systemMemoryUsagePercent}}%</div>
-                    </div>
-                </div>
-            </div>
-        -->
         </div>
         <div class="row">
             <div class="col-md-12">
@@ -150,7 +96,7 @@
                                     <th i18n="@@appName">Name</th>
                                     <th class="text-center" i18n="@@liveStreamCountLabel" >Live Stream</th>
                                     <th class="text-center" i18n="@@vodCountLabel"*ngIf="isMobileMenu()">VoD Count</th>
-                                    <th class="text-center" i18n="@@appStorageSizeLabel">Storage</th>
+                                    <th class="text-center" i18n="@@appStorageSizeLabel"*ngIf="isMobileMenu()">Storage</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -161,7 +107,7 @@
                                       <td>{{row.name}}</td>
                                       <td class="text-center">{{row.liveStreamCount}}</td>
                                       <td class="text-center"*ngIf="isMobileMenu()">{{row.vodCount}}</td>
-                                      <td class="text-center">{{niceBytes(row.storage)}}</td>
+                                      <td class="text-center"*ngIf="isMobileMenu()">{{niceBytes(row.storage)}}</td>
                                
                                 </tr>
                             </tbody>
