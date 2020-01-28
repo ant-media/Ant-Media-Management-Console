@@ -24,7 +24,7 @@ import {
     BroadcastInfo,
     BroadcastInfoTable,
     CameraInfoTable,
-    EncoderSettings,
+    EncoderSettings, PlaylistItem,
     VideoServiceEndpoint,
     VodInfo,
     VodInfoTable
@@ -69,6 +69,18 @@ export class Camera {
         public streamUrl: string,
         public type: string) { }
 }
+
+export class Playlist {
+    constructor(
+        public playlistId: string,
+        public currentPlayIndex: number,
+        public playlistName: string,
+        public broadcastItemList: PlaylistItem[],
+        public creationDate: number,
+        public duration: number){}
+}
+
+
 
 export class AppSettings {
 
@@ -122,6 +134,8 @@ export class Token {
     public type:string;
 }
 
+
+
 @Component({
     selector: 'manage-app-cmp',
     moduleId: module.id,
@@ -148,6 +162,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public newLiveStreamActive: boolean;
     public newIPCameraActive: boolean;
     public newStreamSourceActive: boolean;
+    public newPlaylistActive: boolean;
     public liveBroadcast: LiveBroadcast;
     public liveBroadcastShareFacebook: boolean;
     public liveBroadcastShareYoutube: boolean;
@@ -156,6 +171,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public newIPCameraAdding = false;
     public newStreamSourceAdding = false;
     public newStreamSourceWarn = false;
+    public newPlaylistAdding = false;
+    public newPlaylistWarn = false;
     public discoveryStarted = false;
     public newSourceAdding = false;
     public isEnterpriseEdition = true;
@@ -189,10 +206,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public videoServiceEndpoints: VideoServiceEndpoint[];
     public streamUrlValid = true;
     public streamNameEmpty=false;
+    public playlistNameEmpty=false;
     public encoderSettings:EncoderSettings[];
     public acceptAllStreams : boolean;
     public dropdownTimer: any;
     public enterpriseEditionText : any;
+    public autoStart: false;
+    public playlist: Playlist;
+    public playlistItems: PlaylistItem[];
 
 
 
@@ -289,6 +310,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             dataRows: [],
         };
 
+
         this.liveBroadcast = new LiveBroadcast();
         this.selectedBroadcast = new LiveBroadcast();
         this.liveBroadcast.name = "";
@@ -301,6 +323,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.token = null;
         this.newLiveStreamActive = false;
         this.camera = new Camera("", "", "", "", "", "");
+        this.playlist = new Playlist("",0,"",this.playlistItems,0,0);
+        this.playlist.playlistName = "";
+
+        if (!this.playlistItems) {
+            this.playlistItems = this.playlistItems || [];
+        }
+
 
         this.getInitParams();
 
@@ -1385,6 +1414,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.streamNameEmpty = false;
     }
 
+    newPlaylist(): void {
+        this.newLiveStreamActive = false;
+        this.newIPCameraActive = false;
+        this.newStreamSourceActive = false;
+        this.newPlaylistActive = true;
+        this.streamNameEmpty = false;
+    }
+
 
     addIPCamera(isValid: boolean): void {
         this.streamNameEmpty = false;
@@ -1657,6 +1694,129 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.liveBroadcast.username = "";
                 this.liveBroadcast.password = "";
 
+
+                if (this.isGridView) {
+                    setTimeout(() => {
+                        this.switchToGridView();
+                    }, 500);
+                }
+            });
+
+    }
+
+    addPlaylistItem(): void {
+
+        this.playlistItems.push({
+            name: "",
+            type: "VoD",
+            streamId: "streamId",
+            streamUrl: "",
+            hlsViewerCount: 0,
+            webRTCViewerCount: 0,
+            rtmpViewerCount: 0,
+            mp4Enabled: 0,
+        });
+
+    }
+
+    deletePlaylistItem(index: number): void {
+        this.playlistItems.splice(index, 1);
+    }
+
+    addPlaylist(isValid: boolean): void {
+
+        this.playlistNameEmpty = false;
+
+        if (!isValid) {
+            console.log("data : gg");
+            //not valid form return directly
+            return;
+        }
+
+        if (!this.restService.checkStreamName(this.playlist.playlistName)) {
+
+            this.playlistNameEmpty = true;
+            return;
+        }
+
+        console.log("data : gg222");
+
+        this.playlistNameEmpty = false;
+        this.newPlaylistAdding = true;
+
+        this.playlist.broadcastItemList = this.playlistItems;
+        this.playlist.playlistId = "test";
+        this.playlist.currentPlayIndex = 0;
+        this.playlist.duration = 0;
+        this.playlist.creationDate = 0;
+
+        this.restService.createPlaylist(this.appName, this.playlist, this.autoStart)
+            .subscribe(data => {
+                console.log("data :" + JSON.stringify(data));
+                if (data["success"] == true) {
+
+                    this.newStreamSourceAdding = false;
+
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().new_broadcast_created
+                    }, {
+                        type: "success",
+                        delay: 1000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                    this.getAppLiveStreamsNumber();
+
+                    this.liveBroadcast.streamUrl = "";
+                    this.streamUrlValid=true;
+
+
+                }
+                else {
+                    var errorCode = data["message"];
+
+                    this.newIPCameraAdding = false;
+
+                    $.notify({
+                        icon: "ti-save",
+                        message: "Error: Not added"
+                    }, {
+                        type: "error",
+                        delay: 2000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                    this.getAppLiveStreamsNumber();
+
+                    if (errorCode == -3) {
+
+                        swal({
+                            title: "High CPU Load",
+                            text: "Please Decrease CPU Load Then Try Again",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+
+                        }).catch(function () {
+
+                        });
+                    }
+
+                }
+
+                //swal.close();
+                this.newPlaylistAdding = false;
+                this.newPlaylistActive = false;
 
                 if (this.isGridView) {
                     setTimeout(() => {
@@ -1986,6 +2146,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     cancelStreamSource(): void {
         this.newStreamSourceActive = false;
+    }
+
+    cancelPlaylist(): void {
+        this.newPlaylistActive = false;
     }
 
     copyPublishUrl(streamUrl: string): void {

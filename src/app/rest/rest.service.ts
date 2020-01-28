@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {AppSettings, SearchParam, ServerSettings} from "../app.page/app.page.component";
+import {AppSettings, Playlist, SearchParam, ServerSettings} from "../app.page/app.page.component";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
@@ -127,6 +127,11 @@ export class RestService {
         }
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/create&autoStart="+autoStart+"&socialNetworks="+socialNetworks,
             liveBroadcast);
+    }
+
+    public createPlaylist(appName: string, playlist: Playlist, autoStart: boolean): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/playlists/create?autoStart=true",
+            playlist);
     }
 
     public updateLiveStream(appName: string, broadcast: LiveBroadcast, socialNetworks): Observable<Object> {

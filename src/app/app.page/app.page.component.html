@@ -48,6 +48,9 @@
                                             <li>
                                                 <a (click)="newStreamSource()" role="button">Stream Source</a>
                                             </li>
+                                            <li>
+                                                <a (click)="newPlaylist()" role="button">Playlist</a>
+                                            </li>
                                         </ul>
                                     </div>
                                     <br>
@@ -225,7 +228,7 @@
                                                        i18n-placeholder="@@stream_name_place_holder"
                                                        placeholder="Stream Url"
                                                        class="form-control" [(ngModel)]="liveBroadcast.streamUrl"
-                                                       pt Undefine         #broadcasturl="ngModel">
+                                                       #broadcasturl="ngModel">
                                                 <small [hidden]="broadcasturl.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
                                                     Stream URL is not valid
                                                 </small>
@@ -274,6 +277,98 @@
 
                                     </form>
                                 </div>
+
+                        <div class="card" *ngIf="newPlaylistActive">
+
+                            <form method="post" #f="ngForm" validate (ngSubmit)="addPlaylist(f.valid)">
+                                <div class="card-header">
+                                    <h4 class="card-title text-left" i18n="@@newLiveStreamCardTitle">
+                                        New Playlist
+                                    </h4>
+                                </div>
+                                <div class="card-content">
+                                    <div class="form-group text-left">
+                                        <label i18n="@@newLiveStreamName">Playlist Name</label>
+                                        <input type="text" required minlength="4" name="playlistName"
+                                               i18n-placeholder="@@stream_name_place_holder"
+                                               placeholder="Stream name"
+                                               class="form-control" [(ngModel)]="playlist.playlistName"
+                                               #playlistName="ngModel" >
+
+                                       <!--- <small [hidden]="playlistName.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
+                                            Stream name should be at least 4 characters.
+                                        </small>
+
+                                        <small class="text-danger" *ngIf="playlistNameEmpty">
+                                            Playlist name should not be empty.
+                                        </small>
+                                        -->
+                                    </div>
+
+
+                                    <div class="form-group">
+
+                                        <div class="row">
+
+                                        <div class="col-sm-12 col-md-12">
+
+                                             <div *ngIf="playlistItems.length!=0" >
+                                                <div class="col-xs-4 col-sm-4 text-left">
+                                                    <span class="help-block" i18n="@@ResolutionHeight">PlaylistItem Name</span>
+                                                </div>
+                                                <div class="col-xs-4 col-sm-4 text-left">
+                                                    <span class="help-block" i18n="@@ResolutionHeight">Playlist URL</span>
+                                                </div>
+                                            </div>
+
+                                           <div *ngIf="playlistItems.length!=0" class="row">
+                                            <ng-container>
+                                                    <div *ngFor="let playlistItem of playlistItems; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px" >
+
+                                                        <div class="col-xs-4 col-sm-4 text-left">
+                                                            <input type="text" class="form-control" [name]="'playlistName'+i" [(ngModel)]="playlistItem.name" required />
+                                                        </div>
+
+                                                        <div class="col-xs-4 col-sm-4 text-left">
+                                                            <input  type="text" class="form-control" [name]="'streamUrl'+i"  [(ngModel)]="playlistItem.streamUrl" required />
+                                                        </div>
+
+
+                                                        <div class="col-xs-4 col-sm-4 text-left">
+                                                            <button (click)="deletePlaylistItem(i)" class="btn btn-icon btn-simple btn-danger btn-minus" type="button">
+                                                                <i class="ti-close"></i>
+                                                            </button>
+                                                        </div>
+
+
+
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+
+                                            <div class="row text-center">
+
+                                                <button type="button" class="btn btn-fill btn-success" (click)="addPlaylistItem()" i18n="@@newLiveStreamCreateButton">
+                                                    Add Playlist Item</button>
+                                            </div>
+
+                                            <div class="row text-center" style="padding-top: 20px">
+
+                                                <button type="submit" [disabled]='newPlaylistWarn' class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
+                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newPlaylistAdding" aria-hidden="true"></i>Create</button>
+
+                                                <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelPlaylist()">Cancel</button>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
 
                                 <br>
 
