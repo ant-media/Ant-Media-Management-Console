@@ -295,14 +295,6 @@
                                                class="form-control" [(ngModel)]="playlist.playlistName"
                                                #playlistName="ngModel" >
 
-                                       <!--- <small [hidden]="playlistName.valid || (!f.submitted)" class="text-danger" i18n="@@broadcastNameIsRequired">
-                                            Stream name should be at least 4 characters.
-                                        </small>
-
-                                        <small class="text-danger" *ngIf="playlistNameEmpty">
-                                            Playlist name should not be empty.
-                                        </small>
-                                        -->
                                     </div>
 
 
@@ -339,8 +331,6 @@
                                                                 <i class="ti-close"></i>
                                                             </button>
                                                         </div>
-
-
 
                                                     </div>
                                                 </ng-container>
@@ -413,6 +403,10 @@
                                                         <ng-container *ngSwitchCase="'streamSource'">
                                                             <img style="width: 10%"
                                                                  src="/assets/img/icons/video-camera.svg">
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'VoD'">
+                                                            <img style="width: 10%"
+                                                                 src="/assets/img/icons/playlist.svg">
                                                         </ng-container>
                                                     </ng-container>
 
@@ -657,6 +651,7 @@
 
                                                        </button>
 
+                                                        <!-- Edit IP Camera Button -->
 
                                                         <button *ngIf="row.type=='ipCamera'"
                                                                (click)="openSettingsDialog(row)"
@@ -670,6 +665,7 @@
                                                            <ng-container i18n="@@tableSettings"></ng-container>
                                                        </button>
 
+                                                        <!-- Edit Stream Source Button -->
 
                                                         <button *ngIf="row.type=='streamSource'"
                                                                 (click)="openStreamSourceSettingsDialog(row)"
@@ -681,6 +677,21 @@
                                                             </span>
 
                                                             <ng-container i18n="@@tableSettings"></ng-container>
+                                                        </button>
+
+                                                        <!-- Edit Playlist Button -->
+
+                                                        <button *ngIf="row.status!='broadcasting'&& row.type=='VoD'"
+                                                                (click)="openPlaylistEditDialog(row)" title="Edit"
+                                                                data-toggle="tooltip"
+                                                                class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
+                                                                type="button"
+                                                        >
+                                                           <span class="btn-label">
+                                                               <i class="ti-pencil"></i>
+                                                           </span>
+                                                            <ng-container i18n="@@tableEditButton"></ng-container>
+
                                                         </button>
 
                                                     </div>

@@ -37,6 +37,7 @@ import {CamSettingsDialogComponent} from './dialog/cam.settings.dialog.component
 import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
 import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialog.component';
+import {PlaylistEditComponent} from './dialog/playlist.edit.dialog.component';
 import {Observable} from "rxjs";
 import "rxjs/add/observable/of";
 
@@ -71,13 +72,12 @@ export class Camera {
 }
 
 export class Playlist {
-    constructor(
-        public playlistId: string,
-        public currentPlayIndex: number,
-        public playlistName: string,
-        public broadcastItemList: PlaylistItem[],
-        public creationDate: number,
-        public duration: number){}
+        public playlistId: string;
+        public currentPlayIndex: number;
+        public playlistName: string;
+        public broadcastItemList: PlaylistItem[];
+        public creationDate: number;
+        public duration: number;
 }
 
 
@@ -217,6 +217,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
+
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
     public token: Token;
     public serverSettings: ServerSettings;
@@ -323,8 +324,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.token = null;
         this.newLiveStreamActive = false;
         this.camera = new Camera("", "", "", "", "", "");
-        this.playlist = new Playlist("",0,"",this.playlistItems,0,0);
+        this.playlist = new Playlist();
         this.playlist.playlistName = "";
+
 
         if (!this.playlistItems) {
             this.playlistItems = this.playlistItems || [];
@@ -668,6 +670,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             let dialogRef = this.dialog.open(BroadcastEditComponent, {
 
 
+
                 data: {
                     name: this.liveStreamEditing.name,
                     streamId: this.liveStreamEditing.streamId,
@@ -693,6 +696,26 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
         }
+    }
+
+    openPlaylistEditDialog(stream: BroadcastInfo): void {
+
+            let dialogRef = this.dialog.open(PlaylistEditComponent, {
+
+                data: {
+                    playlistId: stream.streamId,
+                    appName: this.appName,
+                }
+            });
+
+
+            dialogRef.afterClosed().subscribe(result => {
+                console.log('The dialog was closed');
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                this.getAppLiveStreamsNumber();
+
+
+            });
     }
 
 
@@ -1728,7 +1751,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.playlistNameEmpty = false;
 
         if (!isValid) {
-            console.log("data : gg");
             //not valid form return directly
             return;
         }
@@ -1738,8 +1760,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.playlistNameEmpty = true;
             return;
         }
-
-        console.log("data : gg222");
 
         this.playlistNameEmpty = false;
         this.newPlaylistAdding = true;
@@ -1755,7 +1775,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
 
-                    this.newStreamSourceAdding = false;
+                    this.newPlaylistAdding = false;
 
                     $.notify({
                         icon: "ti-save",
@@ -1771,15 +1791,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
-                    this.liveBroadcast.streamUrl = "";
-                    this.streamUrlValid=true;
-
-
                 }
                 else {
                     var errorCode = data["message"];
-
-                    this.newIPCameraAdding = false;
 
                     $.notify({
                         icon: "ti-save",
@@ -2495,6 +2509,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.callTimer();
         });
     }
+
+
 
 }
 

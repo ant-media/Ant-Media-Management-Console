@@ -134,6 +134,15 @@ export class RestService {
             playlist);
     }
 
+    public updatePlaylist(appName: string, playlist: Playlist, playlistId: string,  autoStart: boolean): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/playlists/edit/"+ playlistId + "?autoStart=true",
+            playlist);
+    }
+
+    public getPlaylist(appName: string, playlistId: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/playlists/"+playlistId);
+    }
+
     public updateLiveStream(appName: string, broadcast: LiveBroadcast, socialNetworks): Observable<Object> {
         return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/"+broadcast.streamId+"?socialNetworks="+socialNetworks,
             broadcast);
