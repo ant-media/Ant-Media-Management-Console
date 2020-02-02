@@ -1165,6 +1165,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     dropDownChanged(event:any,i:number){
 
+        if (event == 2160) {
+            this.encoderSettings[i].videoBitrate = 6000;
+            this.encoderSettings[i].audioBitrate = 256;
+        }
         if(event == 1080) {
             this.encoderSettings[i].videoBitrate = 2000;
             this.encoderSettings[i].audioBitrate = 256;
