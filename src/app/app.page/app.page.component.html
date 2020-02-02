@@ -963,7 +963,9 @@
 
                                                     <div *ngIf="encoderSettings.length==0"  class="col-sm-12 col-md-12 text-left"
                                                          style="margin-top: 20px;">
-                                                        <label class="text-left">Bitrate at the input redirected to output with the following bitrates</label>
+                                        
+                                                        <label class="text-left">
+                                                            <i style="font-size: 20px;color:#DD0330" class="fa fa-exclamation-circle"></i> Adaptive Streaming is a process intensive operation. Please use it if you know what you're doing.</label>
                                                     </div>
 
                                                 </div>
@@ -996,6 +998,7 @@
                                                                     <select  type="number" #resolution="ngModel"  [name]="'resolutionHeight'+i" (ngModelChange)="dropDownChanged($event,i)" [(ngModel)]="encoderSetting.height"
                                                                             class="dropdown-toggle form-control" required>
                                                                         <option value="0" selected disabled>Choose One</option>
+                                                                        <option value="2160">2160p</option>
                                                                         <option value="1080">1080p</option>
                                                                         <option value="720">720p</option>
                                                                         <option value="480">480p</option>
@@ -1034,7 +1037,7 @@
                                                     </ng-container>
                                                    </div>
                                                     <div class="col-sm-12 text-left col-md-12" ><button (click)="addNewStream()" class="btn btn-default" i18n="@@addNewStream" type="button">
-                                                        Add New Stream
+                                                        Add New Bitrate
                                                     </button>
                                                     </div>
                                                 </div>
