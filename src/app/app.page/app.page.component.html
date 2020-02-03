@@ -555,9 +555,25 @@
                                                                         </a>
                                                                     </li>
 
+                                                                    <!-- Start button VoD & Playlist Source -->
+
+                                                                    <li *ngIf="row.type=='VoD' && row.status!='broadcasting'">
+                                                                        <a class="dropdown-link"   (click)="startPlaylist(row.streamId)">
+                                                                            <ng-container i18n="@@startPlaylist">Start Playlist</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <!-- Stop button VoD & Playlist Source-->
+
+                                                                    <li *ngIf="row.type=='VoD' && row.status=='broadcasting'">
+                                                                        <a class="dropdown-link"    (click)="stopPlaylist(row.streamId)">
+                                                                            <ng-container i18n="@@stopPlaylist">Stop Playlist</ng-container>
+                                                                        </a>
+                                                                    </li>
+
                                                                     <!-- Edit RTMP Endpoints -->
 
-                                                                    <li>
+                                                                    <li *ngIf="row.type!='VoD'">
                                                                         <a class="dropdown-link"  (click)="openRTMPEndpointDialog(row)" >
                                                                             <ng-container i18n="@@editRTMPEndpoint">Edit RTMP Endpoints</ng-container>
                                                                         </a>
@@ -598,9 +614,17 @@
 
                                                                     <!-- Delete Broadcast -->
 
-                                                                    <li>
+                                                                    <li *ngIf="row.type!='VoD'">
                                                                         <a class="dropdown-link" (click)="deleteLiveBroadcast(row.streamId)" >
                                                                             <ng-container i18n="@@tableDeleteButton">Delete Broadcast</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <!-- Delete Playlist -->
+
+                                                                    <li *ngIf="row.type=='VoD'">
+                                                                        <a class="dropdown-link" (click)="deletePlaylist(row.streamId)" >
+                                                                            <ng-container i18n="@@tableDeleteButton">Delete Playlist</ng-container>
                                                                         </a>
                                                                     </li>
 
@@ -782,7 +806,7 @@
 
                                                                         <li *ngIf="(row.type=='streamSource' || row.type=='ipCamera') && row.status=='broadcasting'">
                                                                             <a class="dropdown-link"    (click)="stopStreams(row.streamId)">
-                                                                                <ng-container i18n="@@stopBroadcast">Stop Broadcast</ng-container>
+                                                                                <ng-container i18n="@@stopPlaylist">Stop Playlist</ng-container>
                                                                             </a>
                                                                         </li>
 

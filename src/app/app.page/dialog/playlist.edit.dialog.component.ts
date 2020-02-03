@@ -3,10 +3,9 @@ import { Locale } from "../../locale/locale";
 import { RestService, LiveBroadcast } from '../../rest/rest.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import {
-    Endpoint, PlaylistItem,
-    VideoServiceEndpoint,
+    PlaylistItem,
+    Playlist
 } from '../app.definitions';
-import {Playlist} from "../app.page.component";
 
 declare var $: any;
 
@@ -32,19 +31,12 @@ export class PlaylistEditComponent {
         if (!this.playlistItemEditing) {
             this.playlistItemEditing = this.playlistItemEditing || [];
         }
-
-
         this.getPlaylistValues();
-
     }
 
     getPlaylistValues(){
 
-        this.restService.getPlaylist(this.data.appName,"test").subscribe(data => {
-
-            console.log("data[currentPlayIndex]->" + data["currentPlayIndex"]);
-            console.log("data[playlistName]->" + data["playlistName"]);
-            console.log("data[broadcastItemList]->" + data["broadcastItemList"]);
+        this.restService.getPlaylist(this.data.appName,this.data.playlistId).subscribe(data => {
 
             this.playlistEditing.playlistId = data["playlistId"];
             this.playlistEditing.currentPlayIndex = data["currentPlayIndex"];
@@ -109,7 +101,7 @@ export class PlaylistEditComponent {
         this.playlistItemEditing.push({
             name: "",
             type: "VoD",
-            streamId: "streamId",
+            streamId: "",
             streamUrl: "",
             hlsViewerCount: 0,
             webRTCViewerCount: 0,

@@ -24,10 +24,12 @@ import {
     BroadcastInfo,
     BroadcastInfoTable,
     CameraInfoTable,
-    EncoderSettings, PlaylistItem,
+    EncoderSettings,
     VideoServiceEndpoint,
     VodInfo,
-    VodInfoTable
+    VodInfoTable,
+    Playlist,
+    PlaylistItem
 } from './app.definitions';
 import {DetectedObjectListDialog} from './dialog/detected.objects.list';
 import {UploadVodDialogComponent} from './dialog/upload-vod-dialog';
@@ -70,17 +72,6 @@ export class Camera {
         public streamUrl: string,
         public type: string) { }
 }
-
-export class Playlist {
-        public playlistId: string;
-        public currentPlayIndex: number;
-        public playlistName: string;
-        public broadcastItemList: PlaylistItem[];
-        public creationDate: number;
-        public duration: number;
-}
-
-
 
 export class AppSettings {
 
@@ -324,7 +315,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.token = null;
         this.newLiveStreamActive = false;
         this.camera = new Camera("", "", "", "", "", "");
-        this.playlist = new Playlist();
+        this.playlist = new Playlist ();
         this.playlist.playlistName = "";
 
 
@@ -1765,7 +1756,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newPlaylistAdding = true;
 
         this.playlist.broadcastItemList = this.playlistItems;
-        this.playlist.playlistId = "test";
+        this.playlist.playlistId = "test2";
         this.playlist.currentPlayIndex = 0;
         this.playlist.duration = 0;
         this.playlist.creationDate = 0;
@@ -1840,6 +1831,65 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
     }
+
+    deletePlaylist(streamId: string): void {
+        swal({
+            title: Locale.getLocaleInterface().are_you_sure,
+            text: Locale.getLocaleInterface().wont_be_able_to_revert,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(data => {
+            this.restService.deletePlaylist(this.appName, streamId)
+                .subscribe(data => {
+                    if (data["success"] == true) {
+
+                        $.notify({
+                            icon: "ti-save",
+                            message: "Successfully deleted"
+                        }, {
+                            type: "success",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+
+                    }
+                    else {
+                        $.notify({
+                            icon: "ti-save",
+                            message: Locale.getLocaleInterface().broadcast_not_deleted
+                        }, {
+                            type: "warning",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                    }
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                    this.getAppLiveStreamsNumber();
+
+
+
+                    if (this.isGridView) {
+                        setTimeout(() => {
+                            this.switchToGridView();
+                        }, 500);
+                    }
+
+
+
+                });
+        });
+
+    }
+
 
     startDiscover() {
         this.discoveryStarted = true;
@@ -2509,6 +2559,82 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.callTimer();
         });
     }
+
+
+    stopPlaylist(streamId: string): void {
+
+        this.restService.stopPlaylist(this.appName, streamId).subscribe(data => {
+
+            if (data["success"] == true) {
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Playlist's stopping, please wait a few seconds."
+                }, {
+                    type: "success",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else{
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Playlist Stop Failed"
+                }, {
+                    type: "warning",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            this.callTimer();
+        });
+
+    }
+
+    startPlaylist(streamId: string): void {
+
+        this.restService.startPlaylist(this.appName, streamId).subscribe(data => {
+
+            if (data["success"] == true) {
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Playlist's starting, please wait a few seconds."
+                }, {
+                    type: "success",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else{
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Playlist Start Failed"
+                }, {
+                    type: "warning",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+
+            }
+            this.callTimer();
+        });
+    }
+
 
 
 

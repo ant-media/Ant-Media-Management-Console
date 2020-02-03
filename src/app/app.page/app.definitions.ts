@@ -158,3 +158,13 @@ export declare interface PlaylistItem {
         rtmpViewerCount: number;
         mp4Enabled: number;
 }
+
+
+export class Playlist {
+    playlistId: string;
+    currentPlayIndex: number;
+    playlistName: string;
+    broadcastItemList: PlaylistItem[];
+    creationDate: number;
+    duration: number;
+}
