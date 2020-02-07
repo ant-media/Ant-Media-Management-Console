@@ -23,10 +23,10 @@
                         <div class="col-sm-12 col-md-12">
 
                             <div *ngIf="playlistItemEditing.length!=0" >
-                                <div class="col-xs-4 col-sm-4 text-left">
+                                <div class="col-xs-12 col-sm-4 text-left">
                                     <span class="help-block" i18n="@@ResolutionHeight">PlaylistItem Name</span>
                                 </div>
-                                <div class="col-xs-4 col-sm-4 text-left">
+                                <div class="col-xs-12 col-sm-4 text-left">
                                     <span class="help-block" i18n="@@ResolutionHeight">Playlist URL</span>
                                 </div>
                             </div>
@@ -35,16 +35,16 @@
                                 <ng-container>
                                     <div *ngFor="let playlistItem of playlistItemEditing; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px" >
 
-                                        <div class="col-xs-4 col-sm-4 text-left">
+                                        <div class="col-xs-12 col-sm-4 text-left">
                                             <input type="text" class="form-control" [name]="'playlistName'+i" [(ngModel)]="playlistItem.name" required />
                                         </div>
 
-                                        <div class="col-xs-4 col-sm-4 text-left">
+                                        <div class="col-xs-12 col-sm-4 text-left">
                                             <input  type="text" class="form-control" [name]="'streamUrl'+i"  [(ngModel)]="playlistItem.streamUrl" required />
                                         </div>
 
 
-                                        <div class="col-xs-4 col-sm-4 text-left">
+                                        <div class="col-xs-12 col-sm-4 text-left">
                                             <button (click)="deletePlaylistItemEditing(i)" class="btn btn-icon btn-simple btn-danger btn-minus" type="button">
                                                 <i class="ti-close"></i>
                                             </button>

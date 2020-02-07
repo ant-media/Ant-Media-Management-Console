@@ -1760,7 +1760,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newPlaylistAdding = true;
 
         this.playlist.broadcastItemList = this.playlistItems;
-        this.playlist.playlistId = "test2";
+        this.playlist.playlistId = "";
         this.playlist.currentPlayIndex = 0;
         this.playlist.duration = 0;
         this.playlist.creationDate = 0;
