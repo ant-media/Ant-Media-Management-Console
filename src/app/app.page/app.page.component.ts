@@ -1761,6 +1761,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.playlist.broadcastItemList = this.playlistItems;
         this.playlist.playlistId = "";
+        this.playlist.playlistStatus = "created";
         this.playlist.currentPlayIndex = 0;
         this.playlist.duration = 0;
         this.playlist.creationDate = 0;
@@ -1772,9 +1773,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     this.newPlaylistAdding = false;
 
+                    this.playlist = new Playlist ();
+
+                    this.playlistItems = [];
+
                     $.notify({
                         icon: "ti-save",
-                        message: Locale.getLocaleInterface().new_broadcast_created
+                        message: Locale.getLocaleInterface().new_playlist_created
                     }, {
                         type: "success",
                         delay: 1000,
@@ -1792,7 +1797,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     $.notify({
                         icon: "ti-save",
-                        message: "Error: Not added"
+                        message: Locale.getLocaleInterface().new_playlist_error
                     }, {
                         type: "error",
                         delay: 2000,
@@ -1852,7 +1857,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                         $.notify({
                             icon: "ti-save",
-                            message: "Successfully deleted"
+                            message: "Playlist Successfully deleted"
                         }, {
                             type: "success",
                             delay: 900,
@@ -1866,7 +1871,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     else {
                         $.notify({
                             icon: "ti-save",
-                            message: Locale.getLocaleInterface().broadcast_not_deleted
+                            message: Locale.getLocaleInterface().playlist_not_deleted
                         }, {
                             type: "warning",
                             delay: 900,

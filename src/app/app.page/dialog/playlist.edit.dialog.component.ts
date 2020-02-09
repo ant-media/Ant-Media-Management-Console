@@ -41,6 +41,7 @@ export class PlaylistEditComponent {
             this.playlistEditing.playlistId = data["playlistId"];
             this.playlistEditing.currentPlayIndex = data["currentPlayIndex"];
             this.playlistEditing.playlistName = data["playlistName"];
+            this.playlistEditing.playlistStatus = data["playlistStatus"];
             this.playlistEditing.broadcastItemList = data["broadcastItemList"];
             this.playlistItemEditing = data["broadcastItemList"];
 
@@ -67,7 +68,7 @@ export class PlaylistEditComponent {
 
                 $.notify({
                     icon: "ti-save",
-                    message: Locale.getLocaleInterface().broadcast_updated
+                    message: Locale.getLocaleInterface().playlist_updated
                 }, {
                     type: "success",
                     delay: 900,
@@ -83,7 +84,7 @@ export class PlaylistEditComponent {
             else {
                 $.notify({
                     icon: "ti-alert",
-                    message: Locale.getLocaleInterface().broadcast_not_updated + " " + data["message"] + " " + data["errorId"]
+                    message: Locale.getLocaleInterface().playlist_not_updated + " " + data["message"] + " " + data["errorId"]
                 }, {
                     type: "warning",
                     delay: 900,

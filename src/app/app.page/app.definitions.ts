@@ -164,6 +164,7 @@ export class Playlist {
     playlistId: string;
     currentPlayIndex: number;
     playlistName: string;
+    playlistStatus: string;
     broadcastItemList: PlaylistItem[];
     creationDate: number;
     duration: number;
