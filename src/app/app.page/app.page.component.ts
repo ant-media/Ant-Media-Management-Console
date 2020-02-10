@@ -1759,6 +1759,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.playlistNameEmpty = false;
         this.newPlaylistAdding = true;
 
+        if(!this.playlistItems){
+            this.playlistItems = null;
+        }
+
         this.playlist.broadcastItemList = this.playlistItems;
         this.playlist.playlistId = "";
         this.playlist.playlistStatus = "created";
@@ -1773,10 +1777,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     this.newPlaylistAdding = false;
 
-                    this.playlist = new Playlist ();
-
-                    this.playlistItems = [];
-
                     $.notify({
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().new_playlist_created
@@ -1790,6 +1790,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     });
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
+
+                    this.playlist = new Playlist ();
+                    this.playlist.playlistName = "";
+
+                    if (!this.playlistItems) {
+                        this.playlistItems = this.playlistItems || [];
+                    }
 
                 }
                 else {
@@ -1837,6 +1844,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         this.switchToGridView();
                     }, 500);
                 }
+
             });
 
     }
