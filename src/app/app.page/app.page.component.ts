@@ -1777,6 +1777,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     this.newPlaylistAdding = false;
 
+                    this.playlist = new Playlist ();
+
+                    this.playlistItems = [];
+                    this.playlist.broadcastItemList = [];
+
                     $.notify({
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().new_playlist_created
@@ -1791,12 +1796,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
-                    this.playlist = new Playlist ();
-                    this.playlist.playlistName = "";
 
-                    if (!this.playlistItems) {
-                        this.playlistItems = this.playlistItems || [];
-                    }
 
                 }
                 else {
