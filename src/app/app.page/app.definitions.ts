@@ -147,3 +147,25 @@ export declare interface WebRTCClientStat {
     videoThreadCheckInterval: number;
     audioThreadCheckInterval: number;
 }
+
+export declare interface PlaylistItem {
+        name: string;
+        type: string;
+        streamId: string;
+        streamUrl: string;
+        hlsViewerCount: number;
+        webRTCViewerCount: number;
+        rtmpViewerCount: number;
+        mp4Enabled: number;
+}
+
+
+export class Playlist {
+    playlistId: string;
+    currentPlayIndex: number;
+    playlistName: string;
+    playlistStatus: string;
+    broadcastItemList: PlaylistItem[];
+    creationDate: number;
+    duration: number;
+}

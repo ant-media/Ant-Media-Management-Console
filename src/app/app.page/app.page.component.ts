@@ -27,7 +27,9 @@ import {
     EncoderSettings,
     VideoServiceEndpoint,
     VodInfo,
-    VodInfoTable
+    VodInfoTable,
+    Playlist,
+    PlaylistItem
 } from './app.definitions';
 import {DetectedObjectListDialog} from './dialog/detected.objects.list';
 import {UploadVodDialogComponent} from './dialog/upload-vod-dialog';
@@ -37,6 +39,7 @@ import {CamSettingsDialogComponent} from './dialog/cam.settings.dialog.component
 import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
 import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialog.component';
+import {PlaylistEditComponent} from './dialog/playlist.edit.dialog.component';
 import {Observable} from "rxjs";
 import "rxjs/add/observable/of";
 
@@ -124,6 +127,8 @@ export class Token {
     public type:string;
 }
 
+
+
 @Component({
     selector: 'manage-app-cmp',
     moduleId: module.id,
@@ -150,6 +155,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public newLiveStreamActive: boolean;
     public newIPCameraActive: boolean;
     public newStreamSourceActive: boolean;
+    public newPlaylistActive: boolean;
     public liveBroadcast: LiveBroadcast;
     public liveBroadcastShareFacebook: boolean;
     public liveBroadcastShareYoutube: boolean;
@@ -158,6 +164,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public newIPCameraAdding = false;
     public newStreamSourceAdding = false;
     public newStreamSourceWarn = false;
+    public newPlaylistAdding = false;
+    public newPlaylistWarn = false;
     public discoveryStarted = false;
     public newSourceAdding = false;
     public isEnterpriseEdition = true;
@@ -191,10 +199,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public videoServiceEndpoints: VideoServiceEndpoint[];
     public streamUrlValid = true;
     public streamNameEmpty=false;
+    public playlistNameEmpty=false;
     public encoderSettings:EncoderSettings[];
     public acceptAllStreams : boolean;
     public dropdownTimer: any;
     public enterpriseEditionText : any;
+    public autoStart: false;
+    public playlist: Playlist;
+    public playlistItems: PlaylistItem[];
+
 
 
 
@@ -291,6 +304,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             dataRows: [],
         };
 
+
         this.liveBroadcast = new LiveBroadcast();
         this.selectedBroadcast = new LiveBroadcast();
         this.liveBroadcast.name = "";
@@ -303,6 +317,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.token = null;
         this.newLiveStreamActive = false;
         this.camera = new Camera("", "", "", "", "", "");
+        this.playlist = new Playlist ();
+        this.playlist.playlistName = "";
+
+
+        if (!this.playlistItems) {
+            this.playlistItems = this.playlistItems || [];
+        }
+
 
         this.getInitParams();
 
@@ -641,6 +663,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             let dialogRef = this.dialog.open(BroadcastEditComponent, {
 
 
+
                 data: {
                     name: this.liveStreamEditing.name,
                     streamId: this.liveStreamEditing.streamId,
@@ -666,6 +689,26 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
         }
+    }
+
+    openPlaylistEditDialog(stream: BroadcastInfo): void {
+
+            let dialogRef = this.dialog.open(PlaylistEditComponent, {
+
+                data: {
+                    playlistId: stream.streamId,
+                    appName: this.appName,
+                }
+            });
+
+
+            dialogRef.afterClosed().subscribe(result => {
+                console.log('The dialog was closed');
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                this.getAppLiveStreamsNumber();
+
+
+            });
     }
 
 
@@ -1391,6 +1434,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.streamNameEmpty = false;
     }
 
+    newPlaylist(): void {
+        this.newLiveStreamActive = false;
+        this.newIPCameraActive = false;
+        this.newStreamSourceActive = false;
+        this.newPlaylistActive = true;
+        this.streamNameEmpty = false;
+    }
+
 
     addIPCamera(isValid: boolean): void {
         this.streamNameEmpty = false;
@@ -1672,6 +1723,192 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
     }
+
+    addPlaylistItem(): void {
+
+        this.playlistItems.push({
+            name: "",
+            type: "VoD",
+            streamId: "streamId",
+            streamUrl: "",
+            hlsViewerCount: 0,
+            webRTCViewerCount: 0,
+            rtmpViewerCount: 0,
+            mp4Enabled: 0,
+        });
+
+    }
+
+    deletePlaylistItem(index: number): void {
+        this.playlistItems.splice(index, 1);
+    }
+
+    addPlaylist(isValid: boolean): void {
+
+        this.playlistNameEmpty = false;
+
+        if (!isValid) {
+            //not valid form return directly
+            return;
+        }
+
+        if (!this.restService.checkStreamName(this.playlist.playlistName)) {
+
+            this.playlistNameEmpty = true;
+            return;
+        }
+
+        this.playlistNameEmpty = false;
+        this.newPlaylistAdding = true;
+
+        if(!this.playlistItems){
+            this.playlistItems = null;
+        }
+
+        this.playlist.broadcastItemList = this.playlistItems;
+        this.playlist.playlistId = "";
+        this.playlist.playlistStatus = "created";
+        this.playlist.currentPlayIndex = 0;
+        this.playlist.duration = 0;
+        this.playlist.creationDate = 0;
+
+        this.restService.createPlaylist(this.appName, this.playlist, this.autoStart)
+            .subscribe(data => {
+                console.log("data :" + JSON.stringify(data));
+                if (data["success"] == true) {
+
+                    this.newPlaylistAdding = false;
+
+                    this.playlist = new Playlist ();
+
+                    this.playlistItems = [];
+                    this.playlist.broadcastItemList = [];
+
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().new_playlist_created
+                    }, {
+                        type: "success",
+                        delay: 1000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                    this.getAppLiveStreamsNumber();
+
+
+
+                }
+                else {
+                    var errorCode = data["message"];
+
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().new_playlist_error
+                    }, {
+                        type: "error",
+                        delay: 2000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                    this.getAppLiveStreamsNumber();
+
+                    if (errorCode == -3) {
+
+                        swal({
+                            title: "High CPU Load",
+                            text: "Please Decrease CPU Load Then Try Again",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+
+                        }).catch(function () {
+
+                        });
+                    }
+
+                }
+
+                //swal.close();
+                this.newPlaylistAdding = false;
+                this.newPlaylistActive = false;
+
+                if (this.isGridView) {
+                    setTimeout(() => {
+                        this.switchToGridView();
+                    }, 500);
+                }
+
+            });
+
+    }
+
+    deletePlaylist(streamId: string): void {
+        swal({
+            title: Locale.getLocaleInterface().are_you_sure,
+            text: Locale.getLocaleInterface().wont_be_able_to_revert,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(data => {
+            this.restService.deletePlaylist(this.appName, streamId)
+                .subscribe(data => {
+                    if (data["success"] == true) {
+
+                        $.notify({
+                            icon: "ti-save",
+                            message: "Playlist Successfully deleted"
+                        }, {
+                            type: "success",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+
+                    }
+                    else {
+                        $.notify({
+                            icon: "ti-save",
+                            message: Locale.getLocaleInterface().playlist_not_deleted
+                        }, {
+                            type: "warning",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                    }
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                    this.getAppLiveStreamsNumber();
+
+
+
+                    if (this.isGridView) {
+                        setTimeout(() => {
+                            this.switchToGridView();
+                        }, 500);
+                    }
+
+
+
+                });
+        });
+
+    }
+
 
     startDiscover() {
         this.discoveryStarted = true;
@@ -1992,6 +2229,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     cancelStreamSource(): void {
         this.newStreamSourceActive = false;
+    }
+
+    cancelPlaylist(): void {
+        this.newPlaylistActive = false;
     }
 
     copyPublishUrl(streamUrl: string): void {
@@ -2337,6 +2578,84 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.callTimer();
         });
     }
+
+
+    stopPlaylist(streamId: string): void {
+
+        this.restService.stopPlaylist(this.appName, streamId).subscribe(data => {
+
+            if (data["success"] == true) {
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Playlist's stopping, please wait a few seconds."
+                }, {
+                    type: "success",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else{
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Playlist Stop Failed"
+                }, {
+                    type: "warning",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            this.callTimer();
+        });
+
+    }
+
+    startPlaylist(streamId: string): void {
+
+        this.restService.startPlaylist(this.appName, streamId).subscribe(data => {
+
+            if (data["success"] == true) {
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Playlist's starting, please wait a few seconds."
+                }, {
+                    type: "success",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else{
+
+                $.notify({
+                    icon: "ti-save",
+                    message: "Playlist Start Failed"
+                }, {
+                    type: "warning",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+
+            }
+            this.callTimer();
+        });
+    }
+
+
+
 
 }
 
