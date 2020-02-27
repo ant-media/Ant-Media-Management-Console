@@ -1058,13 +1058,48 @@
                                 </p>
                             </div>
 
-
-
-
                     <div *ngIf="appSettings" class="tab-pane" id="settings">
                         <form #f="ngForm" (ngSubmit)="changeSettings(f.valid)" validate class="form-horizontal" method="post">
                             <div class="row">
 
+                                <div class="col-sm-12 col-md-12">
+                                
+                                <div class="col-sm-12 col-md-6">
+
+                                        <div class="card-header">
+                                            <legend class=" text-left">
+                                                Encoder Settings
+                                            </legend>
+                                        </div>
+
+                                        <div class="card-content">
+                                            <div *ngIf=isEnterpriseEdition class="form-group">
+
+                                                <div class="col-sm-12 col-md-10 text-left">
+                                                        <div class="col-sm-12 col-md-4 text-left">
+                                                             <div class="checkbox">
+                                                                    <input enabled id="h264Encoder" name="h264Encoder" [(ngModel)]="appSettings.h264Enabled"
+                                                                           type="checkbox">
+
+                                                                    <label for="h264Encoder">
+                                                                        h264 <a  matTooltip="This enables h264 encoding. Unless you use HLS or MP4 disable it."><i class="fa fa-info-circle"></i></a>
+                                                                    </label>
+                                                             </div>
+                                                             <div class="checkbox">
+                                                                    <input id="vp8Encoder" name="vp8Encoder" [(ngModel)]="appSettings.vp8Enabled"
+                                                                           type="checkbox">
+
+                                                                    <label for="vp8Encoder">
+                                                                        vp8 <a  matTooltip="This enables vp8 encoding."><i class="fa fa-info-circle"></i></a>
+                                                                    </label>
+                                                              </div>                                                                
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                		</div>
+                                	</div>
+                                </div>
                                 <div class="col-sm-12 col-md-12">
 
                                 <div class="col-sm-12 col-md-6">
@@ -1100,10 +1135,12 @@
                                                     </div>
 
                                                     <div *ngIf="encoderSettings.length==0"  class="col-sm-12 col-md-12 text-left"
+                                                         style="margin-top: 20px;">                                                    <div *ngIf="encoderSettings.length==0"  class="col-sm-12 col-md-12 text-left"
                                                          style="margin-top: 20px;">
                                         
                                                         <label class="text-left">
                                                             <i style="font-size: 20px;color:#DD0330" class="fa fa-exclamation-circle"></i> Adaptive Streaming is a process intensive operation. Please use it if you know what you're doing.</label>
+                                                    </div>
                                                     </div>
 
                                                 </div>
@@ -1197,8 +1234,13 @@
                                             </legend>
                                         </div>
 
-                                        <div class="card-content">
-
+                                        <div *ngIf="!appSettings.h264Enabled"  class="col-sm-12 col-md-12 text-left"
+                                                 style="margin-top: 20px;">
+                                        
+                                        	<label class="text-left">
+                                        	<i style="font-size: 20px;color:#DD0330" class="fa fa-exclamation-circle"></i> h264 must be enabled for HLS Muxing..</label>
+                                        </div>
+                                        <div *ngIf="appSettings.h264Enabled" class="card-content">
                                             <div class="text-left">
 
                                                 <div class="form-group">
@@ -1338,8 +1380,13 @@
                                                 MP4 Recording
                                             </legend>
                                         </div>
-
-                                        <div class="card-content text-left">
+                                        <div *ngIf="!appSettings.h264Enabled"  class="col-sm-12 col-md-12 text-left"
+                                                 style="margin-top: 20px;">
+                                        
+                                        	<label class="text-left">
+                                        	<i style="font-size: 20px;color:#DD0330" class="fa fa-exclamation-circle"></i> h264 must be enabled for HLS Muxing..</label>
+                                        </div>
+                                        <div *ngIf="appSettings.h264Enabled" class="card-content text-left">
                                             <div class="form-group">
 
                                                 <div class="col-sm-12">

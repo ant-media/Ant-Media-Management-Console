@@ -94,7 +94,9 @@ export class AppSettings {
                 public tokenControlEnabled: boolean,
                 public webRTCEnabled: boolean,
                 public webRTCFrameRate: number,
-                public remoteAllowedCIDR: string
+                public remoteAllowedCIDR: string,
+                public h264Enabled: boolean,
+                public vp8Enabled: boolean,
     ) {}
 }
 
