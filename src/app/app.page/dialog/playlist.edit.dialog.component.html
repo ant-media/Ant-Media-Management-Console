@@ -60,8 +60,8 @@
 
                             <div class="row text-center" style="padding-top: 20px">
 
-                                <button type="submit" class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
-                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw"  aria-hidden="true"></i>Save</button>
+                                <button  type="submit" class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
+                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newPlaylistAdding"   aria-hidden="true"></i>Save</button>
 
                                 <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelEditPlaylist()">Cancel</button>
                             </div>
