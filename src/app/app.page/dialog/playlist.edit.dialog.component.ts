@@ -20,6 +20,7 @@ export class PlaylistEditComponent {
     public playlistUpdating = false;
     public playlistEditing: Playlist;
     public playlistItemEditing: PlaylistItem[];
+    public newPlaylistAdding = false;
 
 
     constructor(
@@ -60,9 +61,12 @@ export class PlaylistEditComponent {
 
 
         this.playlistUpdating = true;
+        this.newPlaylistAdding = true;
 
         this.restService.updatePlaylist(this.dialogRef.componentInstance.data.appName, this.playlistEditing, this.playlistEditing.playlistId, true).subscribe(data => {
+
             this.playlistUpdating = false;
+            this.newPlaylistAdding = false;
 
             if (data["success"]) {
 
@@ -79,6 +83,7 @@ export class PlaylistEditComponent {
                 });
 
                 this.dialogRef.close();
+                this.newPlaylistAdding = false;
 
             }
             else {
