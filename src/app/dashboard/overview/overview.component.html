@@ -61,11 +61,11 @@
             <div class="col-lg-4 col-sm-4">
                 <div class="card card-circle-chart">
                     <div class="card-header text-center">
-                        <h5 class="card-title" i18n="@@jvmNativeUsageLabel">JVM Native Memory</h5>
-                        <p class="description">{{niceBytes(jvmNativeInUse)}} / {{niceBytes(jvmNativeMax)}}</p>
+                        <h5 class="card-title" i18n="@@jvmNativeUsageLabel">System Memory</h5>
+                        <p class="description">{{niceBytes(systemMemoryInUse)}} / {{niceBytes(systemMemoryTotal)}}</p>
                     </div>
                     <div class="card-content">
-                        <div id="chartJVMNativeUsage" class="chart-circle">{{jvmNativeUsagePercent}}%</div>
+                        <div id="chartJVMNativeUsage" class="chart-circle">{{systemMemoryUsagePercent}}%</div>
                     </div>
                 </div>
             </div>
