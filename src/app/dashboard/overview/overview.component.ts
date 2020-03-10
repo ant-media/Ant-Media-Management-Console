@@ -75,7 +75,7 @@ export class OverviewComponent implements OnInit {
     }
 
     initCirclePercentage() {
-        $('#chartDiskUsage,#chartJvmHeapUsage,#chartNativeMemoryUsage,#chartJVMNativeUsage').easyPieChart({
+        $('#chartDiskUsage,#chartJvmHeapUsage,#chartNativeMemoryUsage,#chartSystemMemory').easyPieChart({
             lineWidth: 9,
             size: 160,
             scaleColor: false,
@@ -130,7 +130,8 @@ export class OverviewComponent implements OnInit {
             this.systemMemoryInUse = Number(data["systemMemoryInfo"]["inUseMemory"]);
             this.systemMemoryTotal  = Number(data["systemMemoryInfo"]["totalMemory"]);
             this.systemMemoryUsagePercent = Math.round(this.systemMemoryInUse * 100 / this.systemMemoryTotal);
-
+           
+            $("#chartSystemMemory").data('easyPieChart').update(this.systemMemoryUsagePercent);
             //getFileSystemInfo
 
             this.diskInUseSpace = Number(data["fileSystemInfo"]["inUseSpace"]);
@@ -145,7 +146,7 @@ export class OverviewComponent implements OnInit {
              this.jvmNativeMax = Number(data["jvmNativeMemoryUsage"]["maxMemory"]);
              this.jvmNativeUsagePercent = Math.round(Number(this.jvmNativeInUse * 100 / this.jvmNativeMax));
 
-             $("#chartJVMNativeUsage").data('easyPieChart').update(this.jvmNativeUsagePercent);
+            // $("#chartJVMNativeUsage").data('easyPieChart').update(this.jvmNativeUsagePercent);
 
              //getJvmHeapUsage
 
