@@ -1061,44 +1061,86 @@
                     <div *ngIf="appSettings" class="tab-pane" id="settings">
                         <form #f="ngForm" (ngSubmit)="changeSettings(f.valid)" validate class="form-horizontal" method="post">
                             <div class="row">
-
                                 <div class="col-sm-12 col-md-12">
-                                
-                                <div class="col-sm-12 col-md-6">
-
+                                    <div class="col-sm-12 col-md-6">
                                         <div class="card-header">
                                             <legend class=" text-left">
-                                                Encoder Settings
+                                                Encoder
                                             </legend>
                                         </div>
-
                                         <div class="card-content">
                                             <div *ngIf=isEnterpriseEdition class="form-group">
-
                                                 <div class="col-sm-12 col-md-10 text-left">
-                                                        <div class="col-sm-12 col-md-4 text-left">
-                                                             <div class="checkbox">
-                                                                    <input enabled id="h264Encoder" name="h264Encoder" [(ngModel)]="appSettings.h264Enabled"
+                                                    <div class="col-sm-12 col-md-4 text-left">
+                                                        <div class="checkbox">
+                                                            <input enabled id="h264Encoder" name="h264Encoder" [(ngModel)]="appSettings.h264Enabled"
                                                                            type="checkbox">
 
-                                                                    <label for="h264Encoder">
-                                                                        h264 <a  matTooltip="This enables h264 encoding. Unless you use HLS or MP4 disable it."><i class="fa fa-info-circle"></i></a>
-                                                                    </label>
-                                                             </div>
-                                                             <div class="checkbox">
-                                                                    <input id="vp8Encoder" name="vp8Encoder" [(ngModel)]="appSettings.vp8Enabled"
-                                                                           type="checkbox">
-
-                                                                    <label for="vp8Encoder">
-                                                                        vp8 <a  matTooltip="This enables vp8 encoding."><i class="fa fa-info-circle"></i></a>
-                                                                    </label>
-                                                              </div>                                                                
+                                                            <label for="h264Encoder">
+                                                                        H.264 <a  matTooltip="This enables h264 encoding. Unless you use HLS or MP4 disable it."><i class="fa fa-info-circle"></i></a>
+                                                            </label>
                                                         </div>
+                                                        <div class="checkbox">
+                                                            <input id="vp8Encoder" name="vp8Encoder" [(ngModel)]="appSettings.vp8Enabled"
+                                                                            type="checkbox">
 
+                                                            <label for="vp8Encoder">
+                                                                            VP8 <a  matTooltip="This enables vp8 encoding."><i class="fa fa-info-circle"></i></a>
+                                                            </label>
+                                                        </div>                                                                
                                                     </div>
                                                 </div>
-                                		</div>
+                                            </div>
+                                            <div *ngIf=!isEnterpriseEdition class="form-group text-left">
+                                                <div class="col-xs-12">
+                                                <label i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                    Get <a href="https://antmedia.io/#products">Enterprise Edition</a> to use other encoders different than H.264
+                                                </label>
+                                                </div>
+                                            </div>
+                                        </div>
                                 	</div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="card-header">
+                                            <legend class=" text-left">
+                                                Data Channel
+                                            </legend>
+                                        </div>
+                                        <div class="card-content">
+                                            <div *ngIf=isEnterpriseEdition class="form-group">
+                                                <div class="col-sm-12 col-md-10 text-left">
+                                                    <div class="col-sm-12 col-md-4 text-left">
+                                                        <div class="checkbox">
+                                                            <input enabled id="dataChannelEnabled" name="dataChannelEnabled"
+                                                                [(ngModel)]="appSettings.dataChannelEnabled" type="checkbox">
+                                                            <label for="dataChannelEnabled">
+                                                                Data Channel <a matTooltip="This enables data channel usage."><i
+                                                                        class="fa fa-info-circle"></i></a>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 text-left">
+                                                    <div class="col-sm-12 col-md-12 text-left">
+                                                        <b>Player Data Cahnnel Message Distribution</b>
+                                                        <br>
+                                                        <mat-radio-group [(ngModel)]="appSettings.dataChannelPlayerDistribution" name="playerDistribution">
+                                                            <mat-radio-button name="playerDistribution" value="none"> none </mat-radio-button>
+                                                            <mat-radio-button name="playerDistribution" value="publisher"> publisher </mat-radio-button>
+                                                            <mat-radio-button name="playerDistribution" value="all"> all </mat-radio-button>
+                                                        </mat-radio-group>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf=!isEnterpriseEdition class="form-group text-left">
+                                                <div class="col-xs-12">
+                                                <label i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                    Get <a href="https://antmedia.io/#products">Enterprise Edition</a> to use WebRTC real time Data Channel communication.
+                                                </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-sm-12 col-md-12">
 
