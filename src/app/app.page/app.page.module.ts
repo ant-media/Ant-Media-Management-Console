@@ -2,11 +2,10 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-
-
 import {HttpClientModule} from '@angular/common/http';
 import {AppPageComponent} from './app.page.component';
 import {ClipboardModule} from 'ngx-clipboard';
+
 import {
     MatAutocompleteModule,
     MatButtonModule,
