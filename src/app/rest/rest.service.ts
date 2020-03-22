@@ -487,16 +487,6 @@ export class RestService {
             streamUrlControl=true;
         }
 
-
-        if(ipAddr.split(".").length == 4){
-            if(!this.validateIPaddress(ipAddr)){
-                console.log("not valid IP");
-                streamUrlControl=false;
-
-                return;
-            }
-        }
-
         return streamUrlControl;
 
     }
