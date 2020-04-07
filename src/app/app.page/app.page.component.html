@@ -1264,20 +1264,14 @@
                                                                     
                                                             </div>
 
-                                                            <div *ngIf="encoderSettings.length==0"
-                                                                class="col-sm-12 col-md-12 text-left"
-                                                                style="margin-top: 20px;">
-                                                                <div *ngIf="encoderSettings.length==0"
-                                                                    class="col-sm-12 col-md-12 text-left"
-                                                                    style="margin-top: 20px;">
-
-                                                                    <label class="text-left">
+                                                            <div *ngIf="encoderSettings.length==0">
+                                                
+                                                                    <label>
                                                                         <i style="font-size: 20px;color:#DD0330"
                                                                             class="fa fa-exclamation-circle"></i>
                                                                         Adaptive Streaming is a process intensive
                                                                         operation. Please use it if you know what you're
                                                                         doing.</label>
-                                                                </div>
                                                             </div>
 
                                                         </div>
@@ -1370,13 +1364,14 @@
 
                                                                     </div>
                                                                 </ng-container>
-                                                            <div class="col-sm-12 text-left col-md-12" style="margin-top:20px"><button
-                                                                    (click)="addNewStream()" class="btn btn-default"
-                                                                    i18n="@@addNewStream" type="button">
-                                                                    Add New Bitrate
-                                                                </button>
-                                                            </div>
                                                         </div>
+                                                        <div class="col-sm-12 text-left col-md-12" style="margin-top:20px">
+                                                            <button
+                                                              (click)="addNewStream()" class="btn btn-default"
+                                                               i18n="@@addNewStream" type="button">
+                                                              Add New Bitrate
+                                                            </button>
+                                                         </div>
                                                     </div>
                                                     <div *ngIf=!isEnterpriseEdition class="form-group text-left">
                                                         <div class="col-xs-12">
