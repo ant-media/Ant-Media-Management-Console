@@ -1297,9 +1297,8 @@
                                                             
 
                                                                 <ng-container>
-                                                                    <div *ngFor="let encoderSetting of encoderSettings; let i = index">
-
-                                                                        <div class="col-xs-4 col-sm-4 text-left">
+                                                                <div *ngFor="let encoderSetting of encoderSettings; let i = index">
+                                                                    <div class="col-xs-4 col-sm-4 text-left" style="margin-bottom:10px">
 
                                                                             <select type="number" #resolution="ngModel"
                                                                                 [name]="'resolutionHeight'+i"
@@ -1323,7 +1322,7 @@
                                                                             </small>
 
                                                                         </div>
-                                                                        <div class="col-xs-4 col-sm-3 text-left">
+                                                                        <div class="col-xs-4 col-sm-3 text-left" style="margin-bottom:10px">
                                                                             <input #videobitrate="ngModel" type="number"
                                                                                 [min]="10" min="10"
                                                                                 [name]="'videobitrate'+i"
@@ -1337,7 +1336,7 @@
                                                                             </small>
                                                                         </div>
 
-                                                                        <div class="col-xs-4 col-sm-3 text-left">
+                                                                        <div class="col-xs-4 col-sm-3 text-left" style="margin-bottom:10px">
                                                                             <input #audiobitrate="ngModel" type="number"
                                                                                 [min]="10" min="10"
                                                                                 [name]="'audiobitrate'+i"
@@ -1353,15 +1352,13 @@
                                                                         </div>
 
 
-                                                                        <div class="col-xs-1 col-sm-1 text-left">
+                                                                        <div class="col-xs-1 col-sm-1 text-left" style="margin-bottom:10px">
                                                                             <button (click)="deleteStream(i)"
                                                                                 class="btn btn-icon btn-simple btn-danger btn-minus"
                                                                                 type="button">
                                                                                 <i class="ti-close"></i>
                                                                             </button>
                                                                         </div>
-
-
                                                                     </div>
                                                                 </ng-container>
                                                         </div>
