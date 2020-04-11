@@ -1,5 +1,4 @@
 import { Component, Inject } from '@angular/core';
-import { Locale } from "../../locale/locale";
 import { RestService } from '../../rest/rest.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import {
@@ -67,18 +66,15 @@ export class RtmpEndpointEditDialogComponent {
 
                 this.endpointList = this.endpointList || [];
 
-                this.endpointList.push({
-                    rtmpUrl: rtmpUrl,
-                    type:"generic",
-                    endpointServiceId:null,
-                });
-
-                for (var i  in this.endpointList) {
-                    if (this.endpointList[i].type == "generic") {
-                        this.isEmptyEndpoint = false;
-                        break;
+                this.restService.getBroadcast(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId).subscribe(data => {
+                    this.endpointList = data["endPointList"];
+                    for (var i  in this.endpointList) {
+                        if (this.endpointList[i].type == "generic") {
+                            this.isEmptyEndpoint = false;
+                            break;
+                        }
                     }
-                }
+                });
 
                 $.notify({
                     icon: "ti-save",
