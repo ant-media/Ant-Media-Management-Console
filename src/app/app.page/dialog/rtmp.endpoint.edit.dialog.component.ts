@@ -20,7 +20,7 @@ export class RtmpEndpointEditDialogComponent {
     public endpointList: Endpoint[];
     public isEmptyEndpoint: boolean = true;
     public rtmpEndpointName: any;
-
+    public endpoint: Endpoint;
 
     constructor(
         public dialogRef: MatDialogRef<RtmpEndpointEditDialogComponent>, public restService: RestService,
@@ -28,6 +28,7 @@ export class RtmpEndpointEditDialogComponent {
         this.shareEndpoint = [];
 
         this.endpointList = data.endpointList;
+        this.endpoint = new Endpoint();
 
         this.isEmptyEndpoint = true;
 
@@ -54,8 +55,9 @@ export class RtmpEndpointEditDialogComponent {
                 resultMessage = "RTMP URL Already added";
             }
         }
+        this.endpoint.rtmpUrl = rtmpUrl;
 
-        this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, rtmpUrl).subscribe(data => {
+        this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, this.endpoint).subscribe(data => {
 
             if (data["success"]) {
 
@@ -109,9 +111,9 @@ export class RtmpEndpointEditDialogComponent {
         });
     }
 
-    removeRTMPEndpoint(rtmpUrl:string,index: number){
+    removeRTMPEndpoint(endpointServiceId:string,index: number){
 
-        this.restService.deleteRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, rtmpUrl).subscribe(data => {
+        this.restService.deleteRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, endpointServiceId).subscribe(data => {
 
             if (data["success"]) {
 
