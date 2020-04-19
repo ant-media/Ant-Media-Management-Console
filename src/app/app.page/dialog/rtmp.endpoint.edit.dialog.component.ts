@@ -109,12 +109,10 @@ export class RtmpEndpointEditDialogComponent {
         //Check service Id is null
         if (endpoint.endpointServiceId != "null") {
             this.restService.deleteRTMPEndpointV2(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, endpoint.endpointServiceId).subscribe(data => {
-              console.log("1123123asd->" + data["success"]);
                 this.endpointDeleteProcess(endpoint,index,data);
             });
         } else {
             this.restService.deleteRTMPEndpointV1(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, endpoint.rtmpUrl).subscribe(data => {
-                console.log("1123123asdasdasd->" + data["success"]);
                 this.endpointDeleteProcess(endpoint,index,data);
             });
         }
