@@ -177,8 +177,12 @@ export class RestService {
         return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/vods/'+id, {});
     }
 
-    public deleteRTMPEndpoint(appName: string, id:number, endpointServiceId:string) {
+    public deleteRTMPEndpointV2(appName: string, id:number, endpointServiceId:string) {
         return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/rtmp-endpoint?endpointServiceId='+endpointServiceId, {});
+    }
+
+    public deleteRTMPEndpointV1(appName: string, id:number, rtmpUrl:string) {
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint?rtmpUrl='+rtmpUrl, {});
     }
 
     public addRTMPEndpoint(appName: string,id:number, endpoint:Endpoint) {
