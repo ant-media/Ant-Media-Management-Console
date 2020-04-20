@@ -87,6 +87,14 @@ export class RestService {
         }
     }
 
+    public getShutdownProperly(appNames: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/getShutdownProperly?appNames=' + appNames);
+    }
+
+    public setShutdownProperly(appNames: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/setShutdownProperly?appNames=' + appNames);
+    }
+
     public getSystemResourcesInfo(): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + '/getSystemResourcesInfo');
     }
