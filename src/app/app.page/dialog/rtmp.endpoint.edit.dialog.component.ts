@@ -107,7 +107,7 @@ export class RtmpEndpointEditDialogComponent {
 
     removeRTMPEndpoint(endpoint: Endpoint, index: number) {
         //Check service Id is null
-        if (endpoint.endpointServiceId != "null") {
+        if (endpoint.endpointServiceId != null) {
             this.restService.deleteRTMPEndpointV2(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, endpoint.endpointServiceId).subscribe(data => {
                 this.endpointDeleteProcess(endpoint,index,data);
             });
