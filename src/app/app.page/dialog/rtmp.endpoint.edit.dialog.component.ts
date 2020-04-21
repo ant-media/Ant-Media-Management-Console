@@ -12,7 +12,6 @@ declare var $: any;
 
 export class RtmpEndpointEditDialogComponent {
 
-
     loading = false;
     public shareEndpoint: boolean[];
     public endpointList: Endpoint[];
@@ -87,8 +86,9 @@ export class RtmpEndpointEditDialogComponent {
                     }
                 });
 
-            } else {
-                resultMessage = "RTMP Endpoint is not be saved";
+            }
+            else {
+                resultMessage ="RTMP Endpoint is not be saved";
                 $.notify({
                     icon: "ti-alert",
                     message: resultMessage
