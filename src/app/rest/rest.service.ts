@@ -87,8 +87,8 @@ export class RestService {
         }
     }
 
-    public getShutdownProperly(appNames: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/getShutdownProperly?appNames=' + appNames);
+    public isShutdownProperly(appNames: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/isShutdownProperly?appNames=' + appNames);
     }
 
     public setShutdownProperly(appNames: string): Observable<Object> {

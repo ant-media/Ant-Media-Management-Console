@@ -48,6 +48,11 @@ export class OverviewComponent implements OnInit {
     public jvmNativeInUse: any;
     public jvmNativeMax: any;
 
+    public title : string;
+    public description : string;
+    public sentSuccess = false;
+    public processing = false;
+
 
 
 
@@ -135,9 +140,9 @@ export class OverviewComponent implements OnInit {
             clearInterval(this.shutdownTimer);
         }
 
-        this.restService.getShutdownProperly(appNames.join(",")).subscribe(data => {
+        this.restService.isShutdownProperly(appNames.join(",")).subscribe(data => {
             //It means doesn't close normal.
-            if(data == true){
+            if(data == false){
 
                 swal({
                     title: "Unexpected Shutdown",
@@ -151,12 +156,48 @@ export class OverviewComponent implements OnInit {
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Yes please',
-                }).then(() => {
-                    /*
-                    this.supportRestService.sendRequest(request).subscribe( data => {
+                }).then((value) => {
 
+                    var request = new SupportRequest();
+
+                    request.email = value;
+                    request.sendSystemInfo = true;
+
+                    request.title = "In App Shutdown Properly";
+                    request.description = "Shutdown error email with logs";
+
+                    this.processing = true;
+
+                    this.supportRestService.sendRequest(request).subscribe(data => {
+                        this.processing = false;
+                        if (data["success"] == true) {
+                            this.sentSuccess = true;
+                            $.notify({
+                                icon: "ti-email",
+                                message: "Your request has been sent. Support team will contact through your e-mail soon."
+                            }, {
+                                type: "success",
+                                delay: 5000,
+                                placement: {
+                                    from: 'top',
+                                    align: 'right'
+                                }
+                            });
+                        } else {
+                            $.notify({
+                                icon: "ti-alert",
+                                message: "Your request couldn't be sent. Please try again or send email to contact@antmedia.io"
+                            }, {
+                                type: 'warning',
+                                delay: 5000,
+                                placement: {
+                                    from: 'top',
+                                    align: 'right'
+                                }
+                            });
+                        }
                     });
-*/
+
                 }).catch(function () {
                 });
                 this.restService.setShutdownProperly(appNames.join(",")).subscribe(data => {
