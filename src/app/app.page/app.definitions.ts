@@ -1,4 +1,4 @@
-export declare interface Endpoint {
+export class Endpoint {
     type: string;
     endpointServiceId: string;
     rtmpUrl: string;

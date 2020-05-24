@@ -1,10 +1,7 @@
-import { Component, Inject } from '@angular/core';
-import { Locale } from "../../locale/locale";
-import { RestService } from '../../rest/rest.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import {
-    Endpoint,
-} from '../app.definitions';
+import {Component, Inject} from '@angular/core';
+import {RestService} from '../../rest/rest.service';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {Endpoint,} from '../app.definitions';
 
 declare var $: any;
 
@@ -20,7 +17,7 @@ export class RtmpEndpointEditDialogComponent {
     public endpointList: Endpoint[];
     public isEmptyEndpoint: boolean = true;
     public rtmpEndpointName: any;
-
+    public endpoint: Endpoint;
 
     constructor(
         public dialogRef: MatDialogRef<RtmpEndpointEditDialogComponent>, public restService: RestService,
@@ -28,12 +25,13 @@ export class RtmpEndpointEditDialogComponent {
         this.shareEndpoint = [];
 
         this.endpointList = data.endpointList;
+        this.endpoint = new Endpoint();
 
         this.isEmptyEndpoint = true;
 
         // Check is null Generic endpoint list
 
-        for (var i  in this.endpointList) {
+        for (var i in this.endpointList) {
 
             if (this.endpointList[i].type == "generic") {
                 this.isEmptyEndpoint = false;
@@ -42,20 +40,21 @@ export class RtmpEndpointEditDialogComponent {
         }
     }
 
-    addRtmpEndpoint(rtmpUrl:string){
+    addRtmpEndpoint(rtmpUrl: string) {
 
         let resultMessage = "";
 
         // Check Generic Endpoint Already Added
 
-        for (var i  in this.endpointList){
+        for (var i in this.endpointList) {
             if (this.endpointList[i].rtmpUrl == rtmpUrl) {
                 rtmpUrl = "";
                 resultMessage = "RTMP URL Already added";
             }
         }
+        this.endpoint.rtmpUrl = rtmpUrl;
 
-        this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, rtmpUrl).subscribe(data => {
+        this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, this.endpoint).subscribe(data => {
 
             if (data["success"]) {
 
@@ -65,18 +64,15 @@ export class RtmpEndpointEditDialogComponent {
 
                 this.endpointList = this.endpointList || [];
 
-                this.endpointList.push({
-                    rtmpUrl: rtmpUrl,
-                    type:"generic",
-                    endpointServiceId:null,
-                });
-
-                for (var i  in this.endpointList) {
-                    if (this.endpointList[i].type == "generic") {
-                        this.isEmptyEndpoint = false;
-                        break;
+                this.restService.getBroadcast(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId).subscribe(data => {
+                    this.endpointList = data["endPointList"];
+                    for (var i in this.endpointList) {
+                        if (this.endpointList[i].type == "generic") {
+                            this.isEmptyEndpoint = false;
+                            break;
+                        }
                     }
-                }
+                });
 
                 $.notify({
                     icon: "ti-save",
@@ -109,62 +105,63 @@ export class RtmpEndpointEditDialogComponent {
         });
     }
 
-    removeRTMPEndpoint(rtmpUrl:string,index: number){
-
-        this.restService.deleteRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, rtmpUrl).subscribe(data => {
-
-            if (data["success"]) {
-
-                this.endpointList.splice(index, 1);
-
-                $.notify({
-                    icon: "ti-save",
-                    message: "RTMP Endpoint is deleted"
-                }, {
-                    type: "success",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-
-                if(this.endpointList.length == 0){
-                    this.isEmptyEndpoint = true;
-                }
-
-                else{
-
-                    for (var i  in this.endpointList) {
-
-                        if (this.endpointList[i].type == "generic") {
-                            this.isEmptyEndpoint = false;
-                            break;
-                    }
-                    this.isEmptyEndpoint = true;
-                    }
-                }
-
-            }
-            else {
-                $.notify({
-                    icon: "ti-alert",
-                    message: "RTMP Endpoint is not deleted."
-                }, {
-                    type: "warning",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
-
-        });
+    removeRTMPEndpoint(endpoint: Endpoint, index: number) {
+        //Check service Id is null
+        if (endpoint.endpointServiceId != null) {
+            this.restService.deleteRTMPEndpointV2(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, endpoint.endpointServiceId).subscribe(data => {
+                this.endpointDeleteProcess(endpoint,index,data);
+            });
+        } else {
+            this.restService.deleteRTMPEndpointV1(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, endpoint.rtmpUrl).subscribe(data => {
+                this.endpointDeleteProcess(endpoint,index,data);
+            });
+        }
     }
 
     cancelRTMPEndpoint(): void {
         this.dialogRef.close();
     }
+
+    endpointDeleteProcess(endpoint: Endpoint, index: number, data:any){
+        if (data["success"]) {
+            this.endpointList.splice(index, 1);
+            $.notify({
+                icon: "ti-save",
+                message: "RTMP Endpoint is deleted"
+            }, {
+                type: "success",
+                delay: 900,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+            if (this.endpointList.length == 0) {
+                this.isEmptyEndpoint = true;
+            } else {
+                for (var i in this.endpointList) {
+
+                    if (this.endpointList[i].type == "generic") {
+                        this.isEmptyEndpoint = false;
+                        break;
+                    }
+                    this.isEmptyEndpoint = true;
+                }
+            }
+        } else {
+            $.notify({
+                icon: "ti-alert",
+                message: "RTMP Endpoint is not deleted."
+            }, {
+                type: "warning",
+                delay: 900,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+        }
+    }
+
 
 }
