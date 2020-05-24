@@ -22,6 +22,7 @@ export class CamSettingsDialogComponent {
     public streamNameEmpty = false;
     public endpointList: Endpoint[];
     public genericRTMPEndpointCount = 0;
+    public endpoint:Endpoint;
 
 
     constructor(
@@ -33,6 +34,7 @@ export class CamSettingsDialogComponent {
         this.videoServiceEndPoints = data.videoServiceEndpoints;
 
         this.endpointList= data.endpointList;
+        this.endpoint = new Endpoint();
 
         // Detect How many generic Endpoint added.
         for (var i  in this.endpointList) {
@@ -101,7 +103,8 @@ export class CamSettingsDialogComponent {
                 if(this.genericRTMPEndpointCount != 0){
                     for (var i  in this.endpointList) {
                         if (this.endpointList[i].type == "generic") {
-                            this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.id,this.endpointList[i].rtmpUrl).subscribe(data2 => {
+                            this.endpoint.rtmpUrl = this.endpointList[i].rtmpUrl;
+                            this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.id, this.endpoint).subscribe(data2 => {
                                 if(!data2["success"]){
                                     data["success"] = false;
                                 }
