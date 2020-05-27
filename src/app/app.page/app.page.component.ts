@@ -76,6 +76,7 @@ export class Camera {
 export class AppSettings {
 
     constructor(public mp4MuxingEnabled: boolean,
+                public webMMuxingEnabled: boolean,
                 public addDateTimeToMp4FileName: boolean,
                 public hlsMuxingEnabled: boolean,
                 public hlsListSize: number,

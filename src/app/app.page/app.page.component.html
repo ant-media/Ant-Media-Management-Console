@@ -1224,6 +1224,8 @@
                                                                         VP8 
                                                                     </label>
                                                                 </div>
+                                                                <p class="category text-left">Explicitly required for WebM Recording</p>  
+                                                                
                                                         </div>
                                                     </div>
                                                     <div *ngIf=!isEnterpriseEdition class="form-group text-left">
@@ -1586,21 +1588,18 @@
                                                 
                                                 <div class="card-header">
                                                     <legend class="text-left" i18n="@@Mp4Recording">
-                                                        MP4 Recording
+                                                        Stream Recording
                                                     </legend>
                                                 </div>
-                                                <div *ngIf="!appSettings.h264Enabled"
-                                                    class="card-content text-left" >
-
-                                                        <i style="font-size: 20px;color:#DD0330"
-                                                            class="fa fa-exclamation-circle"></i> H.264 is not enabled. Please enable H.264
-                                                        for MP4 Recording
-                                                </div>
-                                                <div *ngIf="appSettings.h264Enabled" class="card-content text-left">
+                                                <div class="card-content text-left">
                                                     <div class="form-group">
-
                                                         <div class="col-sm-12">
-                                                            <div class="form-group">
+                                                            <div *ngIf="!appSettings.h264Enabled" class="card-content text-left" >
+                                                                <i style="font-size: 20px;color:#DD0330"
+                                                                    class="fa fa-exclamation-circle"></i> 
+                                                                    H.264 is not enabled. Please enable H.264 for MP4 Recording
+                                                            </div>
+                                                            <div *ngIf="appSettings.h264Enabled" class="form-group">
                                                                 <div class="col-xs-12">
                                                                     <div class="checkbox">
                                                                         <input
@@ -1611,6 +1610,26 @@
                                                                         <label for="mp4MuxingEnabled"
                                                                             i18n="@@enableMP4Recording">
                                                                             Record Live Streams as MP4
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div *ngIf="!appSettings.vp8Enabled" class="card-content text-left" >
+                                                                <i style="font-size: 20px;color:#DD0330"
+                                                                    class="fa fa-exclamation-circle"></i> 
+                                                                    VP8 is not enabled. Please enable VP8 for WebM Recording
+                                                            </div>
+                                                            <div *ngIf="appSettings.vp8Enabled" class="form-group">
+                                                                <div class="col-xs-12">
+                                                                    <div class="checkbox">
+                                                                        <input
+                                                                            [(ngModel)]="appSettings.webMMuxingEnabled"
+                                                                            id="webMMuxingEnabled"
+                                                                            name="webMMuxingEnabled" type="checkbox">
+
+                                                                        <label for="webMMuxingEnabled"
+                                                                            i18n="@@enableWebMRecording">
+                                                                            Record Live Streams as WebM
                                                                         </label>
                                                                     </div>
                                                                 </div>
@@ -1628,7 +1647,7 @@
 
                                                                         <label for="addDateTimeToMp4FileName"
                                                                             i18n="@@addDateTimeToMP4Recordings">
-                                                                            Add Date-Time to MP4 File names
+                                                                            Add Date-Time to Record File names
                                                                         </label>
 
                                                                     </div>
@@ -1638,7 +1657,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div class="card-header">
                                                     <legend class="text-left" i18n="@@Security">
                                                         Security
