@@ -129,13 +129,13 @@ export class OverviewComponent implements OnInit {
             this.liveStreamSize = Number(data["totalLiveStreamSize"]);
 
             //getSystemMemoryInfo
-
+            this.systemMemoryTotal  = Number(data["systemMemoryInfo"]["totalMemory"]);
             this.systemMemoryInUse = Number(data["systemMemoryInfo"]["inUseMemory"]);
             var availableMemory =  Number(data["systemMemoryInfo"]["availableMemory"]);
             if (availableMemory != 0) {
                 this.systemMemoryInUse = this.systemMemoryTotal - availableMemory;
             }
-            this.systemMemoryTotal  = Number(data["systemMemoryInfo"]["totalMemory"]);
+            
             this.systemMemoryUsagePercent = Math.round(this.systemMemoryInUse * 100 / this.systemMemoryTotal);
            
             $("#chartSystemMemory").data('easyPieChart').update(this.systemMemoryUsagePercent);
