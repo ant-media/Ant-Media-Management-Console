@@ -34,6 +34,7 @@ declare interface TableData {
 export class OverviewComponent implements OnInit {
 
     public cpuLoad: number;
+    public processCpuLoad: number;
     public liveStreamSize: number;
     public watcherSize: number;
     public diskUsagePercent: any;
@@ -225,12 +226,18 @@ export class OverviewComponent implements OnInit {
             //updateCPULoad
 
             this.cpuLoad = Number(data["cpuUsage"]["systemCPULoad"]);
+            this.processCpuLoad = Number(data["cpuUsage"]["processCPULoad"]);
+
             this.liveStreamSize = Number(data["totalLiveStreamSize"]);
 
             //getSystemMemoryInfo
-
-            this.systemMemoryInUse = Number(data["systemMemoryInfo"]["inUseMemory"]);
             this.systemMemoryTotal  = Number(data["systemMemoryInfo"]["totalMemory"]);
+            this.systemMemoryInUse = Number(data["systemMemoryInfo"]["inUseMemory"]);
+            var availableMemory =  Number(data["systemMemoryInfo"]["availableMemory"]);
+            if (availableMemory != 0) {
+                this.systemMemoryInUse = this.systemMemoryTotal - availableMemory;
+            }
+            
             this.systemMemoryUsagePercent = Math.round(this.systemMemoryInUse * 100 / this.systemMemoryTotal);
            
             $("#chartSystemMemory").data('easyPieChart').update(this.systemMemoryUsagePercent);

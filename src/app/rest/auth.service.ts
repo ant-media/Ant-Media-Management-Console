@@ -170,7 +170,7 @@ export class AuthService implements CanActivate {
 
                     this.leftDays = this.differenceInDays(new Date().getTime(), new Date(end).getTime());
 
-                    if (this.leftDays < 16 && this.licenceWarningDisplay) {
+                    if (this.leftDays < 3 && this.licenceWarningDisplay) {
 
                         console.log("Your license expires in " + this.leftDays + " days");
 
@@ -198,7 +198,7 @@ export class AuthService implements CanActivate {
 
                     return this.currentLicence;
                 } else {
-                    console.log("invalid license")
+                    console.log("Invalid License");
 
                     if (this.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
                         swal({
