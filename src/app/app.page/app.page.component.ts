@@ -1373,7 +1373,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.appSettings.acceptOnlyStreamsInDataStore = !this.acceptAllStreams ;
 
-
+        if (!this.appSettings.vodFolder.endsWith("/")) {
+            this.appSettings.vodFolder+="/";
+        }
+        
         this.restService.changeSettings(this.appName, this.appSettings).subscribe(data => {
             if (data["success"] == true) {
                 $.notify({
