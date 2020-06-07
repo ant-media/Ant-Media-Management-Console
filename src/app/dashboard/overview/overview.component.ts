@@ -168,6 +168,7 @@ export class OverviewComponent implements OnInit {
 
                     var request = new SupportRequest();
 
+                    request.name = "";
                     request.email = value;
                     request.sendSystemInfo = true;
 
