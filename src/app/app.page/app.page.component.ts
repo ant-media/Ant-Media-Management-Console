@@ -100,6 +100,7 @@ export class AppSettings {
                 public vp8Enabled: boolean,
                 public dataChannelEnabled: boolean,
                 public dataChannelPlayerDistribution: string,
+                public listenerHookURL: string
     ) {}
 }
 
