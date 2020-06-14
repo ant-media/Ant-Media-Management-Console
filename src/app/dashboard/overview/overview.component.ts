@@ -1,11 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {RestService} from '../../rest/rest.service';
+import {SupportRestService} from '../../rest/support.service';
 import {Router} from '@angular/router';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {Licence} from "../../server.settings/server.settings.component";
 import {AuthService} from "../../rest/auth.service";
 import {ServerSettings} from "../../app.page/app.page.component";
+import {SupportRequest} from "../../support/support.definitions";
 
 
 declare var $: any;
@@ -47,6 +49,13 @@ export class OverviewComponent implements OnInit {
     public jvmNativeInUse: any;
     public jvmNativeMax: any;
 
+    public title : string;
+    public description : string;
+    public sentSuccess = false;
+    public processing = false;
+
+    public isClusterMode = false;
+
 
 
 
@@ -56,12 +65,13 @@ export class OverviewComponent implements OnInit {
     public appTableData: TableData;
     public units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     public timerId:any;
+    public shutdownTimer:any;
     public licence : Licence;
     public serverSettings : ServerSettings;
 
 
 
-    constructor(/*private http: HttpClient,*/private auth: AuthService, private restService:RestService, private router:Router, private authService: AuthService) {
+    constructor(/*private http: HttpClient,*/private auth: AuthService, private restService:RestService, private supportRestService:SupportRestService, private router:Router, private authService: AuthService) {
 
 
     }
@@ -105,9 +115,19 @@ export class OverviewComponent implements OnInit {
             this.getApplicationsInfo();
         }, 5000);
 
+
         this.auth.initLicenseCheck();
 
+        this.restService.isInClusterMode().subscribe(data => {
+            this.isClusterMode = data['success'];
+        });
 
+        // If it's cluster mode, shouldn't run this feature.
+        if(!this.isClusterMode){
+            this.shutdownTimer = window.setInterval(() => {
+                this.checkShutdownProperly();
+            }, 10000);
+        }
     }
 
     ngOnDestroy() {
@@ -117,6 +137,89 @@ export class OverviewComponent implements OnInit {
         }
 
     }
+
+    checkShutdownProperly(): void{
+        let appNames = [];
+        for( var i = 0; i < this.appTableData.dataRows.length; i++ ){
+            appNames.push(this.appTableData.dataRows[i]["name"]);
+        }
+
+        if (this.shutdownTimer) {
+            clearInterval(this.shutdownTimer);
+        }
+
+        this.restService.isShutdownProperly(appNames.join(",")).subscribe(data => {
+            //It means doesn't close normal.
+            if(data == false){
+
+                swal({
+                    title: "Unexpected Shutdown",
+                    text: "We detected your Instance was unexpected closed. If you want to review your problem. Please enter your email address to access you",
+                    type: 'warning',
+
+                    input: 'email',
+                    inputPlaceholder: 'Please enter your email address',
+
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes please',
+                }).then((value) => {
+
+                    var request = new SupportRequest();
+
+                    request.name = "";
+                    request.email = value;
+                    request.sendSystemInfo = true;
+
+                    request.title = "In App Shutdown Properly";
+                    request.description = "Shutdown error email with logs";
+
+                    this.processing = true;
+
+                    this.supportRestService.sendRequest(request).subscribe(data => {
+                        this.processing = false;
+                        if (data["success"] == true) {
+                            this.sentSuccess = true;
+                            $.notify({
+                                icon: "ti-email",
+                                message: "Your request has been sent. Support team will contact through your e-mail soon."
+                            }, {
+                                type: "success",
+                                delay: 5000,
+                                placement: {
+                                    from: 'top',
+                                    align: 'right'
+                                }
+                            });
+                        } else {
+                            $.notify({
+                                icon: "ti-alert",
+                                message: "Your request couldn't be sent. Please try again or send email to contact@antmedia.io"
+                            }, {
+                                type: 'warning',
+                                delay: 5000,
+                                placement: {
+                                    from: 'top',
+                                    align: 'right'
+                                }
+                            });
+                        }
+                    });
+
+                }).catch(function () {
+                });
+                this.restService.setShutdownProperly(appNames.join(",")).subscribe(data => {
+                });
+
+            }
+        });
+
+
+
+
+
+        }
 
     getSystemResources(): void {
         this.restService.getSystemResourcesInfo().subscribe(data => {
