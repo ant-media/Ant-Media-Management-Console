@@ -6,9 +6,10 @@ import {RestService} from "../rest/rest.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {DataService} from "../rest/data.service";
-
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+
+
 
 
 declare var $:any;
@@ -58,7 +59,8 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     public logLevelOff : string = "OFF";
 
     public allLicensesUsedError : string = "ALL_LICENSES_ARE_USED";
-    public noLicenseFounrError: string = "NO_LICENSE_FOUND";
+    public noLicenseFoundError: string = "NO_LICENSE_FOUND";
+    public invalidKeyError:string = "INVALID_KEY";
     public licenseExpireError : string = "LICENSE_EXPIRED";
     public licenseServerRequestError : string = "serverRequestError";
 
@@ -195,7 +197,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
                 licenseStatusExplaination = "Please Check Your Connection"
             }
             else{
-                var statusJson:string = this.currentLicence.status;
+                let statusJson:string = this.currentLicence.status;
 
                 JSON.parse(statusJson, (key, value) => {
                     if (key == "refreshInterval" ){
@@ -207,6 +209,34 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
                         licenseStatusExplaination = "Your license is expired, please renew it.";
                     }
+
+                    if (key == "result" && (value == this.noLicenseFoundError || this.invalidKeyError)){
+                        if(value == this.noLicenseFoundError) {
+                            licenseErrorTitle = "License could not be found in database.";
+                        }
+                        // end date is stored and sent in type variable in this case in this case
+                        // compute the text for text
+                        let untilDeletionText = "";
+                        if(this.currentLicence.type != null) {
+                            let timeEndDate:number = Number(this.currentLicence.type);
+                            let nowDate:number = Date.now();
+                            let diff:number = timeEndDate - nowDate;
+                            if(diff<0) {
+                                licenseStatusExplaination = "Your Enterprise edition is converted to Community Edition because you did not fill a valid license key in time.";
+                            } else{
+                                let diffDayText:string = "";
+                                let diffDays:number = diff /(1000*60*60*24);
+                                diffDays = Math.floor(diffDays);
+                                if(diffDays == 0) {
+                                    diffDayText = "today";
+                                } else {
+                                    diffDayText = "in " + (diffDays+1) + " days";
+                                }
+                                licenseStatusExplaination = "Your Enterprise edition will be converted to Community Edition " + diffDayText + " if you do not enter a valid key.";
+                            }
+                        }
+                    }
+
                 });
             }
             if (this.authService.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
