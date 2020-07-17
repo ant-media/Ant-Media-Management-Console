@@ -120,14 +120,14 @@ export class OverviewComponent implements OnInit {
 
         this.restService.isInClusterMode().subscribe(data => {
             this.isClusterMode = data['success'];
-        });
 
-        // If it's cluster mode, shouldn't run this feature.
-        if(!this.isClusterMode){
-            this.shutdownTimer = window.setInterval(() => {
-                this.checkShutdownProperly();
-            }, 10000);
-        }
+            // If it's cluster mode, shouldn't run this feature.
+            if(!this.isClusterMode){
+                this.shutdownTimer = window.setInterval(() => {
+                    this.checkShutdownProperly();
+                }, 10000);
+            }
+        });
     }
 
     ngOnDestroy() {
