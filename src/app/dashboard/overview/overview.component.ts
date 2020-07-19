@@ -116,7 +116,7 @@ export class OverviewComponent implements OnInit {
 
             // If it's cluster mode, shouldn't run this feature.
             if(!this.isClusterMode){
-                this.shutdownTimer = window.setTimeout(() => {
+                window.setTimeout(() => {
                     this.checkShutdownProperly();
                 }, 10000);
             }
