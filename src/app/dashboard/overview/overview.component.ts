@@ -154,7 +154,7 @@ export class OverviewComponent implements OnInit {
 
                 swal({
                     title: "Unexpected Shutdown",
-                    text: "We detected your Instance was unexpected closed. If you want to review your problem. Please enter your email address to access you",
+                    text: "We've detected that your instance has not been shutdown gracefully. Just enter your e-mail and click the Submit button to let us have the logs about the problem",
                     type: 'warning',
 
                     input: 'email',
@@ -163,7 +163,7 @@ export class OverviewComponent implements OnInit {
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes please',
+                    confirmButtonText: 'Submit',
                 }).then((value) => {
 
                     var request = new SupportRequest();
