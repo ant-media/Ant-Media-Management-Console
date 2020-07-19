@@ -53,19 +53,12 @@ export class OverviewComponent implements OnInit {
     public description : string;
     public sentSuccess = false;
     public processing = false;
-
     public isClusterMode = false;
-
-
-
-
-
     public cpuLoadIntervalId = 0;
     public systemMemoryUsagePercent = 0;
     public appTableData: TableData;
     public units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     public timerId:any;
-    public shutdownTimer:any;
     public licence : Licence;
     public serverSettings : ServerSettings;
 
