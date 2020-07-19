@@ -123,7 +123,7 @@ export class OverviewComponent implements OnInit {
 
             // If it's cluster mode, shouldn't run this feature.
             if(!this.isClusterMode){
-                this.shutdownTimer = window.setInterval(() => {
+                this.shutdownTimer = window.setTimeout(() => {
                     this.checkShutdownProperly();
                 }, 10000);
             }
@@ -142,10 +142,6 @@ export class OverviewComponent implements OnInit {
         let appNames = [];
         for( var i = 0; i < this.appTableData.dataRows.length; i++ ){
             appNames.push(this.appTableData.dataRows[i]["name"]);
-        }
-
-        if (this.shutdownTimer) {
-            clearInterval(this.shutdownTimer);
         }
 
         this.restService.isShutdownProperly(appNames.join(",")).subscribe(data => {
