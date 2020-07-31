@@ -2258,6 +2258,80 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
+    setRecordingStatus(streamId: string, recordingStatus: boolean, recordingType: string): void {
+
+        //Check H.264 is disabled
+        if(!this.appSettings.h264Enabled && recordingType == "mp4" && recordingStatus){
+            $.notify({
+                icon: "ti-save",
+                message: "Firstly, please enable H.264 Encoder in App Settings"
+            }, {
+                type: "warning",
+                delay: 3000,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+            return;
+        }
+        //Check WebM settings is disabled
+        if(!this.appSettings.vp8Enabled && recordingType == "webm" && recordingStatus){
+            $.notify({
+                icon: "ti-save",
+                message: "Firstly, please enable VP8 Encoder in App Settings"
+            }, {
+                type: "warning",
+                delay: 3000,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+            return;
+        }
+
+        this.restService.setStreamRecordingStatus(this.appName, streamId, recordingStatus, recordingType).subscribe(data => {
+             if (data["success"] == true) {
+
+                 if(recordingStatus){
+                     var recordingMessage = "open";
+                 }
+                 else{
+                     var recordingMessage = "close";
+                 }
+
+                 this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+
+                 $.notify({
+                     icon: "ti-save",
+                     message: recordingType + " Recording will be " + recordingMessage + ". Please wait few seconds."
+                    }, {
+                        type: "success",
+                        delay: 1000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
+                else{
+                    $.notify({
+                        icon: "ti-save",
+                        message: recordingType + " Recording service failed"
+                    }, {
+                        type: "warning",
+                        delay: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
+        });
+
+    }
+
     copyLiveEmbedCode(streamUrl: string): void {
 
         //if (this.isEnterpriseEdition) {
