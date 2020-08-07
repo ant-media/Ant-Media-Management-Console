@@ -120,8 +120,9 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/' + streamId + '/detections/count');
     }
 
-    public getAppLiveStreams(appName:string, offset:Number, size:Number): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/list/'+offset+"/"+size);
+    public getAppLiveStreams(appName:string, offset:Number, size:Number, sortBy:string, orderBy:string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/list/'+offset+"/"+size
+            +"&sort_by="+sortBy+"&order_by="+orderBy,{});
     }
 
     public getBroadcast(appName: string, id: string): Observable<Object> {

@@ -448,9 +448,8 @@
                                     *ngIf="!isGridView && broadcastTableData.dataRows.length>0">
 
                                     <div class="mat-container mat-elevation-z0">
-
-                                        <mat-table style="overflow: visible !important;" [dataSource]="dataSource"
-                                            matSort>
+                                        <mat-table style="overflow: visible !important;" [dataSource]="dataSource" matSort
+                                                   (matSortChange)="sortBroadcastList($event)">
 
                                             <ng-container matColumnDef="name">
                                                 <mat-header-cell [ngClass]="'stream-name-column'" *matHeaderCellDef
@@ -543,7 +542,7 @@
 
                                             <ng-container matColumnDef="viewerCount">
                                                 <mat-header-cell [ngClass]="'viewer-column'" *matHeaderCellDef
-                                                    mat-sort-header> Viewers </mat-header-cell>
+                                                    > Viewers </mat-header-cell>
 
                                                 <mat-cell [ngClass]="'viewer-column'" *matCellDef="let row">
 
