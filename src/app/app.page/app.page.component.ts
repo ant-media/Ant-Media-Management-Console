@@ -92,7 +92,8 @@ export class AppSettings {
                 public acceptOnlyStreamsInDataStore: boolean,
                 public vodFolder: string,
                 public objectDetectionEnabled: boolean,
-                public tokenControlEnabled: boolean,
+                public publishTokenControlEnabled: boolean,
+                public playTokenControlEnabled: boolean,
                 public webRTCEnabled: boolean,
                 public webRTCFrameRate: number,
                 public remoteAllowedCIDR: string,
@@ -842,7 +843,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     playLive(streamId: string): void {
 
 
-        if(this.appSettings.tokenControlEnabled) 
+        if(this.appSettings.playTokenControlEnabled) 
         {
             this.openPlayerWithToken(streamId, streamId,"640px", streamId);
         }
@@ -935,7 +936,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     playVoD(vodName: string, type: string, vodId:string, streamId:string, filePath:string): void {
 
-        if(this.appSettings.tokenControlEnabled){
+        if(this.appSettings.playTokenControlEnabled){
             this.playVoDToken(vodName, type, vodId, streamId, filePath);
         }
         else {
