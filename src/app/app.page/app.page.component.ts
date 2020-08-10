@@ -253,6 +253,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     private vodSortBy = "";
     private vodOrderBy = "";
 
+    private broadcastSortBy = "";
+    private broadcastOrderBy = "";
+
     @Input() pageEvent: PageEvent;
 
     @Output()
@@ -441,6 +444,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 });
                 return;
             }
+
+            this.broadcastOrderBy = "";
+            this.broadcastSortBy = "";
+            this.vodOrderBy = "";
+            this.vodSortBy = "";
 
             this.getSettings();
 
@@ -724,7 +732,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         offset = offset * size;
 
-        this.restService.getAppLiveStreams(this.appName, offset, size).subscribe(data => {
+        this.restService.getAppLiveStreams(this.appName, offset, size, this.broadcastSortBy, this.broadcastOrderBy).subscribe(data => {
 
             this.broadcastTableData.dataRows = [];
 
@@ -764,11 +772,41 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     sortVodList(e) {
-      // save cookie with table sort data here
-     this.vodSortBy = e.active;
-     this.vodOrderBy = e.direction;
-     this.getVoDStreams();
-      console.log(e);
+
+        //This sort function need for the e.direction null value
+        this.vodOrderBy = this.sortOrderBy(e.direction, this.vodOrderBy);
+
+        // save cookie with table sort data here
+        this.vodSortBy = e.active;
+
+        this.getVoDStreams();
+        console.log("vodSortBy->" + this.vodSortBy);
+        console.log("vodOrderBy->"+ this.vodOrderBy);
+    }
+
+    sortBroadcastList(e) {
+        //This sort function need for the e.direction null value
+        this.broadcastOrderBy = this.sortOrderBy(e.direction, this.broadcastOrderBy);
+
+        // save cookie with table sort data here
+        this.broadcastSortBy = e.active;
+
+        this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+        console.log("broadcastSortBy->" + this.broadcastSortBy);
+        console.log("broadcastOrderBy->"+ this.broadcastOrderBy);
+    }
+
+    sortOrderBy(sortDirection: string, orderBy: string): string{
+        if((sortDirection == "" || orderBy == sortDirection) && orderBy == "asc" ){
+            orderBy = "desc";
+        }
+        else if((sortDirection == "" || orderBy == sortDirection) && orderBy == "desc" ){
+            orderBy = "asc";
+        }
+        else{
+            orderBy = sortDirection;
+        }
+        return orderBy;
     }
 
     getVoDStreams(): void {
@@ -882,7 +920,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         index = index * size;
 
-        this.restService.getAppLiveStreams(this.appName, index, size).subscribe(data => {
+        this.restService.getAppLiveStreams(this.appName, index, size, this.broadcastSortBy, this.broadcastOrderBy).subscribe(data => {
             //console.log(data);
             this.broadcastGridTableData.dataRows = [];
 
