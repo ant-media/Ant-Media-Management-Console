@@ -688,6 +688,46 @@
                                                                         </a>
                                                                     </li>
 
+                                                                    <!-- Enable MP4 Recording Check -->
+
+                                                                    <li *ngIf="(row.mp4Enabled == '0' && !this.appSettings.mp4MuxingEnabled ) || row.mp4Enabled == '-1'">
+                                                                        <a class="dropdown-link"
+                                                                           (click)="setRecordingStatus(row.streamId, true, 'mp4')">
+                                                                            <ng-container i18n="@@enableMp4Recording">
+                                                                                <span *ngIf="row.status=='broadcasting'">Start</span><span *ngIf="row.status!='broadcasting'">Enable</span> MP4 Recording</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <!-- Disable MP4 Recording Check -->
+
+                                                                    <li *ngIf="(row.mp4Enabled == '0' && this.appSettings.mp4MuxingEnabled ) || row.mp4Enabled == '1'" >
+                                                                        <a class="dropdown-link"
+                                                                           (click)="setRecordingStatus(row.streamId, false, 'mp4')">
+                                                                            <ng-container i18n="@@disableMp4Recording">
+                                                                                <span *ngIf="row.status=='broadcasting'">Stop</span><span *ngIf="row.status!='broadcasting'">Disable</span> MP4 Recording</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <!-- Enable WEBM Recording Check -->
+
+                                                                    <li *ngIf="(row.webMEnabled == '0' && !this.appSettings.webMMuxingEnabled ) || row.webMEnabled == '-1'">
+                                                                        <a class="dropdown-link"
+                                                                           (click)="setRecordingStatus(row.streamId, true, 'webm')">
+                                                                            <ng-container i18n="@@enableWebMRecording">
+                                                                                <span *ngIf="row.status=='broadcasting'">Start</span><span *ngIf="row.status!='broadcasting'">Enable</span> WebM Recording</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <!-- Disable WEBM Recording Check -->
+
+                                                                    <li *ngIf="(row.webMEnabled == '0' && this.appSettings.webMMuxingEnabled ) || row.webMEnabled == '1'" >
+                                                                        <a class="dropdown-link"
+                                                                           (click)="setRecordingStatus(row.streamId, false, 'webm')">
+                                                                            <ng-container i18n="@@disableWebMRecording">
+                                                                                <span *ngIf="row.status=='broadcasting'">Stop</span><span *ngIf="row.status!='broadcasting'">Disable</span> WebM Recording</ng-container>
+                                                                        </a>
+                                                                    </li>
+
 
                                                                     <!-- Object Detected Button -->
 
