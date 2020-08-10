@@ -1739,21 +1739,33 @@
 
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
-                                                                <input [(ngModel)]="appSettings.tokenControlEnabled"
-                                                                    id="tokenControlEnabled" name="tokenControlEnabled"
+                                                                <input [(ngModel)]="appSettings.publishTokenControlEnabled"
+                                                                    id="publishTokenControlEnabled" name="publishTokenControlEnabled"
                                                                     type="checkbox">
 
-                                                                <label for="tokenControlEnabled">
-                                                                    Publish/Play with One-time Tokens <a
+                                                                <label for="publishTokenControlEnabled">
+                                                                    Publish with One-time Tokens <a
                                                                         href="https://antmedia.io/secure-video-streaming/"
                                                                         target="_blank"
-                                                                        matTooltip="By enabling this option, one time tokens are required for publishing and playing. Publish/Play request without tokens will not be streamed. Click for more information."><i
+                                                                        matTooltip="By enabling this option, one time tokens are required for publishing. Publish request without tokens will not be streamed. Click for more information."><i
                                                                             style="font-size: 20px;"
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>
-
                                                             </div>
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.playTokenControlEnabled"
+                                                                    id="playTokenControlEnabled" name="playTokenControlEnabled"
+                                                                    type="checkbox">
 
+                                                                <label for="playTokenControlEnabled">
+                                                                    Play with One-time Tokens <a
+                                                                        href="https://antmedia.io/secure-video-streaming/"
+                                                                        target="_blank"
+                                                                        matTooltip="By enabling this option, one time tokens are required for playing. Play request without tokens will not be streamed. Click for more information."><i
+                                                                            style="font-size: 20px;"
+                                                                            class="fa fa-info-circle"></i></a>
+                                                                </label>                                                                
+                                                            </div>
                                                         </div>
                                                     </div>
 
