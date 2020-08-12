@@ -1,5 +1,5 @@
 language: node_js
-node_js: "10.16.0"
+node_js: "14.8.0"
 sudo: required
 cache:
   directories:
@@ -10,7 +10,7 @@ addons:
 
 
 before_install:
-  - npm install -g @angular/cli@6.0.5
+  - npm install -g @angular/cli@10.0.5
 
 install:
   - npm install
