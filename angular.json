@@ -26,7 +26,12 @@
               "chartist",
               "nouislider",
               "rxjs-compat/observable/timer",
-              "rxjs/add/operator/map"
+              "rxjs/add/operator/map",
+              "rxjs-compat/add/operator/catch",
+              "rxjs-compat/add/operator/map",
+              "chartist-plugin-legend",
+              "rxjs-compat/add/observable/of",
+              "rxjs-compat/add/operator/filter"
 
 
             ],

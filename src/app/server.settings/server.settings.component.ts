@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, Injectable, OnInit} from '@angular/core';
-import {ServerSettings} from "../app.page/app.page.component";
+import {ServerSettings} from "../app.page/app.definitions";
 import {Locale} from "../locale/locale";
 import {AuthService} from "../rest/auth.service";
 import {RestService} from "../rest/rest.service";

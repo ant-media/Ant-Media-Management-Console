@@ -6,8 +6,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {Licence} from "../../server.settings/server.settings.component";
 import {AuthService} from "../../rest/auth.service";
-import {ServerSettings} from "../../app.page/app.page.component";
 import {SupportRequest} from "../../support/support.definitions";
+import {ServerSettings} from "../../app.page/app.definitions";
 
 
 declare var $: any;

@@ -21,8 +21,8 @@ import {MatDialog } from '@angular/material/dialog';
 import {MatPaginatorIntl, PageEvent} from "@angular/material/paginator"
 import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
-
 import "rxjs/add/operator/toPromise";
+import {AppSettings, ServerSettings} from "./app.definitions";
 
 import {
     BroadcastInfo,
@@ -75,46 +75,6 @@ export class Camera {
         public password: string,
         public streamUrl: string,
         public type: string) { }
-}
-
-export class AppSettings {
-
-    constructor(public mp4MuxingEnabled: boolean,
-                public webMMuxingEnabled: boolean,
-                public addDateTimeToMp4FileName: boolean,
-                public hlsMuxingEnabled: boolean,
-                public hlsListSize: number,
-                public hlsTime: number,
-                public hlsPlayListType: string,
-                public facebookClientId: string,
-                public facebookClientSecret: string,
-                public youtubeClientId: string,
-                public youtubeClientSecret: string,
-                public periscopeClientId: string,
-                public periscopeClientSecret: string,
-                public encoderSettings: EncoderSettings[],
-                public acceptOnlyStreamsInDataStore: boolean,
-                public vodFolder: string,
-                public objectDetectionEnabled: boolean,
-                public publishTokenControlEnabled: boolean,
-                public playTokenControlEnabled: boolean,
-                public webRTCEnabled: boolean,
-                public webRTCFrameRate: number,
-                public remoteAllowedCIDR: string,
-                public h264Enabled: boolean,
-                public vp8Enabled: boolean,
-                public dataChannelEnabled: boolean,
-                public dataChannelPlayerDistribution: string,
-                public listenerHookURL: string
-    ) {}
-}
-
-export class ServerSettings {
-
-    constructor(public serverName: string,
-                public licenceKey: string,
-                public buildForMarket: boolean,
-    ) {}
 }
 
 export class SocialNetworkChannel {
