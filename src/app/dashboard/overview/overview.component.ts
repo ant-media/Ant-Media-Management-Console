@@ -53,19 +53,12 @@ export class OverviewComponent implements OnInit {
     public description : string;
     public sentSuccess = false;
     public processing = false;
-
     public isClusterMode = false;
-
-
-
-
-
     public cpuLoadIntervalId = 0;
     public systemMemoryUsagePercent = 0;
     public appTableData: TableData;
     public units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     public timerId:any;
-    public shutdownTimer:any;
     public licence : Licence;
     public serverSettings : ServerSettings;
 
@@ -120,14 +113,14 @@ export class OverviewComponent implements OnInit {
 
         this.restService.isInClusterMode().subscribe(data => {
             this.isClusterMode = data['success'];
-        });
 
-        // If it's cluster mode, shouldn't run this feature.
-        if(!this.isClusterMode){
-            this.shutdownTimer = window.setInterval(() => {
-                this.checkShutdownProperly();
-            }, 10000);
-        }
+            // If it's cluster mode, shouldn't run this feature.
+            if(!this.isClusterMode){
+                window.setTimeout(() => {
+                    this.checkShutdownProperly();
+                }, 10000);
+            }
+        });
     }
 
     ngOnDestroy() {
@@ -144,17 +137,13 @@ export class OverviewComponent implements OnInit {
             appNames.push(this.appTableData.dataRows[i]["name"]);
         }
 
-        if (this.shutdownTimer) {
-            clearInterval(this.shutdownTimer);
-        }
-
         this.restService.isShutdownProperly(appNames.join(",")).subscribe(data => {
             //It means doesn't close normal.
             if(data["success"] == false){
 
                 swal({
                     title: "Unexpected Shutdown",
-                    text: "We detected your Instance was unexpected closed. If you want to review your problem. Please enter your email address to access you",
+                    text: "We've detected that your instance has not been shutdown gracefully. Just enter your e-mail and click the Submit button to let us have the logs about the problem",
                     type: 'warning',
 
                     input: 'email',
@@ -163,7 +152,7 @@ export class OverviewComponent implements OnInit {
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes please',
+                    confirmButtonText: 'Submit',
                 }).then((value) => {
 
                     var request = new SupportRequest();

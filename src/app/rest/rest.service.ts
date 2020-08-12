@@ -65,16 +65,9 @@ export class RestService {
 
     constructor(private http: HttpClient, private router: Router)
     {
-        HTTP_SERVER_ROOT = "//" + location.hostname + ":" + location.port + "/";
-        REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest";
-        if (location.port == "4200")
+        if (!location.protocol.startsWith("https"))
         {
-            //if it is angular development
-            HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/";
-            REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest";
-        }
-        else if (!location.protocol.startsWith("https"))
-        {
+            HTTP_SERVER_ROOT = "http://" + location.hostname + ":" + location.port + "/";
             //protocol is not https, check that https is available
             let url = "https://" + location.hostname + ":5443/";
             this.http.head(url).subscribe(data => {
@@ -85,6 +78,15 @@ export class RestService {
                 console.log("No https avaiable");
             });
         }
+        if (location.port == "4200")
+        {
+            //if it is angular development
+            HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/";
+        }
+        else if (location.protocol.startsWith("https")){
+            HTTP_SERVER_ROOT = "https://" + location.hostname + ":" + location.port + "/";
+        }
+        REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest";
     }
 
     public isShutdownProperly(appNames: string): Observable<Object> {
@@ -120,8 +122,9 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/' + streamId + '/detections/count');
     }
 
-    public getAppLiveStreams(appName:string, offset:Number, size:Number): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/list/'+offset+"/"+size);
+    public getAppLiveStreams(appName:string, offset:Number, size:Number, sortBy:string, orderBy:string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/list/'+offset+"/"+size
+            +"&sort_by="+sortBy+"&order_by="+orderBy,{});
     }
 
     public getBroadcast(appName: string, id: string): Observable<Object> {
@@ -525,5 +528,9 @@ export class RestService {
 
     public getWebRTCStatsList(appName:string, streamId:string, offset:Number, size:Number): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/webrtc-client-stats/'+offset+"/"+size);
+    }
+    public setStreamRecordingStatus(appName:string, streamId:string, recordingStatus:boolean, recordingType:string): Observable<Object> {
+        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/recording/'+recordingStatus+'?recordType='+recordingType,
+            {});
     }
 }

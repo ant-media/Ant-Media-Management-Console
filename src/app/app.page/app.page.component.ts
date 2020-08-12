@@ -96,7 +96,8 @@ export class AppSettings {
                 public acceptOnlyStreamsInDataStore: boolean,
                 public vodFolder: string,
                 public objectDetectionEnabled: boolean,
-                public tokenControlEnabled: boolean,
+                public publishTokenControlEnabled: boolean,
+                public playTokenControlEnabled: boolean,
                 public webRTCEnabled: boolean,
                 public webRTCFrameRate: number,
                 public remoteAllowedCIDR: string,
@@ -256,6 +257,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     
     private vodSortBy = "";
     private vodOrderBy = "";
+
+    private broadcastSortBy = "";
+    private broadcastOrderBy = "";
 
     @Input() pageEvent: PageEvent;
 
@@ -445,6 +449,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 });
                 return;
             }
+
+            this.broadcastOrderBy = "";
+            this.broadcastSortBy = "";
+            this.vodOrderBy = "";
+            this.vodSortBy = "";
 
             this.getSettings();
 
@@ -728,7 +737,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         offset = offset * size;
 
-        this.restService.getAppLiveStreams(this.appName, offset, size).subscribe(data => {
+        this.restService.getAppLiveStreams(this.appName, offset, size, this.broadcastSortBy, this.broadcastOrderBy).subscribe(data => {
 
             this.broadcastTableData.dataRows = [];
 
@@ -768,11 +777,41 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     sortVodList(e) {
-      // save cookie with table sort data here
-     this.vodSortBy = e.active;
-     this.vodOrderBy = e.direction;
-     this.getVoDStreams();
-      console.log(e);
+
+        //This sort function need for the e.direction null value
+        this.vodOrderBy = this.sortOrderBy(e.direction, this.vodOrderBy);
+
+        // save cookie with table sort data here
+        this.vodSortBy = e.active;
+
+        this.getVoDStreams();
+        console.log("vodSortBy->" + this.vodSortBy);
+        console.log("vodOrderBy->"+ this.vodOrderBy);
+    }
+
+    sortBroadcastList(e) {
+        //This sort function need for the e.direction null value
+        this.broadcastOrderBy = this.sortOrderBy(e.direction, this.broadcastOrderBy);
+
+        // save cookie with table sort data here
+        this.broadcastSortBy = e.active;
+
+        this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+        console.log("broadcastSortBy->" + this.broadcastSortBy);
+        console.log("broadcastOrderBy->"+ this.broadcastOrderBy);
+    }
+
+    sortOrderBy(sortDirection: string, orderBy: string): string{
+        if((sortDirection == "" || orderBy == sortDirection) && orderBy == "asc" ){
+            orderBy = "desc";
+        }
+        else if((sortDirection == "" || orderBy == sortDirection) && orderBy == "desc" ){
+            orderBy = "asc";
+        }
+        else{
+            orderBy = sortDirection;
+        }
+        return orderBy;
     }
 
     getVoDStreams(): void {
@@ -846,7 +885,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     playLive(streamId: string): void {
 
 
-        if(this.appSettings.tokenControlEnabled) 
+        if(this.appSettings.playTokenControlEnabled) 
         {
             this.openPlayerWithToken(streamId, streamId,"640px", streamId);
         }
@@ -886,7 +925,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         index = index * size;
 
-        this.restService.getAppLiveStreams(this.appName, index, size).subscribe(data => {
+        this.restService.getAppLiveStreams(this.appName, index, size, this.broadcastSortBy, this.broadcastOrderBy).subscribe(data => {
             //console.log(data);
             this.broadcastGridTableData.dataRows = [];
 
@@ -939,7 +978,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     playVoD(vodName: string, type: string, vodId:string, streamId:string, filePath:string): void {
 
-        if(this.appSettings.tokenControlEnabled){
+        if(this.appSettings.playTokenControlEnabled){
             this.playVoDToken(vodName, type, vodId, streamId, filePath);
         }
         else {
@@ -2258,6 +2297,80 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 from: 'top',
                 align: 'right'
             }
+        });
+
+    }
+
+    setRecordingStatus(streamId: string, recordingStatus: boolean, recordingType: string): void {
+
+        //Check H.264 is disabled
+        if(!this.appSettings.h264Enabled && recordingType == "mp4" && recordingStatus){
+            $.notify({
+                icon: "ti-save",
+                message: "Firstly, please enable H.264 Encoder in App Settings"
+            }, {
+                type: "warning",
+                delay: 3000,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+            return;
+        }
+        //Check WebM settings is disabled
+        if(!this.appSettings.vp8Enabled && recordingType == "webm" && recordingStatus){
+            $.notify({
+                icon: "ti-save",
+                message: "Firstly, please enable VP8 Encoder in App Settings"
+            }, {
+                type: "warning",
+                delay: 3000,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+            return;
+        }
+
+        this.restService.setStreamRecordingStatus(this.appName, streamId, recordingStatus, recordingType).subscribe(data => {
+             if (data["success"] == true) {
+
+                 if(recordingStatus){
+                     var recordingMessage = "open";
+                 }
+                 else{
+                     var recordingMessage = "close";
+                 }
+
+                 this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+
+                 $.notify({
+                     icon: "ti-save",
+                     message: recordingType + " Recording will be " + recordingMessage + ". Please wait few seconds."
+                    }, {
+                        type: "success",
+                        delay: 1000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
+                else{
+                    $.notify({
+                        icon: "ti-save",
+                        message: recordingType + " Recording service failed"
+                    }, {
+                        type: "warning",
+                        delay: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
         });
 
     }

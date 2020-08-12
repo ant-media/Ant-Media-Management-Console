@@ -448,9 +448,8 @@
                                     *ngIf="!isGridView && broadcastTableData.dataRows.length>0">
 
                                     <div class="mat-container mat-elevation-z0">
-
-                                        <mat-table style="overflow: visible !important;" [dataSource]="dataSource"
-                                            matSort>
+                                        <mat-table style="overflow: visible !important;" [dataSource]="dataSource" matSort
+                                                   (matSortChange)="sortBroadcastList($event)">
 
                                             <ng-container matColumnDef="name">
                                                 <mat-header-cell [ngClass]="'stream-name-column'" *matHeaderCellDef
@@ -543,7 +542,7 @@
 
                                             <ng-container matColumnDef="viewerCount">
                                                 <mat-header-cell [ngClass]="'viewer-column'" *matHeaderCellDef
-                                                    mat-sort-header> Viewers </mat-header-cell>
+                                                    > Viewers </mat-header-cell>
 
                                                 <mat-cell [ngClass]="'viewer-column'" *matCellDef="let row">
 
@@ -686,6 +685,46 @@
                                                                             (click)="copyPublishUrl(row.streamId)">
                                                                             <ng-container i18n="@@copyPublishUrl">Copy
                                                                                 Publish URL to Clipboard</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <!-- Enable MP4 Recording Check -->
+
+                                                                    <li *ngIf="(row.mp4Enabled == '0' && !this.appSettings.mp4MuxingEnabled ) || row.mp4Enabled == '-1'">
+                                                                        <a class="dropdown-link"
+                                                                           (click)="setRecordingStatus(row.streamId, true, 'mp4')">
+                                                                            <ng-container i18n="@@enableMp4Recording">
+                                                                                <span *ngIf="row.status=='broadcasting'">Start</span><span *ngIf="row.status!='broadcasting'">Enable</span> MP4 Recording</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <!-- Disable MP4 Recording Check -->
+
+                                                                    <li *ngIf="(row.mp4Enabled == '0' && this.appSettings.mp4MuxingEnabled ) || row.mp4Enabled == '1'" >
+                                                                        <a class="dropdown-link"
+                                                                           (click)="setRecordingStatus(row.streamId, false, 'mp4')">
+                                                                            <ng-container i18n="@@disableMp4Recording">
+                                                                                <span *ngIf="row.status=='broadcasting'">Stop</span><span *ngIf="row.status!='broadcasting'">Disable</span> MP4 Recording</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <!-- Enable WEBM Recording Check -->
+
+                                                                    <li *ngIf="(row.webMEnabled == '0' && !this.appSettings.webMMuxingEnabled ) || row.webMEnabled == '-1'">
+                                                                        <a class="dropdown-link"
+                                                                           (click)="setRecordingStatus(row.streamId, true, 'webm')">
+                                                                            <ng-container i18n="@@enableWebMRecording">
+                                                                                <span *ngIf="row.status=='broadcasting'">Start</span><span *ngIf="row.status!='broadcasting'">Enable</span> WebM Recording</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <!-- Disable WEBM Recording Check -->
+
+                                                                    <li *ngIf="(row.webMEnabled == '0' && this.appSettings.webMMuxingEnabled ) || row.webMEnabled == '1'" >
+                                                                        <a class="dropdown-link"
+                                                                           (click)="setRecordingStatus(row.streamId, false, 'webm')">
+                                                                            <ng-container i18n="@@disableWebMRecording">
+                                                                                <span *ngIf="row.status=='broadcasting'">Stop</span><span *ngIf="row.status!='broadcasting'">Disable</span> WebM Recording</ng-container>
                                                                         </a>
                                                                     </li>
 
@@ -1700,21 +1739,33 @@
 
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
-                                                                <input [(ngModel)]="appSettings.tokenControlEnabled"
-                                                                    id="tokenControlEnabled" name="tokenControlEnabled"
+                                                                <input [(ngModel)]="appSettings.publishTokenControlEnabled"
+                                                                    id="publishTokenControlEnabled" name="publishTokenControlEnabled"
                                                                     type="checkbox">
 
-                                                                <label for="tokenControlEnabled">
-                                                                    Publish/Play with One-time Tokens <a
+                                                                <label for="publishTokenControlEnabled">
+                                                                    Publish with One-time Tokens <a
                                                                         href="https://antmedia.io/secure-video-streaming/"
                                                                         target="_blank"
-                                                                        matTooltip="By enabling this option, one time tokens are required for publishing and playing. Publish/Play request without tokens will not be streamed. Click for more information."><i
+                                                                        matTooltip="By enabling this option, one time tokens are required for publishing. Publish request without tokens will not be streamed. Click for more information."><i
                                                                             style="font-size: 20px;"
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>
-
                                                             </div>
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.playTokenControlEnabled"
+                                                                    id="playTokenControlEnabled" name="playTokenControlEnabled"
+                                                                    type="checkbox">
 
+                                                                <label for="playTokenControlEnabled">
+                                                                    Play with One-time Tokens <a
+                                                                        href="https://antmedia.io/secure-video-streaming/"
+                                                                        target="_blank"
+                                                                        matTooltip="By enabling this option, one time tokens are required for playing. Play request without tokens will not be streamed. Click for more information."><i
+                                                                            style="font-size: 20px;"
+                                                                            class="fa fa-info-circle"></i></a>
+                                                                </label>                                                                
+                                                            </div>
                                                         </div>
                                                     </div>
 
