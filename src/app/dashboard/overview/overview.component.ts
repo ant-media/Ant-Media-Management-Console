@@ -150,7 +150,7 @@ export class OverviewComponent implements OnInit {
 
         this.restService.isShutdownProperly(appNames.join(",")).subscribe(data => {
             //It means doesn't close normal.
-            if(data == false){
+            if(data["success"] == false){
 
                 swal({
                     title: "Unexpected Shutdown",
@@ -207,19 +207,21 @@ export class OverviewComponent implements OnInit {
                         }
                     });
 
-                }).catch(function () {
+                }).catch(function (err) {
+                    console.error("Error in shutdown properly: " + err)
                 });
+
                 this.restService.setShutdownProperly(appNames.join(",")).subscribe(data => {
                 });
 
             }
+        },
+        error =>{
+            console.error("Server returns error: " + error.status + " for shutdown-properly");
+            //ask again until get a 200 response
+            setTimeout(() => { this.checkShutdownProperly(); }, 10000);
         });
-
-
-
-
-
-        }
+    }
 
     getSystemResources(): void {
         this.restService.getSystemResourcesInfo().subscribe(data => {
