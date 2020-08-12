@@ -6,11 +6,8 @@ import {
     MAT_DIALOG_DATA,
     MatDialog,
     MatDialogRef,
-    MatPaginatorIntl,
-    MatSort,
-    MatTableDataSource,
-    PageEvent
-} from '@angular/material';
+} from '@angular/material/dialog';
+import {MatTableDataSource} from "@angular/material/table"
 import {HTTP_SERVER_ROOT, RestService} from '../../rest/rest.service';
 
 export class DetectedObject {

@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, Renderer, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {ROUTES} from '../.././sidebar/sidebar.component';
 import {Router} from '@angular/router';
 import {Location} from '@angular/common';
@@ -26,7 +26,7 @@ export class NavbarComponent implements OnInit{
 
     @ViewChild("navbar-cmp") button;
 
-    constructor(location:Location, private renderer : Renderer, private element : ElementRef, public router:Router) {
+    constructor(location:Location, private renderer : Renderer2, private element : ElementRef, public router:Router) {
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;

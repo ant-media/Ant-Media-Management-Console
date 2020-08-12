@@ -1,9 +1,9 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { AppPageComponent } from './app.page.component';
 import { FormsModule } from '@angular/forms';
-import { MatTableModule, 
-         MatPaginatorModule,
-         MatDialogModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AuthInterceptor, RestService,} from '../rest/rest.service';
 import { HttpClientModule } from '@angular/common/http'; 

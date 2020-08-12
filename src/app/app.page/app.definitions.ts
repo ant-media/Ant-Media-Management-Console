@@ -170,3 +170,43 @@ export class Playlist {
     creationDate: number;
     duration: number;
 }
+
+export class ServerSettings {
+
+    constructor(public serverName: string,
+                public licenceKey: string,
+                public buildForMarket: boolean,
+    ) {}
+}
+
+export class AppSettings {
+
+    constructor(public mp4MuxingEnabled: boolean,
+                public webMMuxingEnabled: boolean,
+                public addDateTimeToMp4FileName: boolean,
+                public hlsMuxingEnabled: boolean,
+                public hlsListSize: number,
+                public hlsTime: number,
+                public hlsPlayListType: string,
+                public facebookClientId: string,
+                public facebookClientSecret: string,
+                public youtubeClientId: string,
+                public youtubeClientSecret: string,
+                public periscopeClientId: string,
+                public periscopeClientSecret: string,
+                public encoderSettings: EncoderSettings[],
+                public acceptOnlyStreamsInDataStore: boolean,
+                public vodFolder: string,
+                public objectDetectionEnabled: boolean,
+                public publishTokenControlEnabled: boolean,
+                public playTokenControlEnabled: boolean,
+                public webRTCEnabled: boolean,
+                public webRTCFrameRate: number,
+                public remoteAllowedCIDR: string,
+                public h264Enabled: boolean,
+                public vp8Enabled: boolean,
+                public dataChannelEnabled: boolean,
+                public dataChannelPlayerDistribution: string,
+                public listenerHookURL: string
+    ) {}
+}

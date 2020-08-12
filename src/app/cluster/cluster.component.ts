@@ -8,20 +8,18 @@ import {
     OnDestroy,
     OnInit,
     Output,
-    Renderer,
+    Renderer2,
     ViewChild
 } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ClusterRestService} from '../rest/cluster.service';
 import {Locale} from "../locale/locale";
-import {
-    MatDialog,
-    MatPaginatorIntl,
-    MatSort,
-    MatTableDataSource,
-    PageEvent
-} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
+import {MatPaginatorIntl} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
+import {PageEvent} from '@angular/material/paginator';
 import "rxjs/add/operator/toPromise";
 import {
     ClusterInfoTable,
@@ -74,7 +72,7 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
     constructor(private http: HttpClient, 
     			private route: ActivatedRoute,
                 private clusterRestService: ClusterRestService,
-                private renderer: Renderer,
+                private renderer: Renderer2,
                 public router: Router,
                 public dialog: MatDialog,
                 private cdr: ChangeDetectorRef,

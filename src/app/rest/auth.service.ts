@@ -3,7 +3,7 @@ import {Observable} from 'rxjs';
 import {CanActivate, Router} from '@angular/router';
 import {RestService, User} from './rest.service';
 import {Licence} from "../server.settings/server.settings.component";
-import {ServerSettings} from "../app.page/app.page.component";
+import {ServerSettings} from "../app.page/app.definitions";
 import {timer} from 'rxjs/observable/timer';
 import {DatePipe} from '@angular/common';
 import {Subscription} from "rxjs";

@@ -2,7 +2,7 @@ import {Component, Inject} from '@angular/core';
 import * as Chartist from 'chartist';
 import * as legend from 'chartist-plugin-legend';
 import {RestService} from '../../../rest/rest.service';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {WebRTCClientStat,} from '../../app.definitions';
 
 

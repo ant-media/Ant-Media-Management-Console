@@ -16,6 +16,25 @@
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
+            "allowedCommonJsDependencies": [
+              "hammerjs",
+              "rxjs/add/operator/filter",
+              "rxjs/add/operator/toPromise",
+              "rxjs/add/observable/of",
+              "rxjs/observable/timer",
+              "rxjs/add/operator/catch",
+              "chartist",
+              "nouislider",
+              "rxjs-compat/observable/timer",
+              "rxjs/add/operator/map",
+              "rxjs-compat/add/operator/catch",
+              "rxjs-compat/add/operator/map",
+              "chartist-plugin-legend",
+              "rxjs-compat/add/observable/of",
+              "rxjs-compat/add/operator/filter"
+
+
+            ],
             "assets": [
               "src/assets",
               "src/favicon.ico"

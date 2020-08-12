@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {AppSettings, SearchParam, ServerSettings} from "../app.page/app.page.component";
+import {AppSettings, ServerSettings} from "../app.page/app.definitions";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
@@ -90,7 +90,7 @@ export class RestService {
     }
 
     public isShutdownProperly(appNames: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/isShutdownProperly?appNames=' + appNames);
+        return this.http.get(REST_SERVICE_ROOT + '/shutdown-properly?appNames=' + appNames);
     }
 
     public setShutdownProperly(appNames: string): Observable<Object> {

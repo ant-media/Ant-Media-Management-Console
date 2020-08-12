@@ -8,7 +8,7 @@ import {
     OnDestroy,
     OnInit,
     Output,
-    Renderer,
+    Renderer2,
     ViewChild
 } from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
@@ -17,8 +17,12 @@ import {HTTP_SERVER_ROOT, LiveBroadcast, RestService} from '../rest/rest.service
 import {AuthService} from '../rest/auth.service';
 import {ClipboardService} from 'ngx-clipboard';
 import {Locale} from "../locale/locale";
-import {MatDialog, MatPaginatorIntl, MatSort, MatTableDataSource, PageEvent} from '@angular/material';
+import {MatDialog } from '@angular/material/dialog';
+import {MatPaginatorIntl, PageEvent} from "@angular/material/paginator"
+import {MatTableDataSource} from "@angular/material/table"
+import {MatSort} from "@angular/material/sort"
 import "rxjs/add/operator/toPromise";
+import {AppSettings, ServerSettings} from "./app.definitions";
 
 import {
     BroadcastInfo,
@@ -71,46 +75,6 @@ export class Camera {
         public password: string,
         public streamUrl: string,
         public type: string) { }
-}
-
-export class AppSettings {
-
-    constructor(public mp4MuxingEnabled: boolean,
-                public webMMuxingEnabled: boolean,
-                public addDateTimeToMp4FileName: boolean,
-                public hlsMuxingEnabled: boolean,
-                public hlsListSize: number,
-                public hlsTime: number,
-                public hlsPlayListType: string,
-                public facebookClientId: string,
-                public facebookClientSecret: string,
-                public youtubeClientId: string,
-                public youtubeClientSecret: string,
-                public periscopeClientId: string,
-                public periscopeClientSecret: string,
-                public encoderSettings: EncoderSettings[],
-                public acceptOnlyStreamsInDataStore: boolean,
-                public vodFolder: string,
-                public objectDetectionEnabled: boolean,
-                public publishTokenControlEnabled: boolean,
-                public playTokenControlEnabled: boolean,
-                public webRTCEnabled: boolean,
-                public webRTCFrameRate: number,
-                public remoteAllowedCIDR: string,
-                public h264Enabled: boolean,
-                public vp8Enabled: boolean,
-                public dataChannelEnabled: boolean,
-                public dataChannelPlayerDistribution: string,
-                public listenerHookURL: string
-    ) {}
-}
-
-export class ServerSettings {
-
-    constructor(public serverName: string,
-                public licenceKey: string,
-                public buildForMarket: boolean,
-    ) {}
 }
 
 export class SocialNetworkChannel {
@@ -267,7 +231,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     constructor(private route: ActivatedRoute,
                 private restService: RestService,
                 private clipBoardService: ClipboardService,
-                private renderer: Renderer,
+                private renderer: Renderer2,
                 public router: Router,
                 private zone: NgZone,
                 public dialog: MatDialog,

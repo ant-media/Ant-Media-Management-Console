@@ -8,7 +8,7 @@ import {
     OnDestroy,
     OnInit,
     Output,
-    Renderer,
+    Renderer2,
     ViewChild,
 } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
@@ -17,12 +17,11 @@ import {SupportRestService} from '../rest/support.service';
 import {RestService} from '../rest/rest.service';
 import {Locale} from "../locale/locale";
 import {
-    MatDialog,
-    MatPaginatorIntl,
-    MatSort,
-    MatTableDataSource,
-    PageEvent
-} from '@angular/material';
+    MatDialog
+} from '@angular/material/dialog';
+import {
+    MatPaginatorIntl
+} from '@angular/material/paginator';
 import { NgForm } from '@angular/forms';
 import "rxjs/add/operator/toPromise";
 import {
@@ -61,7 +60,7 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
     			private route: ActivatedRoute,
                 private supportRestService: SupportRestService,
                 private restService: RestService,
-                private renderer: Renderer,
+                private renderer: Renderer2,
                 public router: Router,
                 public dialog: MatDialog,
                 private cdr: ChangeDetectorRef,
