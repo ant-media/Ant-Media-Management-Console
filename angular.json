@@ -16,6 +16,20 @@
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
+            "allowedCommonJsDependencies": [
+              "hammerjs",
+              "rxjs/add/operator/filter",
+              "rxjs/add/operator/toPromise",
+              "rxjs/add/observable/of",
+              "rxjs/observable/timer",
+              "rxjs/add/operator/catch",
+              "chartist",
+              "nouislider",
+              "rxjs-compat/observable/timer",
+              "rxjs/add/operator/map"
+
+
+            ],
             "assets": [
               "src/assets",
               "src/favicon.ico"

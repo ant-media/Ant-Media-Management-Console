@@ -5,9 +5,6 @@ import { SidebarComponent } from './sidebar.component';
 import { HttpClientModule } from '@angular/common/http';
 
 
-
-
-
 @NgModule({
     imports: [ RouterModule, CommonModule , HttpClientModule],
     declarations: [ SidebarComponent ],

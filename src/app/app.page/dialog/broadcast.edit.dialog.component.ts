@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { Locale } from "../../locale/locale";
 import { RestService, LiveBroadcast } from '../../rest/rest.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
     Endpoint,
     VideoServiceEndpoint,

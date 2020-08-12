@@ -8,7 +8,7 @@ import {
     OnDestroy,
     OnInit,
     Output,
-    Renderer,
+    Renderer2,
     ViewChild
 } from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
@@ -17,7 +17,11 @@ import {HTTP_SERVER_ROOT, LiveBroadcast, RestService} from '../rest/rest.service
 import {AuthService} from '../rest/auth.service';
 import {ClipboardService} from 'ngx-clipboard';
 import {Locale} from "../locale/locale";
-import {MatDialog, MatPaginatorIntl, MatSort, MatTableDataSource, PageEvent} from '@angular/material';
+import {MatDialog } from '@angular/material/dialog';
+import {MatPaginatorIntl, PageEvent} from "@angular/material/paginator"
+import {MatTableDataSource} from "@angular/material/table"
+import {MatSort} from "@angular/material/sort"
+
 import "rxjs/add/operator/toPromise";
 
 import {
@@ -263,7 +267,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     constructor(private route: ActivatedRoute,
                 private restService: RestService,
                 private clipBoardService: ClipboardService,
-                private renderer: Renderer,
+                private renderer: Renderer2,
                 public router: Router,
                 private zone: NgZone,
                 public dialog: MatDialog,

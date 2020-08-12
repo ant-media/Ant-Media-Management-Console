@@ -1,7 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {Locale} from "../../locale/locale";
 import {LiveBroadcast, RestService} from '../../rest/rest.service';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Endpoint, VideoServiceEndpoint,} from '../app.definitions';
 
 declare var $: any;
