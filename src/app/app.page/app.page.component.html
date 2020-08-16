@@ -673,7 +673,7 @@
                                                                         <a class="dropdown-link"
                                                                             (click)="copyLiveEmbedCode(row.streamId)">
                                                                             <ng-container i18n="@@tableEmbedCode">Copy
-                                                                                Live Embed Code to Clipboard
+                                                                                Embed Code
                                                                             </ng-container>
                                                                         </a>
                                                                     </li>
@@ -684,7 +684,7 @@
                                                                         <a class="dropdown-link"
                                                                             (click)="copyPublishUrl(row.streamId)">
                                                                             <ng-container i18n="@@copyPublishUrl">Copy
-                                                                                Publish URL to Clipboard</ng-container>
+                                                                                Publish URL</ng-container>
                                                                         </a>
                                                                     </li>
 
@@ -740,7 +740,7 @@
                                                                     </li>
 
                                                                     <!--  Social media stats Button -->
-
+                                                                <!-- Commnet out this feature
                                                                     <li *ngIf="row.status=='broadcasting' && hasSocialEndpoint(row)"
                                                                         class="text-left">
                                                                         <a (click)="showLiveComments(row)">
@@ -748,6 +748,7 @@
                                                                                 Comments on Social Media</ng-container>
                                                                         </a>
                                                                     </li>
+                                                                -->
 
                                                                     <!-- Delete Broadcast -->
 
