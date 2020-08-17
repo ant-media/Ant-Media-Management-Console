@@ -86,7 +86,7 @@ export class StreamSourceEditComponent {
         this.streamSource.password = this.dialogRef.componentInstance.data.pass;
         this.streamSource.streamId = this.dialogRef.componentInstance.data.id;
         this.streamSource.status = this.dialogRef.componentInstance.data.status;
-        this.streamSource.streamUrl=this.dialogRef.componentInstance.data.streamUrl;
+        this.streamSource.streamUrl= this.dialogRef.componentInstance.data.streamUrl;
         this.streamSource.type = "streamSource";
 
         if (!this.restService.checkStreamName(this.streamSource.name)){

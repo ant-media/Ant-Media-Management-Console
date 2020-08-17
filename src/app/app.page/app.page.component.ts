@@ -179,7 +179,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
     public token: Token;
     public serverSettings: ServerSettings;
@@ -476,17 +475,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.selectedBroadcast = selected;
 
-        let dialogRef = this.dialog.open(CamSettingsDialogComponent, {
+        let dialogRef = this.dialog.open(BroadcastEditComponent, {
             width: '300px',
             data: {
                 name: this.selectedBroadcast.name,
                 url: this.selectedBroadcast.ipAddr,
                 username: this.selectedBroadcast.username,
                 pass: this.selectedBroadcast.password,
-                id: this.selectedBroadcast.streamId,
+                streamId: this.selectedBroadcast.streamId,
                 status: this.selectedBroadcast.status,
+                type: this.selectedBroadcast.type,
                 streamUrl: this.selectedBroadcast.streamUrl,
                 appName: this.appName,
+                webRTCViewerLimit: this.selectedBroadcast.webRTCViewerLimit,
+                hlsViewerLimit: this.selectedBroadcast.hlsViewerLimit,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
                 editBroadcastShareFacebook: this.editBroadcastShareFacebook,
@@ -544,16 +546,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.selectedBroadcast = selected;
 
-        let dialogRef = this.dialog.open(StreamSourceEditComponent, {
+        let dialogRef = this.dialog.open(BroadcastEditComponent, {
             width: '450px',
             data: {
                 name: this.selectedBroadcast.name,
                 url: this.selectedBroadcast.ipAddr,
-                username: this.selectedBroadcast.username,
-                pass: this.selectedBroadcast.password,
-                id: this.selectedBroadcast.streamId,
+                streamId: this.selectedBroadcast.streamId,
                 status: this.selectedBroadcast.status,
+                type: this.selectedBroadcast.type,
                 appName: this.appName,
+                webRTCViewerLimit: this.selectedBroadcast.webRTCViewerLimit,
+                hlsViewerLimit: this.selectedBroadcast.hlsViewerLimit,
                 streamUrl:this.selectedBroadcast.streamUrl,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
@@ -644,7 +647,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 data: {
                     name: this.liveStreamEditing.name,
                     streamId: this.liveStreamEditing.streamId,
+                    type: this.liveStreamEditing.type,
                     appName: this.appName,
+                    webRTCViewerLimit: this.liveStreamEditing.webRTCViewerLimit,
+                    hlsViewerLimit: this.liveStreamEditing.hlsViewerLimit,
                     endpointList: stream.endPointList,
                     videoServiceEndpoints: this.videoServiceEndpoints,
                     editBroadcastShareFacebook: this.editBroadcastShareFacebook,

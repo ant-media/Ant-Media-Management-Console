@@ -25,7 +25,8 @@ export class BroadcastEditComponent {
     public endpointList: Endpoint[];
     public genericRTMPEndpointCount = 0;
     public endpoint:Endpoint;
-
+    public type: string;
+    public streamUrlDialogValid = true;
 
     constructor(
         public dialogRef: MatDialogRef<BroadcastEditComponent>, public restService: RestService,
@@ -72,6 +73,26 @@ export class BroadcastEditComponent {
         this.liveStreamEditing = new LiveBroadcast();
         this.liveStreamEditing.name = this.dialogRef.componentInstance.data.name;
         this.liveStreamEditing.streamId = this.dialogRef.componentInstance.data.streamId;
+        this.liveStreamEditing.webRTCViewerLimit = this.dialogRef.componentInstance.data.webRTCViewerLimit;
+        this.liveStreamEditing.hlsViewerLimit = this.dialogRef.componentInstance.data.hlsViewerLimit;
+
+
+        if(this.liveStreamEditing.type == "streamSource") {
+            this.liveStreamEditing.ipAddr = this.dialogRef.componentInstance.data.url;
+            this.liveStreamEditing.streamId = this.dialogRef.componentInstance.data.streamId;
+            this.liveStreamEditing.status = this.dialogRef.componentInstance.data.status;
+            this.liveStreamEditing.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
+            this.liveStreamEditing.type = this.type;
+        }
+        else if(this.liveStreamEditing.type == "ipCamera") {
+            this.liveStreamEditing.ipAddr = this.dialogRef.componentInstance.data.url;
+            this.liveStreamEditing.username = this.dialogRef.componentInstance.data.username;
+            this.liveStreamEditing.password = this.dialogRef.componentInstance.data.pass;
+            this.liveStreamEditing.streamId = this.dialogRef.componentInstance.data.streamId;
+            this.liveStreamEditing.status = this.dialogRef.componentInstance.data.status;
+            this.liveStreamEditing.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
+            this.liveStreamEditing.type = this.type;
+        }
 
         var socialNetworks = [];
         this.shareEndpoint.forEach((value, index) => {
@@ -85,6 +106,13 @@ export class BroadcastEditComponent {
             this.streamNameEmpty = true;
             return;
         }
+        if(this.liveStreamEditing.type == "streamSource" || this.liveStreamEditing.type == "ipCamera") {
+            if(!this.restService.checkStreamUrl(this.liveStreamEditing.streamUrl)){
+                this.streamUrlDialogValid = false;
+            }
+        }
+
+
         this.liveStreamUpdating = true;
 
         this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.liveStreamEditing,

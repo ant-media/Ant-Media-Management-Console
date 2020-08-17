@@ -41,6 +41,8 @@ export class LiveBroadcast {
     webRTCViewerCount : number = 0;
     rtmpViewerCount : number = 0;
     mp4Enabled : number = 0;
+    webRTCViewerLimit: number;
+    hlsViewerLimit: number;
 }
 
 @Injectable()
