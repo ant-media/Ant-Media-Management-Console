@@ -1255,78 +1255,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.encoderSettings.splice(index, 1);
     }
 
-    setSocialNetworkChannel(endpointId: string, type: string, value: string): void {
-        this.restService.setSocialNetworkChannel(this.appName, endpointId, type, value).subscribe(data => {
-            console.log("set social network channel: " + data["success"]);
-            if (data["success"]) {
-                this.getSocialEndpoints();
-            }
-
-        });
-    }
-
-    async showChannelChooserDialog(options: any, endpointId: string, type: string): Promise<boolean> {
-        const { value: id } = await swal({
-            title: 'Select the target to publish',
-            input: 'select',
-            inputOptions: options,
-            inputPlaceholder: 'Select the Page',
-            showCancelButton: true,
-            inputValidator: (value) => {
-
-                return new Promise((resolve) => {
-                    if (value) {
-                        console.log("selected id: " + value);
-
-                        this.setSocialNetworkChannel(endpointId, type, value);
-
-                        resolve();
-                    }
-                    else {
-                        console.log("not item selected");
-                        resolve()
-                    }
-
-                });
-
-            },
-
-        });
-
-        return null;
-
-
-    }
-    showNetworkChannelList(endpointId: string, type: string): void {
-        this.userFBPagesLoading = true;
-        this.restService.getSocialNetworkChannelList(this.appName, endpointId, type).subscribe(data => {
-            console.log(data);
-            var options = {
-            };
-
-            for (var i in data) {
-                options[data[i]["id"]] = data[i]["name"];
-            }
-            this.userFBPagesLoading = false;
-            this.showChannelChooserDialog(options, endpointId, type);
-
-        });
-
-    }
-
-
-    getSocialEndpoints(): void {
-        this.restService.getSocialEndpoints(this.appName).subscribe(data => {
-
-            this.videoServiceEndpoints = [];
-            for (var i in data) {
-                console.log(data[i]);
-                this.videoServiceEndpoints.push(data[i]);
-            }
-
-        });
-    }
-
     getSettings(): void {
         this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
@@ -1348,11 +1276,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         });
-
-
-
-        this.getSocialEndpoints();
-
     }
 
 
@@ -2143,96 +2066,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-
     switchToGridView(): void {
         this.isGridView = true;
 
         setTimeout(() => {
             this.openGridPlayers(0, 4);
         }, 500);
-    }
-
-    getSocialMediaAuthParameters(networkName: string): void {
-
-        this.gettingDeviceParameters = true;
-
-        this.restService.getDeviceAuthParameters(this.appName, networkName).subscribe(data => {
-
-            if (data['verification_url']) {
-                if (!data['verification_url'].startsWith("http")) {
-                    data['verification_url'] = "http://" + data['verification_url'];
-                }
-
-                var message = Locale.getLocaleInterface().copy_this_code_and_enter_the_url.replace("CODE_KEY", data['user_code']);
-
-                message = message.replace("URL_KEY", data['verification_url']); //this is for url
-                message = message.replace("URL_KEY", data['verification_url']); //this is for string
-                var typem = 'info';
-
-
-                this.gettingDeviceParameters = false;
-                swal({
-                    html: message,
-                    type: typem,
-                    // showConfirmButton: false,
-                    showCancelButton: true,
-                    // width: '800px',
-                    onOpen: function () {
-                        console.log("onopen");
-
-                    },
-                    onClose: function () {
-                        console.log("onclose");
-                    }
-                }).then(() => {
-                    this.waitingForConfirmation = true;
-                    this.checkAuthStatus(data['user_code'], networkName);
-                })
-
-            } else if (this.isEnterpriseEdition == false
-                && data['errorId'] == ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT) {
-
-                message = Locale.getLocaleInterface().notEnterprise;
-
-                typem = 'error';
-                this.gettingDeviceParameters = false;
-
-                swal({
-                    html: message,
-                    type: typem,
-                    // showConfirmButton: false,
-                    showCancelButton: false,
-                    // width: '800px',
-                    onOpen: function () {
-                        console.log("onopen");
-
-                    },
-                    onClose: function () {
-                        console.log("onclose");
-                    }
-                });
-
-            } else if (this.isEnterpriseEdition == true && data['errorId'] == ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID) {
-
-                message = Locale.getLocaleInterface().ketNotdefined;
-                typem = 'error';
-                this.gettingDeviceParameters = false;
-                swal({
-                    html: message,
-                    type: typem,
-                    // showConfirmButton: false,
-                    showCancelButton: false,
-                    // width: '800px',
-                    onOpen: function () {
-                        console.log("onopen");
-
-                    },
-                    onClose: function () {
-                        console.log("onclose");
-                    }
-                });
-            }
-        });
     }
 
     cancelNewLiveStream(): void {
@@ -2401,69 +2240,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     getRtmpUrl(streamUrl: string): string {
         return this.restService.getRtmpUrl(this.appName, streamUrl);
-    }
-
-    revokeSocialMediaAuth(endpointId: string): void {
-        this.restService.revokeSocialNetwork(this.appName, endpointId)
-            .subscribe(data => {
-                if (data["success"] == true) {
-
-                    this.videoServiceEndpoints = this.videoServiceEndpoints.filter(
-                        element => {
-                            return element.id != endpointId
-                        }
-                    );
-                }
-            });
-    }
-
-    checkAuthStatus(userCode: string, networkName: string): void {
-
-        this.restService.checkAuthStatus(userCode, this.appName).subscribe(data => {
-
-            if (data["success"] != true) {
-                if (data["message"] == null) {
-                    this.checkAuthStatusTimerId = setTimeout(() => {
-                        this.checkAuthStatus(userCode, networkName);
-                    }, 5000);
-                }
-                else {
-                    this.waitingForConfirmation = false;
-                    let message = Locale.getLocaleInterface().error_occured;
-                    if (data["message"] == LIVE_STREAMING_NOT_ENABLED) {
-                        message = Locale.getLocaleInterface().live_streaming_not_enabled_message;
-                    }
-                    else if (data["message"] == AUTHENTICATION_TIMEOUT) {
-                        message = Locale.getLocaleInterface().authentication_timeout_message;
-                    }
-                    swal({
-                        type: "warning",
-                        //title: Locale.getLocaleInterface().congrats,
-                        text: message,
-                    });
-                }
-
-            }
-            else {
-                if (this.checkAuthStatusTimerId) {
-                    clearInterval(this.checkAuthStatusTimerId);
-                }
-
-                this.getSocialEndpoints();
-
-                this.waitingForConfirmation = false;
-                if (networkName == "facebook") {
-                    this.showNetworkChannelList(data["dataId"], "all");
-                }
-                else {
-                    swal({
-                        type: "success",
-                        title: Locale.getLocaleInterface().congrats,
-                        text: Locale.getLocaleInterface().authentication_is_done,
-                    });
-                }
-            }
-        });
     }
 
 
