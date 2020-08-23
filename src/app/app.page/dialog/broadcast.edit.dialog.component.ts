@@ -25,7 +25,6 @@ export class BroadcastEditComponent {
     public endpointList: Endpoint[];
     public genericRTMPEndpointCount = 0;
     public endpoint:Endpoint;
-    public type: string;
     public streamUrlDialogValid = true;
 
     constructor(
@@ -33,6 +32,7 @@ export class BroadcastEditComponent {
         @Inject(MAT_DIALOG_DATA) public data: any) {
         this.shareEndpoint = [];
 
+        this.videoServiceEndPoints = [];
         this.videoServiceEndPoints = data.videoServiceEndpoints;
 
         this.endpointList= data.endpointList;
@@ -75,23 +75,20 @@ export class BroadcastEditComponent {
         this.liveStreamEditing.streamId = this.dialogRef.componentInstance.data.streamId;
         this.liveStreamEditing.webRTCViewerLimit = this.dialogRef.componentInstance.data.webRTCViewerLimit;
         this.liveStreamEditing.hlsViewerLimit = this.dialogRef.componentInstance.data.hlsViewerLimit;
+        this.liveStreamEditing.type = this.dialogRef.componentInstance.data.type;
 
 
         if(this.liveStreamEditing.type == "streamSource") {
             this.liveStreamEditing.ipAddr = this.dialogRef.componentInstance.data.url;
-            this.liveStreamEditing.streamId = this.dialogRef.componentInstance.data.streamId;
             this.liveStreamEditing.status = this.dialogRef.componentInstance.data.status;
             this.liveStreamEditing.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
-            this.liveStreamEditing.type = this.type;
         }
         else if(this.liveStreamEditing.type == "ipCamera") {
             this.liveStreamEditing.ipAddr = this.dialogRef.componentInstance.data.url;
             this.liveStreamEditing.username = this.dialogRef.componentInstance.data.username;
             this.liveStreamEditing.password = this.dialogRef.componentInstance.data.pass;
-            this.liveStreamEditing.streamId = this.dialogRef.componentInstance.data.streamId;
             this.liveStreamEditing.status = this.dialogRef.componentInstance.data.status;
             this.liveStreamEditing.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
-            this.liveStreamEditing.type = this.type;
         }
 
         var socialNetworks = [];

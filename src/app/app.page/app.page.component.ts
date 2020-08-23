@@ -243,7 +243,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     ) {
         this.dataSource = new MatTableDataSource<BroadcastInfo>();
         this.dataSourceVod = new MatTableDataSource<VodInfo>();
-
+        this.videoServiceEndpoints = [];
     }
 
     setPageSizeOptions(setPageSizeOptionsInput: string) {
@@ -631,19 +631,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
 
-        if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId || stream.name != this.liveStreamEditing.name) {
-            this.liveStreamEditing = new LiveBroadcast();
-            this.liveStreamEditing.streamId = stream.streamId;
-            this.liveStreamEditing.name = stream.name;
-            this.liveStreamEditing.description = "";
-        }
-
+        this.liveStreamEditing = new LiveBroadcast();
+        this.liveStreamEditing.streamId = stream.streamId;
+        this.liveStreamEditing.name = stream.name;
+        this.liveStreamEditing.webRTCViewerLimit = stream.webRTCViewerLimit;
+        this.liveStreamEditing.hlsViewerLimit = stream.hlsViewerLimit;
+        this.liveStreamEditing.description = "";
 
         if (this.liveStreamEditing) {
             let dialogRef = this.dialog.open(BroadcastEditComponent, {
-
-
-
                 data: {
                     name: this.liveStreamEditing.name,
                     streamId: this.liveStreamEditing.streamId,
@@ -651,7 +647,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     appName: this.appName,
                     webRTCViewerLimit: this.liveStreamEditing.webRTCViewerLimit,
                     hlsViewerLimit: this.liveStreamEditing.hlsViewerLimit,
-                    endpointList: stream.endPointList,
+                    endpointList: stream.endPointList,                    
                     videoServiceEndpoints: this.videoServiceEndpoints,
                     editBroadcastShareFacebook: this.editBroadcastShareFacebook,
                     editBroadcastShareYoutube: this.editBroadcastShareYoutube,
@@ -659,18 +655,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     // ************** TODO: open it *************************
                     //socialMediaAuthStatus:this.socialMediaAuthStatus
                 }
-
             });
-
 
             dialogRef.afterClosed().subscribe(result => {
                 console.log('The dialog was closed');
                 this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                 this.getAppLiveStreamsNumber();
-
-
             });
-
         }
     }
 
