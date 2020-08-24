@@ -1229,7 +1229,7 @@
 
                                         <div class="col-sm-12 col-md-12">
                                             <div class="col-sm-12 col-md-6">
-                                                
+
                                             </div>
                                             <div class="col-sm-12 col-md-6">
                                                
@@ -1267,6 +1267,10 @@
                                                                 <p class="category text-left">Explicitly required for WebM Recording</p>  
                                                                 
                                                         </div>
+                                                        <br>
+                                                        <label *ngIf="appSettings.vp8Enabled && appSettings.h264Enabled">
+                                                            <i style="font-size: 20px;color:#68B3C8"
+                                                               class="fa fa-info-circle"></i> If you enabled both VP8 and H.264, you should add at least one Adaptive Bitrate.</label>
                                                     </div>
                                                     <div *ngIf=!isEnterpriseEdition class="form-group text-left">
                                                         <div class="col-xs-12">
