@@ -40,9 +40,7 @@ import {MatExpansionModule} from '@angular/material/expansion'
 import {MatFormFieldModule} from '@angular/material/form-field'
 import {DetectedObjectListDialog} from './dialog/detected.objects.list';
 import {UploadVodDialogComponent} from './dialog/upload-vod-dialog';
-import {StreamSourceEditComponent} from './dialog/stream.source.edit.component';
 import {BroadcastEditComponent} from './dialog/broadcast.edit.dialog.component';
-import {CamSettingsDialogComponent} from './dialog/cam.settings.dialog.component';
 import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
 import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialog.component';
@@ -64,11 +62,9 @@ export const AppPageRoutes: Routes = [
 
     declarations: [
                     AppPageComponent,
-                    CamSettingsDialogComponent,
                     UploadVodDialogComponent,
                     BroadcastEditComponent,
                     DetectedObjectListDialog,
-                    StreamSourceEditComponent,
                     SocialMediaStatsComponent,
                     WebRTCClientStatsComponent,
                     RtmpEndpointEditDialogComponent,
@@ -76,12 +72,10 @@ export const AppPageRoutes: Routes = [
                 ],
 
     entryComponents: [
-                        CamSettingsDialogComponent,
                         AppPageComponent,
                         UploadVodDialogComponent,
                         BroadcastEditComponent,
                         DetectedObjectListDialog,
-                        StreamSourceEditComponent,
                         SocialMediaStatsComponent,
                         WebRTCClientStatsComponent,
                         RtmpEndpointEditDialogComponent,

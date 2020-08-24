@@ -20,6 +20,57 @@
                         Stream name should not be empty.
                     </small>
                 </div>
+
+                <div class="form-group text-left">
+                    <label i18n="@@webRTCViewerLimit">WebRTC Viewer Limit</label>
+                    <input type="text" name="webRTCViewerLimit" i18n-placeholder="@@webrtc_viewer_limit_place_holder" placeholder="WebRTC Viewer Limit"
+                           class="form-control" [(ngModel)]="data.webRTCViewerLimit" #onvifUrl="ngModel" style="width: 400px">
+
+                    <small class="text-danger" *ngIf="data.webRTCViewerLimit<1 && data.webRTCViewerLimit!=-1">
+                        Please write a limit larger than 1 or -1 for unlimited
+                    </small>
+                </div>
+
+                <div class="form-group text-left">
+                    <label i18n="@@hlsViewerLimit">HLS Viewer Limit</label>
+                    <input type="text" name="hlsViewerLimit" i18n-placeholder="@@hls_viewer_limit_place_holder" placeholder="HLS Viewer Limit"
+                           class="form-control" [(ngModel)]="data.hlsViewerLimit" #onvifUrl="ngModel" style="width: 400px">
+
+                    <small class="text-danger" *ngIf="data.hlsViewerLimit<1&& data.hlsViewerLimit!=-1">
+                        Please write a limit larger than 1 or -1 for unlimited
+                    </small>
+                </div>
+
+                <div class="form-group text-left" *ngIf="data.type=='streamSource'">
+                    <label i18n="@@newStreamUrl">Stream Url</label>
+                    <input type="text" name="streamUrl" i18n-placeholder="@@onvif_url_place_holder" placeholder="Stream Url"
+                           class="form-control" [(ngModel)]="data.streamUrl" #onvifUrl="ngModel" style="width: 400px">
+
+                    <small class="text-danger" *ngIf="!streamUrlDialogValid">
+                        Please write a valid stream URL
+                    </small>
+                </div>
+                
+                
+                <div class="form-group text-left" *ngIf="data.type=='ipCamera'">
+                    <label i18n="@@newOnvifUrl">Onvif Url</label>
+                    <input type="text" name="onvifUrl" i18n-placeholder="@@onvif_url_place_holder" placeholder="Onvif url"
+                        class="form-control" [(ngModel)]="data.streamUrl" #onvifUrl="ngModel" style="width: 400px">
+                </div>
+
+                <div class="form-group text-left" *ngIf="data.type=='ipCamera'">
+                    <label i18n="@@newUserName">Username</label>
+                    <input type="text" name="username" i18n-placeholder="@@username_place_holder" placeholder="Username"
+                        class="form-control" [(ngModel)]="data.username" #username="ngModel" style="width: 400px">
+                 </div>
+
+                <div class="form-group text-left" *ngIf="data.type=='ipCamera'">
+                    <label i18n="@@newPassword">Password</label>
+                    <input type="text" name="password" i18n-placeholder="@@password_place_holder" placeholder="Password"
+                        class="form-control" [(ngModel)]="data.pass" #password="ngModel" style="width: 400px">
+                </div>
+                
+
                 <div class="form-group text-left" *ngIf="data.videoServiceEndpoints.length>0">
                     <label class="col-sm-12" style="padding-left:0px" i18n="@@newLiveStreamSocialShare">Share</label>
 

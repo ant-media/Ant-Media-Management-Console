@@ -37,9 +37,7 @@ import {
 } from './app.definitions';
 import {DetectedObjectListDialog} from './dialog/detected.objects.list';
 import {UploadVodDialogComponent} from './dialog/upload-vod-dialog';
-import {StreamSourceEditComponent} from './dialog/stream.source.edit.component';
 import {BroadcastEditComponent} from './dialog/broadcast.edit.dialog.component';
-import {CamSettingsDialogComponent} from './dialog/cam.settings.dialog.component';
 import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
 import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialog.component';
@@ -179,7 +177,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
     public token: Token;
     public serverSettings: ServerSettings;
@@ -244,7 +241,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     ) {
         this.dataSource = new MatTableDataSource<BroadcastInfo>();
         this.dataSourceVod = new MatTableDataSource<VodInfo>();
-
+        this.videoServiceEndpoints = [];
     }
 
     setPageSizeOptions(setPageSizeOptionsInput: string) {
@@ -476,17 +473,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.selectedBroadcast = selected;
 
-        let dialogRef = this.dialog.open(CamSettingsDialogComponent, {
-            width: '300px',
+        let dialogRef = this.dialog.open(BroadcastEditComponent, {
+            width: '450px',
             data: {
                 name: this.selectedBroadcast.name,
                 url: this.selectedBroadcast.ipAddr,
                 username: this.selectedBroadcast.username,
                 pass: this.selectedBroadcast.password,
-                id: this.selectedBroadcast.streamId,
+                streamId: this.selectedBroadcast.streamId,
                 status: this.selectedBroadcast.status,
+                type: this.selectedBroadcast.type,
                 streamUrl: this.selectedBroadcast.streamUrl,
                 appName: this.appName,
+                webRTCViewerLimit: this.selectedBroadcast.webRTCViewerLimit,
+                hlsViewerLimit: this.selectedBroadcast.hlsViewerLimit,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
                 editBroadcastShareFacebook: this.editBroadcastShareFacebook,
@@ -544,16 +544,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.selectedBroadcast = selected;
 
-        let dialogRef = this.dialog.open(StreamSourceEditComponent, {
+        let dialogRef = this.dialog.open(BroadcastEditComponent, {
             width: '450px',
             data: {
                 name: this.selectedBroadcast.name,
                 url: this.selectedBroadcast.ipAddr,
-                username: this.selectedBroadcast.username,
-                pass: this.selectedBroadcast.password,
-                id: this.selectedBroadcast.streamId,
+                streamId: this.selectedBroadcast.streamId,
                 status: this.selectedBroadcast.status,
+                type: this.selectedBroadcast.type,
                 appName: this.appName,
+                webRTCViewerLimit: this.selectedBroadcast.webRTCViewerLimit,
+                hlsViewerLimit: this.selectedBroadcast.hlsViewerLimit,
                 streamUrl:this.selectedBroadcast.streamUrl,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
@@ -628,24 +629,23 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
 
-        if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId || stream.name != this.liveStreamEditing.name) {
-            this.liveStreamEditing = new LiveBroadcast();
-            this.liveStreamEditing.streamId = stream.streamId;
-            this.liveStreamEditing.name = stream.name;
-            this.liveStreamEditing.description = "";
-        }
-
+        this.liveStreamEditing = new LiveBroadcast();
+        this.liveStreamEditing.streamId = stream.streamId;
+        this.liveStreamEditing.name = stream.name;
+        this.liveStreamEditing.webRTCViewerLimit = stream.webRTCViewerLimit;
+        this.liveStreamEditing.hlsViewerLimit = stream.hlsViewerLimit;
+        this.liveStreamEditing.description = "";
 
         if (this.liveStreamEditing) {
             let dialogRef = this.dialog.open(BroadcastEditComponent, {
-
-
-
                 data: {
                     name: this.liveStreamEditing.name,
                     streamId: this.liveStreamEditing.streamId,
+                    type: this.liveStreamEditing.type,
                     appName: this.appName,
-                    endpointList: stream.endPointList,
+                    webRTCViewerLimit: this.liveStreamEditing.webRTCViewerLimit,
+                    hlsViewerLimit: this.liveStreamEditing.hlsViewerLimit,
+                    endpointList: stream.endPointList,                    
                     videoServiceEndpoints: this.videoServiceEndpoints,
                     editBroadcastShareFacebook: this.editBroadcastShareFacebook,
                     editBroadcastShareYoutube: this.editBroadcastShareYoutube,
@@ -653,18 +653,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     // ************** TODO: open it *************************
                     //socialMediaAuthStatus:this.socialMediaAuthStatus
                 }
-
             });
-
 
             dialogRef.afterClosed().subscribe(result => {
                 console.log('The dialog was closed');
                 this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                 this.getAppLiveStreamsNumber();
-
-
             });
-
         }
     }
 

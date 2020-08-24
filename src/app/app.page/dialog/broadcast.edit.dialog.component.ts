@@ -8,6 +8,8 @@ import {
 } from '../app.definitions';
 
 declare var $: any;
+declare var swal: any;
+
 
 @Component({
     selector: 'broadcast-edit-dialog',
@@ -25,13 +27,14 @@ export class BroadcastEditComponent {
     public endpointList: Endpoint[];
     public genericRTMPEndpointCount = 0;
     public endpoint:Endpoint;
-
+    public streamUrlDialogValid = true;
 
     constructor(
         public dialogRef: MatDialogRef<BroadcastEditComponent>, public restService: RestService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
         this.shareEndpoint = [];
 
+        this.videoServiceEndPoints = [];
         this.videoServiceEndPoints = data.videoServiceEndpoints;
 
         this.endpointList= data.endpointList;
@@ -72,6 +75,23 @@ export class BroadcastEditComponent {
         this.liveStreamEditing = new LiveBroadcast();
         this.liveStreamEditing.name = this.dialogRef.componentInstance.data.name;
         this.liveStreamEditing.streamId = this.dialogRef.componentInstance.data.streamId;
+        this.liveStreamEditing.webRTCViewerLimit = this.dialogRef.componentInstance.data.webRTCViewerLimit;
+        this.liveStreamEditing.hlsViewerLimit = this.dialogRef.componentInstance.data.hlsViewerLimit;
+        this.liveStreamEditing.type = this.dialogRef.componentInstance.data.type;
+
+
+        if(this.liveStreamEditing.type == "streamSource") {
+            this.liveStreamEditing.ipAddr = this.dialogRef.componentInstance.data.url;
+            this.liveStreamEditing.status = this.dialogRef.componentInstance.data.status;
+            this.liveStreamEditing.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
+        }
+        else if(this.liveStreamEditing.type == "ipCamera") {
+            this.liveStreamEditing.ipAddr = this.dialogRef.componentInstance.data.url;
+            this.liveStreamEditing.username = this.dialogRef.componentInstance.data.username;
+            this.liveStreamEditing.password = this.dialogRef.componentInstance.data.pass;
+            this.liveStreamEditing.status = this.dialogRef.componentInstance.data.status;
+            this.liveStreamEditing.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
+        }
 
         var socialNetworks = [];
         this.shareEndpoint.forEach((value, index) => {
@@ -85,6 +105,13 @@ export class BroadcastEditComponent {
             this.streamNameEmpty = true;
             return;
         }
+        if(this.liveStreamEditing.type == "streamSource") {
+            if(!this.restService.checkStreamUrl(this.liveStreamEditing.streamUrl)){
+                this.streamUrlDialogValid = false;
+            }
+        }
+
+
         this.liveStreamUpdating = true;
 
         this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.liveStreamEditing,
@@ -105,9 +132,6 @@ export class BroadcastEditComponent {
                         }
                     }
                 }
-
-
-
 
                 $.notify({
                     icon: "ti-save",
@@ -138,7 +162,37 @@ export class BroadcastEditComponent {
                 });
             }
         });
+
+        if(this.liveStreamEditing.type == "ipCamera") {
+            setTimeout(()=>{
+                this.restService.getCameraError(this.data.appName , this.data.url ) .subscribe(data => {
+                    console.log("stream ID :  "+this.data.url );
+                    if(data["message"] != null){
+                        if (data["message"].includes("401")) {
+                            swal({
+                                title: "Authorization Error",
+                                text: "Please Check Username and/or Password",
+                                type: 'error',
+
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                            }).catch(function () {
+
+                            });
+                        }
+                    }
+                    else{
+                        console.log("no  camera error")
+                    }
+                    this.data.url  = "";
+                });
+
+            },5000)
+        }
     }
+
+
 
     cancelEditLiveStream(): void {
         this.dialogRef.close();
