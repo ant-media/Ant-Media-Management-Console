@@ -37,9 +37,7 @@ import {
 } from './app.definitions';
 import {DetectedObjectListDialog} from './dialog/detected.objects.list';
 import {UploadVodDialogComponent} from './dialog/upload-vod-dialog';
-import {StreamSourceEditComponent} from './dialog/stream.source.edit.component';
 import {BroadcastEditComponent} from './dialog/broadcast.edit.dialog.component';
-import {CamSettingsDialogComponent} from './dialog/cam.settings.dialog.component';
 import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
 import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialog.component';
