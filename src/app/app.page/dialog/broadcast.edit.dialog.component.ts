@@ -8,6 +8,8 @@ import {
 } from '../app.definitions';
 
 declare var $: any;
+declare var swal: any;
+
 
 @Component({
     selector: 'broadcast-edit-dialog',
@@ -103,7 +105,7 @@ export class BroadcastEditComponent {
             this.streamNameEmpty = true;
             return;
         }
-        if(this.liveStreamEditing.type == "streamSource" || this.liveStreamEditing.type == "ipCamera") {
+        if(this.liveStreamEditing.type == "streamSource") {
             if(!this.restService.checkStreamUrl(this.liveStreamEditing.streamUrl)){
                 this.streamUrlDialogValid = false;
             }
@@ -130,9 +132,6 @@ export class BroadcastEditComponent {
                         }
                     }
                 }
-
-
-
 
                 $.notify({
                     icon: "ti-save",
@@ -163,7 +162,37 @@ export class BroadcastEditComponent {
                 });
             }
         });
+
+        if(this.liveStreamEditing.type == "ipCamera") {
+            setTimeout(()=>{
+                this.restService.getCameraError(this.data.appName , this.data.url ) .subscribe(data => {
+                    console.log("stream ID :  "+this.data.url );
+                    if(data["message"] != null){
+                        if (data["message"].includes("401")) {
+                            swal({
+                                title: "Authorization Error",
+                                text: "Please Check Username and/or Password",
+                                type: 'error',
+
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                            }).catch(function () {
+
+                            });
+                        }
+                    }
+                    else{
+                        console.log("no  camera error")
+                    }
+                    this.data.url  = "";
+                });
+
+            },5000)
+        }
     }
+
+
 
     cancelEditLiveStream(): void {
         this.dialogRef.close();

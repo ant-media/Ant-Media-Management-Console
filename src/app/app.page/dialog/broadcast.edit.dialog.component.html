@@ -26,8 +26,8 @@
                     <input type="text" name="webRTCViewerLimit" i18n-placeholder="@@webrtc_viewer_limit_place_holder" placeholder="WebRTC Viewer Limit"
                            class="form-control" [(ngModel)]="data.webRTCViewerLimit" #onvifUrl="ngModel" style="width: 400px">
 
-                    <small class="text-danger" *ngIf="data.webRTCViewerLimit<1">
-                        Please write a limit larger than 1
+                    <small class="text-danger" *ngIf="data.webRTCViewerLimit<1 && data.webRTCViewerLimit!=-1">
+                        Please write a limit larger than 1 or -1 for unlimited
                     </small>
                 </div>
 
@@ -36,8 +36,8 @@
                     <input type="text" name="hlsViewerLimit" i18n-placeholder="@@hls_viewer_limit_place_holder" placeholder="HLS Viewer Limit"
                            class="form-control" [(ngModel)]="data.hlsViewerLimit" #onvifUrl="ngModel" style="width: 400px">
 
-                    <small class="text-danger" *ngIf="data.hlsViewerLimit<1">
-                        Please write a limit larger than 1
+                    <small class="text-danger" *ngIf="data.hlsViewerLimit<1&& data.hlsViewerLimit!=-1">
+                        Please write a limit larger than 1 or -1 for unlimited
                     </small>
                 </div>
 
@@ -50,11 +50,12 @@
                         Please write a valid stream URL
                     </small>
                 </div>
-
+                
+                
                 <div class="form-group text-left" *ngIf="data.type=='ipCamera'">
                     <label i18n="@@newOnvifUrl">Onvif Url</label>
                     <input type="text" name="onvifUrl" i18n-placeholder="@@onvif_url_place_holder" placeholder="Onvif url"
-                        class="form-control" [(ngModel)]="data.url" #onvifUrl="ngModel" style="width: 400px">
+                        class="form-control" [(ngModel)]="data.streamUrl" #onvifUrl="ngModel" style="width: 400px">
                 </div>
 
                 <div class="form-group text-left" *ngIf="data.type=='ipCamera'">
@@ -68,6 +69,7 @@
                     <input type="text" name="password" i18n-placeholder="@@password_place_holder" placeholder="Password"
                         class="form-control" [(ngModel)]="data.pass" #password="ngModel" style="width: 400px">
                 </div>
+                
 
                 <div class="form-group text-left" *ngIf="data.videoServiceEndpoints.length>0">
                     <label class="col-sm-12" style="padding-left:0px" i18n="@@newLiveStreamSocialShare">Share</label>

@@ -476,7 +476,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedBroadcast = selected;
 
         let dialogRef = this.dialog.open(BroadcastEditComponent, {
-            width: '300px',
+            width: '450px',
             data: {
                 name: this.selectedBroadcast.name,
                 url: this.selectedBroadcast.ipAddr,
