@@ -1306,7 +1306,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     message: Locale.getLocaleInterface().settings_saved
                 }, {
                     type: "success",
-                    delay: 5000,
+                    delay: 3000,
                     placement: {
                         from: 'top',
                         align: 'right'

@@ -8,7 +8,7 @@ export let Locale_English: LocaleInterface =
     vodFileNotDeleted : "VoD file is not deleted",
     broadcast_not_deleted : "Broadcast is not deleted",
     playlist_not_deleted: "Playlist is not deleted.",
-    settings_saved : "Settings saved. For the apply your settings, please restart your broadcasts.",
+    settings_saved : "Settings saved. They're effective for the broadcasts starting from now on.",
     settings_not_saved : "Settings could not be saved.",
     new_broadcast_created : "New broadcast is created",
     new_broadcast_error: "New broadcast is not created.",
