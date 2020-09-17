@@ -52,11 +52,7 @@ export class LoginComponent implements OnInit{
         });
 
         this.auth.licenceWarningDisplay = true;
-
-        if(this.auth.licenceSubscription != null){
-            this.auth.licenceSubscription.unsubscribe();
-        }
-
+        
         this.checkFullPageBackgroundImage();
 
         this.logout();
