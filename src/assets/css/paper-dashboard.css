@@ -10716,9 +10716,10 @@ form label.radio, form label.checkbox {
 .nav-tabs > li > a:hover {
   color: #66615b;
 }
-.nav-tabs > li.active {
+.nav-tabs > li.active,  .nav-tabs > li > a.active {
   color: #66615b;
   position: relative;
+  font-size:15px;
 }
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
@@ -11050,10 +11051,11 @@ form label.radio, form label.checkbox {
     -ms-transform: translate3d(0, -30px, 0);
     transform: translate3d(0, -30px, 0);
     transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) 0s, opacity 0.3s ease 0s, height 0s linear 0.35s;
-    opacity: 0;
+    /*opacity: 0;
     filter: alpha(opacity=0);
     visibility: hidden;
-    display: block;
+    */
+    display: none;
   }
   .navbar-nav > li > .dropdown-menu:before {
     border-bottom: 11px solid #F1EAE0;

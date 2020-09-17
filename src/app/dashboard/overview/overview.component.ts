@@ -64,7 +64,7 @@ export class OverviewComponent implements OnInit {
 
 
 
-    constructor(/*private http: HttpClient,*/private auth: AuthService, private restService:RestService, private supportRestService:SupportRestService, private router:Router, private authService: AuthService) {
+    constructor(private auth: AuthService, private restService:RestService, private supportRestService:SupportRestService, private router:Router) {
 
 
     }

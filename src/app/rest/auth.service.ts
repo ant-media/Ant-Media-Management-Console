@@ -4,9 +4,7 @@ import {CanActivate, Router} from '@angular/router';
 import {RestService, User} from './rest.service';
 import {Licence} from "../server.settings/server.settings.component";
 import {ServerSettings} from "../app.page/app.definitions";
-import {timer} from 'rxjs/observable/timer';
 import {DatePipe} from '@angular/common';
-import {Subscription} from "rxjs";
 
 
 declare var swal: any;
@@ -29,11 +27,6 @@ export class AuthService implements CanActivate {
     public licenceWarningDisplay = true;
 
     public currentLicence : Licence = null;
-
-    public licenceSubscription: Subscription = null;
-
-    public  source : any ;
-
     public leftDays : number;
 
     public isEnterpriseEdition = false;
@@ -44,7 +37,12 @@ export class AuthService implements CanActivate {
         setInterval(() => {
             this.checkServerIsAuthenticated();
 
-        }, 5000, );
+        }, 5000);
+
+        //Check license every 60 seconds minute
+        setInterval(() => {
+            this.checkLicense();
+        }, 60000);
 
         this.restService.isEnterpriseEdition().subscribe(data => {
             this.isEnterpriseEdition = data["success"];
@@ -52,22 +50,22 @@ export class AuthService implements CanActivate {
 
     }
 
-    initLicenseCheck(){
-        //check first after 4 seconds then each 1 minute
-
-        this.source = timer(4000, 60000);
-        //having 4 seconds delay above lets the isEnterpriseEdition initialized
-        //if you remove this delay, it may cause problem
-        this.licenceSubscription= this.source.subscribe(val => {
-                if (this.isAuthenticated) {
-                    if (this.serverSettings != null && this.isEnterpriseEdition) {
-                        this.getLicenceStatus(this.serverSettings.licenceKey);
-                    } else {
-                        this.getServerSettings();
-                    }
-                }
+    public checkLicense() {
+        if (this.isAuthenticated) {
+            if (this.serverSettings != null && this.isEnterpriseEdition) {
+                this.getLicenceStatus(this.serverSettings.licenceKey);
+            } else {
+                this.getServerSettings();
             }
-        );
+        }
+    }
+
+    initLicenseCheck() {
+        //check first after initialized in 5 seconds 
+        setTimeout(() => {
+            this.checkLicense();
+        }, 5000);
+
     }
 
     login(email: string, password: string): Observable<Object> {
