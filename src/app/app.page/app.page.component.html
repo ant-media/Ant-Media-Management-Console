@@ -1229,7 +1229,7 @@
 
                                         <div class="col-sm-12 col-md-12">
                                             <div class="col-sm-12 col-md-6">
-                                                
+
                                             </div>
                                             <div class="col-sm-12 col-md-6">
                                                
@@ -1265,6 +1265,14 @@
                                                                     </label>
                                                                 </div>
                                                                 <p class="category text-left">Explicitly required for WebM Recording</p>  
+                                                                
+                                                        </div>
+                                                        
+                                                        <div class="col-xs-12" style="margin-top:24px">
+                                                                <div *ngIf="appSettings.vp8Enabled && appSettings.h264Enabled" class="category text-left">
+                                                                    <i class="fa fa-info-circle"></i>
+                                                                    If you want to have both VP8 and H.264 streaming, you should add at least one adaptive bitrate below.
+                                                                </div>  
                                                                 
                                                         </div>
                                                     </div>
@@ -1536,7 +1544,8 @@
 
                                                                                 <label for="objectDetection">
                                                                                     Use Object Detection <a
-                                                                                        matTooltip="If you use this feature, you should add Adaptive Streaming. If you still have a problem, review FAQ page in docs.antmedia.io"><i
+                                                                                        matTooltip="If you use this feature, you should add Adaptive Streaming. If you still have a problem, review FAQ page in docs.antmedia.io">
+                                                                                        <i
                                                                                             class="fa fa-info-circle"></i></a>
                                                                                 </label>
 
@@ -1654,13 +1663,12 @@
                                                 </div>
                                                 <div class="card-content text-left">
                                                     <div class="form-group">
-                                                        <div class="col-sm-12">
-                                                            <div *ngIf="!appSettings.h264Enabled" class="card-content text-left" >
-                                                                <i style="font-size: 20px;color:#DD0330"
+                                                            <div *ngIf="!appSettings.h264Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
+                                                                <i 
                                                                     class="fa fa-exclamation-circle"></i> 
                                                                     H.264 is not enabled. Please enable H.264 for MP4 Recording
                                                             </div>
-                                                            <div *ngIf="appSettings.h264Enabled" class="form-group">
+                                                            <div *ngIf="appSettings.h264Enabled">
                                                                 <div class="col-xs-12">
                                                                     <div class="checkbox">
                                                                         <input
@@ -1675,12 +1683,12 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div *ngIf="!appSettings.vp8Enabled" class="card-content text-left" >
-                                                                <i style="font-size: 20px;color:#DD0330"
+                                                            <div *ngIf="!appSettings.vp8Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
+                                                                <i 
                                                                     class="fa fa-exclamation-circle"></i> 
                                                                     VP8 is not enabled. Please enable VP8 for WebM Recording
                                                             </div>
-                                                            <div *ngIf="appSettings.vp8Enabled" class="form-group">
+                                                            <div *ngIf="appSettings.vp8Enabled">
                                                                 <div class="col-xs-12">
                                                                     <div class="checkbox">
                                                                         <input
@@ -1696,7 +1704,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <div class="form-group">
+                                                            <div>
                                                                 <div class="col-xs-12">
                                                                     <div class="checkbox">
 
@@ -1715,7 +1723,6 @@
                                                                 </div>
                                                             </div>
 
-                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="card-header">
@@ -1753,6 +1760,8 @@
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>
                                                             </div>
+                                                        </div>
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.playTokenControlEnabled"
                                                                     id="playTokenControlEnabled" name="playTokenControlEnabled"
@@ -1768,10 +1777,6 @@
                                                                 </label>                                                                
                                                             </div>
                                                         </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-
                                                         <div class="col-xs-12">
 
                                                             <div class="checkbox">
@@ -1788,11 +1793,9 @@
                                                                 </label>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    
 
-                                                    <div class="form-group">
-
-                                                        <div class="col-xs-12">
+                                                    <div class="col-xs-12" style="margin-top:12px">
                                                             <label i18n="@@remoteAllowedCIDR">
                                                                 Use IP Filtering for RESTful API <a
                                                                     matTooltip="If you delete 127.0.0.1, localhost web panel will no longer work. Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"><i
@@ -1809,14 +1812,10 @@
                                                             </div>
 
 
-                                                        </div>
                                                     </div>
-
-
                                                 </div>
-
+                                                </div>
                                             </div>
-
 
                                             <div class="col-sm-12 col-md-12">
                                                 <div class="text-center">
