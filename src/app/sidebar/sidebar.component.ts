@@ -112,7 +112,6 @@ export class SidebarComponent implements AfterViewInit {
 
     }
     ngAfterViewInit() {
-        $("#Applications").collapse("show");
     }
 
     get getApps() {
