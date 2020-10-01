@@ -202,6 +202,7 @@ export class AppSettings {
                 public objectDetectionEnabled: boolean,
                 public publishTokenControlEnabled: boolean,
                 public playTokenControlEnabled: boolean,
+                public timeTokenSubscriberOnly: boolean,
                 public webRTCEnabled: boolean,
                 public webRTCFrameRate: number,
                 public remoteAllowedCIDR: string,
