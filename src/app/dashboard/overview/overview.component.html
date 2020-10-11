@@ -1,7 +1,7 @@
 <div class="main-content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-6 col-sm-6">
+            <div class="col-lg-4 col-sm-4">
                 <div class="card">
                     <div class="card-content">
                         <div class="row">
@@ -13,7 +13,7 @@
                             <div class="col-xs-7">
                                 <div class="numbers">
                                     <p i18n="@@cpuLoadLabel">System CPU Load</p>
-                                    {{cpuLoad}}%
+                                    {{systemCpuLoad}}%
                                 </div>
                             </div>
                         </div>
@@ -23,7 +23,29 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 col-sm-6">
+            <div class="col-lg-4 col-sm-4">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <div class="icon-big icon-danger text-center">
+                                    <i class="ti-dashboard"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-7">
+                                <div class="numbers">
+                                    <p i18n="@@cpuLoadLabel">AMS CPU Load</p>
+                                    {{processCpuLoad}}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <hr />
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-4">
                 <div class="card">
                     <div class="card-content">
                         <div class="row">

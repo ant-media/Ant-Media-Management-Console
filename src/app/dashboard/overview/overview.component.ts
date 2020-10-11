@@ -33,7 +33,7 @@ declare interface TableData {
 
 export class OverviewComponent implements OnInit {
 
-    public cpuLoad: number;
+    public systemCpuLoad: number;
     public processCpuLoad: number;
     public liveStreamSize: number;
     public watcherSize: number;
@@ -217,7 +217,7 @@ export class OverviewComponent implements OnInit {
 
             //updateCPULoad
 
-            this.cpuLoad = Number(data["cpuUsage"]["systemCPULoad"]);
+            this.systemCpuLoad = Number(data["cpuUsage"]["systemCPULoad"]);
             this.processCpuLoad = Number(data["cpuUsage"]["processCPULoad"]);
 
             this.liveStreamSize = Number(data["totalLiveStreamSize"]);
