@@ -82,6 +82,7 @@ export declare interface BroadcastInfo {
     rtmpViewerCount : number;
     mp4Enabled : number;
     webMEnabled : number;
+    originAdress: string;
 }
 
 export declare interface BroadcastInfoTable {
@@ -178,6 +179,7 @@ export class ServerSettings {
     constructor(public serverName: string,
                 public licenceKey: string,
                 public buildForMarket: boolean,
+                public hostAddress: string,
     ) {}
 }
 

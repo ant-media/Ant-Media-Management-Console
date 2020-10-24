@@ -44,6 +44,7 @@ import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialo
 import {PlaylistEditComponent} from './dialog/playlist.edit.dialog.component';
 import {Observable} from "rxjs";
 import "rxjs/add/observable/of";
+import * as CryptoJS from 'crypto-js';
 
 declare var $: any;
 declare var Chartist: any;
@@ -75,6 +76,14 @@ export class Camera {
         public type: string) { }
 }
 
+export class User {
+    public newPassword: string;
+    public fullName: string;
+    constructor(
+        public email: string,
+        public password: string) {
+    }
+}
 export class SocialNetworkChannel {
     public type: string;
     public name: string;
@@ -174,6 +183,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public autoStart: false;
     public playlist: Playlist;
     public playlistItems: PlaylistItem[];
+    public user: User;
 
 
 
@@ -211,7 +221,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public importingVoDStreams = false;
     private tokenData: Observable<Token>;
     // MatPaginator Output
-    
+
     private vodSortBy = "";
     private vodOrderBy = "";
 
@@ -645,7 +655,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     appName: this.appName,
                     webRTCViewerLimit: this.liveStreamEditing.webRTCViewerLimit,
                     hlsViewerLimit: this.liveStreamEditing.hlsViewerLimit,
-                    endpointList: stream.endPointList,                    
+                    endpointList: stream.endPointList,
                     videoServiceEndpoints: this.videoServiceEndpoints,
                     editBroadcastShareFacebook: this.editBroadcastShareFacebook,
                     editBroadcastShareYoutube: this.editBroadcastShareYoutube,
@@ -840,13 +850,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     playLive(streamId: string): void {
 
 
-        if(this.appSettings.playTokenControlEnabled) 
+        if(this.appSettings.playTokenControlEnabled)
         {
             this.openPlayerWithToken(streamId, streamId,"640px", streamId);
         }
-        else 
+        else
         {
-            this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null);    
+            this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null);
         }
     }
 
@@ -859,7 +869,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             padding:"10px" ,
             animation: false,
             showCloseButton: true,
-            onOpen: () => {    
+            onOpen: () => {
               //the error in this callback does not show up in browser console.
               var iframe = $('#' + objectId);
               iframe.prop('src', this.getIFrameSrc(streamId, "true", tokenId));
@@ -944,7 +954,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     playVoDToken(name: string, type: string, vodId:string, streamId:string, filePath:string):void
     {
         let tokenParam;
-        
+
         if(type == "uploadedVod" ){
             tokenParam = vodId;
         }
@@ -1136,38 +1146,49 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
+    deleteLiveBroadcast(streamId: string, streamStatus: string, originAddress: string): void {
 
-    deleteLiveBroadcast(streamId: string): void {
-        swal({
-            title: Locale.getLocaleInterface().are_you_sure,
-            text: Locale.getLocaleInterface().wont_be_able_to_revert,
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then(data => {
-            this.restService.deleteBroadcast(this.appName, streamId)
-                .subscribe(data => {
-                    if (data["success"] == true) {
+        var secretKey = 'gzQ3hKpN4l7tb6SH';
 
+        // var CryptoJS = require('crypto-js');
+
+        var decryptEmail = CryptoJS.AES.decrypt(localStorage.getItem('email'), secretKey).toString(CryptoJS.enc.Utf8);
+        var decryptPassword = CryptoJS.AES.decrypt(localStorage.getItem('password'), secretKey).toString(CryptoJS.enc.Utf8);
+        // this.user = new User(this.authService.user.email,this.authService.user.password);
+        //  this.user.email = this.authService.user.email;
+        //this.user. = this.authService.user.email;
+        this.user = new User(decryptEmail, decryptPassword);
+
+        var breakProcess = false;
+        var HOST_ADDRESS;
+        var LOCATION_PORT;
+
+        this.restService.isInClusterMode().subscribe(data => {
+            var isCluster = data['success'];
+            var HTTP_STATUS;
+
+            if (isCluster && streamStatus == "broadcasting" && originAddress != location.hostname) {
+                if (location.protocol.startsWith("https")) {
+                    HTTP_STATUS = "https://";
+                } else {
+                    HTTP_STATUS = "http://";
+                }
+
+                if (LOCATION_PORT == "4200") {
+                    LOCATION_PORT = "5080"
+                }
+
+                HOST_ADDRESS = HTTP_STATUS + originAddress + ":" + LOCATION_PORT + "/rest";
+
+                this.restService.remoteAuthenticateUser(HOST_ADDRESS, this.user).subscribe(data => {
+                    var authResult = data['success'];
+                    if (!authResult) {
+                        console.log("originAddress: " + originAddress + " node authenticated successfully.");
+                    } else {
+                        console.error("originAddress: " + originAddress + " node couldn't be authenticated.");
                         $.notify({
                             icon: "ti-save",
-                            message: "Successfully deleted"
-                        }, {
-                            type: "success",
-                            delay: 900,
-                            placement: {
-                                from: 'top',
-                                align: 'right'
-                            }
-                        });
-
-                    }
-                    else {
-                        $.notify({
-                            icon: "ti-save",
-                            message: Locale.getLocaleInterface().broadcast_not_deleted
+                            message: "originAddress: " + originAddress + " node couldn't be authenticated."
                         }, {
                             type: "warning",
                             delay: 900,
@@ -1176,23 +1197,65 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 align: 'right'
                             }
                         });
+                        breakProcess = true;
                     }
-                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-                    this.getAppLiveStreamsNumber();
-
-
-
-                    if (this.isGridView) {
-                        setTimeout(() => {
-                            this.switchToGridView();
-                        }, 500);
-                    }
-
-
-
                 });
+            }
         });
 
+        if (!breakProcess) {
+            swal({
+                title: Locale.getLocaleInterface().are_you_sure,
+                text: Locale.getLocaleInterface().wont_be_able_to_revert,
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(data => {
+                this.restService.deleteBroadcast(this.appName, HOST_ADDRESS, streamId)
+                    .subscribe(data => {
+                        if (data["success"] == true) {
+                            $.notify({
+                                icon: "ti-save",
+                                message: "Successfully deleted"
+                            }, {
+                                type: "success",
+                                delay: 900,
+                                placement: {
+                                    from: 'top',
+                                    align: 'right'
+                                }
+                            });
+
+                        } else {
+                            $.notify({
+                                icon: "ti-save",
+                                message: Locale.getLocaleInterface().broadcast_not_deleted
+                            }, {
+                                type: "warning",
+                                delay: 900,
+                                placement: {
+                                    from: 'top',
+                                    align: 'right'
+                                }
+                            });
+                        }
+                        this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                        this.getAppLiveStreamsNumber();
+
+
+                        if (this.isGridView) {
+                            setTimeout(() => {
+                                this.switchToGridView();
+                            }, 500);
+                        }
+
+
+                    });
+            });
+
+        }
     }
 
 

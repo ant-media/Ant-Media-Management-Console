@@ -182,7 +182,10 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/start", {});
     }
 
-    public deleteBroadcast(appName: string, streamId:string): Observable<Object> {
+    public deleteBroadcast(appName: string, hostAddress: string, streamId:string): Observable<Object> {
+        if(hostAddress != null){
+            REST_SERVICE_ROOT = hostAddress;
+        }
         return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+streamId, {});
     }
 
@@ -241,6 +244,10 @@ export class RestService {
 
     public authenticateUser(user: User): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/authenticateUser", user);
+    }
+
+    public remoteAuthenticateUser(REMOTE_REST_SERVICE_ROOT: string, user: User): Observable<Object> {
+        return this.http.post(REMOTE_REST_SERVICE_ROOT + "/authenticateUser", user);
     }
 
     public changePassword(user: User): Observable<Object> {

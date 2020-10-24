@@ -69,7 +69,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
     ngOnInit(){
 
-        this.serverSettings = new ServerSettings(null,null, false);
+        this.serverSettings = new ServerSettings(null,null, false, null);
 
         this.getLogLevel();
 

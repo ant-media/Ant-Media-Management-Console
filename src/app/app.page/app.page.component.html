@@ -754,7 +754,7 @@
 
                                                                     <li *ngIf="row.type!='VoD'">
                                                                         <a class="dropdown-link"
-                                                                            (click)="deleteLiveBroadcast(row.streamId)">
+                                                                            (click)="deleteLiveBroadcast(row.streamId,row.status,row.originAdress)">
                                                                             <ng-container i18n="@@tableDeleteButton">
                                                                                 Delete Broadcast</ng-container>
                                                                         </a>
@@ -1018,7 +1018,7 @@
 
                                                                         <li>
                                                                             <a class="dropdown-link"
-                                                                                (click)="deleteLiveBroadcast(row.streamId)">
+                                                                                (click)="deleteLiveBroadcast(row.streamId,row.status,row.originAdress)">
                                                                                 <ng-container
                                                                                     i18n="@@tableDeleteButton">Delete
                                                                                     Broadcast</ng-container>

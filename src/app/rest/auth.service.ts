@@ -5,6 +5,7 @@ import {RestService, User} from './rest.service';
 import {Licence} from "../server.settings/server.settings.component";
 import {ServerSettings} from "../app.page/app.definitions";
 import {DatePipe} from '@angular/common';
+import * as CryptoJS from 'crypto-js';
 
 
 declare var swal: any;
@@ -23,6 +24,8 @@ export class AuthService implements CanActivate {
     public isAuthenticated: boolean = true;
 
     public serverSettings: ServerSettings;
+
+    public user: User;
 
     public licenceWarningDisplay = true;
 
@@ -70,9 +73,19 @@ export class AuthService implements CanActivate {
 
     login(email: string, password: string): Observable<Object> {
 
-        let user = new User(email, password);
+        var secretKey = 'gzQ3hKpN4l7tb6SH';
 
-        return this.restService.authenticateUser(user);
+        //var CryptoJS = require('crypto-js');
+
+        var encryptedEmail = CryptoJS.AES.encrypt(email, secretKey).toString();
+        var encryptedPassword = CryptoJS.AES.encrypt(password, secretKey).toString();
+
+        localStorage.setItem('email', encryptedEmail);
+        localStorage.setItem('password', encryptedPassword);
+
+        this.user = new User(email, password);
+
+        return this.restService.authenticateUser(this.user);
     }
 
     changeUserPassword(email: string, password: string, newPassword: string): Observable<Object> {
