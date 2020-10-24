@@ -1150,17 +1150,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         var secretKey = 'gzQ3hKpN4l7tb6SH';
 
-        // var CryptoJS = require('crypto-js');
-
         var decryptEmail = CryptoJS.AES.decrypt(localStorage.getItem('email'), secretKey).toString(CryptoJS.enc.Utf8);
         var decryptPassword = CryptoJS.AES.decrypt(localStorage.getItem('password'), secretKey).toString(CryptoJS.enc.Utf8);
-        // this.user = new User(this.authService.user.email,this.authService.user.password);
-        //  this.user.email = this.authService.user.email;
-        //this.user. = this.authService.user.email;
+
         this.user = new User(decryptEmail, decryptPassword);
 
         var breakProcess = false;
-        var HOST_ADDRESS;
+        var REMOTE_HOST_ADDRESS;
         var LOCATION_PORT;
 
         this.restService.isInClusterMode().subscribe(data => {
@@ -1178,9 +1174,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     LOCATION_PORT = "5080"
                 }
 
-                HOST_ADDRESS = HTTP_STATUS + originAddress + ":" + LOCATION_PORT + "/rest";
+                REMOTE_HOST_ADDRESS = HTTP_STATUS + originAddress + ":" + LOCATION_PORT + "/rest";
 
-                this.restService.remoteAuthenticateUser(HOST_ADDRESS, this.user).subscribe(data => {
+                this.restService.remoteAuthenticateUser(REMOTE_HOST_ADDRESS, this.user).subscribe(data => {
                     var authResult = data['success'];
                     if (!authResult) {
                         console.log("originAddress: " + originAddress + " node authenticated successfully.");
@@ -1213,7 +1209,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
             }).then(data => {
-                this.restService.deleteBroadcast(this.appName, HOST_ADDRESS, streamId)
+                this.restService.deleteBroadcast(this.appName, REMOTE_HOST_ADDRESS, streamId)
                     .subscribe(data => {
                         if (data["success"] == true) {
                             $.notify({
