@@ -163,6 +163,7 @@ export class AuthService implements CanActivate {
     {
         this.restService.getServerSettings().subscribe(data => {
             this.serverSettings = <ServerSettings>data;
+            localStorage.setItem('hostAddress', data["hostAddress"]);
             this.getLicenceStatus(this.serverSettings.licenceKey)
         });
     }

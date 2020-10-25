@@ -1152,18 +1152,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         var decryptEmail = CryptoJS.AES.decrypt(localStorage.getItem('email'), secretKey).toString(CryptoJS.enc.Utf8);
         var decryptPassword = CryptoJS.AES.decrypt(localStorage.getItem('password'), secretKey).toString(CryptoJS.enc.Utf8);
+        var hostAddress = localStorage.getItem('hostAddress');
 
         this.user = new User(decryptEmail, decryptPassword);
 
-        var breakProcess = false;
         var REMOTE_HOST_ADDRESS;
-        var LOCATION_PORT;
+        var LOCATION_PORT = location.port;
 
         this.restService.isInClusterMode().subscribe(data => {
             var isCluster = data['success'];
             var HTTP_STATUS;
-
-            if (isCluster && streamStatus == "broadcasting" && originAddress != location.hostname) {
+            // This is so rare option
+            if (isCluster && streamStatus == "broadcasting" && originAddress != hostAddress) {
                 if (location.protocol.startsWith("https")) {
                     HTTP_STATUS = "https://";
                 } else {
@@ -1175,11 +1175,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
 
                 REMOTE_HOST_ADDRESS = HTTP_STATUS + originAddress + ":" + LOCATION_PORT + "/rest";
-
-                this.restService.remoteAuthenticateUser(REMOTE_HOST_ADDRESS, this.user).subscribe(data => {
+                this.restService.remoteAuthenticateUser(REMOTE_HOST_ADDRESS, this.user, streamId).subscribe(data => {
                     var authResult = data['success'];
-                    if (!authResult) {
+                    if (authResult) {
                         console.log("originAddress: " + originAddress + " node authenticated successfully.");
+                        this.deleteBroadcastProcess(REMOTE_HOST_ADDRESS,streamId);
                     } else {
                         console.error("originAddress: " + originAddress + " node couldn't be authenticated.");
                         $.notify({
@@ -1193,13 +1193,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 align: 'right'
                             }
                         });
-                        breakProcess = true;
                     }
                 });
             }
+            //This function will generally be used.
+            else{
+                this.deleteBroadcastProcess(null,streamId);
+            }
         });
+            }
 
-        if (!breakProcess) {
+    deleteBroadcastProcess(REMOTE_HOST_ADDRESS:string, streamId:string): void{
             swal({
                 title: Locale.getLocaleInterface().are_you_sure,
                 text: Locale.getLocaleInterface().wont_be_able_to_revert,
@@ -1223,7 +1227,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                     align: 'right'
                                 }
                             });
-
                         } else {
                             $.notify({
                                 icon: "ti-save",
@@ -1239,21 +1242,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         }
                         this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                         this.getAppLiveStreamsNumber();
-
-
                         if (this.isGridView) {
                             setTimeout(() => {
                                 this.switchToGridView();
                             }, 500);
                         }
-
-
                     });
             });
-
-        }
     }
-
 
     addNewStream(): void {
 
