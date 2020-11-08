@@ -192,7 +192,7 @@ export class RestService {
         if(REMOTE_REST_SERVICE_ROOT == null){
             REMOTE_REST_SERVICE_ROOT = REST_SERVICE_ROOT;
         }
-        return this.http.delete(REMOTE_REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+streamId, {withCredentials: true });
+        return this.http.delete(REMOTE_REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+streamId, {});
     }
 
     public deleteVoDFile(appName: string, vodName:string,id:number, type:string) {
@@ -252,31 +252,8 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + "/authenticateUser", user);
     }
 
-    public remoteAuthenticateUser(REMOTE_REST_SERVICE_ROOT: string, user: User, streamId:string) {
-//: Observable<any>
-     //   let headers = new Headers({ 'Content-Type': 'application/json' });
-    //    let options = new RequestOptions({ headers: headers });
-     //   options.body = '';
-
-      // let headers.set('Set-Cookie' : 'jsessionid=test');
-       // const headers = {'Access-Control-Allow-Headers':'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Custom-header', 'Access-Control-Expose-Headers': 'X-Custom-header' };
-
-      //  header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Custom-header");
-      //  header("Access-Control-Expose-Headers: X-Custom-header");
-      //  req.headers.set('Set-Cookie', 'jsessionid=test') }
-//responseType: 'text
-/*
-        return this.http
-            .post(REMOTE_REST_SERVICE_ROOT + "/authenticateUser", user,{})
-            .toPromise()
-            .then(response => {
-            console.log(response);
-          //  let headers = response.headers;
-          //  console.log(headers);
-            });
-*/
-        return this.http
-            .post(REMOTE_REST_SERVICE_ROOT + "/authenticateUser", user, {});
+    public remoteAuthenticateUser(REMOTE_REST_SERVICE_ROOT: string, user: User): Observable<Object>  {
+        return this.http.post(REMOTE_REST_SERVICE_ROOT + "/authenticateUser", user, {});
     }
 
     public changePassword(user: User): Observable<Object> {

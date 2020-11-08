@@ -1156,26 +1156,24 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.user = new User(decryptEmail, decryptPassword);
 
-        var REMOTE_HOST_ADDRESS;
         var LOCATION_PORT = location.port;
 
         this.restService.isInClusterMode().subscribe(data => {
             var isCluster = data['success'];
             var HTTP_STATUS;
-            // This is so rare option
+            // This is rare option
             if (isCluster && streamStatus == "broadcasting" && originAddress != hostAddress) {
                 if (location.protocol.startsWith("https")) {
                     HTTP_STATUS = "https://";
                 } else {
                     HTTP_STATUS = "http://";
                 }
-
                 if (LOCATION_PORT == "4200") {
                     LOCATION_PORT = "5080"
                 }
 
-                REMOTE_HOST_ADDRESS = HTTP_STATUS + originAddress + ":" + LOCATION_PORT + "/rest";
-                this.restService.remoteAuthenticateUser(REMOTE_HOST_ADDRESS, this.user, streamId).subscribe(data => {
+                var REMOTE_HOST_ADDRESS = HTTP_STATUS + originAddress + ":" + LOCATION_PORT + "/rest";
+                this.restService.remoteAuthenticateUser(REMOTE_HOST_ADDRESS, this.user).subscribe(data => {
                     var authResult = data['success'];
                     if (authResult) {
                         console.log("originAddress: " + originAddress + " node authenticated successfully.");
