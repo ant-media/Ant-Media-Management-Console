@@ -1657,6 +1657,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                     }
                                 });
                             }
+                            else{
+                                this.createLiveStreamProcess(null,socialNetworks);
+                            }
                     });
                 });
             }
