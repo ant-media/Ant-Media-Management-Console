@@ -133,12 +133,15 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + id);
     }
 
-    public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, socialNetworks:string): Observable<Object> {
+    public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, REMOTE_REST_SERVICE_ROOT: string, socialNetworks:string): Observable<Object> {
         var autoStart = false;
         if (liveBroadcast.type == "ipCamera" || liveBroadcast.type == "streamSource") {
             autoStart = true;
+            if(REMOTE_REST_SERVICE_ROOT == null){
+                REMOTE_REST_SERVICE_ROOT = REST_SERVICE_ROOT;
+            }
         }
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/create&autoStart="+autoStart+"&socialNetworks="+socialNetworks,
+        return this.http.post(REMOTE_REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/create?autoStart="+autoStart+"&socialNetworks="+socialNetworks,
             liveBroadcast);
     }
 
@@ -239,8 +242,11 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + '/getApplications');
     }
 
-    public authenticateUser(user: User): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/authenticateUser", user);
+    public authenticateUser(REMOTE_REST_SERVICE_ROOT: string, user: User): Observable<Object> {
+        if(REMOTE_REST_SERVICE_ROOT == null){
+            REMOTE_REST_SERVICE_ROOT = REST_SERVICE_ROOT;
+        }
+        return this.http.post(REMOTE_REST_SERVICE_ROOT + "/authenticateUser", user);
     }
 
     public changePassword(user: User): Observable<Object> {

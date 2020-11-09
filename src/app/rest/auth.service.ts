@@ -24,6 +24,8 @@ export class AuthService implements CanActivate {
 
     public serverSettings: ServerSettings;
 
+    public user: User;
+
     public licenceWarningDisplay = true;
 
     public currentLicence : Licence = null;
@@ -70,9 +72,9 @@ export class AuthService implements CanActivate {
 
     login(email: string, password: string): Observable<Object> {
 
-        let user = new User(email, password);
+        this.user = new User(email, password);
 
-        return this.restService.authenticateUser(user);
+        return this.restService.authenticateUser(null,this.user);
     }
 
     changeUserPassword(email: string, password: string, newPassword: string): Observable<Object> {
@@ -150,6 +152,7 @@ export class AuthService implements CanActivate {
     {
         this.restService.getServerSettings().subscribe(data => {
             this.serverSettings = <ServerSettings>data;
+            localStorage.setItem('hostAddress', data["hostAddress"]);
             this.getLicenceStatus(this.serverSettings.licenceKey)
         });
     }

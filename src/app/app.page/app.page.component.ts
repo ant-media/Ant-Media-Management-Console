@@ -23,7 +23,6 @@ import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
 import "rxjs/add/operator/toPromise";
 import {AppSettings, ServerSettings} from "./app.definitions";
-
 import {
     BroadcastInfo,
     BroadcastInfoTable,
@@ -44,6 +43,13 @@ import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialo
 import {PlaylistEditComponent} from './dialog/playlist.edit.dialog.component';
 import {Observable} from "rxjs";
 import "rxjs/add/observable/of";
+import {ClusterRestService} from "../rest/cluster.service";
+
+import {
+    ClusterInfoTable,
+    ClusterNode,
+    ClusterNodeInfo
+} from '../cluster/cluster.definitions';
 
 declare var $: any;
 declare var Chartist: any;
@@ -73,6 +79,15 @@ export class Camera {
         public password: string,
         public streamUrl: string,
         public type: string) { }
+}
+
+export class User {
+    public newPassword: string;
+    public fullName: string;
+    constructor(
+        public email: string,
+        public password: string) {
+    }
 }
 
 export class SocialNetworkChannel {
@@ -174,7 +189,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public autoStart: false;
     public playlist: Playlist;
     public playlistItems: PlaylistItem[];
-
+    public user: User;
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
@@ -193,6 +208,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     public dataSourceVod: MatTableDataSource<VodInfo>;
 
+    public currentClusterNodeOrder = 0;
     public streamsPageSize = 10;
     public vodPageSize = 10;
     public pageSize = 10;
@@ -218,6 +234,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     private broadcastSortBy = "";
     private broadcastOrderBy = "";
 
+    public nodeTableData: ClusterInfoTable;
+
+    public nodeColumns = ['nodeIp', 'cpu', 'memory', 'lastUpdateTime', 'inTheCluster', 'actions'];
+
+    public dataSourceNode: MatTableDataSource<ClusterNodeInfo>;
+
     @Input() pageEvent: PageEvent;
 
     @Output()
@@ -227,6 +249,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     constructor(private route: ActivatedRoute,
                 private restService: RestService,
+                private clusterRestService: ClusterRestService,
                 private clipBoardService: ClipboardService,
                 private renderer: Renderer2,
                 public router: Router,
@@ -241,6 +264,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     ) {
         this.dataSource = new MatTableDataSource<BroadcastInfo>();
         this.dataSourceVod = new MatTableDataSource<VodInfo>();
+        this.dataSourceNode = new MatTableDataSource<ClusterNodeInfo>();
         this.videoServiceEndpoints = [];
     }
 
@@ -273,6 +297,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             dataRows: [],
         };
 
+        this.nodeTableData = {
+            dataRows: [],
+        };
+
 
         this.liveBroadcast = new LiveBroadcast();
         this.selectedBroadcast = new LiveBroadcast();
@@ -288,7 +316,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.camera = new Camera("", "", "", "", "", "");
         this.playlist = new Playlist ();
         this.playlist.playlistName = "";
-
 
         if (!this.playlistItems) {
             this.playlistItems = this.playlistItems || [];
@@ -1395,7 +1422,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 socialNetworks.push(this.videoServiceEndpoints[index].id);
             }
         });
-        this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
+        this.restService.createLiveStream(this.appName, this.liveBroadcast,null, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
@@ -1549,7 +1576,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         if (!this.restService.checkStreamName(this.liveBroadcast.name)) {
-
             this.streamNameEmpty = true;
             return;
         }
@@ -1559,6 +1585,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.streamUrlValid=false;
             return;
         }
+
         this.streamNameEmpty = false;
         this.newStreamSourceAdding = true;
         this.liveBroadcast.type = "streamSource";
@@ -1570,10 +1597,82 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
 
-        this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
+        var clusterNodeCount = 0;
+
+        this.restService.isInClusterMode().subscribe(data => {
+            var isCluster = data['success'];
+            var HTTP_STATUS;
+            // This is rare option
+            if (isCluster) {
+                this.clusterRestService.getClusterNodeCount().subscribe( data => {
+                    clusterNodeCount = data["number"];
+
+                    var currentNodeIPAddress;
+                    var REMOTE_HOST_ADDRESS;
+                    var hostAddress;
+
+                    console.log("clusterNodeCount:" + clusterNodeCount);
+
+                    this.clusterRestService.getClusterNodes(0, clusterNodeCount).subscribe(data => {
+                        for (var i in data) {
+                            console.log(data[i]);
+                            this.nodeTableData.dataRows = [];
+                            if(data[i].status == "alive") {
+                                this.nodeTableData.dataRows.push(data[i]);
+                            }
+                        }
+
+                            // currentClusterNodeOrder ekledikten sonra +1 yap
+                            console.log("this.currentClusterNodeOrder:"+ this.currentClusterNodeOrder);
+                            console.log("this.nodeTableData.dataRows.length:"+ this.nodeTableData.dataRows.length);
+                            // this.nodeTableData.dataRows. status live olanları al
+                            if(this.currentClusterNodeOrder >= this.nodeTableData.dataRows.length){
+                                this.currentClusterNodeOrder = 0;
+                            }
+                            // We will implement new local storage method
+                            this.user = this.authService.user;
+                            // Add hostAddress in authService
+                            hostAddress = localStorage.getItem('hostAddress');
+                            currentNodeIPAddress = this.nodeTableData.dataRows[this.currentClusterNodeOrder].ip;
+                            if(hostAddress != currentNodeIPAddress){
+                                REMOTE_HOST_ADDRESS = "http://" + currentNodeIPAddress + ":5080/rest";
+                                this.restService.authenticateUser(REMOTE_HOST_ADDRESS, this.user).subscribe(data => {
+                                    var authResult = data['success'];
+                                    if (authResult) {
+                                        console.log("Remote host address: " + currentNodeIPAddress + " node authenticated successfully.");
+                                        this.createLiveStreamProcess(REMOTE_HOST_ADDRESS,socialNetworks);
+                                    } else {
+                                        console.error("Remote host address: " + currentNodeIPAddress + " node couldn't be authenticated.");
+                                        $.notify({
+                                            icon: "ti-save",
+                                            message: "Remote host address: " + currentNodeIPAddress + " node couldn't be authenticated."
+                                        }, {
+                                            type: "warning",
+                                            delay: 900,
+                                            placement: {
+                                                from: 'top',
+                                                align: 'right'
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                    });
+                });
+            }
+            // It's normal case
+            else{
+                this.createLiveStreamProcess(null,socialNetworks);
+            }
+        });
+    }
+
+    createLiveStreamProcess(REMOTE_HOST_ADDRESS:string,socialNetworks:any){
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, REMOTE_HOST_ADDRESS, socialNetworks.join(","))
             .subscribe(data => {
-                //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
+
+                    this.currentClusterNodeOrder++;
 
                     this.newStreamSourceAdding = false;
 
@@ -1593,8 +1692,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     this.liveBroadcast.streamUrl = "";
                     this.streamUrlValid=true;
-
-
                 }
                 else {
                     var errorCode = data["message"];
@@ -1625,15 +1722,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             confirmButtonColor: '#3085d6',
                             confirmButtonText: 'OK'
                         }).then(() => {
-
-
                         }).catch(function () {
-
                         });
                     }
-
                 }
-
                 //swal.close();
                 this.newStreamSourceAdding = false;
                 this.newStreamSourceActive = false;
@@ -1641,15 +1733,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.liveBroadcast.ipAddr = "";
                 this.liveBroadcast.username = "";
                 this.liveBroadcast.password = "";
-
-
                 if (this.isGridView) {
                     setTimeout(() => {
                         this.switchToGridView();
                     }, 500);
                 }
             });
-
     }
 
     addPlaylistItem(): void {
@@ -1980,7 +2069,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         this.newLiveStreamCreating = true;
-        this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, null, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["streamId"] != null) {
