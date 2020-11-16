@@ -136,6 +136,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public discoveryStarted = false;
     public newSourceAdding = false;
     public isEnterpriseEdition = true;
+    public filterValue = null
 
     public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
@@ -326,7 +327,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.timerId = window.setInterval(() => {
             if(this.authService.isAuthenticated) {
                 if(this.appName != "undefined"){
-
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getVoDStreams();
                     this.getAppLiveStreamsNumber();
@@ -435,9 +435,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     applyFilter(filterValue: string) {
-        filterValue = filterValue.trim(); // Remove whitespace
-        filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        this.dataSource.filter = filterValue;
+        this.filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+        this.getAppLiveStreams(0, this.pageSize);
     }
 
     applyFilterVod(filterValue: string) {
@@ -689,10 +688,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getAppLiveStreams(offset: number, size: number): void {
-
+        
         offset = offset * size;
 
-        this.restService.getAppLiveStreams(this.appName, offset, size, this.broadcastSortBy, this.broadcastOrderBy).subscribe(data => {
+        this.restService.getAppLiveStreams(this.appName, offset, size, this.broadcastSortBy, this.broadcastOrderBy,this.filterValue).subscribe(data => {
 
             this.broadcastTableData.dataRows = [];
 
@@ -709,14 +708,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
+            this.cdr.detectChanges();
 
         });
 
     }
-
-
-
-
+   
 
     cleanURL(oldURL: string): SafeResourceUrl {
         console.log("clean url");
@@ -729,6 +726,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 this.listLength = data["number"];
             });
+        this.cdr.detectChanges();
     }
 
     sortVodList(e) {
@@ -787,6 +785,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.vodTableData.dataRows.push(data[i]);
             }
             this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
+            this.cdr.detectChanges();
         });
     }
 
@@ -880,7 +879,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         index = index * size;
 
-        this.restService.getAppLiveStreams(this.appName, index, size, this.broadcastSortBy, this.broadcastOrderBy).subscribe(data => {
+        this.restService.getAppLiveStreams(this.appName, index, size, this.broadcastSortBy, this.broadcastOrderBy, null).subscribe(data => {
             //console.log(data);
             this.broadcastGridTableData.dataRows = [];
 
