@@ -5,7 +5,7 @@ import {AppSettings, ServerSettings} from "../app.page/app.definitions";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
-import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Endpoint,Playlist} from "../app.page/app.definitions";
 
 export class User {
@@ -133,16 +133,36 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + id);
     }
 
-    public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, REMOTE_REST_SERVICE_ROOT: string, socialNetworks:string): Observable<Object> {
+    public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, REMOTE_REST_SERVICE_ROOT: string, socialNetworks:string, jwtToken: string): Observable<Object> {
         var autoStart = false;
+        let REST_REQUEST_ADDRESS;
+
         if (liveBroadcast.type == "ipCamera" || liveBroadcast.type == "streamSource") {
             autoStart = true;
-            if(REMOTE_REST_SERVICE_ROOT == null){
-                REMOTE_REST_SERVICE_ROOT = REST_SERVICE_ROOT;
-            }
         }
-        return this.http.post(REMOTE_REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/create?autoStart="+autoStart+"&socialNetworks="+socialNetworks,
-            liveBroadcast);
+        if(REMOTE_REST_SERVICE_ROOT == null){
+            REST_REQUEST_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/create?autoStart="+autoStart+"&socialNetworks="+socialNetworks;
+        }
+        else{
+            REST_REQUEST_ADDRESS = REMOTE_REST_SERVICE_ROOT + "/" + appName + "/rest/v2/broadcasts/create?autoStart="+autoStart+"&socialNetworks="+socialNetworks;
+        }
+
+        if(jwtToken != null){
+            let httpHeaders = new HttpHeaders({
+                'Access-Control-Allow-Origin':'*',
+                'Cache-Control': 'no-cache',
+                'Accept': '*/*',
+                'Content-Type': 'application/json',
+                'jwtToken': jwtToken
+            });
+            /* TODO Add response status check */
+            return this.http.post(REST_REQUEST_ADDRESS,
+                liveBroadcast, { headers: httpHeaders});
+        }
+        else{
+            return this.http.post(REST_REQUEST_ADDRESS,
+                liveBroadcast);
+        }
     }
 
     public createPlaylist(appName: string, playlist: Playlist, autoStart: boolean): Observable<Object> {

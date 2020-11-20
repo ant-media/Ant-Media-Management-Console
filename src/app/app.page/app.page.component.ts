@@ -44,7 +44,6 @@ import {PlaylistEditComponent} from './dialog/playlist.edit.dialog.component';
 import {Observable} from "rxjs";
 import "rxjs/add/observable/of";
 import {ClusterRestService} from "../rest/cluster.service";
-
 import {
     ClusterInfoTable,
     ClusterNode,
@@ -151,6 +150,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public discoveryStarted = false;
     public newSourceAdding = false;
     public isEnterpriseEdition = true;
+    public isClusterMode = false;
 
     public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
@@ -180,6 +180,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public shareEndpoint: boolean[];
     public videoServiceEndpoints: VideoServiceEndpoint[];
     public streamUrlValid = true;
+    public jwtTokenValid = true;
     public streamNameEmpty=false;
     public playlistNameEmpty=false;
     public encoderSettings:EncoderSettings[];
@@ -189,7 +190,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public autoStart: false;
     public playlist: Playlist;
     public playlistItems: PlaylistItem[];
+    public clusterNodes: ClusterNode[];
     public user: User;
+    public currentClusterNode: string;
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
@@ -208,7 +211,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     public dataSourceVod: MatTableDataSource<VodInfo>;
 
-    public currentClusterNodeOrder = 0;
     public streamsPageSize = 10;
     public vodPageSize = 10;
     public pageSize = 10;
@@ -234,7 +236,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     private broadcastSortBy = "";
     private broadcastOrderBy = "";
 
-    public nodeTableData: ClusterInfoTable;
+    public clusterNodeTableData: ClusterInfoTable;
 
     public nodeColumns = ['nodeIp', 'cpu', 'memory', 'lastUpdateTime', 'inTheCluster', 'actions'];
 
@@ -297,7 +299,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             dataRows: [],
         };
 
-        this.nodeTableData = {
+        this.clusterNodeTableData = {
             dataRows: [],
         };
 
@@ -445,6 +447,24 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.isEnterpriseEdition = data["success"];
             });
 
+            this.restService.isInClusterMode().subscribe(data => {
+                this.isClusterMode = data["success"];
+                if (this.isClusterMode) {
+                    var clusterNodeCount = 0;
+                    this.clusterRestService.getClusterNodeCount().subscribe( data => {
+                        clusterNodeCount = data["number"];
+                        this.clusterRestService.getClusterNodes(0, clusterNodeCount).subscribe(data => {
+                            this.clusterNodeTableData.dataRows = [];
+                            for (let i in data) {
+                                if(data[i].status == "alive") {
+                                    this.currentClusterNode = data[0].ip;
+                                    this.clusterNodeTableData.dataRows.push(data[i]);
+                                }
+                            }
+                        });
+                    });
+                }
+            });
             this.getAppLiveStreamsNumber();
             this.getVoDStreams();
             this.getAppLiveStreams(0, this.pageSize);
@@ -1237,6 +1257,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
+    clusterDropDownChanged(selectedNode:string){
+        if(this.currentClusterNode != selectedNode){
+            this.currentClusterNode = selectedNode;
+        }
+    }
     dropDownChanged(event:any,i:number){
 
         if (event == 2160) {
@@ -1422,7 +1447,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 socialNetworks.push(this.videoServiceEndpoints[index].id);
             }
         });
-        this.restService.createLiveStream(this.appName, this.liveBroadcast,null, socialNetworks.join(","))
+        this.restService.createLiveStream(this.appName, this.liveBroadcast,null, socialNetworks.join(","),null)
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
@@ -1563,11 +1588,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-
+    getJwtToken() {
+        let jwt = require('jsonwebtoken');
+        let token = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
+        return token;
+    }
 
     addStreamSource(isValid: boolean): void {
 
         this.streamNameEmpty = false;
+        let jwtToken;
 
         if (!isValid) {
             //not valid form return directly
@@ -1597,86 +1627,25 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
 
-        var clusterNodeCount = 0;
+        let REMOTE_HOST_ADDRESS;
+        let hostAddress = localStorage.getItem('hostAddress');
 
-        this.restService.isInClusterMode().subscribe(data => {
-            var isCluster = data['success'];
-            var HTTP_STATUS;
-            // This is rare option
-            if (isCluster) {
-                this.clusterRestService.getClusterNodeCount().subscribe( data => {
-                    clusterNodeCount = data["number"];
-
-                    var currentNodeIPAddress;
-                    var REMOTE_HOST_ADDRESS;
-                    var hostAddress;
-
-                    console.log("clusterNodeCount:" + clusterNodeCount);
-
-                    this.clusterRestService.getClusterNodes(0, clusterNodeCount).subscribe(data => {
-                        for (var i in data) {
-                            console.log(data[i]);
-                            this.nodeTableData.dataRows = [];
-                            if(data[i].status == "alive") {
-                                this.nodeTableData.dataRows.push(data[i]);
-                            }
-                        }
-
-                            // currentClusterNodeOrder ekledikten sonra +1 yap
-                            console.log("this.currentClusterNodeOrder:"+ this.currentClusterNodeOrder);
-                            console.log("this.nodeTableData.dataRows.length:"+ this.nodeTableData.dataRows.length);
-                            // this.nodeTableData.dataRows. status live olanları al
-                            if(this.currentClusterNodeOrder >= this.nodeTableData.dataRows.length){
-                                this.currentClusterNodeOrder = 0;
-                            }
-                            // We will implement new local storage method
-                            this.user = this.authService.user;
-                            // Add hostAddress in authService
-                            hostAddress = localStorage.getItem('hostAddress');
-                            currentNodeIPAddress = this.nodeTableData.dataRows[this.currentClusterNodeOrder].ip;
-                            if(hostAddress != currentNodeIPAddress){
-                                REMOTE_HOST_ADDRESS = "http://" + currentNodeIPAddress + ":5080/rest";
-                                this.restService.authenticateUser(REMOTE_HOST_ADDRESS, this.user).subscribe(data => {
-                                    var authResult = data['success'];
-                                    if (authResult) {
-                                        console.log("Remote host address: " + currentNodeIPAddress + " node authenticated successfully.");
-                                        this.createLiveStreamProcess(REMOTE_HOST_ADDRESS,socialNetworks);
-                                    } else {
-                                        console.error("Remote host address: " + currentNodeIPAddress + " node couldn't be authenticated.");
-                                        $.notify({
-                                            icon: "ti-save",
-                                            message: "Remote host address: " + currentNodeIPAddress + " node couldn't be authenticated."
-                                        }, {
-                                            type: "warning",
-                                            delay: 900,
-                                            placement: {
-                                                from: 'top',
-                                                align: 'right'
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                            else{
-                                this.createLiveStreamProcess(null,socialNetworks);
-                            }
-                    });
-                });
+        if(hostAddress != this.currentClusterNode) {
+            REMOTE_HOST_ADDRESS = "http://" + this.currentClusterNode + ":5080";
+            if(this.appSettings.jwtControlEnabled == true && this.appSettings.jwtSecretKey != null){
+                jwtToken = this.getJwtToken();
             }
-            // It's normal case
             else{
-                this.createLiveStreamProcess(null,socialNetworks);
+                this.jwtTokenValid = false;
+                this.newStreamSourceAdding = false;
+                return;
             }
-        });
-    }
+        }
 
-    createLiveStreamProcess(REMOTE_HOST_ADDRESS:string,socialNetworks:any){
-        this.restService.createLiveStream(this.appName, this.liveBroadcast, REMOTE_HOST_ADDRESS, socialNetworks.join(","))
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, REMOTE_HOST_ADDRESS, socialNetworks.join(","),jwtToken)
             .subscribe(data => {
                 if (data["success"] == true) {
-
-                    this.currentClusterNodeOrder++;
-
+                    this.jwtTokenValid = true;
                     this.newStreamSourceAdding = false;
 
                     $.notify({
@@ -1699,7 +1668,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 else {
                     var errorCode = data["message"];
 
+                    this.jwtTokenValid = false;
                     this.newIPCameraAdding = false;
+                    this.newStreamSourceAdding = false;
 
                     $.notify({
                         icon: "ti-save",
@@ -1730,6 +1701,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 }
                 //swal.close();
+                this.jwtTokenValid = false
                 this.newStreamSourceAdding = false;
                 this.newStreamSourceActive = false;
                 this.liveBroadcast.name = "";
@@ -1743,7 +1715,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             });
     }
-
     addPlaylistItem(): void {
 
         this.playlistItems.push({
@@ -2072,7 +2043,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         this.newLiveStreamCreating = true;
-        this.restService.createLiveStream(this.appName, this.liveBroadcast, null, socialNetworks.join(","))
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, null, socialNetworks.join(","),null)
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["streamId"] != null) {
