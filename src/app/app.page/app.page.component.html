@@ -761,7 +761,7 @@
 
                                                                     <li *ngIf="row.type!='VoD'">
                                                                         <a class="dropdown-link"
-                                                                            (click)="deleteLiveBroadcast(row.streamId)">
+                                                                            (click)="deleteLiveBroadcast(row.streamId,row.originAdress)">
                                                                             <ng-container i18n="@@tableDeleteButton">
                                                                                 Delete Broadcast</ng-container>
                                                                         </a>
@@ -1025,7 +1025,7 @@
 
                                                                         <li>
                                                                             <a class="dropdown-link"
-                                                                                (click)="deleteLiveBroadcast(row.streamId)">
+                                                                                (click)="deleteLiveBroadcast(row.streamId,row.originAdress)">
                                                                                 <ng-container
                                                                                     i18n="@@tableDeleteButton">Delete
                                                                                     Broadcast</ng-container>
@@ -1784,10 +1784,9 @@
                                                                 </label>                                                                
                                                             </div>
                                                         </div>
+
                                                         <div class="col-xs-12">
-
                                                             <div class="checkbox">
-
                                                                 <input [(ngModel)]="acceptAllStreams"
                                                                     id="acceptOnlyStreamsInDataStore"
                                                                     name="acceptOnlyStreamsInDataStore" type="checkbox">
@@ -1800,9 +1799,23 @@
                                                                 </label>
                                                             </div>
                                                         </div>
-                                                    
 
-                                                    <div class="col-xs-12" style="margin-top:12px">
+                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.ipFilterEnabled"
+                                                                       id="ipFilter"
+                                                                       name="ipFilter" type="checkbox">
+
+                                                                <label for="ipFilter"
+                                                                       i18n="@@ipFilter">
+                                                                    Enable IP Filter <a
+                                                                        matTooltip="If you disable IP Filter, we are strongly recommending enable JWT Filter"><i
+                                                                        class="fa fa-info-circle"></i></a>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xs-12" style="margin-top:12px">
                                                             <label i18n="@@remoteAllowedCIDR">
                                                                 Use IP Filtering for RESTful API <a
                                                                     matTooltip="If you delete 127.0.0.1, localhost web panel will no longer work. Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"><i
@@ -1817,9 +1830,42 @@
                                                                     rows="3">{{appSettings.remoteAllowedCIDR}}
                                                             </textarea>
                                                             </div>
+                                                        </div>
 
+                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.jwtControlEnabled"
+                                                                   id="jwtFilter"
+                                                                   name="jwtFilter" type="checkbox">
 
-                                                    </div>
+                                                                <label for="jwtFilter"
+                                                                   i18n="@@jwtFilter">
+                                                                Enable JWT Filter<a
+                                                                    matTooltip="If you disable JWT Filter, we are strongly recommending enable IP Filter."><i
+                                                                    class="fa fa-info-circle"></i></a>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                            <label i18n="@@jwtFilter">
+                                                                JWT Filter Secret Key<a
+                                                                    matTooltip="Please enter at least 32 character"><i
+                                                                    class="fa fa-info-circle"></i></a>
+                                                            </label>
+                                                            <div>
+                                                                <textarea name="jwtSecret" minlength="32"  #jwtSecret="ngModel" [disabled]="!appSettings.jwtControlEnabled"
+                                                                          [(ngModel)]="appSettings.jwtSecretKey"
+                                                                          type="textarea" class="form-control"
+                                                                          placeholder="Please write at least 32 character"
+                                                                          rows="1">{{appSettings.jwtSecretKey}}
+                                                                </textarea>
+                                                                <small [hidden]="jwtSecret.valid || !appSettings.jwtControlEnabled"
+                                                                       class="text-danger">
+                                                                    JWT Secret Key should at least 32 character
+                                                                </small>
+                                                            </div>
+                                                        </div>
                                                 </div>
                                                 </div>
                                             </div>

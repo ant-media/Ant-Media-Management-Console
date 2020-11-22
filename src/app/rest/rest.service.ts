@@ -8,6 +8,8 @@ import 'rxjs/add/operator/toPromise';
 import {HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Endpoint,Playlist} from "../app.page/app.definitions";
 
+declare function require(name: string);
+
 export class User {
 
     public newPassword: string;
@@ -50,9 +52,36 @@ export class AuthInterceptor implements HttpInterceptor{
     constructor(){}
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        req = req.clone({
-            withCredentials: true
-        });
+        let str = req.url;
+        let appName;
+        //For internal requests
+        if(str.includes("_path=")){
+            var begin = str.indexOf("_path=");
+            var last = str.indexOf("/rest/v2");
+            appName = str.substring(begin+6, last);
+        }
+        //for remote requests
+        else if(str.includes("rest/v2")){
+            var begin = str.indexOf(":5080/");
+            var last = str.indexOf("/rest/v2");
+            appName = str.substring(begin+6, last);
+        }
+        let currentAppJwtToken = localStorage.getItem(appName+'jwtToken');
+        let currentAppJwtStatus =  localStorage.getItem(appName+'jwtControlEnabled');
+
+        // Check AppName, JWT Token status and JWT Token not null
+        if(appName != null && currentAppJwtToken != null && currentAppJwtStatus != "false"){
+            req = req.clone({
+                withCredentials: true,
+                headers: req.headers.append('Authorization', currentAppJwtToken).append('Content-Type', 'application/json')
+            });
+        }
+        else {
+            req = req.clone({
+                withCredentials: true
+            });
+        }
+
         return next.handle(req);
     }
 }
@@ -133,36 +162,22 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + id);
     }
 
-    public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, REMOTE_REST_SERVICE_ROOT: string, socialNetworks:string, jwtToken: string): Observable<Object> {
+    public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, REMOTE_REST_SERVICE_ROOT: string, socialNetworks:string): Observable<Object> {
         var autoStart = false;
-        let REST_REQUEST_ADDRESS;
+        let REST_SERVICE_ADDRESS;
 
         if (liveBroadcast.type == "ipCamera" || liveBroadcast.type == "streamSource") {
             autoStart = true;
         }
         if(REMOTE_REST_SERVICE_ROOT == null){
-            REST_REQUEST_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/create?autoStart="+autoStart+"&socialNetworks="+socialNetworks;
+            REST_SERVICE_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/create?autoStart="+autoStart+"&socialNetworks="+socialNetworks;
         }
         else{
-            REST_REQUEST_ADDRESS = REMOTE_REST_SERVICE_ROOT + "/" + appName + "/rest/v2/broadcasts/create?autoStart="+autoStart+"&socialNetworks="+socialNetworks;
+            REST_SERVICE_ADDRESS = REMOTE_REST_SERVICE_ROOT + "/" + appName + "/rest/v2/broadcasts/create?autoStart="+autoStart+"&socialNetworks="+socialNetworks;
         }
 
-        if(jwtToken != null){
-            let httpHeaders = new HttpHeaders({
-                'Access-Control-Allow-Origin':'*',
-                'Cache-Control': 'no-cache',
-                'Accept': '*/*',
-                'Content-Type': 'application/json',
-                'jwtToken': jwtToken
-            });
-            /* TODO Add response status check */
-            return this.http.post(REST_REQUEST_ADDRESS,
-                liveBroadcast, { headers: httpHeaders});
-        }
-        else{
-            return this.http.post(REST_REQUEST_ADDRESS,
-                liveBroadcast);
-        }
+    return this.http.post(REST_SERVICE_ADDRESS,
+    liveBroadcast);
     }
 
     public createPlaylist(appName: string, playlist: Playlist, autoStart: boolean): Observable<Object> {
@@ -205,8 +220,15 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/start", {});
     }
 
-    public deleteBroadcast(appName: string, streamId:string): Observable<Object> {
-        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+streamId, {});
+    public deleteBroadcast(appName: string, streamId:string, REMOTE_REST_SERVICE_ROOT:string): Observable<Object> {
+        let REST_SERVICE_ADDRESS;
+        if(REMOTE_REST_SERVICE_ROOT == null){
+            REST_SERVICE_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+streamId;
+        }
+        else{
+            REST_SERVICE_ADDRESS = REMOTE_REST_SERVICE_ROOT + "/" + appName + '/rest/v2/broadcasts/'+streamId;
+        }
+        return this.http.delete(REST_SERVICE_ADDRESS, {});
     }
 
     public deleteVoDFile(appName: string, vodName:string,id:number, type:string) {

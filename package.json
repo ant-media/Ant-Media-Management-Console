@@ -7,6 +7,7 @@
     "url": "https://github.com/creativetimofficial/paper-dashboard-pro-angular.git"
   },
   "scripts": {
+    "postinstall": "node patch.js",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",

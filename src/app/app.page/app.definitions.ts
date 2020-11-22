@@ -82,6 +82,7 @@ export declare interface BroadcastInfo {
     rtmpViewerCount : number;
     mp4Enabled : number;
     webMEnabled : number;
+    originAdress : string;
 }
 
 export declare interface BroadcastInfoTable {
@@ -211,7 +212,7 @@ export class AppSettings {
                 public dataChannelPlayerDistribution: string,
                 public listenerHookURL: string,
                 public jwtControlEnabled: boolean,
-                public jwtSecretKey: string
-
+                public jwtSecretKey: string,
+                public ipFilterEnabled: boolean
     ) {}
 }

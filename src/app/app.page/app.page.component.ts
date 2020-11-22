@@ -1184,7 +1184,31 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-    deleteLiveBroadcast(streamId: string): void {
+    deleteLiveBroadcast(streamId: string,broadcastHostAddress: string): void {
+
+        let REMOTE_HOST_ADDRESS;
+        let hostAddress = localStorage.getItem('hostAddress');
+
+        // I didn't added broadcast status check. Because, some of stream sources status is finished but it's trying to connect sources.
+        if(hostAddress != broadcastHostAddress) {
+            REMOTE_HOST_ADDRESS = "http://" + broadcastHostAddress + ":5080";
+
+            if(this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey != null){
+                $.notify({
+                    icon: "ti-save",
+                    message: "Please enable JWT Filter or Delete Broadcast in a stopped status"
+                }, {
+                    type: "danger",
+                    delay: 2000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+                return;
+            }
+        }
+
         swal({
             title: Locale.getLocaleInterface().are_you_sure,
             text: Locale.getLocaleInterface().wont_be_able_to_revert,
@@ -1194,7 +1218,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!'
         }).then(data => {
-            this.restService.deleteBroadcast(this.appName, streamId)
+            this.restService.deleteBroadcast(this.appName, streamId,REMOTE_HOST_ADDRESS)
                 .subscribe(data => {
                     if (data["success"] == true) {
 
@@ -1300,7 +1324,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
 
+            if(this.appSettings.jwtControlEnabled){
+                let jwt = require('jsonwebtoken');
+                let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
 
+                localStorage.setItem(this.appName+'jwtToken', currentAppJWTToken);
+                localStorage.setItem(this.appName+'jwtControlEnabled', this.appSettings.jwtControlEnabled+"");
+            }
+            else{
+                localStorage.setItem(this.appName+'jwtToken', null);
+                localStorage.setItem(this.appName+'jwtControlEnabled', "false");
+            }
             this.encoderSettings = [];
             this.appSettings.encoderSettings.forEach((value, index) => {
                 if (value != null ) {
@@ -1324,6 +1358,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if (!valid) {
             return;
+        }
+
+        if(this.appSettings.jwtControlEnabled){
+            let jwt = require('jsonwebtoken');
+            let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
+
+            localStorage.setItem(this.appName+'jwtToken', currentAppJWTToken);
+            localStorage.setItem(this.appName+'jwtControlEnabled', this.appSettings.jwtControlEnabled+"");
+        }
+        else{
+            localStorage.setItem(this.appName+'jwtToken', null);
+            localStorage.setItem(this.appName+'jwtControlEnabled', "false");
         }
 
         this.appSettings.encoderSettings = [];
@@ -1433,7 +1479,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if (!this.restService.checkStreamName(this.liveBroadcast.name)){
             this.streamNameEmpty = true;
-
             return;
         }
         this.newIPCameraAdding = true;
@@ -1447,7 +1492,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 socialNetworks.push(this.videoServiceEndpoints[index].id);
             }
         });
-        this.restService.createLiveStream(this.appName, this.liveBroadcast,null, socialNetworks.join(","),null)
+        this.restService.createLiveStream(this.appName, this.liveBroadcast,null, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
@@ -1588,19 +1633,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    getJwtToken() {
-        let jwt = require('jsonwebtoken');
-        let token = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
-        return token;
-    }
-
     addStreamSource(isValid: boolean): void {
 
         this.streamNameEmpty = false;
         let jwtToken;
 
         if (!isValid) {
-            //not valid form return directly
+            //not valid form return directly aaa
             return;
         }
 
@@ -1632,17 +1671,24 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if(hostAddress != this.currentClusterNode) {
             REMOTE_HOST_ADDRESS = "http://" + this.currentClusterNode + ":5080";
-            if(this.appSettings.jwtControlEnabled == true && this.appSettings.jwtSecretKey != null){
-                jwtToken = this.getJwtToken();
-            }
-            else{
-                this.jwtTokenValid = false;
-                this.newStreamSourceAdding = false;
+
+            if(this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey == null){
+                $.notify({
+                    icon: "ti-save",
+                    message: "Please enable JWT Filter or Delete Broadcast in a stopped status"
+                }, {
+                    type: "danger",
+                    delay: 2000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
                 return;
             }
         }
 
-        this.restService.createLiveStream(this.appName, this.liveBroadcast, REMOTE_HOST_ADDRESS, socialNetworks.join(","),jwtToken)
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, REMOTE_HOST_ADDRESS, socialNetworks.join(","))
             .subscribe(data => {
                 if (data["success"] == true) {
                     this.jwtTokenValid = true;
@@ -1676,7 +1722,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         icon: "ti-save",
                         message: "Error: Not added"
                     }, {
-                        type: "error",
+                        type: "danger",
                         delay: 2000,
                         placement: {
                             from: 'top',
@@ -1701,7 +1747,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 }
                 //swal.close();
-                this.jwtTokenValid = false
                 this.newStreamSourceAdding = false;
                 this.newStreamSourceActive = false;
                 this.liveBroadcast.name = "";
@@ -1799,7 +1844,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().new_playlist_error
                     }, {
-                        type: "error",
+                        type: "danger",
                         delay: 2000,
                         placement: {
                             from: 'top',
@@ -2043,7 +2088,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         this.newLiveStreamCreating = true;
-        this.restService.createLiveStream(this.appName, this.liveBroadcast, null, socialNetworks.join(","),null)
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, null, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["streamId"] != null) {
