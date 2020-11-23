@@ -442,7 +442,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     applyFilterVod(filterValue: string) {
         this.filterValueVod = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
         this.getVoDStreams();
-        console.log("aplyfiltera girdi");
+
     }
 
     openSettingsDialog(selected: LiveBroadcast): void {
