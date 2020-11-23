@@ -136,7 +136,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public discoveryStarted = false;
     public newSourceAdding = false;
     public isEnterpriseEdition = true;
-    public filterValue = null
+    public filterValue = null;
+    public filterValueVod = null;
 
     public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
@@ -312,7 +313,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.callTimer();
                 }
             }
-
         }, 8000);
     }
 
@@ -349,7 +349,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.keyword = null;
 
-        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy).subscribe(data => {
+        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy,this.filterValueVod).subscribe(data => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
@@ -440,9 +440,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     applyFilterVod(filterValue: string) {
-        filterValue = filterValue.trim(); // Remove whitespace
-        filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        this.dataSourceVod.filter = filterValue;
+        this.filterValueVod = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+        this.getVoDStreams();
+        console.log("aplyfiltera girdi");
     }
 
     openSettingsDialog(selected: LiveBroadcast): void {
@@ -779,13 +779,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
 
-        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy).subscribe(data => {
+        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy, this.filterValueVod).subscribe(data => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
             }
             this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
-            this.cdr.detectChanges();
         });
     }
 

@@ -7,6 +7,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
 import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Endpoint,Playlist} from "../app.page/app.definitions";
+import { filter } from 'rxjs-compat/operator/filter';
 
 export class User {
 
@@ -340,10 +341,15 @@ export class RestService {
     }
 
 
-    public getVodList(appName:string, offset:Number, size:Number, sortBy: String, orderBy: String): Observable<Object>  {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/v2/vods/list/'+offset+"/"+size
+    public getVodList(appName:string, offset:Number, size:Number, sortBy: String, orderBy: String, filterValue: String): Observable<Object>  {
+        if(filterValue == null){
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/v2/vods/list/'+offset+"/"+size
                 +"&sort_by="+sortBy+"&order_by="+orderBy,{});
-
+        }
+        else{
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/v2/vods/list/'+offset+"/"+size
+                +"&sort_by="+sortBy+"&order_by="+orderBy+"&search="+filterValue,{});
+        }
     }
 
     public getCameraError(appName: string , ipAddr:string): Observable<Object> {
