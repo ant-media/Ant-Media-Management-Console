@@ -434,6 +434,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     applyFilter(filterValue: string) {
         this.filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+        if( this.broadcastTableData.dataRows.length == 0){
+            this.streamListOffset = 0;
+        }
         this.getAppLiveStreams(0, this.pageSize);
         
     }
