@@ -369,7 +369,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.pageSize = event.pageSize;
         this.streamListOffset = event.pageIndex;
 
-        this.getAppLiveStreams(event.pageIndex, this.pageSize);
+        this.getAppLiveStreams(this.streamListOffset, this.pageSize);
     }
 
     onGridPaginateChange(event) {
@@ -430,23 +430,26 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.getAppLiveStreamsNumber();
         this.getVoDStreams();
         this.getAppLiveStreams(0, this.pageSize);
-
     }
-
 
     applyFilter(filterValue: string) {
         this.filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        this.getAppLiveStreams(0, this.pageSize);
+        if( this.broadcastTableData.dataRows.length == 0){
+            this.streamListOffset = 0;
+        }
+        this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+        
     }
 
     applyFilterVod(filterValue: string) {
         this.filterValueVod = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+        if( this.vodTableData.dataRows.length == 0){
+            this.vodListOffset = 0;
+        }
         this.getVoDStreams();
-
     }
 
     openSettingsDialog(selected: LiveBroadcast): void {
-
 
         if (selected.endPointList != null) {
             this.editBroadcastShareFacebook = false;
@@ -626,7 +629,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             });
         }
-
 
         this.liveStreamEditing = new LiveBroadcast();
         this.liveStreamEditing.streamId = stream.streamId;
