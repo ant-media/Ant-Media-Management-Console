@@ -434,10 +434,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     applyFilter(filterValue: string) {
         this.filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        if( this.broadcastTableData.dataRows.length == 0){
-            this.streamListOffset = 0;
-        }
-        this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+        this.getAppLiveStreams(0, this.pageSize);
         
     }
 
@@ -728,6 +725,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 this.listLength = data["number"];
             });
+        
         this.cdr.detectChanges();
     }
 
