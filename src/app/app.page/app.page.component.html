@@ -428,7 +428,7 @@
                                 <br>
 
                                 <div style="display: flex; justify-content: flex-end"
-                                    *ngIf="broadcastTableData.dataRows.length>0">
+                                    *ngIf="broadcastTableData.dataRows.length>=0">
 
                                     <div class="mat-header">
                                         <input (keyup)="applyFilter($event.target.value)" placeholder="Search">
@@ -1084,11 +1084,12 @@
                                             </mat-paginator>
                                         </div>
                                     </div>
-
-                                    <p *ngIf="broadcastTableData.dataRows.length == 0"
+                    
+                                    <div *ngIf="broadcastTableData.dataRows.length == 0"
                                         i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
                                         There is no stream at this time.
-                                    </p>
+                                </div>
+
 
 
                                 </div>
@@ -1099,12 +1100,14 @@
 
                             <div class="tab-pane" id="vod">
 
-
                                 <div class=" text-right">
                                     <div>
                                         <button class="btn btn-fill btn-success" (click)="openVodUploadDialog()"
                                             data-toggle="dropdown" role="button">Upload VoD
                                         </button>
+                                    </div>
+                                    <div>
+                                        <input style="margin-top:24px" (keyup)="applyFilterVod($event.target.value)" placeholder="Search">
                                     </div>
                                 </div>
 
