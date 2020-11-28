@@ -151,7 +151,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public newSourceAdding = false;
     public isEnterpriseEdition = true;
     public isClusterMode = false;
-
+    public filterValue = null;
+    public filterValueVod = null;
     public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
 
@@ -340,7 +341,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.callTimer();
                 }
             }
-
         }, 8000);
     }
 
@@ -355,7 +355,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.timerId = window.setInterval(() => {
             if(this.authService.isAuthenticated) {
                 if(this.appName != "undefined"){
-
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getVoDStreams();
                     this.getAppLiveStreamsNumber();
@@ -378,7 +377,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.keyword = null;
 
-        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy).subscribe(data => {
+        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy,this.filterValueVod).subscribe(data => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
@@ -398,7 +397,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.pageSize = event.pageSize;
         this.streamListOffset = event.pageIndex;
 
-        this.getAppLiveStreams(event.pageIndex, this.pageSize);
+        this.getAppLiveStreams(this.streamListOffset, this.pageSize);
     }
 
     onGridPaginateChange(event) {
@@ -477,24 +476,26 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.getAppLiveStreamsNumber();
         this.getVoDStreams();
         this.getAppLiveStreams(0, this.pageSize);
-
     }
 
-
     applyFilter(filterValue: string) {
-        filterValue = filterValue.trim(); // Remove whitespace
-        filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        this.dataSource.filter = filterValue;
+        this.filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+        if( this.broadcastTableData.dataRows.length == 0){
+            this.streamListOffset = 0;
+        }
+        this.getAppLiveStreams(0, this.pageSize);
+        
     }
 
     applyFilterVod(filterValue: string) {
-        filterValue = filterValue.trim(); // Remove whitespace
-        filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        this.dataSourceVod.filter = filterValue;
+        this.filterValueVod = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+        if( this.vodTableData.dataRows.length == 0){
+            this.vodListOffset = 0;
+        }
+        this.getVoDStreams();
     }
 
     openSettingsDialog(selected: LiveBroadcast): void {
-
 
         if (selected.endPointList != null) {
             this.editBroadcastShareFacebook = false;
@@ -675,7 +676,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
         }
 
-
         this.liveStreamEditing = new LiveBroadcast();
         this.liveStreamEditing.streamId = stream.streamId;
         this.liveStreamEditing.name = stream.name;
@@ -736,10 +736,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getAppLiveStreams(offset: number, size: number): void {
-
+        
         offset = offset * size;
 
-        this.restService.getAppLiveStreams(this.appName, offset, size, this.broadcastSortBy, this.broadcastOrderBy).subscribe(data => {
+        this.restService.getAppLiveStreams(this.appName, offset, size, this.broadcastSortBy, this.broadcastOrderBy,this.filterValue).subscribe(data => {
 
             this.broadcastTableData.dataRows = [];
 
@@ -756,14 +756,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
+            this.cdr.detectChanges();
 
         });
 
     }
-
-
-
-
+   
 
     cleanURL(oldURL: string): SafeResourceUrl {
         console.log("clean url");
@@ -776,6 +774,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 this.listLength = data["number"];
             });
+        
+        this.cdr.detectChanges();
     }
 
     sortVodList(e) {
@@ -828,7 +828,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
 
-        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy).subscribe(data => {
+        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy, this.filterValueVod).subscribe(data => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
@@ -927,7 +927,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         index = index * size;
 
-        this.restService.getAppLiveStreams(this.appName, index, size, this.broadcastSortBy, this.broadcastOrderBy).subscribe(data => {
+        this.restService.getAppLiveStreams(this.appName, index, size, this.broadcastSortBy, this.broadcastOrderBy, null).subscribe(data => {
             //console.log(data);
             this.broadcastGridTableData.dataRows = [];
 
