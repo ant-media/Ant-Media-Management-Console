@@ -1800,7 +1800,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                        <div class="col-xs-12">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.ipFilterEnabled"
                                                                        id="ipFilter"
@@ -1815,7 +1815,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                        <div *ngIf=appSettings.ipFilterEnabled class="col-xs-12">
                                                             <label i18n="@@remoteAllowedCIDR">
                                                                 Use IP Filtering for RESTful API <a
                                                                     matTooltip="If you delete 127.0.0.1, localhost web panel will no longer work. Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"><i
@@ -1832,7 +1832,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                        <div class="col-xs-12">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.jwtControlEnabled"
                                                                    id="jwtFilter"
@@ -1847,7 +1847,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                        <div  *ngIf=appSettings.jwtControlEnabled class="col-xs-12">
                                                             <label i18n="@@jwtFilter">
                                                                 JWT Filter Secret Key<a
                                                                     matTooltip="Please enter at least 32 character"><i
