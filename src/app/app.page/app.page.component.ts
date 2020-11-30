@@ -23,7 +23,6 @@ import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
 import "rxjs/add/operator/toPromise";
 import {AppSettings, ServerSettings} from "./app.definitions";
-
 import {
     BroadcastInfo,
     BroadcastInfoTable,
@@ -154,7 +153,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public isClusterMode = false;
     public filterValue = null;
     public filterValueVod = null;
-
     public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
 
@@ -486,7 +484,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.streamListOffset = 0;
         }
         this.getAppLiveStreams(0, this.pageSize);
-
+        
     }
 
     applyFilterVod(filterValue: string) {
@@ -738,7 +736,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getAppLiveStreams(offset: number, size: number): void {
-
+        
         offset = offset * size;
 
         this.restService.getAppLiveStreams(this.appName, offset, size, this.broadcastSortBy, this.broadcastOrderBy,this.filterValue).subscribe(data => {
@@ -763,7 +761,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
     }
-
+   
 
     cleanURL(oldURL: string): SafeResourceUrl {
         console.log("clean url");
@@ -776,7 +774,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 this.listLength = data["number"];
             });
-
+        
         this.cdr.detectChanges();
     }
 
@@ -1635,14 +1633,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-
-
     addStreamSource(isValid: boolean): void {
 
         this.streamNameEmpty = false;
+        let jwtToken;
 
         if (!isValid) {
-            //not valid form return directly
+            //not valid form return directly aaa
             return;
         }
 
@@ -1657,6 +1654,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.streamUrlValid=false;
             return;
         }
+
         this.streamNameEmpty = false;
         this.newStreamSourceAdding = true;
         this.liveBroadcast.type = "streamSource";
