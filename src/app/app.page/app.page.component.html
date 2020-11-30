@@ -309,6 +309,7 @@
                                                     </small>
                                                 </div>
                                             <div class="form-group text-center">
+
                                                 <button type="submit" [disabled]='newStreamSourceWarn'
                                                     class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
                                                     <i class="fa fa-spinner fa-pulse fa-1x fa-fw"
@@ -319,7 +320,9 @@
                                                     i18n="@@newLiveStreamCancelButton"
                                                     (click)="cancelStreamSource()">Cancel</button>
                                             </div>
+
                                         </div>
+
                                     </form>
                                 </div>
 
@@ -435,7 +438,7 @@
                                 <br>
 
                                 <div style="display: flex; justify-content: flex-end"
-                                    *ngIf="broadcastTableData.dataRows.length>0">
+                                    *ngIf="broadcastTableData.dataRows.length>=0">
 
                                     <div class="mat-header">
                                         <input (keyup)="applyFilter($event.target.value)" placeholder="Search">
@@ -1092,10 +1095,11 @@
                                         </div>
                                     </div>
 
-                                    <p *ngIf="broadcastTableData.dataRows.length == 0"
+                                    <div *ngIf="broadcastTableData.dataRows.length == 0"
                                         i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
                                         There is no stream at this time.
-                                    </p>
+                                </div>
+
 
 
                                 </div>
@@ -1106,12 +1110,14 @@
 
                             <div class="tab-pane" id="vod">
 
-
                                 <div class=" text-right">
                                     <div>
                                         <button class="btn btn-fill btn-success" (click)="openVodUploadDialog()"
                                             data-toggle="dropdown" role="button">Upload VoD
                                         </button>
+                                    </div>
+                                    <div>
+                                        <input style="margin-top:24px" (keyup)="applyFilterVod($event.target.value)" placeholder="Search">
                                     </div>
                                 </div>
 
@@ -1785,8 +1791,27 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-xs-12">
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.timeTokenSubscriberOnly"
+                                                                    id="timeTokenSubscriberOnly" name="timeTokenSubscriberOnly"
+                                                                    type="checkbox">
+
+                                                                <label for="timeTokenSubscriberOnly">
+                                                                    Accept only time based token Subscribers <a
+                                                                        href="https://antmedia.io/secure-video-streaming/"
+                                                                        target="_blank"
+                                                                        matTooltip="After enabling this option, only time based token subscribers are accepted as publisher or players for the streams. Subscribers should be added through REST API. Click for more information."><i
+                                                                            style="font-size: 20px;"
+                                                                            class="fa fa-info-circle"></i></a>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xs-12">
+
+                                                            <div class="checkbox">
+
                                                                 <input [(ngModel)]="acceptAllStreams"
                                                                     id="acceptOnlyStreamsInDataStore"
                                                                     name="acceptOnlyStreamsInDataStore" type="checkbox">
