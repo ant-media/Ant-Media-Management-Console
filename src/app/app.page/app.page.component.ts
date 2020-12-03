@@ -23,6 +23,7 @@ import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
 import "rxjs/add/operator/toPromise";
 import {AppSettings, ServerSettings} from "./app.definitions";
+
 import {
     BroadcastInfo,
     BroadcastInfoTable,
@@ -153,6 +154,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public isClusterMode = false;
     public filterValue = null;
     public filterValueVod = null;
+
     public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
 
@@ -319,6 +321,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.camera = new Camera("", "", "", "", "", "");
         this.playlist = new Playlist ();
         this.playlist.playlistName = "";
+
 
         if (!this.playlistItems) {
             this.playlistItems = this.playlistItems || [];
@@ -1185,7 +1188,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     deleteLiveBroadcast(streamId: string,broadcastHostAddress: string): void {
-
         let REMOTE_HOST_ADDRESS;
         let hostAddress = localStorage.getItem('hostAddress');
 
@@ -1636,7 +1638,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     addStreamSource(isValid: boolean): void {
 
         this.streamNameEmpty = false;
-        let jwtToken;
 
         if (!isValid) {
             //not valid form return directly aaa
@@ -1654,7 +1655,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.streamUrlValid=false;
             return;
         }
-
         this.streamNameEmpty = false;
         this.newStreamSourceAdding = true;
         this.liveBroadcast.type = "streamSource";

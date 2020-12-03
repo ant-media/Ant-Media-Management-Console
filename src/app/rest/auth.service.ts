@@ -74,7 +74,7 @@ export class AuthService implements CanActivate {
 
         this.user = new User(email, password);
 
-        return this.restService.authenticateUser(null,this.user);
+        return this.restService.authenticateUser(this.user);
     }
 
     changeUserPassword(email: string, password: string, newPassword: string): Observable<Object> {

@@ -1091,7 +1091,7 @@
                                             </mat-paginator>
                                         </div>
                                     </div>
-                    
+
                                     <div *ngIf="broadcastTableData.dataRows.length == 0"
                                         i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
                                         There is no stream at this time.
@@ -1674,8 +1674,8 @@
                                                 <div class="card-content text-left">
                                                     <div class="form-group">
                                                             <div *ngIf="!appSettings.h264Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
-                                                                <i 
-                                                                    class="fa fa-exclamation-circle"></i> 
+                                                                <i
+                                                                    class="fa fa-exclamation-circle"></i>
                                                                     H.264 is not enabled. Please enable H.264 for MP4 Recording
                                                             </div>
                                                             <div *ngIf="appSettings.h264Enabled">
@@ -1737,7 +1737,7 @@
                                                 </div>
                                                 <div class="card-header">
                                                     <legend class="text-left" i18n="@@Security">
-                                                        Security
+                                                        Stream Security
                                                     </legend>
                                                 </div>
 
@@ -1788,7 +1788,6 @@
                                                             </div>
                                                         </div>
 
-
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.timeTokenSubscriberOnly"
@@ -1819,7 +1818,17 @@
                                                                 </label>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                </div>
 
+                                                <div class="card-header">
+                                                    <legend class="text-left" i18n="@@Security">
+                                                        REST API Security
+                                                    </legend>
+                                                </div>
+
+                                                <div class="card-content text-left">
+                                                    <div class="form-group">
                                                         <div class="col-xs-12" style="margin-top:12px">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.ipFilterEnabled"
@@ -1828,26 +1837,26 @@
 
                                                                 <label for="ipFilter"
                                                                        i18n="@@ipFilter">
-                                                                    Enable IP Filter <a
+                                                                    Enable IP Filter for RESTful API <a
                                                                         matTooltip="If you disable IP Filter, we are strongly recommending enable JWT Filter"><i
                                                                         class="fa fa-info-circle"></i></a>
                                                                 </label>
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                        <div *ngIf=appSettings.ipFilterEnabled class="col-xs-12" style="margin-top:12px">
                                                             <label i18n="@@remoteAllowedCIDR">
-                                                                Use IP Filtering for RESTful API <a
+                                                                Add CIDR notations comma-separated <a
                                                                     matTooltip="If you delete 127.0.0.1, localhost web panel will no longer work. Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"><i
-                                                                        class="fa fa-info-circle"></i></a>
+                                                                    class="fa fa-info-circle"></i></a>
                                                             </label>
                                                             <div>
                                                                 <textarea name="remoteAllowedCIDR"
-                                                                    (keydown.enter)="false"
-                                                                    [(ngModel)]="appSettings.remoteAllowedCIDR"
-                                                                    type="textarea" class="form-control"
-                                                                    placeholder="Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"
-                                                                    rows="3">{{appSettings.remoteAllowedCIDR}}
+                                                                          (keydown.enter)="false"
+                                                                          [(ngModel)]="appSettings.remoteAllowedCIDR"
+                                                                          type="textarea" class="form-control"
+                                                                          placeholder="Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"
+                                                                          rows="3">{{appSettings.remoteAllowedCIDR}}
                                                             </textarea>
                                                             </div>
                                                         </div>
@@ -1855,24 +1864,25 @@
                                                         <div class="col-xs-12" style="margin-top:12px">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.jwtControlEnabled"
-                                                                   id="jwtFilter"
-                                                                   name="jwtFilter" type="checkbox">
+                                                                       id="jwtFilter"
+                                                                       name="jwtFilter" type="checkbox">
 
                                                                 <label for="jwtFilter"
-                                                                   i18n="@@jwtFilter">
-                                                                Enable JWT Filter<a
-                                                                    matTooltip="If you disable JWT Filter, we are strongly recommending enable IP Filter."><i
-                                                                    class="fa fa-info-circle"></i></a>
+                                                                       i18n="@@jwtFilter">
+                                                                    Enable JWT Filter for RESTful API <a
+                                                                        matTooltip="If you disable JWT Filter, we are strongly recommending enable IP Filter."><i
+                                                                        class="fa fa-info-circle"></i></a>
                                                                 </label>
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                        <div *ngIf=appSettings.jwtControlEnabled class="col-xs-12" style="margin-top:12px">
                                                             <label i18n="@@jwtFilter">
-                                                                JWT Filter Secret Key<a
+                                                                Add Secret key for JWT Filter<a
                                                                     matTooltip="Please enter at least 32 character"><i
                                                                     class="fa fa-info-circle"></i></a>
                                                             </label>
+
                                                             <div>
                                                                 <textarea name="jwtSecret" minlength="32"  #jwtSecret="ngModel" [disabled]="!appSettings.jwtControlEnabled"
                                                                           [(ngModel)]="appSettings.jwtSecretKey"
@@ -1886,7 +1896,7 @@
                                                                 </small>
                                                             </div>
                                                         </div>
-                                                </div>
+                                                    </div>
                                                 </div>
                                             </div>
 
