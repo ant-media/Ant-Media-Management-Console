@@ -1763,7 +1763,7 @@
 
                                                                 <label for="publishTokenControlEnabled">
                                                                     Publish with One-time Tokens <a
-                                                                        href="https://antmedia.io/secure-video-streaming/"
+                                                                        href="https://github.com/ant-media/Ant-Media-Server/wiki/Stream-Security-Documentation"
                                                                         target="_blank"
                                                                         matTooltip="By enabling this option, one time tokens are required for publishing. Publish request without tokens will not be streamed. Click for more information."><i
                                                                             style="font-size: 20px;"
@@ -1779,7 +1779,7 @@
 
                                                                 <label for="playTokenControlEnabled">
                                                                     Play with One-time Tokens <a
-                                                                        href="https://antmedia.io/secure-video-streaming/"
+                                                                        href="https://github.com/ant-media/Ant-Media-Server/wiki/Stream-Security-Documentation"
                                                                         target="_blank"
                                                                         matTooltip="By enabling this option, one time tokens are required for playing. Play request without tokens will not be streamed. Click for more information."><i
                                                                             style="font-size: 20px;"
@@ -1796,7 +1796,7 @@
 
                                                                 <label for="timeTokenSubscriberOnly">
                                                                     Accept only time based token Subscribers <a
-                                                                        href="https://antmedia.io/secure-video-streaming/"
+                                                                        href=""
                                                                         target="_blank"
                                                                         matTooltip="After enabling this option, only time based token subscribers are accepted as publisher or players for the streams. Subscribers should be added through REST API. Click for more information."><i
                                                                             style="font-size: 20px;"
@@ -1890,7 +1890,7 @@
                                                                           placeholder="Please write at least 32 character"
                                                                           rows="1">{{appSettings.jwtSecretKey}}
                                                                 </textarea>
-                                                                <small [hidden]="jwtSecret.valid || !appSettings.jwtControlEnabled"
+                                                                <small [hidden]="jwtSecret.value.length >= 32 || !appSettings.jwtControlEnabled"
                                                                        class="text-danger">
                                                                     JWT Secret Key should at least 32 character
                                                                 </small>
