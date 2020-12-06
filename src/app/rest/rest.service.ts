@@ -357,13 +357,23 @@ export class RestService {
     }
 
 
-    public getTotalVodNumber(appName: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/vods/count', {});
+    public getTotalVodNumber(appName: string, filterValue : string): Observable<Object> {
+        if(filterValue == null){
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/vods/count', {});
+        }
+        else{
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/vods/count/' + filterValue, {});
+        }
     }
 
 
-    public getTotalBroadcastNumber(appName: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/count', {});
+    public getTotalBroadcastNumber(appName: string, filterValue : string): Observable<Object> {
+        if(filterValue == null){
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/count', {});
+        }
+        else{
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/count/' + filterValue, {});
+        }
     }
 
     public uploadVod(fileName:string, formData:any,appName:string): Observable<Object>  {

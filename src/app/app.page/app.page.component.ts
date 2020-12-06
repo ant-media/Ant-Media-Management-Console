@@ -433,12 +433,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     applyFilter(filterValue: string) {
-        this.filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        if( this.broadcastTableData.dataRows.length == 0){
-            this.streamListOffset = 0;
+        if(this.filterValue != filterValue){
+            this.filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+            if( this.broadcastTableData.dataRows.length < this.pageSize){
+                this.streamListOffset = 0;
+            }
+            this.getAppLiveStreamsNumber();
+            this.getAppLiveStreams(0, this.pageSize);  
         }
-        this.getAppLiveStreams(0, this.pageSize);
-        
     }
 
     applyFilterVod(filterValue: string) {
@@ -723,7 +725,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getAppLiveStreamsNumber(): void {
-        this.restService.getTotalBroadcastNumber(this.appName).subscribe(
+        this.restService.getTotalBroadcastNumber(this.appName, this.filterValue).subscribe(
             data => {
 
                 this.listLength = data["number"];
@@ -777,7 +779,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         //this for getting full length of vod streams for paginations
 
-        this.restService.getTotalVodNumber(this.appName).subscribe(data => {
+        this.restService.getTotalVodNumber(this.appName, this.filterValue).subscribe(data => {
             this.vodLength = data["number"];
         });
 
