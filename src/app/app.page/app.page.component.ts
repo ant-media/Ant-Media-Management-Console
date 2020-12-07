@@ -1192,7 +1192,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         let hostAddress = localStorage.getItem('hostAddress');
 
         // I didn't added broadcast status check. Because, some of stream sources status is finished but it's trying to connect sources.
-        if(hostAddress != broadcastHostAddress) {
+        if(this.isClusterMode && hostAddress != broadcastHostAddress) {
             REMOTE_HOST_ADDRESS = "http://" + broadcastHostAddress + ":5080";
 
             if(this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey != null){
