@@ -44,6 +44,12 @@ import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialo
 import {PlaylistEditComponent} from './dialog/playlist.edit.dialog.component';
 import {Observable} from "rxjs";
 import "rxjs/add/observable/of";
+import {ClusterRestService} from "../rest/cluster.service";
+import {
+    ClusterInfoTable,
+    ClusterNode,
+    ClusterNodeInfo
+} from '../cluster/cluster.definitions';
 
 declare var $: any;
 declare var Chartist: any;
@@ -73,6 +79,15 @@ export class Camera {
         public password: string,
         public streamUrl: string,
         public type: string) { }
+}
+
+export class User {
+    public newPassword: string;
+    public fullName: string;
+    constructor(
+        public email: string,
+        public password: string) {
+    }
 }
 
 export class SocialNetworkChannel {
@@ -136,6 +151,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public discoveryStarted = false;
     public newSourceAdding = false;
     public isEnterpriseEdition = true;
+    public isClusterMode = false;
     public filterValue = null;
     public filterValueVod = null;
 
@@ -167,6 +183,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public shareEndpoint: boolean[];
     public videoServiceEndpoints: VideoServiceEndpoint[];
     public streamUrlValid = true;
+    public jwtTokenValid = true;
     public streamNameEmpty=false;
     public playlistNameEmpty=false;
     public encoderSettings:EncoderSettings[];
@@ -176,7 +193,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public autoStart: false;
     public playlist: Playlist;
     public playlistItems: PlaylistItem[];
-
+    public clusterNodes: ClusterNode[];
+    public user: User;
+    public currentClusterNode: string;
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
@@ -220,6 +239,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     private broadcastSortBy = "";
     private broadcastOrderBy = "";
 
+    public clusterNodeTableData: ClusterInfoTable;
+
+    public nodeColumns = ['nodeIp', 'cpu', 'memory', 'lastUpdateTime', 'inTheCluster', 'actions'];
+
+    public dataSourceNode: MatTableDataSource<ClusterNodeInfo>;
+
     @Input() pageEvent: PageEvent;
 
     @Output()
@@ -229,6 +254,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     constructor(private route: ActivatedRoute,
                 private restService: RestService,
+                private clusterRestService: ClusterRestService,
                 private clipBoardService: ClipboardService,
                 private renderer: Renderer2,
                 public router: Router,
@@ -243,6 +269,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     ) {
         this.dataSource = new MatTableDataSource<BroadcastInfo>();
         this.dataSourceVod = new MatTableDataSource<VodInfo>();
+        this.dataSourceNode = new MatTableDataSource<ClusterNodeInfo>();
         this.videoServiceEndpoints = [];
     }
 
@@ -272,6 +299,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         };
 
         this.broadcastGridTableData = {
+            dataRows: [],
+        };
+
+        this.clusterNodeTableData = {
             dataRows: [],
         };
 
@@ -418,6 +449,24 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.isEnterpriseEdition = data["success"];
             });
 
+            this.restService.isInClusterMode().subscribe(data => {
+                this.isClusterMode = data["success"];
+                if (this.isClusterMode) {
+                    var clusterNodeCount = 0;
+                    this.clusterRestService.getClusterNodeCount().subscribe( data => {
+                        clusterNodeCount = data["number"];
+                        this.clusterRestService.getClusterNodes(0, clusterNodeCount).subscribe(data => {
+                            this.clusterNodeTableData.dataRows = [];
+                            for (let i in data) {
+                                if(data[i].status == "alive") {
+                                    this.currentClusterNode = data[0].ip;
+                                    this.clusterNodeTableData.dataRows.push(data[i]);
+                                }
+                            }
+                        });
+                    });
+                }
+            });
             this.getAppLiveStreamsNumber();
             this.getVoDStreams();
             this.getAppLiveStreams(0, this.pageSize);
@@ -1138,7 +1187,30 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-    deleteLiveBroadcast(streamId: string): void {
+    deleteLiveBroadcast(streamId: string,broadcastHostAddress: string): void {
+        let REMOTE_HOST_ADDRESS;
+        let hostAddress = localStorage.getItem('hostAddress');
+
+        // I didn't added broadcast status check. Because, some of stream sources status is finished but it's trying to connect sources.
+        if(this.isClusterMode && hostAddress != broadcastHostAddress) {
+            REMOTE_HOST_ADDRESS = "http://" + broadcastHostAddress + ":5080";
+
+            if(this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey != null){
+                $.notify({
+                    icon: "ti-save",
+                    message: "Please enable JWT Filter or Delete Broadcast in a stopped status"
+                }, {
+                    type: "danger",
+                    delay: 2000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+                return;
+            }
+        }
+
         swal({
             title: Locale.getLocaleInterface().are_you_sure,
             text: Locale.getLocaleInterface().wont_be_able_to_revert,
@@ -1148,7 +1220,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!'
         }).then(data => {
-            this.restService.deleteBroadcast(this.appName, streamId)
+            this.restService.deleteBroadcast(this.appName, streamId,REMOTE_HOST_ADDRESS)
                 .subscribe(data => {
                     if (data["success"] == true) {
 
@@ -1211,6 +1283,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
+    clusterDropDownChanged(selectedNode:string){
+        if(this.currentClusterNode != selectedNode){
+            this.currentClusterNode = selectedNode;
+        }
+    }
     dropDownChanged(event:any,i:number){
 
         if (event == 2160) {
@@ -1249,7 +1326,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
 
+            if(this.appSettings.jwtControlEnabled){
+                let jwt = require('jsonwebtoken');
+                let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
 
+                localStorage.setItem(this.appName+'jwtToken', currentAppJWTToken);
+                localStorage.setItem(this.appName+'jwtControlEnabled', this.appSettings.jwtControlEnabled+"");
+            }
+            else{
+                localStorage.setItem(this.appName+'jwtToken', null);
+                localStorage.setItem(this.appName+'jwtControlEnabled', "false");
+            }
             this.encoderSettings = [];
             this.appSettings.encoderSettings.forEach((value, index) => {
                 if (value != null ) {
@@ -1273,6 +1360,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if (!valid) {
             return;
+        }
+
+        if(this.appSettings.jwtControlEnabled){
+            let jwt = require('jsonwebtoken');
+            let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
+
+            localStorage.setItem(this.appName+'jwtToken', currentAppJWTToken);
+            localStorage.setItem(this.appName+'jwtControlEnabled', this.appSettings.jwtControlEnabled+"");
+        }
+        else{
+            localStorage.setItem(this.appName+'jwtToken', null);
+            localStorage.setItem(this.appName+'jwtControlEnabled', "false");
         }
 
         this.appSettings.encoderSettings = [];
@@ -1382,7 +1481,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if (!this.restService.checkStreamName(this.liveBroadcast.name)){
             this.streamNameEmpty = true;
-
             return;
         }
         this.newIPCameraAdding = true;
@@ -1396,7 +1494,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 socialNetworks.push(this.videoServiceEndpoints[index].id);
             }
         });
-        this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
+        this.restService.createLiveStream(this.appName, this.liveBroadcast,null, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
@@ -1537,20 +1635,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-
-
     addStreamSource(isValid: boolean): void {
 
         this.streamNameEmpty = false;
 
         if (!isValid) {
-            //not valid form return directly
+            //not valid form return directly aaa
             return;
         }
 
 
         if (!this.restService.checkStreamName(this.liveBroadcast.name)) {
-
             this.streamNameEmpty = true;
             return;
         }
@@ -1571,11 +1666,31 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
 
-        this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
-            .subscribe(data => {
-                //console.log("data :" + JSON.stringify(data));
-                if (data["success"] == true) {
+        let REMOTE_HOST_ADDRESS = null;
+        let hostAddress = localStorage.getItem('hostAddress');
+        if(this.isClusterMode && hostAddress != this.currentClusterNode) {
+            REMOTE_HOST_ADDRESS = "http://" + this.currentClusterNode + ":5080";
 
+            if(this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey == null){
+                $.notify({
+                    icon: "ti-save",
+                    message: "Please enable JWT Filter or Delete Broadcast in a stopped status"
+                }, {
+                    type: "danger",
+                    delay: 2000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+                return;
+            }
+        }
+
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, REMOTE_HOST_ADDRESS, socialNetworks.join(","))
+            .subscribe(data => {
+                if (data["success"] == true) {
+                    this.jwtTokenValid = true;
                     this.newStreamSourceAdding = false;
 
                     $.notify({
@@ -1594,19 +1709,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     this.liveBroadcast.streamUrl = "";
                     this.streamUrlValid=true;
-
-
                 }
                 else {
                     var errorCode = data["message"];
 
+                    this.jwtTokenValid = false;
                     this.newIPCameraAdding = false;
+                    this.newStreamSourceAdding = false;
 
                     $.notify({
                         icon: "ti-save",
                         message: "Error: Not added"
                     }, {
-                        type: "error",
+                        type: "danger",
                         delay: 2000,
                         placement: {
                             from: 'top',
@@ -1626,15 +1741,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             confirmButtonColor: '#3085d6',
                             confirmButtonText: 'OK'
                         }).then(() => {
-
-
                         }).catch(function () {
-
                         });
                     }
-
                 }
-
                 //swal.close();
                 this.newStreamSourceAdding = false;
                 this.newStreamSourceActive = false;
@@ -1642,17 +1752,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.liveBroadcast.ipAddr = "";
                 this.liveBroadcast.username = "";
                 this.liveBroadcast.password = "";
-
-
                 if (this.isGridView) {
                     setTimeout(() => {
                         this.switchToGridView();
                     }, 500);
                 }
             });
-
     }
-
     addPlaylistItem(): void {
 
         this.playlistItems.push({
@@ -1737,7 +1843,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().new_playlist_error
                     }, {
-                        type: "error",
+                        type: "danger",
                         delay: 2000,
                         placement: {
                             from: 'top',
@@ -1981,7 +2087,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         this.newLiveStreamCreating = true;
-        this.restService.createLiveStream(this.appName, this.liveBroadcast, socialNetworks.join(","))
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, null, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 if (data["streamId"] != null) {
