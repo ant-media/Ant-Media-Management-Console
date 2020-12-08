@@ -240,6 +240,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     private broadcastOrderBy = "";
 
     @ViewChild(MatPaginator, {static:false}) paginator: MatPaginator;
+    @ViewChild(MatPaginator, {static:false}) paginatorVod: MatPaginator;
     
     public clusterNodeTableData: ClusterInfoTable;
 
@@ -486,9 +487,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     applyFilter(filterValue: string) {
         if(this.filterValue != filterValue){
             this.filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-            if( this.broadcastTableData.dataRows.length < this.pageSize){
-                this.streamListOffset = 0;
-            }
             this.getAppLiveStreamsNumber();
             this.paginator.firstPage();
             this.getAppLiveStreams(0, this.pageSize);  
@@ -497,11 +495,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     applyFilterVod(filterValue: string) {
         this.filterValueVod = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        if( this.vodTableData.dataRows.length == 0){
-            this.vodListOffset = 0;
-        }
-        this.paginator.firstPage();
+        this.vodListOffset = 0;
         this.getVoDStreams();
+        this.paginator.firstPage();
     }
 
     openSettingsDialog(selected: LiveBroadcast): void {
