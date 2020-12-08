@@ -298,8 +298,17 @@
                                                 </ng-container>
                                             </div>
 
+                                                <div class="form-group text-left"  *ngIf="isClusterMode">
+                                                    <select (change)="clusterDropDownChanged($event.target.value)" data-toggle="dropdown" class="btn dropdown-toggle btn-block" id="clusterNode">
+                                                        <option *ngFor="let row of clusterNodeTableData.dataRows;" [value]="row.ip">
+                                                            {{row.ip}}
+                                                        </option>
+                                                    </select>
+                                                    <small class="text-danger" *ngIf="!jwtTokenValid">
+                                                        Please enable JWT Token and enter JWT secret key: {{jwtTokenValid}}
+                                                    </small>
+                                                </div>
                                             <div class="form-group text-center">
-
                                                 <button type="submit" [disabled]='newStreamSourceWarn'
                                                     class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
                                                     <i class="fa fa-spinner fa-pulse fa-1x fa-fw"
@@ -310,9 +319,7 @@
                                                     i18n="@@newLiveStreamCancelButton"
                                                     (click)="cancelStreamSource()">Cancel</button>
                                             </div>
-
                                         </div>
-
                                     </form>
                                 </div>
 
@@ -754,7 +761,7 @@
 
                                                                     <li *ngIf="row.type!='VoD'">
                                                                         <a class="dropdown-link"
-                                                                            (click)="deleteLiveBroadcast(row.streamId)">
+                                                                            (click)="deleteLiveBroadcast(row.streamId,row.originAdress)">
                                                                             <ng-container i18n="@@tableDeleteButton">
                                                                                 Delete Broadcast</ng-container>
                                                                         </a>
@@ -1018,7 +1025,7 @@
 
                                                                         <li>
                                                                             <a class="dropdown-link"
-                                                                                (click)="deleteLiveBroadcast(row.streamId)">
+                                                                                (click)="deleteLiveBroadcast(row.streamId,row.originAdress)">
                                                                                 <ng-container
                                                                                     i18n="@@tableDeleteButton">Delete
                                                                                     Broadcast</ng-container>
@@ -1084,7 +1091,7 @@
                                             </mat-paginator>
                                         </div>
                                     </div>
-                    
+
                                     <div *ngIf="broadcastTableData.dataRows.length == 0"
                                         i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
                                         There is no stream at this time.
@@ -1667,8 +1674,8 @@
                                                 <div class="card-content text-left">
                                                     <div class="form-group">
                                                             <div *ngIf="!appSettings.h264Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
-                                                                <i 
-                                                                    class="fa fa-exclamation-circle"></i> 
+                                                                <i
+                                                                    class="fa fa-exclamation-circle"></i>
                                                                     H.264 is not enabled. Please enable H.264 for MP4 Recording
                                                             </div>
                                                             <div *ngIf="appSettings.h264Enabled">
@@ -1730,7 +1737,7 @@
                                                 </div>
                                                 <div class="card-header">
                                                     <legend class="text-left" i18n="@@Security">
-                                                        Security
+                                                        Stream Security
                                                     </legend>
                                                 </div>
 
@@ -1756,7 +1763,7 @@
 
                                                                 <label for="publishTokenControlEnabled">
                                                                     Publish with One-time Tokens <a
-                                                                        href="https://antmedia.io/secure-video-streaming/"
+                                                                        href="https://github.com/ant-media/Ant-Media-Server/wiki/Stream-Security-Documentation"
                                                                         target="_blank"
                                                                         matTooltip="By enabling this option, one time tokens are required for publishing. Publish request without tokens will not be streamed. Click for more information."><i
                                                                             style="font-size: 20px;"
@@ -1772,7 +1779,7 @@
 
                                                                 <label for="playTokenControlEnabled">
                                                                     Play with One-time Tokens <a
-                                                                        href="https://antmedia.io/secure-video-streaming/"
+                                                                        href="https://github.com/ant-media/Ant-Media-Server/wiki/Stream-Security-Documentation"
                                                                         target="_blank"
                                                                         matTooltip="By enabling this option, one time tokens are required for playing. Play request without tokens will not be streamed. Click for more information."><i
                                                                             style="font-size: 20px;"
@@ -1780,10 +1787,25 @@
                                                                 </label>                                                                
                                                             </div>
                                                         </div>
-                                                        <div class="col-xs-12">
 
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.timeTokenSubscriberOnly"
+                                                                    id="timeTokenSubscriberOnly" name="timeTokenSubscriberOnly"
+                                                                    type="checkbox">
 
+                                                                <label for="timeTokenSubscriberOnly">
+                                                                    Accept only time based token Subscribers <a
+                                                                        href=""
+                                                                        target="_blank"
+                                                                        matTooltip="After enabling this option, only time based token subscribers are accepted as publisher or players for the streams. Subscribers should be added through REST API. Click for more information."><i
+                                                                            style="font-size: 20px;"
+                                                                            class="fa fa-info-circle"></i></a>
+                                                                </label>                                                                
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-12">
+                                                            <div class="checkbox">
                                                                 <input [(ngModel)]="acceptAllStreams"
                                                                     id="acceptOnlyStreamsInDataStore"
                                                                     name="acceptOnlyStreamsInDataStore" type="checkbox">
@@ -1796,27 +1818,85 @@
                                                                 </label>
                                                             </div>
                                                         </div>
-                                                    
+                                                    </div>
+                                                </div>
 
-                                                    <div class="col-xs-12" style="margin-top:12px">
-                                                            <label i18n="@@remoteAllowedCIDR">
-                                                                Use IP Filtering for RESTful API <a
-                                                                    matTooltip="If you delete 127.0.0.1, localhost web panel will no longer work. Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"><i
+                                                <div class="card-header">
+                                                    <legend class="text-left" i18n="@@Security">
+                                                        REST API Security
+                                                    </legend>
+                                                </div>
+
+                                                <div class="card-content text-left">
+                                                    <div class="form-group">
+                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.ipFilterEnabled"
+                                                                       id="ipFilter"
+                                                                       name="ipFilter" type="checkbox">
+
+                                                                <label for="ipFilter"
+                                                                       i18n="@@ipFilter">
+                                                                    Enable IP Filter for RESTful API <a
+                                                                        matTooltip="If you disable IP Filter, we are strongly recommending enable JWT Filter"><i
                                                                         class="fa fa-info-circle"></i></a>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div *ngIf=appSettings.ipFilterEnabled class="col-xs-12" style="margin-top:12px">
+                                                            <label i18n="@@remoteAllowedCIDR">
+                                                                Add CIDR notations comma-separated <a
+                                                                    matTooltip="If you delete 127.0.0.1, localhost web panel will no longer work. Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"><i
+                                                                    class="fa fa-info-circle"></i></a>
                                                             </label>
                                                             <div>
                                                                 <textarea name="remoteAllowedCIDR"
-                                                                    (keydown.enter)="false"
-                                                                    [(ngModel)]="appSettings.remoteAllowedCIDR"
-                                                                    type="textarea" class="form-control"
-                                                                    placeholder="Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"
-                                                                    rows="3">{{appSettings.remoteAllowedCIDR}}
+                                                                          (keydown.enter)="false"
+                                                                          [(ngModel)]="appSettings.remoteAllowedCIDR"
+                                                                          type="textarea" class="form-control"
+                                                                          placeholder="Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"
+                                                                          rows="3">{{appSettings.remoteAllowedCIDR}}
                                                             </textarea>
                                                             </div>
+                                                        </div>
 
+                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.jwtControlEnabled"
+                                                                       id="jwtFilter"
+                                                                       name="jwtFilter" type="checkbox">
 
+                                                                <label for="jwtFilter"
+                                                                       i18n="@@jwtFilter">
+                                                                    Enable JWT Filter for RESTful API <a
+                                                                        matTooltip="If you disable JWT Filter, we are strongly recommending enable IP Filter."><i
+                                                                        class="fa fa-info-circle"></i></a>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div *ngIf=appSettings.jwtControlEnabled class="col-xs-12" style="margin-top:12px">
+                                                            <label i18n="@@jwtFilter">
+                                                                Add Secret key for JWT Filter<a
+                                                                    matTooltip="Please enter at least 32 character"><i
+                                                                    class="fa fa-info-circle"></i></a>
+                                                            </label>
+
+                                                            <div>
+                                                                <textarea name="jwtSecret" minlength="32"  #jwtSecret="ngModel" [disabled]="!appSettings.jwtControlEnabled"
+                                                                          [(ngModel)]="appSettings.jwtSecretKey"
+                                                                          type="textarea" class="form-control"
+                                                                          placeholder="Please write at least 32 character"
+                                                                          rows="1">{{appSettings.jwtSecretKey}}
+                                                                </textarea>
+                                                                <small [hidden]="jwtSecret.value.length >= 32 || !appSettings.jwtControlEnabled"
+                                                                       class="text-danger">
+                                                                    JWT Secret Key should at least 32 character
+                                                                </small>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
                                                 </div>
                                             </div>
 

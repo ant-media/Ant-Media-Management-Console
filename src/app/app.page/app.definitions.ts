@@ -82,6 +82,7 @@ export declare interface BroadcastInfo {
     rtmpViewerCount : number;
     mp4Enabled : number;
     webMEnabled : number;
+    originAdress : string;
 }
 
 export declare interface BroadcastInfoTable {
@@ -202,6 +203,7 @@ export class AppSettings {
                 public objectDetectionEnabled: boolean,
                 public publishTokenControlEnabled: boolean,
                 public playTokenControlEnabled: boolean,
+                public timeTokenSubscriberOnly: boolean,
                 public webRTCEnabled: boolean,
                 public webRTCFrameRate: number,
                 public remoteAllowedCIDR: string,
@@ -209,6 +211,9 @@ export class AppSettings {
                 public vp8Enabled: boolean,
                 public dataChannelEnabled: boolean,
                 public dataChannelPlayerDistribution: string,
-                public listenerHookURL: string
+                public listenerHookURL: string,
+                public jwtControlEnabled: boolean,
+                public jwtSecretKey: string,
+                public ipFilterEnabled: boolean
     ) {}
 }

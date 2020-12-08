@@ -13,6 +13,7 @@ import {Observable} from "rxjs";
 import { Router } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ExpectedConditions } from 'protractor';
+import {ClusterRestService} from "../rest/cluster.service";
 
 
 describe('AppComponent', () => {
@@ -45,7 +46,7 @@ describe('AppComponent', () => {
         AppPageComponent,
       ],
       imports: [
-        FormsModule, 
+        FormsModule,
         MatTableModule,
         MatPaginatorModule,
         RouterTestingModule.withRoutes([
@@ -60,6 +61,7 @@ describe('AppComponent', () => {
       providers: [
         { provide: RestService,  useValue: restServiceSpy },
         AuthService,
+        ClusterRestService,
         DatePipe,
       ]
     }).compileComponents();
