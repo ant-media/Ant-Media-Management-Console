@@ -18,7 +18,7 @@ import {AuthService} from '../rest/auth.service';
 import {ClipboardService} from 'ngx-clipboard';
 import {Locale} from "../locale/locale";
 import {MatDialog } from '@angular/material/dialog';
-import {MatPaginatorIntl, PageEvent} from "@angular/material/paginator"
+import {MatPaginator, MatPaginatorIntl, PageEvent} from "@angular/material/paginator"
 import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
 import "rxjs/add/operator/toPromise";
@@ -239,6 +239,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     private broadcastSortBy = "";
     private broadcastOrderBy = "";
 
+    @ViewChild(MatPaginator, {static:false}) paginator: MatPaginator;
+    @ViewChild(MatPaginator, {static:false}) paginatorVod: MatPaginator;
+    
     public clusterNodeTableData: ClusterInfoTable;
 
     public nodeColumns = ['nodeIp', 'cpu', 'memory', 'lastUpdateTime', 'inTheCluster', 'actions'];
@@ -482,20 +485,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     applyFilter(filterValue: string) {
-        this.filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        if( this.broadcastTableData.dataRows.length == 0){
-            this.streamListOffset = 0;
+        if(this.filterValue != filterValue){
+            this.filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+            this.getAppLiveStreamsNumber();
+            this.paginator.firstPage();
+            this.getAppLiveStreams(0, this.pageSize);  
         }
-        this.getAppLiveStreams(0, this.pageSize);
-        
     }
 
     applyFilterVod(filterValue: string) {
         this.filterValueVod = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        if( this.vodTableData.dataRows.length == 0){
-            this.vodListOffset = 0;
-        }
+        this.vodListOffset = 0;
         this.getVoDStreams();
+        this.paginator.firstPage();
     }
 
     openSettingsDialog(selected: LiveBroadcast): void {
@@ -772,7 +774,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getAppLiveStreamsNumber(): void {
-        this.restService.getTotalBroadcastNumber(this.appName).subscribe(
+        this.restService.getTotalBroadcastNumber(this.appName, this.filterValue).subscribe(
             data => {
 
                 this.listLength = data["number"];
@@ -826,7 +828,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         //this for getting full length of vod streams for paginations
 
-        this.restService.getTotalVodNumber(this.appName).subscribe(data => {
+        this.restService.getTotalVodNumber(this.appName, this.filterValueVod).subscribe(data => {
             this.vodLength = data["number"];
         });
 
