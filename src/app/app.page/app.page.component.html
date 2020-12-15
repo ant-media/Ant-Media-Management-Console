@@ -1846,7 +1846,7 @@
 
                                                         <div *ngIf=appSettings.ipFilterEnabled class="col-xs-12" style="margin-top:12px">
                                                             <label i18n="@@remoteAllowedCIDR">
-                                                                Add CIDR notations comma-separated <a
+                                                                CIDR notations (comma-separated) <a
                                                                     matTooltip="If you delete 127.0.0.1, localhost web panel will no longer work. Write access IP Address like: 127.0.0.1,192.168.1.1/24,34.22.16.222"><i
                                                                     class="fa fa-info-circle"></i></a>
                                                             </label>
@@ -1878,7 +1878,7 @@
 
                                                         <div *ngIf=appSettings.jwtControlEnabled class="col-xs-12" style="margin-top:12px">
                                                             <label i18n="@@jwtFilter">
-                                                                Add Secret key for JWT Filter<a
+                                                                Secret key for JWT Filter<a
                                                                     matTooltip="Please enter at least 32 character"><i
                                                                     class="fa fa-info-circle"></i></a>
                                                             </label>
@@ -1890,10 +1890,15 @@
                                                                           placeholder="Please write at least 32 character"
                                                                           rows="1">{{appSettings.jwtSecretKey}}
                                                                 </textarea>
-                                                                <small [hidden]="jwtSecret.value.length >= 32 || !appSettings.jwtControlEnabled"
+                                                                <small [hidden]="(jwtSecret.valid || !appSettings.jwtControlEnabled) || (!f.submitted)"
                                                                        class="text-danger">
                                                                     JWT Secret Key should at least 32 character
                                                                 </small>
+                                                                <button
+                                                                (click)="setRandomString(32)" class="btn pull-right btn-default" style="margin:5px"
+                                                                type="button">
+                                                                 Generate
+                                                              </button>
                                                             </div>
                                                         </div>
                                                     </div>

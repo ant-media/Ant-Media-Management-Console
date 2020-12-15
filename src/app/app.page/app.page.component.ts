@@ -1946,6 +1946,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
+    setRandomString(length: number) {
+        // Declare all characters
+        let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    
+        // Pick characers randomly
+        let str = '';
+        for (let i = 0; i < length; i++) {
+            str += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        this.appSettings.jwtSecretKey = str;
+        return str;
+    };
 
     startDiscover() {
         this.discoveryStarted = true;
