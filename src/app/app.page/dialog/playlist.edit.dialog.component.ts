@@ -4,7 +4,6 @@ import { RestService, LiveBroadcast } from '../../rest/rest.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
     PlaylistItem,
-    Playlist
 } from '../app.definitions';
 
 declare var $: any;
@@ -18,8 +17,7 @@ export class PlaylistEditComponent {
 
     loading = false;
     public playlistUpdating = false;
-    public playlistEditing: Playlist;
-    public playlistItemEditing: PlaylistItem[];
+    public playlistEditing: LiveBroadcast;
     public newPlaylistAdding = false;
 
 
@@ -27,25 +25,19 @@ export class PlaylistEditComponent {
         public dialogRef: MatDialogRef<PlaylistEditComponent>, public restService: RestService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
 
-        this.playlistEditing = new Playlist();
+        this.playlistEditing = new LiveBroadcast();
 
-        if (!this.playlistItemEditing) {
-            this.playlistItemEditing = this.playlistItemEditing || [];
-        }
         this.getPlaylistValues();
     }
 
     getPlaylistValues(){
 
-        this.restService.getPlaylist(this.data.appName,this.data.playlistId).subscribe(data => {
+        this.restService.getBroadcast(this.data.appName, this.data.streamId).subscribe(data => {
 
-            this.playlistEditing.playlistId = data["playlistId"];
+            this.playlistEditing.streamId = data["streamId"];
+            this.playlistEditing.playListItemList = data["playListItemList"];
             this.playlistEditing.currentPlayIndex = data["currentPlayIndex"];
-            this.playlistEditing.playlistName = data["playlistName"];
-            this.playlistEditing.playlistStatus = data["playlistStatus"];
-            this.playlistEditing.broadcastItemList = data["broadcastItemList"];
-            this.playlistItemEditing = data["broadcastItemList"];
-
+            this.playlistEditing.name = data["name"];
         });
 
     }
@@ -59,11 +51,10 @@ export class PlaylistEditComponent {
             return;
         }
 
-
         this.playlistUpdating = true;
         this.newPlaylistAdding = true;
 
-        this.restService.updatePlaylist(this.dialogRef.componentInstance.data.appName, this.playlistEditing, this.playlistEditing.playlistId, true).subscribe(data => {
+        this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.playlistEditing, "").subscribe(data => {
 
             this.playlistUpdating = false;
             this.newPlaylistAdding = false;
@@ -102,23 +93,16 @@ export class PlaylistEditComponent {
         });
     }
 
-    addPlaylistItemEditing(): void {
-
-        this.playlistItemEditing.push({
-            name: "",
+    addPlaylistItemEditing(): void 
+    {
+        this.playlistEditing.playListItemList.push({
             type: "VoD",
-            streamId: "",
             streamUrl: "",
-            hlsViewerCount: 0,
-            webRTCViewerCount: 0,
-            rtmpViewerCount: 0,
-            mp4Enabled: 0,
         });
-
     }
 
     deletePlaylistItemEditing(index: number): void {
-        this.playlistItemEditing.splice(index, 1);
+        this.playlistEditing.playListItemList.splice(index, 1);
     }
 
     cancelEditPlaylist(): void {

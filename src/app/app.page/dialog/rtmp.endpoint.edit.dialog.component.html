@@ -7,8 +7,8 @@
             <input  [(ngModel)]="rtmpEndpointName" type="text" name="rtmpEndpointName" i18n-placeholder="@@rtmp_endpoint_name_place_holder" placeholder="RTMP Endpoint Name"
                    class="form-control">
 
-            <div class="form-group text-center" style="margin-top: 20px;">
-                <button type="button" class="btn btn-fill btn-success" i18n="@@addRTMPEndpointAddButton" (click)="addRtmpEndpoint(rtmpEndpointName)">Add RTMP Endpoint</button>
+            <div class="form-group text-right" style="margin-top: 20px;">
+                <button type="button" class="btn btn-default" i18n="@@addRTMPEndpointAddButton" (click)="addRtmpEndpoint(rtmpEndpointName)">Add RTMP Endpoint</button>
             </div>
 
             <div *ngIf=!this.isEmptyEndpoint  class="text-left" >

@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
 import {HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {Endpoint,Playlist} from "../app.page/app.definitions";
+import {Endpoint,PlaylistItem} from "../app.page/app.definitions";
 import { filter } from 'rxjs-compat/operator/filter';
 
 declare function require(name: string);
@@ -40,12 +40,18 @@ export class LiveBroadcast {
     quality: string;
     speed: number;
     endPointList:Endpoint[];
+    playListItemList: PlaylistItem[];
     hlsViewerCount: number = 0;
     webRTCViewerCount : number = 0;
     rtmpViewerCount : number = 0;
     mp4Enabled : number = 0;
     webRTCViewerLimit: number;
     hlsViewerLimit: number;
+    currentPlayIndex: number;
+
+    constructor() {
+        this.playListItemList = [];
+    }
 }
 
 @Injectable()
@@ -176,7 +182,7 @@ export class RestService {
             autoStart = true;
         }
         if(REMOTE_REST_SERVICE_ROOT == null){
-            REST_SERVICE_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/create?autoStart="+autoStart+"&socialNetworks="+socialNetworks;
+            REST_SERVICE_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/create&autoStart="+autoStart+"&socialNetworks="+socialNetworks;
         }
         else{
             REST_SERVICE_ADDRESS = REMOTE_REST_SERVICE_ROOT + "/" + appName + "/rest/v2/broadcasts/create?autoStart="+autoStart+"&socialNetworks="+socialNetworks;
@@ -185,33 +191,6 @@ export class RestService {
     return this.http.post(REST_SERVICE_ADDRESS,
     liveBroadcast);
     }
-
-    public createPlaylist(appName: string, playlist: Playlist, autoStart: boolean): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/playlists/create?autoStart=true",
-            playlist);
-    }
-
-    public updatePlaylist(appName: string, playlist: Playlist, playlistId: string,  autoStart: boolean): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/playlists/edit/"+ playlistId + "?autoStart=true",
-            playlist);
-    }
-
-    public getPlaylist(appName: string, playlistId: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/playlists/"+playlistId);
-    }
-
-    public deletePlaylist(appName: string, streamId:string): Observable<Object> {
-        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/playlists/'+streamId, {});
-    }
-
-    public stopPlaylist(appName: string, streamId: string): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/playlists/" + streamId + "/stop", {});
-    }
-
-    public startPlaylist(appName: string, streamId: string): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/playlists/" + streamId + "/start", {});
-    }
-
 
     public updateLiveStream(appName: string, broadcast: LiveBroadcast, socialNetworks): Observable<Object> {
         return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/"+broadcast.streamId+"?socialNetworks="+socialNetworks,

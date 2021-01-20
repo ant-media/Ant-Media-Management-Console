@@ -123,19 +123,19 @@ select.selectpicker {
     font-size: 14px !important;
 }
 .stream-name-column{
-    flex: 0 1 30%!important;
+    flex: 0 1 25%!important;
 }
 .status-column{
-    flex: 0 1 15% !important;
+    flex: 0 1 25% !important;
 }
 .viewer-column{
-    flex: 0 1 20% !important;
+    flex: 0 1 25% !important;
  }
 .social-column{
     flex: 0 1 15% !important;
  }
 .action-column{
-    flex: 0 1 20% !important;
+    flex: 0 1 25% !important;
     justify-content:flex-end;
 }
 .justify-flex-end {

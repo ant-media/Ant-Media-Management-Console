@@ -1,15 +1,10 @@
-<div class="upload-card">
+<div>
 
-    Upload VoD <span class="btn-label" style="float: right;font-size: 1.2em">
-            <i class="ti-upload"></i>
-        </span>
-
-    <br>
-
-    <br>
-
-
-    <div class="form-group text-left" style="float: left">
+    <h4 class="card-title text-left" i18n="@@editLiveStreamCardTitle">
+        Upload VoD
+    </h4>
+     
+    <div class="form-group text-left col-sm-12 col-md-12">
         <label i18n="@@newVoDName">Name</label>
             <input type="text" name="vodName" i18n-placeholder="@@onvif_url_place_holder" placeholder="VoD Name"
                    class="form-control" [(ngModel)]="fileName" #onvifUrl="ngModel">
@@ -19,25 +14,22 @@
     <br><br>
 
 
-    <div class="fileUpload btn">
-        <span>Choose File</span>
+    <div class="form-group text-center col-sm-2 col-md-2">
         <input type="file" class="upload" (change)="handleFileInput($event.target.files)"/>
     </div>
 
 
-    <br><br><br>
+    <div class="form-group col-sm-12 col-md-12 text-center">
 
-        <div class="form-group text-center">
-
-            <button [disabled]='!fileselected' (click)="submitUpload()" class="btn btn-fill btn-success"
+        <button [disabled]='!fileselected' (click)="submitUpload()" class="btn btn-fill btn-success"
                     i18n="@@newLiveStreamSaveButton">
                 <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="uploading" aria-hidden="true"></i>Save
-            </button>
+        </button>
 
-            <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="onNoClick()">
+        <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="onNoClick()">
                 Cancel
-            </button>
-        </div>
+        </button>
+    </div>
 
 
 </div>
