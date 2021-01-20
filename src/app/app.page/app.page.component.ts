@@ -32,7 +32,6 @@ import {
     VideoServiceEndpoint,
     VodInfo,
     VodInfoTable,
-    Playlist,
     PlaylistItem
 } from './app.definitions';
 import {DetectedObjectListDialog} from './dialog/detected.objects.list';
@@ -139,9 +138,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public newStreamSourceActive: boolean;
     public newPlaylistActive: boolean;
     public liveBroadcast: LiveBroadcast;
-    public liveBroadcastShareFacebook: boolean;
-    public liveBroadcastShareYoutube: boolean;
-    public liveBroadcastSharePeriscope: boolean;
     public newLiveStreamCreating = false;
     public newIPCameraAdding = false;
     public newStreamSourceAdding = false;
@@ -163,7 +159,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public newOnvifURLs: String[];
     public broadcastList: CameraInfoTable;
     public noCamWarning = false;
-    public isGridView = false;
     public keyword: string;
     public startDate: string;
     public endDate: string;
@@ -176,9 +171,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     public userFBPagesLoading = false;
     public liveStreamEditing: LiveBroadcast;
-    public editBroadcastShareYoutube: boolean;
-    public editBroadcastShareFacebook: boolean;
-    public editBroadcastSharePeriscope: boolean;
     public liveStreamUpdating = false;
     public shareEndpoint: boolean[];
     public videoServiceEndpoints: VideoServiceEndpoint[];
@@ -191,8 +183,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public dropdownTimer: any;
     public enterpriseEditionText : any;
     public autoStart: false;
-    public playlist: Playlist;
-    public playlistItems: PlaylistItem[];
     public clusterNodes: ClusterNode[];
     public user: User;
     public currentClusterNode: string;
@@ -206,7 +196,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         new HLSListType('Event', 'event'),
     ];
 
-    public displayedColumnsStreams = ['name' , 'status', 'viewerCount', 'social_media', 'actions'];
+    public displayedColumnsStreams = ['name' , 'status', 'viewerCount', 'actions'];
     public displayedColumnsVod = ['name', 'type', 'date', 'actions'];
     public displayedColumnsUserVod = ['name', 'date', 'actions'];
 
@@ -314,22 +304,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedBroadcast = new LiveBroadcast();
         this.liveBroadcast.name = "";
         this.liveBroadcast.type = "";
-        this.liveBroadcastShareFacebook = false;
-        this.liveBroadcastShareYoutube = false;
-        this.liveBroadcastSharePeriscope = false;
         this.searchParam = new SearchParam();
         this.appSettings = null;
         this.token = null;
         this.newLiveStreamActive = false;
         this.camera = new Camera("", "", "", "", "", "");
-        this.playlist = new Playlist ();
-        this.playlist.playlistName = "";
-
-
-        if (!this.playlistItems) {
-            this.playlistItems = this.playlistItems || [];
-        }
-
 
         this.getInitParams();
 
@@ -502,28 +481,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     openSettingsDialog(selected: LiveBroadcast): void {
 
-        if (selected.endPointList != null) {
-            this.editBroadcastShareFacebook = false;
-            this.editBroadcastShareYoutube = false;
-            this.editBroadcastSharePeriscope = false;
-
-            selected.endPointList.forEach(element => {
-                switch (element.type) {
-                    case "facebook":
-                        this.editBroadcastShareFacebook = true;
-                        break;
-                    case "youtube":
-                        this.editBroadcastShareYoutube = true;
-                        break;
-                    case "periscope":
-                        this.editBroadcastSharePeriscope = true;
-                        break;
-                }
-
-            });
-        }
-
-
         this.selectedBroadcast = selected;
 
         let dialogRef = this.dialog.open(BroadcastEditComponent, {
@@ -542,9 +499,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 hlsViewerLimit: this.selectedBroadcast.hlsViewerLimit,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
-                editBroadcastShareFacebook: this.editBroadcastShareFacebook,
-                editBroadcastShareYoutube: this.editBroadcastShareYoutube,
-                editBroadcastSharePeriscope: this.editBroadcastSharePeriscope,
             }
         });
 
@@ -573,28 +527,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     openStreamSourceSettingsDialog(selected: LiveBroadcast): void {
 
-
-        if (selected.endPointList != null) {
-            this.editBroadcastShareFacebook = false;
-            this.editBroadcastShareYoutube = false;
-            this.editBroadcastSharePeriscope = false;
-
-            selected.endPointList.forEach(element => {
-                switch (element.type) {
-                    case "facebook":
-                        this.editBroadcastShareFacebook = true;
-                        break;
-                    case "youtube":
-                        this.editBroadcastShareYoutube = true;
-                        break;
-                    case "periscope":
-                        this.editBroadcastSharePeriscope = true;
-                        break;
-                }
-
-            });
-        }
-
         this.selectedBroadcast = selected;
 
         let dialogRef = this.dialog.open(BroadcastEditComponent, {
@@ -611,9 +543,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 streamUrl:this.selectedBroadcast.streamUrl,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
-                editBroadcastShareFacebook: this.editBroadcastShareFacebook,
-                editBroadcastShareYoutube: this.editBroadcastShareYoutube,
-                editBroadcastSharePeriscope: this.editBroadcastSharePeriscope,
             }
         });
 
@@ -645,10 +574,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         let dialogRef = this.dialog.open(UploadVodDialogComponent, {
             data: { appName: this.appName },
-            width: '300px'
+            width: '640px'
 
         });
-
 
         dialogRef.afterClosed().subscribe(result => {
             console.log('The dialog was closed');
@@ -658,28 +586,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     openBroadcastEditDialog(stream: BroadcastInfo): void {
-
-
-        if (stream.endPointList != null) {
-            this.editBroadcastShareFacebook = false;
-            this.editBroadcastShareYoutube = false;
-            this.editBroadcastSharePeriscope = false;
-
-            stream.endPointList.forEach(element => {
-                switch (element.type) {
-                    case "facebook":
-                        this.editBroadcastShareFacebook = true;
-                        break;
-                    case "youtube":
-                        this.editBroadcastShareYoutube = true;
-                        break;
-                    case "periscope":
-                        this.editBroadcastSharePeriscope = true;
-                        break;
-                }
-
-            });
-        }
 
         this.liveStreamEditing = new LiveBroadcast();
         this.liveStreamEditing.streamId = stream.streamId;
@@ -699,9 +605,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     hlsViewerLimit: this.liveStreamEditing.hlsViewerLimit,
                     endpointList: stream.endPointList,                    
                     videoServiceEndpoints: this.videoServiceEndpoints,
-                    editBroadcastShareFacebook: this.editBroadcastShareFacebook,
-                    editBroadcastShareYoutube: this.editBroadcastShareYoutube,
-                    editBroadcastSharePeriscope: this.editBroadcastSharePeriscope,
                     // ************** TODO: open it *************************
                     //socialMediaAuthStatus:this.socialMediaAuthStatus
                 }
@@ -718,9 +621,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     openPlaylistEditDialog(stream: BroadcastInfo): void {
 
             let dialogRef = this.dialog.open(PlaylistEditComponent, {
-
+                width: '640px',
                 data: {
-                    playlistId: stream.streamId,
+                    streamId: stream.streamId,
                     appName: this.appName,
                 }
             });
@@ -730,8 +633,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 console.log('The dialog was closed');
                 this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                 this.getAppLiveStreamsNumber();
-
-
             });
     }
 
@@ -1097,26 +998,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     editLiveBroadcast(stream: BroadcastInfo): void {
-        if (stream.endPointList != null) {
-            this.editBroadcastShareFacebook = false;
-            this.editBroadcastShareYoutube = false;
-            this.editBroadcastSharePeriscope = false;
-
-            stream.endPointList.forEach(element => {
-                switch (element.type) {
-                    case "facebook":
-                        this.editBroadcastShareFacebook = true;
-                        break;
-                    case "youtube":
-                        this.editBroadcastShareYoutube = true;
-                        break;
-                    case "periscope":
-                        this.editBroadcastSharePeriscope = true;
-                        break;
-                }
-
-            });
-        }
+       
         if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId) {
             this.liveStreamEditing = new LiveBroadcast();
             this.liveStreamEditing.streamId = stream.streamId;
@@ -1136,18 +1018,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.liveStreamUpdating = true;
         var socialNetworks = [];
-
-        if (this.editBroadcastShareFacebook) {
-            socialNetworks.push("facebook");
-        }
-
-        if (this.editBroadcastShareYoutube == true) {
-            socialNetworks.push("youtube");
-        }
-
-        if (this.editBroadcastSharePeriscope == true) {
-            socialNetworks.push("periscope");
-        }
 
         this.restService.updateLiveStream(this.appName, this.liveStreamEditing,
             socialNetworks).subscribe(data => {
@@ -1254,15 +1124,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
-
-
-
-                    if (this.isGridView) {
-                        setTimeout(() => {
-                            this.switchToGridView();
-                        }, 500);
-                    }
-
 
 
                 });
@@ -1470,6 +1331,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newStreamSourceActive = false;
         this.newPlaylistActive = true;
         this.streamNameEmpty = false;
+        this.liveBroadcast = new LiveBroadcast();
     }
 
 
@@ -1593,12 +1455,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.liveBroadcast.username = "";
                 this.liveBroadcast.password = "";
 
-
-                if (this.isGridView) {
-                    setTimeout(() => {
-                        this.switchToGridView();
-                    }, 500);
-                }
             });
 
 
@@ -1754,30 +1610,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.liveBroadcast.ipAddr = "";
                 this.liveBroadcast.username = "";
                 this.liveBroadcast.password = "";
-                if (this.isGridView) {
-                    setTimeout(() => {
-                        this.switchToGridView();
-                    }, 500);
-                }
+               
             });
     }
     addPlaylistItem(): void {
-
-        this.playlistItems.push({
-            name: "",
-            type: "VoD",
-            streamId: "streamId",
+       
+        this.liveBroadcast.playListItemList.push({
             streamUrl: "",
-            hlsViewerCount: 0,
-            webRTCViewerCount: 0,
-            rtmpViewerCount: 0,
-            mp4Enabled: 0,
+            type: "VoD",
         });
 
     }
 
     deletePlaylistItem(index: number): void {
-        this.playlistItems.splice(index, 1);
+        this.liveBroadcast.playListItemList.splice(index, 1);
     }
 
     addPlaylist(isValid: boolean): void {
@@ -1789,37 +1635,26 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        if (!this.restService.checkStreamName(this.playlist.playlistName)) {
-
+        if (!this.restService.checkStreamName(this.liveBroadcast.name)) {
             this.playlistNameEmpty = true;
             return;
         }
+        this.liveBroadcast.type = "playlist";
 
         this.playlistNameEmpty = false;
         this.newPlaylistAdding = true;
 
-        if(!this.playlistItems){
-            this.playlistItems = null;
-        }
-
-        this.playlist.broadcastItemList = this.playlistItems;
-        this.playlist.playlistId = "";
-        this.playlist.playlistStatus = "created";
-        this.playlist.currentPlayIndex = 0;
-        this.playlist.duration = 0;
-        this.playlist.creationDate = 0;
-
-        this.restService.createPlaylist(this.appName, this.playlist, this.autoStart)
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, null, "")
             .subscribe(data => {
                 console.log("data :" + JSON.stringify(data));
-                if (data["success"] == true) {
+                if (data["streamId"] != null) {
 
                     this.newPlaylistAdding = false;
 
-                    this.playlist = new Playlist ();
+                  //  this.playlist = new Playlist ();
 
-                    this.playlistItems = [];
-                    this.playlist.broadcastItemList = [];
+                  //  this.playlistItems = [];
+                  //  this.playlist.broadcastItemList = [];
 
                     $.notify({
                         icon: "ti-save",
@@ -1834,8 +1669,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     });
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
-
-
 
                 }
                 else {
@@ -1878,71 +1711,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.newPlaylistAdding = false;
                 this.newPlaylistActive = false;
 
-                if (this.isGridView) {
-                    setTimeout(() => {
-                        this.switchToGridView();
-                    }, 500);
-                }
-
             });
-
-    }
-
-    deletePlaylist(streamId: string): void {
-        swal({
-            title: Locale.getLocaleInterface().are_you_sure,
-            text: Locale.getLocaleInterface().wont_be_able_to_revert,
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then(data => {
-            this.restService.deletePlaylist(this.appName, streamId)
-                .subscribe(data => {
-                    if (data["success"] == true) {
-
-                        $.notify({
-                            icon: "ti-save",
-                            message: "Playlist Successfully deleted"
-                        }, {
-                            type: "success",
-                            delay: 900,
-                            placement: {
-                                from: 'top',
-                                align: 'right'
-                            }
-                        });
-
-                    }
-                    else {
-                        $.notify({
-                            icon: "ti-save",
-                            message: Locale.getLocaleInterface().playlist_not_deleted
-                        }, {
-                            type: "warning",
-                            delay: 900,
-                            placement: {
-                                from: 'top',
-                                align: 'right'
-                            }
-                        });
-                    }
-                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-                    this.getAppLiveStreamsNumber();
-
-
-
-                    if (this.isGridView) {
-                        setTimeout(() => {
-                            this.switchToGridView();
-                        }, 500);
-                    }
-
-
-
-                });
-        });
 
     }
 
@@ -2127,20 +1896,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.newLiveStreamCreating = false;
                 this.getAppLiveStreamsNumber();
 
-
-                if (this.isGridView) {
-                    setTimeout(() => {
-                        this.switchToGridView();
-                    }, 500);
-                }
-
-
             });
 
     }
 
     switchToListView(): void {
-        this.isGridView = false;
 
         this.getAppLiveStreams(0, 5);
 
@@ -2178,7 +1938,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     switchToGridView(): void {
-        this.isGridView = true;
 
         setTimeout(() => {
             this.openGridPlayers(0, 4);
@@ -2559,7 +2318,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     stopPlaylist(streamId: string): void {
 
-        this.restService.stopPlaylist(this.appName, streamId).subscribe(data => {
+        this.restService.stopStream(this.appName, streamId).subscribe(data => {
 
             if (data["success"] == true) {
 
@@ -2596,7 +2355,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     startPlaylist(streamId: string): void {
 
-        this.restService.startPlaylist(this.appName, streamId).subscribe(data => {
+        this.restService.startStream(this.appName, streamId).subscribe(data => {
 
             if (data["success"] == true) {
 

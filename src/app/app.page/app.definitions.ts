@@ -66,6 +66,7 @@ export declare interface BroadcastInfo {
     viewerCount: number;
     status: string;
     endPointList: Endpoint[];
+    playListItemList: PlaylistItem[];
     ipAddr: string;
     username: string;
     password: string;
@@ -153,25 +154,8 @@ export declare interface WebRTCClientStat {
 }
 
 export declare interface PlaylistItem {
-        name: string;
-        type: string;
-        streamId: string;
         streamUrl: string;
-        hlsViewerCount: number;
-        webRTCViewerCount: number;
-        rtmpViewerCount: number;
-        mp4Enabled: number;
-}
-
-
-export class Playlist {
-    playlistId: string;
-    currentPlayIndex: number;
-    playlistName: string;
-    playlistStatus: string;
-    broadcastItemList: PlaylistItem[];
-    creationDate: number;
-    duration: number;
+        type: string;
 }
 
 export class ServerSettings {
