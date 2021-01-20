@@ -800,6 +800,13 @@
                                     </div>
                                 </div>
 
+                                <div class="main">
+                                    <div *ngIf="broadcastTableData.dataRows.length == 0"
+                                         i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+                                        There is no stream at this time.
+                                    </div>
+                                </div>
+                                <!-- /main -->
 
                             </div>
 
