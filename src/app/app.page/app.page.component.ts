@@ -1335,6 +1335,53 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
+    checkIPCameraError(streamId:string): void {
+       
+            this.restService.getCameraError(this.appName , streamId) .subscribe(data => {
+
+                console.log("stream ID :  "+ streamId);
+
+                if(data["success"] == false){
+
+                    if (data["message"] != null && data["message"].includes("401")) {
+
+                        swal({
+                            title: "Authorization Error",
+                            text: "Please Check Username and/or Password",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+                        }).catch(function () {
+
+                        });
+                    }
+                    else {
+                        swal({
+                            title: "Camera Error",
+                            text: "An unknown error occured for your IP Camera. Please report this case to support@antmedia.io with your logs and IP camera address",
+                            type: 'error',
+
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+                        }).catch(function () {
+
+                        });
+                    }
+                }
+                else{
+                    console.log("no  camera error")
+                }
+
+                this.liveBroadcast.ipAddr = "";
+            });
+    }
+
+
     addIPCamera(isValid: boolean): void {
         this.streamNameEmpty = false;
 
@@ -1383,7 +1430,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreamsNumber();
 
                     this.liveBroadcast.streamUrl = "";
-
+                    //call 5 seconds later to let IP camera start
+                    setTimeout(() => {
+                        this.checkIPCameraError(data["dataId"]);
+                    }, 5000);    
                 }
                 else {
 
@@ -1456,41 +1506,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.liveBroadcast.password = "";
 
             });
-
-
-        setTimeout(()=>{
-
-            this.restService.getCameraError(this.appName , this.liveBroadcast.ipAddr) .subscribe(data => {
-
-                console.log("stream ID :  "+this.liveBroadcast.ipAddr);
-
-                if(data["message"] != null){
-
-                    if (data["message"].includes("401")) {
-
-                        swal({
-                            title: "Authorization Error",
-                            text: "Please Check Username and/or Password",
-                            type: 'error',
-
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-
-                        }).catch(function () {
-
-                        });
-                    }
-                }
-                else{
-                    console.log("no  camera error")
-                }
-
-                this.liveBroadcast.ipAddr = "";
-            });
-
-        },8000)
-
     }
 
     addStreamSource(isValid: boolean): void {
