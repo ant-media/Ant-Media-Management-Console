@@ -198,6 +198,9 @@ export class AppSettings {
                 public listenerHookURL: string,
                 public jwtControlEnabled: boolean,
                 public jwtSecretKey: string,
-                public ipFilterEnabled: boolean
+                public ipFilterEnabled: boolean,
+                public jwtStreamSecretKey: string,
+                public playJwtControlEnabled: boolean,
+                public publishJwtControlEnabled: boolean
     ) {}
 }
