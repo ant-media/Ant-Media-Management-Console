@@ -1592,7 +1592,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     $.notify({
                         icon: "ti-save",
-                        message: "Error: Not added"
+                        message: "Failed. Error is " + data["message"]
                     }, {
                         type: "danger",
                         delay: 2000,
@@ -2278,7 +2278,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 $.notify({
                     icon: "ti-save",
-                    message: "Stream Stop Failed"
+                    message: "Stream stop is failed.<br/>Error: " + data["message"]
                 }, {
                     type: "warning",
                     delay: 3000,
@@ -2315,10 +2315,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 $.notify({
                     icon: "ti-save",
-                    message: "Stream Start Failed"
+                    message: "Stream Start Failed.<br/>Error: " + data["message"]
                 }, {
                     type: "warning",
-                    delay: 3000,
+                    delay: 5000,
                     placement: {
                         from: 'top',
                         align: 'right'
@@ -2353,7 +2353,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 $.notify({
                     icon: "ti-save",
-                    message: "Playlist Stop Failed"
+                    message: "Playlist Stop Failed.<br/>Error: " + data["message"]
                 }, {
                     type: "warning",
                     delay: 3000,
