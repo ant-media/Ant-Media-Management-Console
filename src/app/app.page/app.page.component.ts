@@ -1307,6 +1307,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraActive = false;
         this.newStreamSourceActive = false;
         this.streamNameEmpty = false;
+        this.liveBroadcast = new LiveBroadcast();
     }
 
     newIPCamera(): void {
@@ -1315,6 +1316,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraActive = true;
         this.newStreamSourceActive = false;
         this.streamNameEmpty = false;
+        this.liveBroadcast = new LiveBroadcast();
     }
 
     newStreamSource(): void {
@@ -1323,6 +1325,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraActive = false;
         this.newStreamSourceActive = true;
         this.streamNameEmpty = false;
+        this.liveBroadcast = new LiveBroadcast();
     }
 
     newPlaylist(): void {
@@ -1408,13 +1411,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.createLiveStream(this.appName, this.liveBroadcast,null, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
+                this.newIPCameraAdding = false;
                 if (data["success"] == true) {
 
                     console.log("success: " + data["success"]);
                     console.log("error: " + data["message"]);
 
-                    this.newIPCameraAdding = false;
-
+                    this.newIPCameraActive = false;
+        
                     $.notify({
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().new_broadcast_created
@@ -1429,7 +1433,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
 
-                    this.liveBroadcast.streamUrl = "";
                     //call 5 seconds later to let IP camera start
                     setTimeout(() => {
                         this.checkIPCameraError(data["dataId"]);
@@ -1440,9 +1443,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     console.log("success: " + data["success"]);
                     console.log("message: " + data["message"]);
 
-                    var errorCode = data["message"];
-                    this.newIPCameraAdding = false;
-
+                    var errorCode = data["errorId"];
                     if (errorCode == -1) {
 
                         swal({
@@ -1459,8 +1460,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                         });
                     }
-
-                    if (errorCode == -2) {
+                    else if (errorCode == -2) {
 
                         swal({
                             title: "Authorization Error",
@@ -1476,8 +1476,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                         });
                     }
-
-                    if (errorCode == -3) {
+                    else if (errorCode == -3) {
 
                         swal({
                             title: "High CPU Load",
@@ -1497,14 +1496,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
                 }
-
-                //swal.close();
-                this.newIPCameraAdding = false;
-                this.newIPCameraActive = false;
-                this.liveBroadcast.name = "";
-                this.liveBroadcast.username = "";
-                this.liveBroadcast.password = "";
-
             });
     }
 
