@@ -15,6 +15,7 @@ export class User {
 
     public newPassword: string;
     public fullName: string;
+    public userType: string;
 
     constructor(public email: string, public password: string) { }
 }
@@ -169,6 +170,9 @@ export class RestService {
                 +"&sort_by="+sortBy+"&order_by="+orderBy+"&search="+filterValue,{});
         }
     }
+    public getUsers(){
+        return this.http.get(REST_SERVICE_ROOT + "/userList");
+    }
 
     public getBroadcast(appName: string, id: string): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + id);
@@ -203,6 +207,9 @@ export class RestService {
 
     public startStream(appName: string, streamId: string): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/start", {});
+    }
+    public deleteUser(email:string){
+        return this.http.delete(REST_SERVICE_ROOT + "/deleteUser/" + email);
     }
 
     public deleteBroadcast(appName: string, streamId:string, REMOTE_REST_SERVICE_ROOT:string): Observable<Object> {
@@ -268,6 +275,9 @@ export class RestService {
     public getApplications(): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + '/getApplications');
     }
+    public isAdmin(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/isAdmin');
+    }
 
     public authenticateUser(user: User): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/authenticateUser", user);
@@ -283,6 +293,13 @@ export class RestService {
 
     public createFirstAccount(user: User): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/addInitialUser", user);
+    }
+
+    public createUser(user: User): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/addUser", user);
+    }
+    public editUser(user:User): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/editUser", user);
     }
 
     public isAuthenticated(): Observable<Object> {

@@ -1,0 +1,40 @@
+<div>
+
+    <form method="post" #f="ngForm" validate (ngSubmit)="updateUser(f.valid)">
+        <div class="card-content" style="padding-top:0px">
+            <h4 class="card-title text-left" i18n="@@editUserCardTitle">
+                Edit User
+            </h4>
+        </div>
+        <div class="card-content">
+            <div class="form-group text-left">
+           
+                <label i18n="@@newPassword">Password</label>
+                <input type="text" name="password" i18n-placeholder="@@password_place_holder" placeholder="Password"
+                    class="form-control" [(ngModel)]="data.newPassword" #password="ngModel" style="width: 400px">
+            </div>
+            <fieldset >
+                <div class="form-group text-left" >
+                    <label class="col-sm-2 control-label">User type</label>
+
+                    <div class="col-sm-10">
+
+                        <select  type="text"  [name]="'UserType'" (ngModelChange)="UserTypeChanged($event)" [(ngModel)]="currentUserType"
+                                class="dropdown-toggle form-control" required>
+                            <option value="{{AdminUserType}}" >{{AdminUserType}}</option>
+                            <option value="{{ReadOnlyUserType}}">{{ReadOnlyUserType}}</option>
+                        </select>
+
+                    </div> 
+                </div>
+            </fieldset>
+            <div class="form-group text-center">
+
+                <button type="submit" [disabled]='liveStreamUpdating' class="btn btn-fill btn-success" i18n="@@newLiveStreamSaveButton">
+                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="liveStreamUpdating" aria-hidden="true"></i>Save</button>
+
+                <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelEditLiveStream()">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

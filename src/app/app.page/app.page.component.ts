@@ -154,6 +154,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
 
+    public admin_check : boolean;
     public camera: Camera;
     public onvifURLs: String[];
     public newOnvifURLs: String[];
@@ -272,6 +273,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit() {
 
+        this.restService.isAdmin().subscribe(data => {
+            console.log(data);
+            if(data["success"] == true){
+                this.admin_check = true;
+            }
+            else{
+                this.admin_check = false;
+            }
+        })
+
         this.timerId = null;
         this.dropdownTimer = null;
 
@@ -298,6 +309,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.clusterNodeTableData = {
             dataRows: [],
         };
+
 
 
         this.liveBroadcast = new LiveBroadcast();
@@ -662,6 +674,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
+            console.log(this.dataSource)
             this.cdr.detectChanges();
 
         });

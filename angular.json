@@ -32,8 +32,6 @@
               "chartist-plugin-legend",
               "rxjs-compat/add/observable/of",
               "rxjs-compat/add/operator/filter"
-
-
             ],
             "assets": [
               "src/assets",
@@ -198,5 +196,8 @@
     "@schematics/angular:directive": {
       "prefix": "app"
     }
+  },
+  "cli": {
+    "analytics": "9551740e-261b-4dc4-a8b7-e70259069dac"
   }
 }

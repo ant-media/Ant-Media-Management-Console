@@ -9,12 +9,11 @@
                             <div class="nav-tabs-wrapper">
                                 <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                                     <li class="active">
-                                        <a href="#licence" data-toggle="tab" i18n="licence key settings licence | @@LicenceTabHeader">License </a>
+                                        <a href="#licence" data-toggle="tab" i18n="licence key settings licence | @@LicenceTabHeader">General </a>
                                     </li>
                                     <li>
-                                        <a href="#log" data-toggle="tab" i18n="log settings |log@@LogTabHeader">Log</a>
+                                        <a href="#users" data-toggle="tab" i18n="user settings |log@@LogTabHeader">Users</a>
                                     </li>
-
                                 </ul>
                             </div>
                         </div>
@@ -73,6 +72,24 @@
                                                 </div>
                                             </div>
                                         </fieldset>
+                                        <fieldset >
+                                            <div class="form-group" >
+                                                <label class="col-sm-2 control-label">Log Status</label>
+    
+                                                <div class="col-sm-10">
+    
+                                                    <select  type="text"  [name]="'resolutionHeight'" (ngModelChange)="logLevelChanged($event)" [(ngModel)]="currentLogLevel"
+                                                             class="dropdown-toggle form-control" required>
+                                                        <option value="{{logLevelDebug}}" >{{logLevelDebug}}</option>
+                                                        <option value="{{logLevelInfo}}">{{logLevelInfo}}</option>
+                                                        <option value="{{logLevelWarn}}">{{logLevelWarn}}</option>
+                                                        <option value="{{logLevelError}}">{{logLevelError}}</option>
+                                                        <option value="{{logLevelOff}}">{{logLevelOff}}</option>
+                                                    </select>
+    
+                                                </div>
+                                            </div>
+                                        </fieldset>
 
                                         <fieldset>
                                             <div class="form-group text-center">
@@ -80,7 +97,6 @@
                                             </div>
                                         </fieldset>
                                     </form>
-
                                 </div>
 
                                 <!-- don't let wrong configuration show the two messages at the same time-->
@@ -92,43 +108,170 @@
                                     This is the Ant Media Server Community Edition. No need to license activation.
                                 </p>
                             </div>
+                                <div class="tab-pane container-fluid" id="users">
+                                    <div>
+                                    <div class="text-right" style="float: right">
+                                        <button class="btn btn-fill btn-success" i18n="@@newUserButton"
+                                        (click)="newUser()" role="button">New User
+                                            <span class="caret"></span>
+                                        </button>
+                                    </div>
+                                    <br>
+                                    <br>
+                                </div>
 
+                                <div class="card" *ngIf="newUserActive">
 
-
-                            <div class="tab-pane container-fluid" id="log">
-
-                                <form #f="ngForm" (ngSubmit)="changeLogLevel(f.valid)" validate class="form-horizontal" method="post">
-
-                                    <fieldset >
-                                        <div class="form-group" >
-                                            <label class="col-sm-2 control-label">Log Status</label>
-
-                                            <div class="col-sm-10">
-
-                                                <select  type="text"  [name]="'resolutionHeight'" (ngModelChange)="logLevelChanged($event)" [(ngModel)]="currentLogLevel"
-                                                         class="dropdown-toggle form-control" required>
-                                                    <option value="{{logLevelDebug}}" >{{logLevelDebug}}</option>
-                                                    <option value="{{logLevelInfo}}">{{logLevelInfo}}</option>
-                                                    <option value="{{logLevelWarn}}">{{logLevelWarn}}</option>
-                                                    <option value="{{logLevelError}}">{{logLevelError}}</option>
-                                                    <option value="{{logLevelOff}}">{{logLevelOff}}</option>
-                                                </select>
-
-                                            </div>
+                                    <form method="post" #f="ngForm" validate (ngSubmit)="createUser(f.valid)">
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left" i18n="@@newLiveStreamCardTitle">
+                                                New User
+                                            </h4>
                                         </div>
-                                    </fieldset>
+                                        <div class="card-content">
+                                            <div class="form-group text-left">
+                                                <label i18n="@@newUserName">Username</label>
+                                                <input type="text" required minlength="4" name="userName"
+                                                    i18n-placeholder="@@username_place_holder"
+                                                    placeholder="Username" class="form-control"
+                                                    [(ngModel)]="User.email" #userName="ngModel">
+                                                <small [hidden]="userName.valid || (!f.submitted)"
+                                                    class="text-danger" i18n="@@usernameIsRequired">
+                                                    Stream name should be at least 4 characters.
+                                                </small>
+                                                <small class="text-danger" *ngIf="streamNameEmpty">
+                                                    Stream name should not be empty.
+                                                </small>
+                                            </div>
+                                            <div class="form-group text-left">
+                                                <label i18n="@@newPassword">Password</label>
+                                                <input type="text" required minlength="4" name="Password"
+                                                    i18n-placeholder="@@password_place_holder"
+                                                    placeholder="password" class="form-control"
+                                                    [(ngModel)]="User.password" #Password="ngModel">
+                                                <small [hidden]="Password.valid || (!f.submitted)"
+                                                    class="text-danger" i18n="@@usernameIsRequired">
+                                                    Password should be at least 4 characters.
+                                                </small>
+                                                <small class="text-danger" *ngIf="streamNameEmpty">
+                                                    Password should not be empty.
+                                                </small>
+                                            </div>
+                                            <fieldset >
+                                                <div class="form-group text-left" >
+                                                    <label class="col-sm-2 control-label">User type</label>
+        
+                                                    <div class="col-sm-10">
+            
+                                                        <select  type="text"  [name]="'UserType'" (ngModelChange)="UserTypeChanged($event)" [(ngModel)]="currentUserType"
+                                                                class="dropdown-toggle form-control" required>
+                                                            <option value="{{AdminUserType}}" >{{AdminUserType}}</option>
+                                                            <option value="{{ReadOnlyUserType}}">{{ReadOnlyUserType}}</option>
+                                                        </select>
 
+                                                    </div> 
+                                                </div>
+                                            </fieldset>
+                                                                   
+                                            <div class="form-group text-center">
 
+                                                <button style="margin: 15px" type="submit" [disabled]='newUserCreating'
+                                                    class="btn btn-fill btn-success" i18n="@@newUserCreateButton">
+                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw"
+                                                        *ngIf="newUserCreating"
+                                                        aria-hidden="true"></i>Create</button>
 
+                                                <button type="button" class="btn btn-simple"
+                                                    i18n="@@newUserCancelButton"
+                                                    (click)="cancelNewUser()">Cancel</button>
+                                            </div>
+                                      
+                                        </div>
+                                    </form>
+                                </div>
+                                <div style="display: flex; justify-content: flex-end"
+                                    *ngIf="userDataTable.dataRows.length>=0">
 
-                                    <button class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
-                                            type="submit">Save
-                                    </button>
+                                    <div class="mat-header">
+                                        <input (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                                    </div>
 
-                                </form>
+                                </div>
 
+                                <div id="broadcastTable" style="text-align: left;"
+                                    *ngIf="userDataTable.dataRows.length>0">
+
+                                    <div class="mat-container mat-elevation-z0">
+                                        <mat-table style="overflow: visible !important;" [dataSource]="dataSource" matSort
+                                            >
+
+                                            <ng-container matColumnDef="email">
+                                                <mat-header-cell [ngClass]="'email-column'" *matHeaderCellDef
+                                                    mat-sort-header> Username </mat-header-cell>
+
+                                                <mat-cell [ngClass]="'email-column'" *matCellDef="let row">
+                                                    <div style="padding-left: 12px;">
+                                                        {{row.email}}
+                                                        <ng-container *ngIf="!row.email || row.email.length == 0">
+                                                            [No Name]
+                                                        </ng-container>
+                                                    </div>
+                                                </mat-cell>
+                                            </ng-container>
+
+                                                    <ng-container matColumnDef="type">
+                                                        <mat-header-cell [ngClass]="'type-column'" *matHeaderCellDef
+                                                            mat-sort-header> User Type </mat-header-cell>
+        
+                                                        <mat-cell [ngClass]="'type-column'" *matCellDef="let row">
+                                                            <div style="padding-left: 12px;">
+                                                                {{row.userType}}
+                                                            </div>
+
+                                                </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="actions">
+                                                <mat-header-cell *matHeaderCellDef class="justify-flex-end"> Actions
+                                                </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row" class="justify-flex-end">
+                                                    <button
+                                                            (click)="changeType(row)" title="Change Type"
+                                                            data-toggle="tooltip"
+                                                            class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
+                                                            type="button">
+                                                            <span class="btn-label">
+                                                                <i class="ti-pencil"></i>
+                                                            </span>
+                                                            <ng-container i18n="@@tableEditButton"></ng-container>
+
+                                                        </button>
+
+                                                    <button (click)="deleteUser(row.email)"
+                                                        class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
+                                                        type="button">
+                                                        <span class="btn-label">
+                                                            <i class="ti-close"></i>
+                                                        </span>
+                                                    </button>
+
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <mat-header-row *matHeaderRowDef="displayedColumnsStreams"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: displayedColumnsStreams;">
+                                            </mat-row>
+                                        </mat-table>
+                                    </div>
+                                </div>
+
+                                <div class="main">
+                                    <div *ngIf="userDataTable.dataRows.length == 0"
+                                         i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+                                        You need to be admin to see the users.
+                                    </div>
+                                </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
