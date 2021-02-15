@@ -196,5 +196,5 @@
     "@schematics/angular:directive": {
       "prefix": "app"
     }
-  },
+  }
 }
