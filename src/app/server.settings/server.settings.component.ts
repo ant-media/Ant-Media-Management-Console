@@ -43,6 +43,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     public serverSettings: ServerSettings;
     public settingsReceived = false;
     public licenseStatus = "Getting license status";
+    public licenseStatusExplaination: string;
     public licenseStatusReceiving = false;
     public currentLicence : Licence;
     private _messageReceived : string;
@@ -61,6 +62,10 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
     public noLicenseFounrError: string = "NO_LICENSE_FOUND";
     public licenseExpireError : string = "LICENSE_EXPIRED";
     public licenseServerRequestError : string = "serverRequestError";
+    public invalidKeyError: string = "INVALID_KEY";
+    public licenseBlocked: string = "LICENSE_BLOCKED";
+
+    public TRIAL_PERIOD_ENDED: string = "TRIAL_PERIOD_ENDED";
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
                 private restService: RestService,
@@ -179,7 +184,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
     public evaluateLicenseStatus(data:Object) {
         var licenseErrorTitle = "Invalid License";
-        var licenseStatusExplaination = "Please Validate Your License";
+        this.licenseStatusExplaination = "Please validate your license";
 
         if (data != null) {
             this.currentLicence  = <Licence>data;
@@ -191,29 +196,39 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
 
             if (this.currentLicence.status == this.licenseServerRequestError){
 
-                licenseErrorTitle = "Could Not Connect To License Server"
-                licenseStatusExplaination = "Please Check Your Connection"
+                licenseErrorTitle = "Could Not Connect To License Server";
+                this.licenseStatus = "Network is unaccessible"
+                this.licenseStatusExplaination = "Please check your connection"
             }
-            else{
-                var statusJson:string = this.currentLicence.status;
-
-                JSON.parse(statusJson, (key, value) => {
-                    if (key == "refreshInterval" ){
-
-                        licenseStatusExplaination = "Your license is granted to another instance, please close your other instances, wait "+ value + " minutes and try again.";
-                    }
-
-                    if (key == "result" && value == this.licenseExpireError){
-
-                        licenseStatusExplaination = "Your license is expired, please renew it.";
-                    }
-                });
+            else if (this.currentLicence.status == this.licenseExpireError) 
+            {
+                this.licenseStatus = "Expired";
+                this.licenseStatusExplaination = "Your license is expired, please renew your license at antmedia.io";
             }
+            else if (this.currentLicence.status == this.invalidKeyError ||
+                this.currentLicence.status == this.noLicenseFounrError) 
+            {
+                this.licenseStatusExplaination = "Your license key is invalid";
+            }
+            else if (this.currentLicence.status == this.licenseBlocked) 
+            {
+                this.licenseStatus = "Suspended";
+                this.licenseStatusExplaination = "Your license is suspended. Please renew your license at antmedia.io";
+            }
+            else if (this.currentLicence.status == this.allLicensesUsedError) 
+            {
+                this.licenseStatusExplaination = "You have reached your licence limit. Please close some of your running instances";
+            }
+            else  if (this.currentLicence.status == this.TRIAL_PERIOD_ENDED) {
+                this.licenseStatus = "Trial expired";
+                this.licenseStatusExplaination = "Your trial period is expired. Please buy a license at antmedia.io or extend your trial";
+            }
+            
             if (this.authService.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
 
                 swal({
                     title: licenseErrorTitle,
-                    text: licenseStatusExplaination,
+                    text: this.licenseStatusExplaination,
                     type: 'error',
 
                     confirmButtonColor: '#3085d6',
@@ -287,6 +302,10 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
                 });
 
                 this.authService.serverSettings = this.serverSettings;
+                this.authService.licenceWarningDisplay = true;
+                if(!this.serverSettings.buildForMarket){
+                    this.getLicenseStatus()
+                }
             }
             else {
                 $.notify({
@@ -302,10 +321,7 @@ export class ServerSettingsComponent implements OnInit, AfterViewInit{
                 });
 
             }
-            this.authService.licenceWarningDisplay = true;
-            if(!this.serverSettings.buildForMarket){
-                this.getLicenseStatus()
-            }
+            
 
         });
     }
