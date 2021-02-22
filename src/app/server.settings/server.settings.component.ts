@@ -21,7 +21,6 @@ import {UserEditComponent} from './dialog/user.edit.dialog.component';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import { UserInfo } from 'os';
 
 
 declare var $:any;
@@ -83,6 +82,8 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     public userDataTable : UserInfoTable;
 
+    public admin_check = false;
+
     public userListOffset = 0;
     public pageSize = 0;
 
@@ -111,6 +112,15 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     }
 
     ngOnInit(){
+        this.restService.isAdmin().subscribe(data => {
+            console.log(data);
+            if(data["success"] == true){
+                this.admin_check = true;
+            }
+            else{
+                this.admin_check = false;
+            }
+        })
 
         this.serverSettings = new ServerSettings(null,null, false);
 

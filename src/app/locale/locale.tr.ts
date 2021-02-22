@@ -18,6 +18,9 @@ export let Locale_Turkish: LocaleInterface =
     publish_url_copied_to_clipboard : "Yayın URL'i panoya kopyalandı.",
     embed_code_copied_to_clipboard : "Gömülü kod panoya kopyalandı.",
     congrats : "Tebrikler",
+    license_saved : "Lisans kaydedildi",
+    log_level_changed : "Log level değiştirildi",
+    new_user_created: "Yeni kullanıcı oluşturuldu",
     authentication_is_done : "Yetkilendirme tamamlandı.",
     are_you_sure : 'Bunu yapmak istediğinizden emin misiniz ?',
     wont_be_able_to_revert : "Bu işlemi geri alamayacaksınız",
@@ -41,3 +44,4 @@ export let Locale_Turkish: LocaleInterface =
     cluster: "Cluster",
     support: "Destek",
 }
+

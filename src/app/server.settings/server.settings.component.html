@@ -55,8 +55,8 @@
 
                                         </fieldset>
 
-                                        <fieldset>
-                                            <div class="form-group" >
+                                        <fieldset *ngIf="admin_check==true">
+                                            <div class="form-group"  >
                                                 <label class="col-sm-2 control-label">Submit License Key</label>
                                                 <div class="col-sm-10 text-left" >
 
@@ -92,11 +92,18 @@
                                         </fieldset>
 
                                         <fieldset>
-                                            <div class="form-group text-center">
+                                            <div class="form-group text-center" *ngIf="admin_check==true">
                                                 <button type="submit" class="btn btn-fill btn-info" i18n="@@saveForm">Save</button>
                                             </div>
                                         </fieldset>
                                     </form>
+
+                                    <div class="main">
+                                        <div *ngIf="admin_check == false"
+                                             i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+                                            You need to be admin to change settings
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- don't let wrong configuration show the two messages at the same time-->
