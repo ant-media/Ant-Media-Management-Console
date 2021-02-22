@@ -1509,6 +1509,20 @@
                                                                 </label>                                                                
                                                             </div>
                                                         </div>
+
+                                                        <div *ngIf=!isEnterpriseEdition class="text-left">
+                                                            <div class="col-xs-12">
+                                                                <label
+                                                                        i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                                    Get <a
+                                                                        href="https://antmedia.io/#products">Enterprise
+                                                                    Edition</a> to use Accept only time based token Subscribers feature.
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+
+
                                                         <div class="col-xs-12">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="acceptAllStreams"
@@ -1523,6 +1537,78 @@
                                                                 </label>
                                                             </div>
                                                         </div>
+
+                                                        <div *ngIf=!isEnterpriseEdition class="text-left">
+                                                            <div class="col-xs-12">
+                                                                <label
+                                                                        i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                                    Get <a
+                                                                        href="https://antmedia.io/#products">Enterprise
+                                                                    Edition</a> to use JWT Stream for Filter feature.
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 ">
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.publishJwtControlEnabled"
+                                                                       id="publishJwtControlEnabled" name="publishJwtControlEnabled"
+                                                                       type="checkbox">
+
+                                                                <label for="publishJwtControlEnabled">
+                                                                    Publish with JWT Filter for Stream <a
+                                                                        href="https://github.com/ant-media/Ant-Media-Server/wiki/Stream-Security-Documentation"
+                                                                        target="_blank"
+                                                                        matTooltip="By enabling this option, jwt tokens are required for publishing. Publish request without tokens will not be streamed. Click for more information."><i
+                                                                        style="font-size: 20px;"
+                                                                        class="fa fa-info-circle"></i></a>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.playJwtControlEnabled"
+                                                                       id="playJwtControlEnabled" name="playJwtControlEnabled"
+                                                                       type="checkbox">
+
+                                                                <label for="playJwtControlEnabled">
+                                                                    Play with JWT Filter for Stream <a
+                                                                        href="https://github.com/ant-media/Ant-Media-Server/wiki/Stream-Security-Documentation"
+                                                                        target="_blank"
+                                                                        matTooltip="By enabling this option, jwt tokens are required for playing. Play request without tokens will not be streamed. Click for more information."><i
+                                                                        style="font-size: 20px;"
+                                                                        class="fa fa-info-circle"></i></a>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div *ngIf="appSettings.publishJwtControlEnabled || appSettings.playJwtControlEnabled && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                            <label i18n="@@jwtFilter">
+                                                                Secret key for JWT Stream Filter<a
+                                                                    matTooltip="Please enter at least 32 character"><i
+                                                                    class="fa fa-info-circle"></i></a>
+                                                            </label>
+
+                                                            <div>
+                                                                <textarea name="jwtStreamSecretKey" minlength="32"  #jwtStreamSecretKey="ngModel" [disabled]="!appSettings.publishJwtControlEnabled && !appSettings.playJwtControlEnabled"
+                                                                          [(ngModel)]="appSettings.jwtStreamSecretKey"
+                                                                          type="textarea" class="form-control"
+                                                                          placeholder="Please write at least 32 character"
+                                                                          rows="1">{{appSettings.jwtStreamSecretKey}}
+                                                                </textarea>
+                                                                <small [hidden]="(jwtStreamSecretKey.valid || !appSettings.publishJwtControlEnabled || !appSettings.playJwtControlEnabled) || (!f.submitted)"
+                                                                       class="text-danger">
+                                                                    JWT Stream Secret Key should at least 32 character
+                                                                </small>
+                                                                <button
+                                                                        (click)="setJwtStreamFilterString(32)" class="btn pull-right btn-default" style="margin:5px"
+                                                                        type="button">
+                                                                    Generate
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
                                                 </div>
 
@@ -1600,7 +1686,7 @@
                                                                     JWT Secret Key should at least 32 character
                                                                 </small>
                                                                 <button
-                                                                (click)="setRandomString(32)" class="btn pull-right btn-default" style="margin:5px"
+                                                                (click)="setJwtRestFilterString(32)" class="btn pull-right btn-default" style="margin:5px"
                                                                 type="button">
                                                                  Generate
                                                               </button>
