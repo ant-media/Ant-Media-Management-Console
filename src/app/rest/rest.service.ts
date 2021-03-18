@@ -128,7 +128,7 @@ export class RestService {
     }
 
     public isShutdownProperly(appNames: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/v2/shutdown-proper-status"?appNames=' + appNames);
+        return this.http.get(REST_SERVICE_ROOT + '/v2/shutdown-proper-status?appNames=' + appNames);
     }
 
     public setShutdownProperly(appNames: string): Observable<Object> {
