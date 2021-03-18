@@ -128,19 +128,19 @@ export class RestService {
     }
 
     public isShutdownProperly(appNames: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/shutdown-properly?appNames=' + appNames);
+        return this.http.get(REST_SERVICE_ROOT + '/v2/shutdown-proper-status"?appNames=' + appNames);
     }
 
     public setShutdownProperly(appNames: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/setShutdownProperly?appNames=' + appNames);
+        return this.http.get(REST_SERVICE_ROOT + '/v2/shutdown-properly?appNames=' + appNames);
     }
 
     public getSystemResourcesInfo(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/getSystemResourcesInfo');
+        return this.http.get(REST_SERVICE_ROOT + '/v2/system-resources');
     }
 
     public getCPULoad(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/getCPUInfo');
+        return this.http.get(REST_SERVICE_ROOT + '/v2/cpu-status');
     }
 
     public checkAuthStatus(networkName: string, appName: string): Observable<Object> {
@@ -149,7 +149,7 @@ export class RestService {
     }    
 
     public getVersion(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/getVersion");
+        return this.http.get(REST_SERVICE_ROOT + "/v2/version");
     }
 
     public getDetectionList(appName:string, streamId:string, offset:number, size:Number): Observable<Object> {
@@ -243,7 +243,7 @@ export class RestService {
         {
             if (this.isEnterpriseObject == null) 
             {
-                this.http.get(REST_SERVICE_ROOT + "/isEnterpriseEdition").subscribe(data => {
+                this.http.get(REST_SERVICE_ROOT + "/v2/enterprise-edition").subscribe(data => {
                   //cache value
                   this.isEnterpriseObject = data;
                   observer.next(this.isEnterpriseObject);
@@ -266,27 +266,27 @@ export class RestService {
     }
 
     public getApplications(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/getApplications');
+        return this.http.get(REST_SERVICE_ROOT + '/v2/applications');
     }
 
     public authenticateUser(user: User): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/authenticateUser", user);
+        return this.http.post(REST_SERVICE_ROOT + "/v2/users/authenticate", user);
     }
 
     public changePassword(user: User): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/changeUserPassword", user);
+        return this.http.post(REST_SERVICE_ROOT + "/v2/users/password", user);
     }
 
     public isFirstLogin(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/isFirstLogin");
+        return this.http.get(REST_SERVICE_ROOT + "/v2/first-login-status");
     }
 
     public createFirstAccount(user: User): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/addInitialUser", user);
+        return this.http.post(REST_SERVICE_ROOT + "/v2/users/initial", user);
     }
 
     public isAuthenticated(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/isAuthenticated");
+        return this.http.get(REST_SERVICE_ROOT + "/v2/authentication-status");
     }
 
     public get(url: string, options:any): Observable<Object> {
@@ -307,61 +307,61 @@ export class RestService {
     }
 
     public getSettings(appName: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/getSettings/" + appName);
+        return this.http.get(REST_SERVICE_ROOT + "/v2/applications/settings/" + appName);
     }
     public getServerSettings(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/getServerSettings/" );
+        return this.http.get(REST_SERVICE_ROOT + "/v2/server-settings/" );
     }
 
     public changeSettings(appName: string, appSettings: AppSettings ): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + '/changeSettings/' + appName, appSettings);
+        return this.http.post(REST_SERVICE_ROOT + '/v2/applications/settings/' + appName, appSettings);
     }
 
     public changeServerSettings(serverSettings: ServerSettings ): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + '/changeServerSettings', serverSettings);
+        return this.http.post(REST_SERVICE_ROOT + '/v2/server-settings', serverSettings);
     }
     public getDeviceAuthParameters(appName: string, networkName: string): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-networks/" + networkName, {});
     }
 
     public getLicenseStatus(licenceKey : string): Observable<Object> {
-        return  this.http.get(REST_SERVICE_ROOT + '/getLicenceStatus/?key='+ licenceKey);
+        return  this.http.get(REST_SERVICE_ROOT + '/v2/licence-status/?key='+ licenceKey);
     }
 
     public getLastLicenseStatus(): Observable<Object> {
-        return  this.http.get(REST_SERVICE_ROOT + '/getLastLicenceStatus');
+        return  this.http.get(REST_SERVICE_ROOT + '/v2/last-licence-status');
     }
 
     public getLiveClientsSize(): Observable<Object> {
-        return  this.http.get(REST_SERVICE_ROOT + '/getLiveClientsSize');
+        return  this.http.get(REST_SERVICE_ROOT + '/v2/live-clients-size');
     }
 
     public getSystemMemoryInfo(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/getSystemMemoryInfo');
+        return this.http.get(REST_SERVICE_ROOT + '/v2/system-memory-status');
     }
 
     public getFileSystemInfo(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/getFileSystemInfo');
+        return this.http.get(REST_SERVICE_ROOT + '/v2/file-system-status');
     }
 
     public getJVMMemoryInfo(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/getJVMMemoryInfo');
+        return this.http.get(REST_SERVICE_ROOT + '/v2/jvm-memory-status');
     }
 
     public getApplicationsInfo(): Observable<Object>{
-        return this.http.get(REST_SERVICE_ROOT + '/getApplicationsInfo');
+        return this.http.get(REST_SERVICE_ROOT + '/v2/applications-info');
     }
 
     public getLogFile(offset:number, logType:string): Observable<Object>{
-        return this.http.get(REST_SERVICE_ROOT + '/getLogFile/' + offset +'/10000/?logType='+ logType);
+        return this.http.get(REST_SERVICE_ROOT + '/v2/log-file/' + offset +'/10000/?logType='+ logType);
     }
 
     public getLogLevel(): Observable<Object>{
-        return this.http.get(REST_SERVICE_ROOT + '/getLogLevel');
+        return this.http.get(REST_SERVICE_ROOT + '/v2/log-level');
     }
 
     public changeLogLevel(logLevel : string): Observable<Object>{
-        return this.http.get(REST_SERVICE_ROOT + '/changeLogLevel/'+logLevel);
+        return this.http.get(REST_SERVICE_ROOT + '/v2/log-level-settings/'+logLevel);
     }
 
 
@@ -566,7 +566,7 @@ export class RestService {
     }
 
     public isInClusterMode(): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + "/isInClusterMode");
+        return this.http.get(REST_SERVICE_ROOT + "/v2/cluster-mode-status");
     }
 
     public getStats(appName:string, streamId:string): Observable<Object> {
