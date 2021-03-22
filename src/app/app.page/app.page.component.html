@@ -836,14 +836,17 @@
                                                 </mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
-                                                    <ng-container [ngSwitch]="row.type">
-                                                        <ng-container *ngSwitchCase="'streamVod'"> {{row.streamName}}
+                                                    <div style="padding-left: 12px;">
+                                                        <ng-container [ngSwitch]="row.type">
+                                                            <ng-container *ngSwitchCase="'streamVod'"> {{row.streamName}}
+                                                            </ng-container>
+                                                            <ng-container *ngSwitchCase="'uploadedVod'">{{row.vodName}}
+                                                            </ng-container>
+                                                            <ng-container *ngSwitchCase="'userVod'">{{row.vodName}}
+                                                            </ng-container>
                                                         </ng-container>
-                                                        <ng-container *ngSwitchCase="'uploadedVod'">{{row.vodName}}
-                                                        </ng-container>
-                                                        <ng-container *ngSwitchCase="'userVod'">{{row.vodName}}
-                                                        </ng-container>
-                                                    </ng-container>
+                                                    <div style="font-size: 10px">VoD Id: {{row.vodId}}</div>
+                                                    </div>
                                                 </mat-cell>
 
                                             </ng-container>
