@@ -171,7 +171,7 @@ export class RestService {
         }
     }
     public getUsers(){
-        return this.http.get(REST_SERVICE_ROOT + "/userList");
+        return this.http.get(REST_SERVICE_ROOT + "/write/userList");
     }
 
     public getBroadcast(appName: string, id: string): Observable<Object> {
@@ -209,7 +209,7 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/start", {});
     }
     public deleteUser(email:string){
-        return this.http.delete(REST_SERVICE_ROOT + "/deleteUser/" + email);
+        return this.http.delete(REST_SERVICE_ROOT + "/write/deleteUser/" + email);
     }
 
     public deleteBroadcast(appName: string, streamId:string, REMOTE_REST_SERVICE_ROOT:string): Observable<Object> {
@@ -296,10 +296,10 @@ export class RestService {
     }
 
     public createUser(user: User): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/addUser", user);
+        return this.http.post(REST_SERVICE_ROOT + "/write/addUser", user);
     }
     public editUser(user:User): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/editUser", user);
+        return this.http.post(REST_SERVICE_ROOT + "/write/editUser", user);
     }
 
     public isAuthenticated(): Observable<Object> {
@@ -331,11 +331,11 @@ export class RestService {
     }
 
     public changeSettings(appName: string, appSettings: AppSettings ): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + '/changeSettings/' + appName, appSettings);
+        return this.http.post(REST_SERVICE_ROOT + '/write/changeSettings/' + appName, appSettings);
     }
 
     public changeServerSettings(serverSettings: ServerSettings ): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + '/changeServerSettings', serverSettings);
+        return this.http.post(REST_SERVICE_ROOT + '/write/changeServerSettings', serverSettings);
     }
     public getDeviceAuthParameters(appName: string, networkName: string): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-networks/" + networkName, {});
@@ -378,7 +378,7 @@ export class RestService {
     }
 
     public changeLogLevel(logLevel : string): Observable<Object>{
-        return this.http.get(REST_SERVICE_ROOT + '/changeLogLevel/'+logLevel);
+        return this.http.get(REST_SERVICE_ROOT + '/write/changeLogLevel/'+logLevel);
     }
 
 

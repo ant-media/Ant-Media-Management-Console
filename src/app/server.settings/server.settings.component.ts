@@ -380,43 +380,43 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         }
 
         // this.licenseStatusReceiving = true;
-        this.restService.changeServerSettings( this.serverSettings).subscribe(data => {
-            if (data["success"] == true) {
-                $.notify({
-                    icon: "ti-save",
-                    message: Locale.getLocaleInterface().license_saved
-                }, {
-                    type: "success",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
+        if(!this.serverSettings.buildForMarket && this.isEnterpriseEdition){
+            this.restService.changeServerSettings( this.serverSettings).subscribe(data => {
+                if (data["success"] == true) {
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().license_saved
+                    }, {
+                        type: "success",
+                        delay: 900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
 
-                this.authService.serverSettings = this.serverSettings;
-                this.authService.licenceWarningDisplay = true;
-                if(!this.serverSettings.buildForMarket){
-                    this.getLicenseStatus()
+                    this.authService.serverSettings = this.serverSettings;
+                    this.authService.licenceWarningDisplay = true;
+                    if(!this.serverSettings.buildForMarket){
+                        this.getLicenseStatus()
+                    }
                 }
-            }
-            else {
-                $.notify({
-                    icon: "ti-alert",
-                    message: Locale.getLocaleInterface().settings_not_saved
-                }, {
-                    type: 'warning',
-                    delay: 1900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
+                else {
+                    $.notify({
+                        icon: "ti-alert",
+                        message: Locale.getLocaleInterface().settings_not_saved
+                    }, {
+                        type: 'warning',
+                        delay: 1900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
 
-            }
-            
-
-        });
+                }
+            });
+        }
 
         this.restService.changeLogLevel(this.currentLogLevel).subscribe(data => {
             console.log("data 2:" + JSON.stringify(data));

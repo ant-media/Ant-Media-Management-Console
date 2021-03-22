@@ -22,12 +22,12 @@
 
                             <div class="tab-pane active" id="licence" *ngIf="settingsReceived ">
 
-                                <div *ngIf="!serverSettings.buildForMarket && isEnterpriseEdition">
+                                <div>
                                     <form method="post" #f="ngForm" (ngSubmit)="changeServerSettings(f.valid)" class="form-horizontal">
 
                                         <fieldset >
 
-                                            <div class="form-group text-left" >
+                                            <div class="form-group text-left" *ngIf="!serverSettings.buildForMarket && isEnterpriseEdition" >
                                                 <label class="col-sm-2 control-label">License Status</label>
 
                                                 <div class="col-sm-10" *ngIf="licenseStatusReceiving">
@@ -55,7 +55,7 @@
 
                                         </fieldset>
 
-                                        <fieldset *ngIf="admin_check==true">
+                                        <fieldset *ngIf="!serverSettings.buildForMarket && isEnterpriseEdition && admin_check == true" >
                                             <div class="form-group"  >
                                                 <label class="col-sm-2 control-label">Submit License Key</label>
                                                 <div class="col-sm-10 text-left" >
@@ -92,7 +92,7 @@
                                         </fieldset>
 
                                         <fieldset>
-                                            <div class="form-group text-center" *ngIf="admin_check==true">
+                                            <div class="form-group text-center" *ngIf ="admin_check == true" >
                                                 <button type="submit" class="btn btn-fill btn-info" i18n="@@saveForm">Save</button>
                                             </div>
                                         </fieldset>
