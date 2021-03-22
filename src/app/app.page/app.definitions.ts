@@ -201,6 +201,8 @@ export class AppSettings {
                 public ipFilterEnabled: boolean,
                 public jwtStreamSecretKey: string,
                 public playJwtControlEnabled: boolean,
-                public publishJwtControlEnabled: boolean
+                public publishJwtControlEnabled: boolean,
+                public generatePreview: boolean
+
     ) {}
 }
