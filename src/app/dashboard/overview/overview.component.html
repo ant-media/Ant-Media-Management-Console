@@ -108,9 +108,46 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title" i18n="@@applicationsTitle">Applications</h4>
-                    </div>
-                    <div class="card-content table-full-width">
+                        <h4 class="card-title pull-left" i18n="@@applicationsTitle">Applications</h4>
+                        <button class="btn btn-fill btn-success pull-right"
+                       (click)="newApplication()" role="button">New Application
+                    </button>
+                </div>
+                <div *ngIf="newApplicationActive" style="padding:45px">
+                    <form method="post" #f="ngForm" validate (ngSubmit)="createApplication(f.valid)">
+                            <div class="form-group text-left">
+                                <label>New Application Name</label>
+                                <input type="text" required minlength="4" name="applicationName"
+                                    placeholder="Application name" class="form-control"
+                                    [(ngModel)]="newApplicationName" #applicationName="ngModel">
+                                <small [hidden]="applicationName.valid || (!f.submitted)"
+                                    class="text-danger">
+                                    Applicaton name should be at least 4 characters.
+                                </small>
+                                <small class="text-danger" *ngIf="streamNameEmpty">
+                                    Application name should not be empty.
+                                </small>
+                            </div>
+                            <div class="form-group text-center">
+                                <button type="submit" [disabled]='newAppCreating'
+                                    class="btn btn-fill btn-success">
+                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw"
+                                        *ngIf="newAppCreating"
+                                        aria-hidden="true"></i>Create</button>
+
+                                <button type="button" class="btn btn-simple"
+                                    (click)="cancelNewApplication()">Cancel</button>
+                            </div>
+                            <div class="form-group text-center">
+                                <small class="text-info" *ngIf="deployingApplication">
+                                    Deploying the {{newApplicationName}}. Please wait a few seconds.
+                                </small> 
+                            </div>
+                             
+                    </form>
+                </div>     
+                <div class="card-content table-full-width">   
+                               
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -119,17 +156,25 @@
                                     <th class="text-center" i18n="@@liveStreamCountLabel" >Live Stream</th>
                                     <th class="text-center" i18n="@@vodCountLabel"*ngIf="isMobileMenu()">VoD Count</th>
                                     <th class="text-center" i18n="@@appStorageSizeLabel"*ngIf="isMobileMenu()">Storage</th>
+                                    <th class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!---->
                                 <tr *ngFor="let row of appTableData.dataRows; let i=index" >
-                                   
+    
                                       <td class="text-center">{{i+1}}</td>
                                       <td>{{row.name}}</td>
                                       <td class="text-center">{{row.liveStreamCount}}</td>
-                                      <td class="text-center"*ngIf="isMobileMenu()">{{row.vodCount}}</td>
-                                      <td class="text-center"*ngIf="isMobileMenu()">{{niceBytes(row.storage)}}</td>
+                                      <td class="text-center" *ngIf="isMobileMenu()">{{row.vodCount}}</td>
+                                      <td class="text-center" *ngIf="isMobileMenu()">{{niceBytes(row.storage)}}</td>
+                                      <td class="text-center">  <button (click)="deleteApplication(row.name)"
+                                        class="btn btn-simple btn-danger"
+                                        type="button">
+                                        <span class="btn-label">
+                                            <i class="ti-close"></i>
+                                        </span>
+                                    </button></td>
                                
                                 </tr>
                             </tbody>

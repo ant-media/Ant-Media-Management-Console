@@ -8,6 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import {HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Endpoint,PlaylistItem} from "../app.page/app.definitions";
 import { filter } from 'rxjs-compat/operator/filter';
+import {SidebarComponent} from "../sidebar/sidebar.component";
 
 declare function require(name: string);
 
@@ -101,6 +102,11 @@ export class RestService {
      */
     isEnterpriseObject:Object = null;
 
+    /**
+     * Sidebar component to trigger the application updates
+     */
+    public sidebar: SidebarComponent;
+
     constructor(private http: HttpClient, private router: Router)
     {
         if (!location.protocol.startsWith("https"))
@@ -125,6 +131,14 @@ export class RestService {
             HTTP_SERVER_ROOT = "https://" + location.hostname + ":" + location.port + "/";
         }
         REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest";
+    }
+
+    public setSidebar(sidebar: SidebarComponent) {
+        this.sidebar = sidebar;
+    }
+
+    public getSidebar():SidebarComponent {
+        return this.sidebar;
     }
 
     public isShutdownProperly(appNames: string): Observable<Object> {
@@ -190,6 +204,14 @@ export class RestService {
 
     return this.http.post(REST_SERVICE_ADDRESS,
     liveBroadcast);
+    }
+
+    public createApplication(appName: string):Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/v2/applications/" + appName, {});
+    }
+
+    public deleteApplication(appName: string):Observable<Object> {
+        return this.http.delete(REST_SERVICE_ROOT + "/v2/applications/" + appName, {});
     }
 
     public updateLiveStream(appName: string, broadcast: LiveBroadcast, socialNetworks): Observable<Object> {
