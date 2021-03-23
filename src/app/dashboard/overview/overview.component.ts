@@ -317,9 +317,13 @@ export class OverviewComponent implements OnInit {
                     this.getApplicationsInfo();
                     this.restService.getSidebar().initApplications();
                 }
+                else {
+                    //check again if it's deleted
+                    this.checkApplicationDeleted(appName);
+                }
             },
             error=> {
-
+                console.log("Error occured: " + error);
             });
         }, 2000);
     }
