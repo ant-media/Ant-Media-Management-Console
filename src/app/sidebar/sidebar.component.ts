@@ -91,7 +91,20 @@ export class SidebarComponent implements AfterViewInit {
             $('html').addClass('perfect-scrollbar-off');
         }
 
+        this.restService.setSidebar(this);
 
+
+        this.initApplications();
+        
+        this.restService.isInClusterMode().subscribe(data => {
+            this.isClusterMode = data['success'];
+        });
+    }
+    ngAfterViewInit() {
+    }
+
+    initApplications() {
+        console.log("init applications........");
         this.restService.getApplications().subscribe(data => {
             SidebarComponent.apps = [];
 
@@ -100,20 +113,10 @@ export class SidebarComponent implements AfterViewInit {
             for (var i in data['applications']) {
                 //console.log(data['applications'][i]);
                 this.menuItems[1].children.push({ path: data['applications'][i], title: data['applications'][i], icontype: 'ti-file' });
-                SidebarComponent.apps.push(data['applications'][i]);
-
+                SidebarComponent.apps.push(data['applications'][i]); 
             }
         });
-        
-        this.restService.isInClusterMode().subscribe(data => {
-            this.isClusterMode = data['success'];
-        });
-
-
     }
-    ngAfterViewInit() {
-    }
-
     get getApps() {
         return SidebarComponent.apps;
     }
