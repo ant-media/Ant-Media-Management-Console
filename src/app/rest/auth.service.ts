@@ -199,9 +199,9 @@ export class AuthService implements CanActivate {
 
                     return this.currentLicence;
                 } else {
-                    console.log("Invalid License");
 
                     if (this.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
+                        console.log("Invalid License");
                         swal({
                             title: "Invalid License",
                             text: "Please Validate Your License ",
