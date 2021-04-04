@@ -75,8 +75,6 @@ export class AuthService implements CanActivate {
 
         this.user = new User(email, MD5(password));
 
-        this.user.password=MD5(this.user.password);
-
         return this.restService.authenticateUser(this.user);
     }
 
