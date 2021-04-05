@@ -79,25 +79,16 @@ export class AuthInterceptor implements HttpInterceptor{
 
         // Check AppName, JWT Token status and JWT Token not null
         if(appName != null && currentAppJwtToken != null && currentAppJwtStatus != "false"){
-            if(!req.url.includes("vods/create")){
-                req = req.clone({
-                    withCredentials: true,
-                    headers: req.headers.append('Authorization', currentAppJwtToken).append('Content-Type', 'application/json')
-                });
-            }
-            else{
-                req = req.clone({
-                    withCredentials: true,
-                    headers: req.headers.append('Authorization', currentAppJwtToken)
-                });
-            }
+            req = req.clone({
+                withCredentials: true,
+                headers: req.headers.append('Authorization', currentAppJwtToken)
+            });
         }
         else {
             req = req.clone({
                 withCredentials: true
             });
         }
-
         return next.handle(req);
     }
 }
