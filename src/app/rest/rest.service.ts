@@ -79,10 +79,18 @@ export class AuthInterceptor implements HttpInterceptor{
 
         // Check AppName, JWT Token status and JWT Token not null
         if(appName != null && currentAppJwtToken != null && currentAppJwtStatus != "false"){
-            req = req.clone({
-                withCredentials: true,
-                headers: req.headers.append('Authorization', currentAppJwtToken).append('Content-Type', 'application/json')
-            });
+            if(!req.url.includes("vods/create")){
+                req = req.clone({
+                    withCredentials: true,
+                    headers: req.headers.append('Authorization', currentAppJwtToken).append('Content-Type', 'application/json')
+                });
+            }
+            else{
+                req = req.clone({
+                    withCredentials: true,
+                    headers: req.headers.append('Authorization', currentAppJwtToken)
+                });
+            }
         }
         else {
             req = req.clone({
@@ -423,7 +431,7 @@ export class RestService {
     }
 
     public uploadVod(fileName:string, formData:any,appName:string): Observable<Object>  {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create?name="+fileName, formData);
+        return this.http.post("http://localhost:5080/rest/request?_path=" +  appName + "/rest/v2/vods/create&name="+fileName, formData);
     }
 
     /**
