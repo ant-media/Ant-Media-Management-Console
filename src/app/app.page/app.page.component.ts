@@ -1225,6 +1225,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
+        console.log("s3RecordingEnabled is "+this.appSettings.s3RecordingEnabled);
+        console.log("s3Access Key is "+this.appSettings.s3AccessKey);
+
         if(this.appSettings.jwtControlEnabled){
             let jwt = require('jsonwebtoken');
             let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);

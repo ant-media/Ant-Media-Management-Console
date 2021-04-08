@@ -1404,65 +1404,182 @@
                                                 </div>
                                                 <div class="card-content text-left">
                                                     <div class="form-group">
-                                                            <div *ngIf="!appSettings.h264Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
-                                                                <i
-                                                                    class="fa fa-exclamation-circle"></i>
-                                                                    H.264 is not enabled. Please enable H.264 for MP4 Recording
-                                                            </div>
-                                                            <div *ngIf="appSettings.h264Enabled">
-                                                                <div class="col-xs-12">
-                                                                    <div class="checkbox">
-                                                                        <input
-                                                                            [(ngModel)]="appSettings.mp4MuxingEnabled"
-                                                                            id="mp4MuxingEnabled"
-                                                                            name="mp4MuxingEnabled" type="checkbox">
+                                                        <div *ngIf="!appSettings.h264Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
+                                                            <i
+                                                                class="fa fa-exclamation-circle"></i>
+                                                                H.264 is not enabled. Please enable H.264 for MP4 Recording
+                                                        </div>
+                                                        <div *ngIf="appSettings.h264Enabled">
+                                                            <div class="col-xs-12">
+                                                                <div class="checkbox">
+                                                                    <input
+                                                                        [(ngModel)]="appSettings.mp4MuxingEnabled"
+                                                                        id="mp4MuxingEnabled"
+                                                                        name="mp4MuxingEnabled" type="checkbox">
 
-                                                                        <label for="mp4MuxingEnabled"
-                                                                            i18n="@@enableMP4Recording">
-                                                                            Record Live Streams as MP4
-                                                                        </label>
-                                                                    </div>
+                                                                    <label for="mp4MuxingEnabled"
+                                                                        i18n="@@enableMP4Recording">
+                                                                        Record Live Streams as MP4
+                                                                    </label>
                                                                 </div>
                                                             </div>
-                                                            <div *ngIf="!appSettings.vp8Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
-                                                                <i 
-                                                                    class="fa fa-exclamation-circle"></i> 
-                                                                    VP8 is not enabled. Please enable VP8 for WebM Recording
-                                                            </div>
-                                                            <div *ngIf="appSettings.vp8Enabled">
-                                                                <div class="col-xs-12">
-                                                                    <div class="checkbox">
-                                                                        <input
-                                                                            [(ngModel)]="appSettings.webMMuxingEnabled"
-                                                                            id="webMMuxingEnabled"
-                                                                            name="webMMuxingEnabled" type="checkbox">
+                                                        </div>
+                                                        <div *ngIf="!appSettings.vp8Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
+                                                            <i 
+                                                                class="fa fa-exclamation-circle"></i> 
+                                                                VP8 is not enabled. Please enable VP8 for WebM Recording
+                                                        </div>
+                                                        <div *ngIf="appSettings.vp8Enabled">
+                                                            <div class="col-xs-12">
+                                                                <div class="checkbox">
+                                                                    <input
+                                                                        [(ngModel)]="appSettings.webMMuxingEnabled"
+                                                                        id="webMMuxingEnabled"
+                                                                        name="webMMuxingEnabled" type="checkbox">
 
-                                                                        <label for="webMMuxingEnabled"
-                                                                            i18n="@@enableWebMRecording">
-                                                                            Record Live Streams as WebM
-                                                                        </label>
-                                                                    </div>
+                                                                    <label for="webMMuxingEnabled"
+                                                                        i18n="@@enableWebMRecording">
+                                                                        Record Live Streams as WebM
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div>
+                                                            <div class="col-xs-12">
+                                                                <div class="checkbox">
+
+                                                                    <input
+                                                                        [(ngModel)]="appSettings.addDateTimeToMp4FileName"
+                                                                        id="addDateTimeToMp4FileName"
+                                                                        name="addDateTimeToMp4FileName"
+                                                                        type="checkbox">
+
+                                                                    <label for="addDateTimeToMp4FileName"
+                                                                        i18n="@@addDateTimeToMP4Recordings">
+                                                                        Add Date-Time to Record File names
+                                                                    </label>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        
+                                                        <div *ngIf="!appSettings.s3RecordingEnabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
+                                                            <i 
+                                                                class="fa fa-exclamation-circle"></i> 
+                                                                S3 is not enabled. Please enable S3 for Recording
+                                                        </div>
+                                                        
+
+                                                        
+                                                        <div class="col-xs-12"> 
+                                                                <div class="checkbox">
+                                                                    <input
+                                                                        [(ngModel)]="appSettings.s3RecordingEnabled"
+                                                                        id="s3RecordingEnabled"
+                                                                        name="s3RecordingEnabled"
+                                                                        type="checkbox">
+
+                                                                    <label for="s3RecordingEnabled"
+                                                                        i18n="@@s3RecordingEnabled">
+                                                                        Enable S3 recording
+                                                                    </label>
+                                                                </div>
+                                                        </div>
+                                                        
+                                                        
+                                                        <div *ngIf="appSettings.s3RecordingEnabled" class="form-group">
+
+                                                            <div class="col-sm-12 text-left col-md-12">
+                                                                <label class="col-sm-12 col-md-3 control-label"
+                                                                    style="min-width: 160px; "
+                                                                    i18n="@@s3AccessKey">Access Key</label>
+
+
+                                                                <div class="col-sm-12 text-left col-md-3">
+                                                                    <input style="min-width: 125px;"
+                                                                        #s3AccessKey="ngModel"
+                                                                        [(ngModel)]="appSettings.s3AccessKey"
+                                                                        class="form-control" name="s3AccessKey" required
+                                                                        type="text"
+                                                                        required/>
+                                                                <small
+                                                                    [hidden]="s3AccessKey.valid || !f.submitted"
+                                                                    class="text-danger">
+                                                                    S3 Access Key is Required.
+                                                                </small>
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        
+                                                        
+                                                            
+
+                                                            <div class="col-sm-12 text-left col-md-12">
+                                                                <label class="col-sm-12 col-md-3 control-label"
+                                                                    style="min-width: 160px; "
+                                                                    i18n="@@s3SecretKey">Secret Key</label>
+                                                                <div class="col-sm-12 text-left col-md-3">
+                                                                    <input style="min-width: 125px;"
+                                                                        #s3SecretKey="ngModel"
+                                                                        [(ngModel)]="appSettings.s3SecretKey"
+                                                                        class="form-control" name="s3SecretKey" required
+                                                                        type="text"
+                                                                        required/>
+                                                                    <small
+                                                                        [hidden]="s3SecretKey.valid || !f.submitted"
+                                                                        class="text-danger">
+                                                                        S3 Secret Key is Required.
+                                                                    </small>
                                                                 </div>
                                                             </div>
 
-                                                            <div>
-                                                                <div class="col-xs-12">
-                                                                    <div class="checkbox">
-
-                                                                        <input
-                                                                            [(ngModel)]="appSettings.addDateTimeToMp4FileName"
-                                                                            id="addDateTimeToMp4FileName"
-                                                                            name="addDateTimeToMp4FileName"
-                                                                            type="checkbox">
-
-                                                                        <label for="addDateTimeToMp4FileName"
-                                                                            i18n="@@addDateTimeToMP4Recordings">
-                                                                            Add Date-Time to Record File names
-                                                                        </label>
-
-                                                                    </div>
+                                                            <div class="col-sm-12 text-left col-md-12">
+                                                                <label class="col-sm-12 col-md-3 control-label"
+                                                                    style="min-width: 160px; "
+                                                                    i18n="@@s3RegionName">Region Name</label>
+                                                                <div class="col-sm-12 text-left col-md-3">
+                                                                    <input style="min-width: 125px;"
+                                                                        #s3RegionName="ngModel"
+                                                                        [(ngModel)]="appSettings.s3RegionName"
+                                                                        class="form-control" name="s3RegionName" required
+                                                                        type="text"
+                                                                        required/>
+                                                                    <small
+                                                                        [hidden]="s3RegionName.valid || !f.submitted"
+                                                                        class="text-danger">
+                                                                        S3 Region Name is Required.
+                                                                    </small>
                                                                 </div>
                                                             </div>
+
+                                                            <div class="col-sm-12 text-left col-md-12">
+                                                                <label class="col-sm-12 col-md-3 control-label"
+                                                                    style="min-width: 160px; "
+                                                                    i18n="@@s3BucketName">Bucket Name</label>
+                                                                <div class="col-sm-12 text-left col-md-3">
+                                                                    <input style="min-width: 125px;"
+                                                                        #s3BucketName="ngModel"
+                                                                        [(ngModel)]="appSettings.s3BucketName"
+                                                                        class="form-control" name="s3BucketName" required
+                                                                        type="text"
+                                                                        required/>
+                                                                    <small
+                                                                        [hidden]="s3BucketName.valid || !f.submitted"
+                                                                        class="text-danger">
+                                                                        S3 Bucket Name is Required.
+                                                                    </small>
+                                                                </div>
+
+                                                            </div>
+                                                            
+                                                        
+                                                        </div>
+                                                        
+                                                            
+                                                            
 
                                                     </div>
                                                 </div>
