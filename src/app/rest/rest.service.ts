@@ -215,7 +215,7 @@ export class RestService {
     }
 
     public updateLiveStream(appName: string, broadcast: LiveBroadcast, socialNetworks): Observable<Object> {
-        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/"+broadcast.streamId+"?socialNetworks="+socialNetworks,
+        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/"+broadcast.streamId+"&socialNetworks="+socialNetworks,
             broadcast);
     }
 
@@ -243,11 +243,11 @@ export class RestService {
     }
 
     public deleteRTMPEndpointV2(appName: string, id:number, endpointServiceId:string) {
-        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/rtmp-endpoint?endpointServiceId='+endpointServiceId, {});
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/rtmp-endpoint&endpointServiceId='+endpointServiceId, {});
     }
 
     public deleteRTMPEndpointV1(appName: string, id:number, rtmpUrl:string) {
-        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint?rtmpUrl='+rtmpUrl, {});
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint&rtmpUrl='+rtmpUrl, {});
     }
 
     public addRTMPEndpoint(appName: string,id:number, endpoint:Endpoint) {
@@ -423,7 +423,7 @@ export class RestService {
     }
 
     public uploadVod(fileName:string, formData:any,appName:string): Observable<Object>  {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create?name="+fileName, formData);
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create&name="+fileName, formData);
     }
 
     /**
@@ -599,7 +599,7 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/webrtc-client-stats/'+offset+"/"+size);
     }
     public setStreamRecordingStatus(appName:string, streamId:string, recordingStatus:boolean, recordingType:string): Observable<Object> {
-        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/recording/'+recordingStatus+'?recordType='+recordingType,
+        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/recording/'+recordingStatus+'&recordType='+recordingType,
             {});
     }
 }
