@@ -187,7 +187,9 @@ export class AppSettings {
                 public objectDetectionEnabled: boolean,
                 public publishTokenControlEnabled: boolean,
                 public playTokenControlEnabled: boolean,
+
                 public timeTokenSubscriberOnly: boolean,
+
                 public webRTCEnabled: boolean,
                 public webRTCFrameRate: number,
                 public remoteAllowedCIDR: string,
@@ -203,8 +205,9 @@ export class AppSettings {
                 public playJwtControlEnabled: boolean,
                 public publishJwtControlEnabled: boolean,
                 public generatePreview: boolean,
-                public disableTimeTokenForPlay: boolean,
-                public disableTimeTokenForPublish: boolean
+
+                public enableTimeTokenForPlay: boolean,
+                public enableTimeTokenForPublish: boolean
 
     ) {}
 }
