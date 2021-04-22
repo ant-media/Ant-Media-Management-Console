@@ -202,7 +202,9 @@ export class AppSettings {
                 public jwtStreamSecretKey: string,
                 public playJwtControlEnabled: boolean,
                 public publishJwtControlEnabled: boolean,
-                public generatePreview: boolean
+                public generatePreview: boolean,
+                public disableTimeTokenForPlay: boolean,
+                public disableTimeTokenForPublish: boolean
 
     ) {}
 }

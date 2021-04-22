@@ -1534,6 +1534,40 @@
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>                                                                
                                                             </div>
+
+                                                            <div *ngIf="appSettings.timeTokenSubscriberOnly" class="col-xs-12">
+
+                                                                <div class="checkbox">
+                                                                    <input [(ngModel)]="appSettings.disableTimeTokenForPlay"
+                                                                        id="disableTimeTokenForPlay" name="disableTimeTokenForPlay"
+                                                                        type="checkbox">
+    
+                                                                    <label for="disableTimeTokenForPlay">
+                                                                        Disable TOTP for Playing <a
+                                                                            href=""
+                                                                            target="_blank"
+                                                                            matTooltip="After enabling this option, playing can be done without TOTP"><i
+                                                                                style="font-size: 20px;"
+                                                                                class="fa fa-info-circle"></i></a>
+                                                                    </label>                                                                
+                                                                </div>
+                                                                <div class="checkbox">
+                                                                    <input [(ngModel)]="appSettings.disableTimeTokenForPublish"
+                                                                        id="disableTimeTokenForPublish" name="disableTimeTokenForPublish"
+                                                                        type="checkbox">
+    
+                                                                    <label for="disableTimeTokenForPublish">
+                                                                        Disable TOTP for Publishing <a
+                                                                            href=""
+                                                                            target="_blank"
+                                                                            matTooltip="After enabling this option, publishing can be done without TOTP"><i
+                                                                                style="font-size: 20px;"
+                                                                                class="fa fa-info-circle"></i></a>
+                                                                    </label>                                                                
+                                                                </div>
+    
+                                                            </div>
+
                                                         </div>
 
                                                         <div *ngIf=!isEnterpriseEdition class="text-left">
