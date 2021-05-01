@@ -73,15 +73,13 @@ export class AuthService implements CanActivate {
 
     login(email: string, password: string): Observable<Object> {
 
-        this.user = new User(email, password);
-
-        this.user.password=MD5(this.user.password);
+        this.user = new User(email, MD5(password));
 
         return this.restService.authenticateUser(this.user);
     }
 
     changeUserPassword(email: string, password: string, newPassword: string): Observable<Object> {
-        let user = new User(email, password);
+        let user = new User(email, MD5(password));
         user.newPassword = MD5(newPassword);
         return this.restService.changePassword(user);
     }
@@ -91,6 +89,7 @@ export class AuthService implements CanActivate {
     }
 
     createFirstAccount(user: User): Observable<Object> {
+	    user.password = MD5(user.password);
         return this.restService.createFirstAccount(user);
     }
 
@@ -202,9 +201,9 @@ export class AuthService implements CanActivate {
 
                     return this.currentLicence;
                 } else {
-                    console.log("Invalid License");
 
                     if (this.licenceWarningDisplay && !this.serverSettings.buildForMarket) {
+                        console.log("Invalid License");
                         swal({
                             title: "Invalid License",
                             text: "Please Validate Your License ",
