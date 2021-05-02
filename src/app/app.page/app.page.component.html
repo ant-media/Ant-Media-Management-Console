@@ -1519,6 +1519,25 @@
                                                             </div>
                                                         </div>
 
+                                                        
+
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.enableTimeTokenForPublish"
+                                                                    id="enableTimeTokenForPublish" name="enableTimeTokenForPublish"
+                                                                    type="checkbox">
+
+                                                                <label for="enableTimeTokenForPublish">
+                                                                    Enable TOTP for Publishing <a
+                                                                        href=""
+                                                                        target="_blank"
+                                                                        matTooltip="After enabling this option, publishing can be done with TOTP"><i
+                                                                            style="font-size: 20px;"
+                                                                            class="fa fa-info-circle"></i></a>
+                                                                </label>                                                                
+                                                            </div>
+                                                        </div>
+                                                        
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.enableTimeTokenForPlay"
@@ -1534,19 +1553,18 @@
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>                                                                
                                                             </div>
-                                                        </div>
 
-                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
+                                                        </div><div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
-                                                                <input [(ngModel)]="appSettings.enableTimeTokenForPublish"
-                                                                    id="enableTimeTokenForPublish" name="enableTimeTokenForPublish"
+                                                                <input [(ngModel)]="appSettings.enableTimeTokenForPlay"
+                                                                    id="enableTimeTokenForPlay" name="enableTimeTokenForPlay"
                                                                     type="checkbox">
 
-                                                                <label for="enableTimeTokenForPublish">
-                                                                    Enable TOTP for Publishing <a
+                                                                <label for="enableTimeTokenForPlay">
+                                                                    Enable TOTP for Playing <a
                                                                         href=""
                                                                         target="_blank"
-                                                                        matTooltip="After enabling this option, publishing can be done with TOTP"><i
+                                                                        matTooltip="After enabling this option, playing can be done with TOTP"><i
                                                                             style="font-size: 20px;"
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>                                                                
