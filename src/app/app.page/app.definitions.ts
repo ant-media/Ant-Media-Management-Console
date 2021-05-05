@@ -207,7 +207,8 @@ export class AppSettings {
                 public s3AccessKey: string,
                 public s3SecretKey: string,
                 public s3RegionName: string,
-                public s3BucketName: string
+                public s3BucketName: string,
+                public s3Endpoint: string
 
     ) {}
 }
