@@ -567,8 +567,9 @@ export class RestService {
             url.startsWith("https://") ||
             url.startsWith("rtmp://") ||
             url.startsWith("rtmps://") ||
-            url.startsWith("rtsp://")) {
-
+            url.startsWith("rtsp://") ||
+            url.startsWith("udp://") ||
+            url.startsWith("srt://")){
             streamUrlControl=true;
         }
 
