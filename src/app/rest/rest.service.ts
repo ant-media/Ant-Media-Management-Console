@@ -81,7 +81,7 @@ export class AuthInterceptor implements HttpInterceptor{
         if(appName != null && currentAppJwtToken != null && currentAppJwtStatus != "false"){
             req = req.clone({
                 withCredentials: true,
-                headers: req.headers.append('Authorization', currentAppJwtToken).append('Content-Type', 'application/json')
+                headers: req.headers.append('Authorization', currentAppJwtToken)
             });
         }
         else {
@@ -89,7 +89,6 @@ export class AuthInterceptor implements HttpInterceptor{
                 withCredentials: true
             });
         }
-
         return next.handle(req);
     }
 }
@@ -423,7 +422,7 @@ export class RestService {
     }
 
     public uploadVod(fileName:string, formData:any,appName:string): Observable<Object>  {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create?name="+fileName, formData);
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create&name="+fileName, formData);
     }
 
     /**
