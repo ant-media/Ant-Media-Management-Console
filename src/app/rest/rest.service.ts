@@ -8,6 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import {HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Endpoint,PlaylistItem} from "../app.page/app.definitions";
 import { filter } from 'rxjs-compat/operator/filter';
+import {SidebarComponent} from "../sidebar/sidebar.component";
 
 declare function require(name: string);
 
@@ -81,7 +82,7 @@ export class AuthInterceptor implements HttpInterceptor{
         if(appName != null && currentAppJwtToken != null && currentAppJwtStatus != "false"){
             req = req.clone({
                 withCredentials: true,
-                headers: req.headers.append('Authorization', currentAppJwtToken).append('Content-Type', 'application/json')
+                headers: req.headers.append('Authorization', currentAppJwtToken)
             });
         }
         else {
@@ -89,7 +90,6 @@ export class AuthInterceptor implements HttpInterceptor{
                 withCredentials: true
             });
         }
-
         return next.handle(req);
     }
 }
@@ -101,6 +101,11 @@ export class RestService {
      * Cache server response
      */
     isEnterpriseObject:Object = null;
+
+    /**
+     * Sidebar component to trigger the application updates
+     */
+    public sidebar: SidebarComponent;
 
     constructor(private http: HttpClient, private router: Router)
     {
@@ -126,6 +131,14 @@ export class RestService {
             HTTP_SERVER_ROOT = "https://" + location.hostname + ":" + location.port + "/";
         }
         REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest";
+    }
+
+    public setSidebar(sidebar: SidebarComponent) {
+        this.sidebar = sidebar;
+    }
+
+    public getSidebar():SidebarComponent {
+        return this.sidebar;
     }
 
     public isShutdownProperly(appNames: string): Observable<Object> {
@@ -194,6 +207,14 @@ export class RestService {
 
     return this.http.post(REST_SERVICE_ADDRESS,
     liveBroadcast);
+    }
+
+    public createApplication(appName: string):Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/v2/applications/" + appName, {});
+    }
+
+    public deleteApplication(appName: string):Observable<Object> {
+        return this.http.delete(REST_SERVICE_ROOT + "/v2/applications/" + appName, {});
     }
 
     public updateLiveStream(appName: string, broadcast: LiveBroadcast, socialNetworks): Observable<Object> {
@@ -418,7 +439,7 @@ export class RestService {
     }
 
     public uploadVod(fileName:string, formData:any,appName:string): Observable<Object>  {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create?name="+fileName, formData);
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create&name="+fileName, formData);
     }
 
     /**
@@ -562,8 +583,9 @@ export class RestService {
             url.startsWith("https://") ||
             url.startsWith("rtmp://") ||
             url.startsWith("rtmps://") ||
-            url.startsWith("rtsp://")) {
-
+            url.startsWith("rtsp://") ||
+            url.startsWith("udp://") ||
+            url.startsWith("srt://")){
             streamUrlControl=true;
         }
 

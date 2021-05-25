@@ -120,7 +120,7 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
             } else {
                 $.notify({
                     icon: "ti-alert",
-                    message: "Your request couldn't be sent. Please try again or send email to contact@antmedia.io"
+                    message: "Your request couldn't be sent. Please try again or send email to support@antmedia.io"
                 }, {
                     type: 'warning',
                     delay: 1900,

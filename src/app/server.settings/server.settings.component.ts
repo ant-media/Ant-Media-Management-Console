@@ -64,7 +64,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     public leftDays : number;
     public isEnterpriseEdition = false;
     public currentLogLevel: string;
-    public logLevelDebug : string =  "DEBUG";
     public logLevelInfo : string= "INFO";
     public logLevelWarn : string = "WARN";
     public logLevelError : string = "ERROR";
@@ -161,9 +160,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     logLevelChanged(event:any){
 
-        if(event == this.logLevelDebug) {
-            this.currentLogLevel = this.logLevelDebug;
-        }
         if(event == this.logLevelInfo) {
             this.currentLogLevel = this.logLevelInfo;
         }

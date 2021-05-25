@@ -72,7 +72,8 @@
                                                 </div>
                                             </div>
                                         </fieldset>
-                                        <fieldset >
+                                        
+                                        <fieldset>
                                             <div class="form-group" >
                                                 <label class="col-sm-2 control-label">Log Status</label>
     
@@ -80,7 +81,6 @@
     
                                                     <select  type="text"  [name]="'resolutionHeight'" (ngModelChange)="logLevelChanged($event)" [(ngModel)]="currentLogLevel"
                                                              class="dropdown-toggle form-control" required>
-                                                        <option value="{{logLevelDebug}}" >{{logLevelDebug}}</option>
                                                         <option value="{{logLevelInfo}}">{{logLevelInfo}}</option>
                                                         <option value="{{logLevelWarn}}">{{logLevelWarn}}</option>
                                                         <option value="{{logLevelError}}">{{logLevelError}}</option>
@@ -131,9 +131,10 @@
 
                                     <form method="post" #f="ngForm" validate (ngSubmit)="createUser(f.valid)">
                                         <div class="card-header">
-                                            <h4 class="card-title text-left" i18n="@@newLiveStreamCardTitle">
+                                            <h4 class="card-title text-left">
                                                 New User
                                             </h4>
+
                                         </div>
                                         <div class="card-content">
                                             <div class="form-group text-left">

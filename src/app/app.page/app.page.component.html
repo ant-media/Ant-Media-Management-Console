@@ -836,14 +836,17 @@
                                                 </mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row">
-                                                    <ng-container [ngSwitch]="row.type">
-                                                        <ng-container *ngSwitchCase="'streamVod'"> {{row.streamName}}
+                                                    <div style="padding-left: 12px;">
+                                                        <ng-container [ngSwitch]="row.type">
+                                                            <ng-container *ngSwitchCase="'streamVod'"> {{row.streamName}}
+                                                            </ng-container>
+                                                            <ng-container *ngSwitchCase="'uploadedVod'">{{row.vodName}}
+                                                            </ng-container>
+                                                            <ng-container *ngSwitchCase="'userVod'">{{row.vodName}}
+                                                            </ng-container>
                                                         </ng-container>
-                                                        <ng-container *ngSwitchCase="'uploadedVod'">{{row.vodName}}
-                                                        </ng-container>
-                                                        <ng-container *ngSwitchCase="'userVod'">{{row.vodName}}
-                                                        </ng-container>
-                                                    </ng-container>
+                                                    <div style="font-size: 10px">VoD Id: {{row.vodId}}</div>
+                                                    </div>
                                                 </mat-cell>
 
                                             </ng-container>
@@ -1260,7 +1263,32 @@
 
                                                                                 <label for="objectDetection">
                                                                                     Use Object Detection <a
-                                                                                        matTooltip="If you use this feature, you should add Adaptive Streaming. If you still have a problem, review FAQ page in docs.antmedia.io">
+                                                                                        matTooltip="If you want to use this feature, you should first install necessary libraries by running install_tensorflow_plugin.sh script in the installation directory. 
+                                                                                        Also you should add Adaptive Streaming. 
+                                                                                        If you still have a problem, review FAQ page in docs.antmedia.io">
+                                                                                        <i
+                                                                                            class="fa fa-info-circle"></i></a>
+                                                                                </label>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="text-left" *ngIf=isEnterpriseEdition>
+                                                                        <div class="col-sm-12 col-md-12">
+                                                                            <div class="checkbox">
+
+                                                                                <input
+                                                                                    [disabled]="encoderSettings.length==0"
+                                                                                    [(ngModel)]="appSettings.generatePreview"
+                                                                                    id="generatePreview"
+                                                                                    name="generatePreview"
+                                                                                    type="checkbox">
+
+                                                                                <label for="generatePreview">
+                                                                                    Generate Preview <a
+                                                                                        matTooltip="If you use this feature, you should add Adaptive Streaming.">
                                                                                         <i
                                                                                             class="fa fa-info-circle"></i></a>
                                                                                 </label>
@@ -1494,22 +1522,57 @@
                                                             </div>
                                                         </div>
 
+                                                        
+
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
-                                                                <input [(ngModel)]="appSettings.timeTokenSubscriberOnly"
-                                                                    id="timeTokenSubscriberOnly" name="timeTokenSubscriberOnly"
+                                                                <input [(ngModel)]="appSettings.enableTimeTokenForPublish"
+                                                                    id="enableTimeTokenForPublish" name="enableTimeTokenForPublish"
                                                                     type="checkbox">
 
-                                                                <label for="timeTokenSubscriberOnly">
-                                                                    Accept only time based token Subscribers <a
+                                                                <label for="enableTimeTokenForPublish">
+                                                                    Enable TOTP for Publishing <a
                                                                         href=""
                                                                         target="_blank"
-                                                                        matTooltip="After enabling this option, only time based token subscribers are accepted as publisher or players for the streams. Subscribers should be added through REST API. Click for more information."><i
+                                                                        matTooltip="After enabling this option, publishing can be done with TOTP"><i
                                                                             style="font-size: 20px;"
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>                                                                
                                                             </div>
                                                         </div>
+
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.enableTimeTokenForPlay"
+                                                                    id="enableTimeTokenForPlay" name="enableTimeTokenForPlay"
+                                                                    type="checkbox">
+
+                                                                <label for="enableTimeTokenForPlay">
+                                                                    Enable TOTP for Playing <a
+                                                                        href=""
+                                                                        target="_blank"
+                                                                        matTooltip="After enabling this option, playing can be done with TOTP"><i
+                                                                            style="font-size: 20px;"
+                                                                            class="fa fa-info-circle"></i></a>
+                                                                </label>                                                                
+                                                            </div>
+                                                        </div>
+
+
+
+                                                        <div *ngIf=!isEnterpriseEdition class="text-left">
+                                                            <div class="col-xs-12">
+                                                                <label
+                                                                        i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                                    Get <a
+                                                                        href="https://antmedia.io/#products">Enterprise
+                                                                    Edition</a> to use Accept only time based token Subscribers feature.
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+
+
                                                         <div class="col-xs-12">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="acceptAllStreams"
@@ -1524,6 +1587,78 @@
                                                                 </label>
                                                             </div>
                                                         </div>
+
+                                                        <div *ngIf=!isEnterpriseEdition class="text-left">
+                                                            <div class="col-xs-12">
+                                                                <label
+                                                                        i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                                    Get <a
+                                                                        href="https://antmedia.io/#products">Enterprise
+                                                                    Edition</a> to use JWT Stream for Filter feature.
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 ">
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.publishJwtControlEnabled"
+                                                                       id="publishJwtControlEnabled" name="publishJwtControlEnabled"
+                                                                       type="checkbox">
+
+                                                                <label for="publishJwtControlEnabled">
+                                                                    Publish with JWT Filter for Stream <a
+                                                                        href="https://github.com/ant-media/Ant-Media-Server/wiki/Stream-Security-Documentation"
+                                                                        target="_blank"
+                                                                        matTooltip="By enabling this option, jwt tokens are required for publishing. Publish request without tokens will not be streamed. Click for more information."><i
+                                                                        style="font-size: 20px;"
+                                                                        class="fa fa-info-circle"></i></a>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.playJwtControlEnabled"
+                                                                       id="playJwtControlEnabled" name="playJwtControlEnabled"
+                                                                       type="checkbox">
+
+                                                                <label for="playJwtControlEnabled">
+                                                                    Play with JWT Filter for Stream <a
+                                                                        href="https://github.com/ant-media/Ant-Media-Server/wiki/Stream-Security-Documentation"
+                                                                        target="_blank"
+                                                                        matTooltip="By enabling this option, jwt tokens are required for playing. Play request without tokens will not be streamed. Click for more information."><i
+                                                                        style="font-size: 20px;"
+                                                                        class="fa fa-info-circle"></i></a>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div *ngIf="appSettings.publishJwtControlEnabled || appSettings.playJwtControlEnabled && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                            <label i18n="@@jwtFilter">
+                                                                Secret key for JWT Stream Filter<a
+                                                                    matTooltip="Please enter at least 32 character"><i
+                                                                    class="fa fa-info-circle"></i></a>
+                                                            </label>
+
+                                                            <div>
+                                                                <textarea name="jwtStreamSecretKey" minlength="32"  #jwtStreamSecretKey="ngModel" [disabled]="!appSettings.publishJwtControlEnabled && !appSettings.playJwtControlEnabled"
+                                                                          [(ngModel)]="appSettings.jwtStreamSecretKey"
+                                                                          type="textarea" class="form-control"
+                                                                          placeholder="Please write at least 32 character"
+                                                                          rows="1">{{appSettings.jwtStreamSecretKey}}
+                                                                </textarea>
+                                                                <small [hidden]="(jwtStreamSecretKey.valid || !appSettings.publishJwtControlEnabled || !appSettings.playJwtControlEnabled) || (!f.submitted)"
+                                                                       class="text-danger">
+                                                                    JWT Stream Secret Key should at least 32 character
+                                                                </small>
+                                                                <button
+                                                                        (click)="setJwtStreamFilterString(32)" class="btn pull-right btn-default" style="margin:5px"
+                                                                        type="button">
+                                                                    Generate
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
                                                 </div>
 
@@ -1601,7 +1736,7 @@
                                                                     JWT Secret Key should at least 32 character
                                                                 </small>
                                                                 <button
-                                                                (click)="setRandomString(32)" class="btn pull-right btn-default" style="margin:5px"
+                                                                (click)="setJwtRestFilterString(32)" class="btn pull-right btn-default" style="margin:5px"
                                                                 type="button">
                                                                  Generate
                                                               </button>

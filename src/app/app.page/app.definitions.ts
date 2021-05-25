@@ -190,7 +190,9 @@ export class AppSettings {
                 public objectDetectionEnabled: boolean,
                 public publishTokenControlEnabled: boolean,
                 public playTokenControlEnabled: boolean,
+
                 public timeTokenSubscriberOnly: boolean,
+
                 public webRTCEnabled: boolean,
                 public webRTCFrameRate: number,
                 public remoteAllowedCIDR: string,
@@ -201,6 +203,14 @@ export class AppSettings {
                 public listenerHookURL: string,
                 public jwtControlEnabled: boolean,
                 public jwtSecretKey: string,
-                public ipFilterEnabled: boolean
+                public ipFilterEnabled: boolean,
+                public jwtStreamSecretKey: string,
+                public playJwtControlEnabled: boolean,
+                public publishJwtControlEnabled: boolean,
+                public generatePreview: boolean,
+
+                public enableTimeTokenForPlay: boolean,
+                public enableTimeTokenForPublish: boolean
+
     ) {}
 }

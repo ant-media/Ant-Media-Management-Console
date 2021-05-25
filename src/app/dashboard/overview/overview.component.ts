@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component,  EventEmitter, OnInit, Output} from '@angular/core';
 import {RestService} from '../../rest/rest.service';
 import {SupportRestService} from '../../rest/support.service';
 import {Router} from '@angular/router';
@@ -8,7 +8,7 @@ import {Licence} from "../../server.settings/server.settings.component";
 import {AuthService} from "../../rest/auth.service";
 import {SupportRequest} from "../../support/support.definitions";
 import {ServerSettings} from "../../app.page/app.definitions";
-
+import {Locale} from "../../locale/locale";
 
 declare var $: any;
 declare var Chartist: any;
@@ -61,11 +61,13 @@ export class OverviewComponent implements OnInit {
     public timerId:any;
     public licence : Licence;
     public serverSettings : ServerSettings;
-
+    public newApplicationActive = false;
+    public newAppCreating = false;
+    public newApplicationName: string;
+    public deployingApplication = false;
 
 
     constructor(private auth: AuthService, private restService:RestService, private supportRestService:SupportRestService, private router:Router) {
-
 
     }
 
@@ -94,9 +96,6 @@ export class OverviewComponent implements OnInit {
             dataRows: [
             ]
         };
-
-
-
     }
     ngAfterViewInit() {
 
@@ -108,9 +107,7 @@ export class OverviewComponent implements OnInit {
             this.getApplicationsInfo();
         }, 5000);
 
-
         this.auth.initLicenseCheck();
-
         this.restService.isInClusterMode().subscribe(data => {
             this.isClusterMode = data['success'];
 
@@ -124,11 +121,9 @@ export class OverviewComponent implements OnInit {
     }
 
     ngOnDestroy() {
-
         if (this.timerId) {
             clearInterval(this.timerId);
         }
-
     }
 
     checkShutdownProperly(): void{
@@ -184,7 +179,7 @@ export class OverviewComponent implements OnInit {
                         } else {
                             $.notify({
                                 icon: "ti-alert",
-                                message: "Your request couldn't be sent. Please try again or send email to contact@antmedia.io"
+                                message: "Your request couldn't be sent. Please try again or send email to support@antmedia.io"
                             }, {
                                 type: 'warning',
                                 delay: 5000,
@@ -285,5 +280,190 @@ export class OverviewComponent implements OnInit {
             return true;
         }
         return false;
+    }
+
+    newApplication() {
+        this.newApplicationActive = true;
+    }
+
+    cancelNewApplication() {
+        this.newApplicationActive = false;
+        this.newApplicationName = "";
+    }
+
+    checkApplicationDeleted(appName: string) {
+        setTimeout(() => {
+            this.restService.getApplications().subscribe(data => {
+                var appExists = false;
+                for (var i in data['applications']) {
+                    if (data['applications'][i] == appName) {
+                        appExists = true;
+                        break;
+                    }
+                }
+                //app is deleted
+                if (!appExists) {
+                    $.notify({
+                        icon: "ti-save",
+                        message: "Application is deleted."
+                    }, {
+                        type: "success",
+                        delay: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                    this.getApplicationsInfo();
+                    this.restService.getSidebar().initApplications();
+                }
+                else {
+                    //check again if it's deleted
+                    this.checkApplicationDeleted(appName);
+                }
+            },
+            error=> {
+                console.log("Error occured: " + error);
+            });
+        }, 2000);
+    }
+
+    checkApplicationCreated(appName:string) {
+        setTimeout(() => {
+            this.restService.getApplications().subscribe(data => {
+                var appDeployed = false;
+                for (var i in data['applications']) {
+                    if (data['applications'][i] == appName) {
+                        appDeployed = true;
+                        break;
+                    }
+                }
+
+                if (appDeployed) {
+                    this.newAppCreating = false;
+                    this.deployingApplication = false;
+                    this.cancelNewApplication();
+                     
+                    $.notify({
+                            icon: "ti-save",
+                            message: "Application is created."
+                    }, {
+                            type: "success",
+                            delay: 3000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                    });
+
+                    this.getApplicationsInfo();
+                    this.restService.getSidebar().initApplications();
+                }
+                else {
+                    this.checkApplicationCreated(appName);
+                }
+            });
+
+        }, 2000);
+    }
+
+    createApplication(isValid: boolean): void {
+        if (!isValid) {
+            //not valid form return directly
+            return;
+        }
+        this.newAppCreating = true;
+        this.restService.createApplication(this.newApplicationName)
+            .subscribe(
+                data => {
+                   
+                    if (data["success"] == true) {
+                        this.deployingApplication = true;
+
+                       this.checkApplicationCreated(this.newApplicationName);   
+                    }
+                    else {
+                        this.newAppCreating = false;
+                        swal({
+                            title: "Application is not created",
+                            text: data["message"],
+                            type: 'error',
+            
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                        }).catch(function () {
+                        });
+                       
+                    }
+
+                }, 
+                error=> {
+                    this.newAppCreating = false;
+                    swal({
+                        title: "Application is not created",
+                        text:  "Make sure that you use alphanumeric characters in the application name",
+                        type: 'error',
+        
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                    }).catch(function () {
+                    });
+                });
+    }
+
+    deleteApplication(appName:string):void {
+
+        swal({
+            title: Locale.getLocaleInterface().are_you_sure,
+            text: Locale.getLocaleInterface().wont_be_able_to_revert,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(() => {
+
+            this.restService.deleteApplication(appName).subscribe(
+                data=> {
+                    if (data["success"] == true) {
+                        this.checkApplicationDeleted(appName);
+                    }
+                    else {
+                        $.notify({
+                            icon: "ti-save",
+                            message: "Application is not deleted. Please send logs to the support team"
+                            }, {
+                            type: "warning",
+                            delay: 3000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                    });
+                    }
+                },
+                error => {
+                    swal({
+                        title: "Application is not deleted",
+                        text:  "Please send logs files under log directory to the Ant Media Support(support@antmedia.io)",
+                        type: 'error',
+        
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                    }).catch(function () {
+                    });
+                }
+            );
+
+        }).catch(function () {
+
+        });
+
+
+
+        
     }
 }
