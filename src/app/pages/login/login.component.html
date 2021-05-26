@@ -104,7 +104,7 @@
                                                 <input type="password" name="first_password" 
                                                     class="form-control input-no-border" [(ngModel)]="firstUser.password"
                                                     required #firstPassword="ngModel" minlength="7" reverse="true" validateEqual="first_password_again">
-                                                    <small i18n="@@passwordRequired" [hidden]="firstPassword.valid || (firstPassword.pristine && !registerForm.submitted)" class="text-danger">
+                                                    <small [hidden]="firstPassword.valid || (firstPassword.pristine && !registerForm.submitted)" class="text-danger">
                                                     Password should be at least 7 characters
                                                     </small>
                                             </div>

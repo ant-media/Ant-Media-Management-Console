@@ -8,13 +8,12 @@
                         <div class="nav-tabs-navigation">
                             <div class="nav-tabs-wrapper">
                                 <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-                                    <li class="active">
-                                        <a href="#licence" data-toggle="tab" i18n="licence key settings licence | @@LicenceTabHeader">License </a>
+                                    <li>
+                                        <a href="#licence" data-toggle="tab" class="active" i18n="licence key settings licence | @@LicenceTabHeader">General </a>
                                     </li>
                                     <li>
-                                        <a href="#log" data-toggle="tab" i18n="log settings |log@@LogTabHeader">Log</a>
+                                        <a href="#users" data-toggle="tab" i18n="user settings |log@@LogTabHeader">Users</a>
                                     </li>
-
                                 </ul>
                             </div>
                         </div>
@@ -23,12 +22,12 @@
 
                             <div class="tab-pane active" id="licence" *ngIf="settingsReceived ">
 
-                                <div *ngIf="!serverSettings.buildForMarket && isEnterpriseEdition">
+                                <div>
                                     <form method="post" #f="ngForm" (ngSubmit)="changeServerSettings(f.valid)" class="form-horizontal">
 
                                         <fieldset >
 
-                                            <div class="form-group text-left" >
+                                            <div class="form-group text-left" *ngIf="!serverSettings.buildForMarket && isEnterpriseEdition" >
                                                 <label class="col-sm-2 control-label">License Status</label>
 
                                                 <div class="col-sm-10" *ngIf="licenseStatusReceiving">
@@ -47,17 +46,13 @@
                                                 <div class="col-sm-10" *ngIf="!licenseStatusReceiving && licenseStatus ==='Valid'">
                                                     <p class="form-control-static text-left">  <i class="ti-check " style="color:#199826;font-size: 1.1em"></i>
                                                         Owner : {{currentLicence.owner}} | Until :  {{currentLicence.endDate}} {{_messageReceived}}</p>
-                                                </div>
-                                             
-                                                    
-                                            
-
+                                                </div>                            
                                             </div>
 
                                         </fieldset>
 
-                                        <fieldset>
-                                            <div class="form-group" >
+                                        <fieldset *ngIf="!serverSettings.buildForMarket && isEnterpriseEdition && admin_check == true" >
+                                            <div class="form-group"  >
                                                 <label class="col-sm-2 control-label">Submit License Key</label>
                                                 <div class="col-sm-10 text-left" >
 
@@ -73,14 +68,38 @@
                                                 </div>
                                             </div>
                                         </fieldset>
+                                        
+                                        <fieldset>
+                                            <div class="form-group" >
+                                                <label class="col-sm-2 control-label">Log Status</label>
+    
+                                                <div class="col-sm-10">
+    
+                                                    <select  type="text"  [name]="'resolutionHeight'" (ngModelChange)="logLevelChanged($event)" [(ngModel)]="currentLogLevel"
+                                                             class="dropdown-toggle form-control" required>
+                                                        <option value="{{logLevelInfo}}">{{logLevelInfo}}</option>
+                                                        <option value="{{logLevelWarn}}">{{logLevelWarn}}</option>
+                                                        <option value="{{logLevelError}}">{{logLevelError}}</option>
+                                                        <option value="{{logLevelOff}}">{{logLevelOff}}</option>
+                                                    </select>
+    
+                                                </div>
+                                            </div>
+                                        </fieldset>
 
                                         <fieldset>
-                                            <div class="form-group text-center">
+                                            <div class="form-group text-center" *ngIf ="admin_check == true" >
                                                 <button type="submit" class="btn btn-fill btn-info" i18n="@@saveForm">Save</button>
                                             </div>
                                         </fieldset>
                                     </form>
 
+                                    <div class="main">
+                                        <div *ngIf="admin_check == false"
+                                             i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+                                            You need to be admin to change settings
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- don't let wrong configuration show the two messages at the same time-->
@@ -92,42 +111,165 @@
                                     This is the Ant Media Server Community Edition. No need to license activation.
                                 </p>
                             </div>
+                                <div class="tab-pane container-fluid" id="users" >
+                                    <div class="text-right" style="float: right" *ngIf="admin_check">
+                                        <button class="btn btn-fill btn-success" i18n="@@newUserButton"
+                                        (click)="newUser()" role="button">New User
+                                        </button>
+                                    </div>
 
-
-
-                            <div class="tab-pane container-fluid" id="log">
-
-                                <form #f="ngForm" (ngSubmit)="changeLogLevel(f.valid)" validate class="form-horizontal" method="post">
-
-                                    <fieldset >
-                                        <div class="form-group" >
-                                            <label class="col-sm-2 control-label">Log Status</label>
-
-                                            <div class="col-sm-10">
-
-                                                <select  type="text"  [name]="'resolutionHeight'" (ngModelChange)="logLevelChanged($event)" [(ngModel)]="currentLogLevel"
-                                                         class="dropdown-toggle form-control" required>
-                                                    <option value="{{logLevelInfo}}">{{logLevelInfo}}</option>
-                                                    <option value="{{logLevelWarn}}">{{logLevelWarn}}</option>
-                                                    <option value="{{logLevelError}}">{{logLevelError}}</option>
-                                                    <option value="{{logLevelOff}}">{{logLevelOff}}</option>
-                                                </select>
+                                <div class="card" *ngIf="newUserActive">
+                                    <form method="post" #f="ngForm" validate (ngSubmit)="createUser(f.valid)">
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left">
+                                                New User
+                                            </h4>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="form-group text-left">
+                                                <label>Username (e-mail)</label>
+                                                <input type="text" required minlength="4" name="userName"
+                                                    placeholder="Username" class="form-control"
+                                                    [(ngModel)]="User.email" #userName="ngModel">
+                                                <small [hidden]="userName.valid || (!f.submitted)"
+                                                    class="text-danger">
+                                                    Username should be at least 4 characters.
+                                                </small>
+                                            </div>
+                                            <div class="form-group text-left">
+                                                <label>Password</label>
+                                                <input type="password" required minlength="6" name="Password"
+                                                    placeholder="Password" class="form-control"
+                                                    validateEqual="confirmPassword" reverse="true"
+                                                    [(ngModel)]="User.password" #Password="ngModel">
+                                                <small [hidden]="Password.valid || (!f.submitted)"
+                                                    class="text-danger">
+                                                    Password should be at least 6 characters.
+                                                </small>
+                                            </div>
+                                            <div class="form-group text-left">
+                                                <label i18n="@@newPassword">Confirm Password</label>
+                                                <input type="password" required minlength="6" name="confirmPassword"
+                                                    i18n-placeholder="@@password_place_holder"
+                                                    placeholder="Password" class="form-control"
+                                                    [(ngModel)]="confirmPasswordModel" reverse="false" validateEqual="Password"
+                                                    #confirmPassword="ngModel">
+                                                <small [hidden]="confirmPassword.valid || (!f.submitted)"
+                                                    class="text-danger" >
+                                                    Passwords should match
+                                                </small>
 
                                             </div>
+                                            <div class="form-group text-left" >
+                                                <label>User type</label>    
+        
+                                                <select  type="text"  [name]="'UserType'" (ngModelChange)="UserTypeChanged($event)" [(ngModel)]="currentUserType"
+                                                            class="dropdown-toggle form-control" required>
+                                                    <option value="{{AdminUserType}}" >{{AdminUserType}}</option>
+                                                    <option value="{{ReadOnlyUserType}}">{{ReadOnlyUserType}}</option>
+                                                </select>
+ 
+                                            </div>
+                                                                   
+                                            <div class="form-group text-center">
+
+                                                <button style="margin: 15px" type="submit" [disabled]='newUserCreating'
+                                                    class="btn btn-fill btn-success" i18n="@@newUserCreateButton">
+                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw"
+                                                        *ngIf="newUserCreating"
+                                                        aria-hidden="true"></i>Create</button>
+
+                                                <button type="button" class="btn btn-simple"
+                                                    i18n="@@newUserCancelButton"
+                                                    (click)="cancelNewUser()">Cancel</button>
+                                            </div>
+                                      
                                         </div>
-                                    </fieldset>
+                                    </form>
+                                </div>
+                                <div style="display: flex; justify-content: flex-end"
+                                    *ngIf="userDataTable.dataRows.length>0">
 
+                                    <div class="mat-header" >
+                                        <input (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                                    </div>
 
+                                </div>
 
+                                <div id="broadcastTable" style="text-align: left;"
+                                    *ngIf="userDataTable.dataRows.length>0">
 
-                                    <button class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
-                                            type="submit">Save
-                                    </button>
+                                    <div class="mat-container mat-elevation-z0">
+                                        <mat-table style="overflow: visible !important;" [dataSource]="dataSource" matSort
+                                            >
 
-                                </form>
+                                            <ng-container matColumnDef="email">
+                                                <mat-header-cell [ngClass]="'email-column'" *matHeaderCellDef
+                                                    mat-sort-header>Username</mat-header-cell>
 
+                                                <mat-cell [ngClass]="'email-column'" *matCellDef="let row">
+                                                    <div style="padding-left: 12px;">
+                                                        {{row.email}}
+                                                        <ng-container *ngIf="!row.email || row.email.length == 0">
+                                                            [No Name]
+                                                        </ng-container>
+                                                    </div>
+                                                </mat-cell>
+                                            </ng-container>
+
+                                                    <ng-container matColumnDef="type">
+                                                        <mat-header-cell [ngClass]="'type-column'" *matHeaderCellDef
+                                                            mat-sort-header> User Type </mat-header-cell>
+        
+                                                        <mat-cell [ngClass]="'type-column'" *matCellDef="let row">
+                                                            <div style="padding-left: 12px;">
+                                                                {{row.userType}}
+                                                            </div>
+
+                                                </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="actions">
+                                                <mat-header-cell *matHeaderCellDef class="justify-flex-end"> Actions
+                                                </mat-header-cell>
+
+                                                <mat-cell *matCellDef="let row" class="justify-flex-end">
+                                                    <button
+                                                            (click)="changeType(row)" title="Change Type"
+                                                            data-toggle="tooltip"
+                                                            class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
+                                                            type="button">
+                                                            <span class="btn-label">
+                                                                <i class="ti-pencil"></i>
+                                                            </span>
+                                                            <ng-container i18n="@@tableEditButton"></ng-container>
+
+                                                        </button>
+
+                                                    <button (click)="deleteUser(row.email)"
+                                                        class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
+                                                        type="button">
+                                                        <span class="btn-label">
+                                                            <i class="ti-close"></i>
+                                                        </span>
+                                                    </button>
+
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <mat-header-row *matHeaderRowDef="displayedColumnsStreams"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: displayedColumnsStreams;">
+                                            </mat-row>
+                                        </mat-table>
+                                    </div>
+                                </div>
+
+                                <div class="main">
+                                    <div *ngIf="userDataTable.dataRows.length == 0"
+                                         i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+                                        You need to be admin to see the users.
+                                    </div>
+                                </div>
                             </div>
-
                         </div>
                     </div>
                 </div>

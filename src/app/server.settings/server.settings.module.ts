@@ -6,15 +6,23 @@ import {FormsModule} from '@angular/forms';
 import {ServerSettingsComponent} from './server.settings.component';
 import {ServerSettingsRoutes} from './server.setings.routing';
 import {DataService} from "../rest/data.service";
+import {MatTableModule} from '@angular/material/table'
+import {MatPaginatorModule} from '@angular/material/paginator'
+import {MatDialogModule} from '@angular/material/dialog'
+import {UserEditComponent} from './dialog/user.edit.dialog.component';
+import { EqualValidator } from './equal-validator.directive';
 
 
 @NgModule({
     imports: [
         CommonModule,
         RouterModule.forChild(ServerSettingsRoutes),
-        FormsModule
+        FormsModule, 
+        MatTableModule,
+        MatPaginatorModule,
+        MatDialogModule,
     ],
-    declarations: [ServerSettingsComponent ],
+    declarations: [ServerSettingsComponent, UserEditComponent , EqualValidator],
     providers: [DataService],
 
 })
