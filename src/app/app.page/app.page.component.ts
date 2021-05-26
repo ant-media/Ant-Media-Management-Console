@@ -273,15 +273,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit() {
 
-        this.restService.isAdmin().subscribe(data => {
-            console.log(data);
-            if(data["success"] == true){
-                this.admin_check = true;
-            }
-            else{
-                this.admin_check = false;
-            }
-        })
+        
 
         this.timerId = null;
         this.dropdownTimer = null;
@@ -412,6 +404,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getInitParams (){
+	
         this.sub = this.route.params.subscribe(params => {
             //this method is called whenever app changes
 
@@ -442,6 +435,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
             });
+
+			this.restService.isAdmin().subscribe(data => {
+	            console.log(data);
+	            if(data["success"] == true){
+	                this.admin_check = true;
+	            }
+	            else{
+	                this.admin_check = false;
+	            }
+        	});
 
             this.restService.isInClusterMode().subscribe(data => {
                 this.isClusterMode = data["success"];
