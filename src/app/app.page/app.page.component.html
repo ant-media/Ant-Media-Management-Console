@@ -404,22 +404,16 @@
                                                                 i18n="@@newLiveStreamCancelButton"
                                                                 (click)="cancelPlaylist()">Cancel</button>
                                                         </div>
-
                                                     </div>
-
                                                 </div>
-
                                             </div>
                                         </div>
 
                                     </form>
                                 </div>
 
-                                <br>
-
                                 <div style="display: flex; justify-content: flex-end"
-                                    *ngIf="broadcastTableData.dataRows.length>=0">
-
+                                    *ngIf="broadcastTableData.dataRows.length>0">
                                     <div class="mat-header">
                                         <input (keyup)="applyFilter($event.target.value)" placeholder="Search">
                                     </div>
@@ -800,12 +794,11 @@
                                     </div>
                                 </div>
 
-                                <div class="main">
-                                    <div *ngIf="broadcastTableData.dataRows.length == 0"
+                                <p *ngIf="broadcastTableData.dataRows.length == 0"
                                          i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
                                         There is no stream at this time.
-                                    </div>
-                                </div>
+                                </p>
+                             
                                 <!-- /main -->
 
                             </div>
@@ -818,7 +811,7 @@
                                             data-toggle="dropdown" role="button">Upload VoD
                                         </button>
                                     </div>
-                                    <div>
+                                    <div *ngIf=" vodTableData.dataRows.length>0">
                                         <input style="margin-top:24px" (keyup)="applyFilterVod($event.target.value)" placeholder="Search">
                                     </div>
                                 </div>

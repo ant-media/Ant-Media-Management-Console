@@ -7,25 +7,41 @@
             </h4>
         </div>
         <div class="card-content">
-            <div class="form-group text-left">
+            <div class="checkbox">
+                <input enabled id="change_password" name="change_password"
+                    [(ngModel)]="changePassword"
+                    type="checkbox">
+
+                <label for="change_password">
+                    Change Password 
+                </label>
+            </div>
+            <div class="form-group text-left" *ngIf="changePassword">
+                <label i18n="@@newPassword">New Password</label>
+                <input type="password" name="password"  i18n-placeholder="@@password_place_holder" placeholder="Password"
+                    class="form-control" [required]="changePassword" minlength="6" [(ngModel)]="data.newPassword" validateEqual="password_again" reverse="true" #password="ngModel" >
+                <small  [hidden]="password.valid || (!f.submitted)" class="text-danger">
+                    Password is required and at least 6 characters
+                </small>
+            </div>
+            <div class="form-group text-left" *ngIf="changePassword">
            
-                <label i18n="@@newPassword">Password</label>
-                <input type="text" name="password" i18n-placeholder="@@password_place_holder" placeholder="Password"
-                    class="form-control" [(ngModel)]="data.newPassword" #password="ngModel" style="width: 400px">
+                <label i18n="@@newPassword">New Password(Again)</label>
+                <input type="password" name="password_again" [required]="changePassword" minlength="6" placeholder="Password" reverse="false"
+                    class="form-control" [(ngModel)]="newPasswordAgain" #password_again="ngModel" validateEqual="password">
+                <small  [hidden]="password_again.valid || (!f.submitted)" class="text-danger">
+                        Passwords should match
+                </small>
             </div>
             <fieldset >
                 <div class="form-group text-left" >
-                    <label class="col-sm-2 control-label">User type</label>
+                    <label>User type</label>
 
-                    <div class="col-sm-10">
-
-                        <select  type="text"  [name]="'UserType'" (ngModelChange)="UserTypeChanged($event)" [(ngModel)]="currentUserType"
-                                class="dropdown-toggle form-control" required>
-                            <option value="{{AdminUserType}}" >{{AdminUserType}}</option>
-                            <option value="{{ReadOnlyUserType}}">{{ReadOnlyUserType}}</option>
-                        </select>
-
-                    </div> 
+                    <select  type="text"  [name]="'UserType'" (ngModelChange)="UserTypeChanged($event)" [(ngModel)]="currentUserType"
+                            class="dropdown-toggle form-control" required>
+                        <option value="{{AdminUserType}}" >{{AdminUserType}}</option>
+                        <option value="{{ReadOnlyUserType}}">{{ReadOnlyUserType}}</option>
+                    </select>
                 </div>
             </fieldset>
             <div class="form-group text-center">

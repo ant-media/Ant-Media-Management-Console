@@ -1822,30 +1822,26 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         },
 
 
-                    }).then((result) => {
-
+                    }).then((result) => 
+                    {
                         if (result) {
                             this.liveBroadcast.ipAddr = this.onvifURLs[result].toString();
-
                         }
                     })
 
-                } else {
-
+                } 
+                else 
+                {
                     this.discoveryStarted = false;
                     this.noCamWarning = true;
                     this.camera.ipAddr = "";
-
                 }
-            } else {
-
+            } 
+            else {
                 this.discoveryStarted = false;
                 this.noCamWarning = true;
                 this.camera.ipAddr = "";
-
             }
-
-
         }, 6000);
 
 

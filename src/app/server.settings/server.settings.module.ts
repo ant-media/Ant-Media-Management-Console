@@ -10,6 +10,7 @@ import {MatTableModule} from '@angular/material/table'
 import {MatPaginatorModule} from '@angular/material/paginator'
 import {MatDialogModule} from '@angular/material/dialog'
 import {UserEditComponent} from './dialog/user.edit.dialog.component';
+import { EqualValidator } from './equal-validator.directive';
 
 
 @NgModule({
@@ -21,7 +22,7 @@ import {UserEditComponent} from './dialog/user.edit.dialog.component';
         MatPaginatorModule,
         MatDialogModule,
     ],
-    declarations: [ServerSettingsComponent, UserEditComponent ],
+    declarations: [ServerSettingsComponent, UserEditComponent , EqualValidator],
     providers: [DataService],
 
 })

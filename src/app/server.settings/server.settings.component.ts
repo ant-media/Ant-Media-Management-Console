@@ -18,6 +18,7 @@ import {MatPaginator, MatPaginatorIntl, PageEvent} from "@angular/material/pagin
 import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
 import {UserEditComponent} from './dialog/user.edit.dialog.component';
+import {LOCAL_STORAGE_EMAIL_KEY} from '../pages/login/login.component';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -90,6 +91,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     public password : string;
     public newUserActive : boolean;
     public userNameEmpty = false;
+    public confirmPasswordModel: string;
 
     public filter :string = "";
 
@@ -174,6 +176,21 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         }
     }
     changeType(user: UserInf): void {
+        if (user.email == localStorage.getItem(LOCAL_STORAGE_EMAIL_KEY)) {
+            $.notify({
+                icon: "ti-alert",
+                message: "You cannot edit yourself. If you want to change password, use the Change Password on the right top menu"
+            }, {
+                type: 'warning',
+                delay: 4000,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+            return;
+        }
+
         console.log("userchange = " + user.email)
         this.UserEditing = new User(user.email, "");
         this.UserEditing.userType= user.userType;
@@ -184,7 +201,8 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                 data: {
                     email : this.UserEditing.email,
                     type: this.UserEditing.userType,
-                }
+                },
+                width: "400px",
             });
 
             dialogRef.afterClosed().subscribe(result => {
@@ -195,8 +213,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     }
 
     getUserList(offset: number, size: number): void {
-
-        console.log("getUserList called");
         
         offset = offset * size;
 
@@ -416,7 +432,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
         this.restService.changeLogLevel(this.currentLogLevel).subscribe(data => {
             console.log("data 2:" + JSON.stringify(data));
-            console.log()
             if (data["success"] == true) {
                 $.notify({
                     icon: "ti-save",
@@ -429,13 +444,14 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                         align: 'right'
                     }
                 });
-            } else {
+            } 
+            else {
                 $.notify({
                     icon: "ti-alert",
                     message: Locale.getLocaleInterface().settings_not_saved
                 }, {
                     type: 'warning',
-                    delay: 1900,
+                    delay: 3000,
                     placement: {
                         from: 'top',
                         align: 'right'
@@ -464,6 +480,21 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this.newUserActive = false;
     }
     deleteUser(email : string){
+        var userEmail = localStorage.getItem(LOCAL_STORAGE_EMAIL_KEY)
+        if (userEmail == email) {
+            $.notify({
+                icon: "ti-save",
+                message: "You cannot delete yourself",
+            }, {
+                type: "warning",
+                delay: 900,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+            return ;
+        }
 
         swal({
             title: Locale.getLocaleInterface().are_you_sure,
@@ -474,6 +505,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!'
         }).then(data => {
+
             this.restService.deleteUser(email)
                 .subscribe(data => {
                     if (data["success"] == true) {
@@ -493,8 +525,8 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                     }
                     else {
                         $.notify({
-                            icon: "ti-save",
-                            message: Locale.getLocaleInterface().broadcast_not_deleted
+                            icon: "ti-alert",
+                            message: "User is not deleted"
                         }, {
                             type: "warning",
                             delay: 900,
@@ -520,7 +552,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         }
 
         this.User.userType = this.currentUserType;
-        console.log("username = " + this.User.email + " pass = " + this.User.password + " type = " + this.User.userType)
 
         if (!this.restService.checkStreamName(this.User.email)){
             this.userNameEmpty = true;
@@ -547,6 +578,19 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                     });
                     this.getUserList(this.userListOffset, this.pageSize);
                     this.User.fullName = "";
+                }
+                else {
+                    $.notify({
+                        icon: "ti-alert",
+                        message: "User is not created. " + data["message"],
+                    }, {
+                        type: "warning",
+                        delay: 900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
                 }
             })
             this.newUserCreating = false;

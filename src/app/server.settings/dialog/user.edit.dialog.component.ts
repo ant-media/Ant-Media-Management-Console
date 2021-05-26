@@ -22,6 +22,8 @@ export class UserEditComponent {
     public currentUserType : string;
     public AdminUserType : string = "ADMIN";
     public ReadOnlyUserType : string = "READ_ONLY";
+    public changePassword = false;
+    public newPasswordAgain = "";
 
     constructor(
         public dialogRef: MatDialogRef<UserEditComponent>, public restService: RestService,
@@ -55,8 +57,6 @@ export class UserEditComponent {
             this.userEditing.newPassword = "";
         }
 
-        console.log("icerden = " +  this.userEditing.email + "type = " + this.userEditing.userType + "pass = " + this.userEditing.newPassword);
-
         if (!this.restService.checkStreamName(this.userEditing.email)){
             this.userNameEmpty = true;
             return;
@@ -71,7 +71,7 @@ export class UserEditComponent {
             if (data["success"]) {
                 $.notify({
                     icon: "ti-save",
-                    message: Locale.getLocaleInterface().broadcast_updated
+                    message: "User is updated"
                 }, {
                     type: "success",
                     delay: 900,
@@ -87,7 +87,7 @@ export class UserEditComponent {
             else {
                 $.notify({
                     icon: "ti-alert",
-                    message: Locale.getLocaleInterface().broadcast_not_updated + " " + data["message"] + " " + data["errorId"]
+                    message: "User is not updated: " + data["message"] + " " + data["errorId"]
                 }, {
                     type: "warning",
                     delay: 900,

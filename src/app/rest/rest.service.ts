@@ -183,10 +183,6 @@ export class RestService {
                 +"&sort_by="+sortBy+"&order_by="+orderBy+"&search="+filterValue,{});
         }
     }
-    public getUsers(){
-        return this.http.get(REST_SERVICE_ROOT + "/admin/users");
-    }
-
     public getBroadcast(appName: string, id: string): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + id);
     }
@@ -229,9 +225,7 @@ export class RestService {
     public startStream(appName: string, streamId: string): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/start", {});
     }
-    public deleteUser(email:string){
-        return this.http.delete(REST_SERVICE_ROOT + "/admin/user/" + email);
-    }
+
 
     public deleteBroadcast(appName: string, streamId:string, REMOTE_REST_SERVICE_ROOT:string): Observable<Object> {
         let REST_SERVICE_ADDRESS;
@@ -317,10 +311,16 @@ export class RestService {
     }
 
     public createUser(user: User): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/admin/user", user);
+        return this.http.post(REST_SERVICE_ROOT + "/admin/users", user);
     }
     public editUser(user:User): Observable<Object> {
-        return this.http.put(REST_SERVICE_ROOT + "/admin/user", user);
+        return this.http.put(REST_SERVICE_ROOT + "/admin/users", user);
+    }
+    public deleteUser(email:string){
+        return this.http.delete(REST_SERVICE_ROOT + "/admin/users/" + email);
+    }
+    public getUsers(){
+        return this.http.get(REST_SERVICE_ROOT + "/admin/user-list");
     }
 
     public isAuthenticated(): Observable<Object> {
@@ -597,7 +597,6 @@ export class RestService {
     public checkStreamName(name:string) {
 
         if (!name || name.length === 0 || /^\s*$/.test(name) ){
-
             return false;
         }
         else{

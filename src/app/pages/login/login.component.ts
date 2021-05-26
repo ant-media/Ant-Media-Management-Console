@@ -97,6 +97,7 @@ export class LoginComponent implements OnInit{
             if (data["success"] == true) {
                 this.auth.isAuthenticated = data["success"];
                 localStorage.setItem("authenticated", "true");
+                localStorage.setItem(LOCAL_STORAGE_EMAIL_KEY, this.email);
                 this.router.navigateByUrl("/dashboard");
             }
             else {
@@ -133,3 +134,5 @@ export class LoginComponent implements OnInit{
     }
 
 }
+
+export const LOCAL_STORAGE_EMAIL_KEY = "email";
