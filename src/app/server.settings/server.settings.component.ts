@@ -113,21 +113,10 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     }
 
     ngOnInit(){
-        this.restService.isAdmin().subscribe(data => {
-            console.log(data);
-            if(data["success"] == true){
-                this.admin_check = true;
-            }
-            else{
-                this.admin_check = false;
-            }
-        })
+        this.serverSettings = new ServerSettings(null,null, false, this.logLevelInfo);
 
-        this.serverSettings = new ServerSettings(null,null, false);
-
-        this.getLogLevel();
         this.callTimer();
-        this.getUserList(this.userListOffset,this.pageSize);
+       
 
         this.userDataTable = {
             dataRows: [],
@@ -139,20 +128,38 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             this.isEnterpriseEdition = data["success"];
             this.getServerSettings();
         });
+        this.restService.isAdmin().subscribe(data => {
+            console.log(data);
+            if(data["success"] == true){
+                this.admin_check = true;
+            }
+            else{
+                this.admin_check = false;
+            }
+        });
+         this.getUserList(this.userListOffset,this.pageSize);
     }
 
     ngOnDestroy() {
         this.clearTimer();
     }
 
-    public getLogLevel(){
+    logLevelChanged(event:any){
 
-        this.restService.getLogLevel().subscribe(data => {
-
-            this.currentLogLevel = data['logLevel'];
-
-        });
+        if(event == this.logLevelInfo) {
+            this.serverSettings.logLevel = this.logLevelInfo;
+        }
+        if(event == this.logLevelWarn) {
+            this.serverSettings.logLevel = this.logLevelWarn;
+        }
+        if(event == this.logLevelError) {
+            this.serverSettings.logLevel = this.logLevelError;
+        }
+        if(event == this.logLevelOff) {
+            this.serverSettings.logLevel = this.logLevelOff;
+        }
     }
+
     applyFilter(filterValue: string) {
         filterValue = filterValue.trim(); // Remove whitespace
         filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
@@ -160,21 +167,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this.dataSource.filter = filterValue;
     }
 
-    logLevelChanged(event:any){
-
-        if(event == this.logLevelInfo) {
-            this.currentLogLevel = this.logLevelInfo;
-        }
-        if(event == this.logLevelWarn) {
-            this.currentLogLevel = this.logLevelWarn;
-        }
-        if(event == this.logLevelError) {
-            this.currentLogLevel = this.logLevelError;
-        }
-        if(event == this.logLevelOff) {
-            this.currentLogLevel = this.logLevelOff;
-        }
-    }
     changeType(user: UserInf): void {
         if (user.email == localStorage.getItem(LOCAL_STORAGE_EMAIL_KEY)) {
             $.notify({
@@ -392,7 +384,8 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         }
 
         // this.licenseStatusReceiving = true;
-        if(!this.serverSettings.buildForMarket && this.isEnterpriseEdition){
+        if(!this.serverSettings.buildForMarket && this.isEnterpriseEdition) 
+        {
             this.restService.changeServerSettings( this.serverSettings).subscribe(data => {
                 if (data["success"] == true) {
                     $.notify({
@@ -429,36 +422,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                 }
             });
         }
-
-        this.restService.changeLogLevel(this.currentLogLevel).subscribe(data => {
-            console.log("data 2:" + JSON.stringify(data));
-            if (data["success"] == true) {
-                $.notify({
-                    icon: "ti-save",
-                    message: Locale.getLocaleInterface().log_level_changed
-                }, {
-                    type: "success",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            } 
-            else {
-                $.notify({
-                    icon: "ti-alert",
-                    message: Locale.getLocaleInterface().settings_not_saved
-                }, {
-                    type: 'warning',
-                    delay: 3000,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
-        });
     }
     newUser(): void {
         this.username = "";
@@ -610,5 +573,4 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     differenceInDays(firstDate: number, secondDate: number) {
         return Math.round((secondDate-firstDate)/(1000*60*60*24));
     }
-
 }
