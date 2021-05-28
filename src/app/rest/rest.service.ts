@@ -206,11 +206,11 @@ export class RestService {
     }
 
     public createApplication(appName: string):Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/admin/applications/" + appName, {});
+        return this.http.post(REST_SERVICE_ROOT + "/applications/" + appName, {});
     }
 
     public deleteApplication(appName: string):Observable<Object> {
-        return this.http.delete(REST_SERVICE_ROOT + "/admin/applications/" + appName, {});
+        return this.http.delete(REST_SERVICE_ROOT + "/applications/" + appName, {});
     }
 
     public updateLiveStream(appName: string, broadcast: LiveBroadcast, socialNetworks): Observable<Object> {
@@ -311,16 +311,16 @@ export class RestService {
     }
 
     public createUser(user: User): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/admin/users", user);
+        return this.http.post(REST_SERVICE_ROOT + "/users", user);
     }
     public editUser(user:User): Observable<Object> {
-        return this.http.put(REST_SERVICE_ROOT + "/admin/users", user);
+        return this.http.put(REST_SERVICE_ROOT + "/users", user);
     }
     public deleteUser(email:string){
-        return this.http.delete(REST_SERVICE_ROOT + "/admin/users/" + email);
+        return this.http.delete(REST_SERVICE_ROOT + "/users/" + email);
     }
     public getUsers(){
-        return this.http.get(REST_SERVICE_ROOT + "/admin/user-list");
+        return this.http.get(REST_SERVICE_ROOT + "/user-list");
     }
 
     public isAuthenticated(): Observable<Object> {
@@ -352,13 +352,14 @@ export class RestService {
     }
 
     public changeSettings(appName: string, appSettings: AppSettings ): Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + '/admin/applications/settings/' + appName, appSettings);
+        return this.http.post(REST_SERVICE_ROOT + '/applications/settings/' + appName, appSettings);
     }
 
-    public changeServerSettings(serverSettings: ServerSettings ): Observable<Object> {
-
-        return this.http.post(REST_SERVICE_ROOT + '/admin/server-settings', serverSettings);
+    public changeServerSettings(serverSettings: ServerSettings ): Observable<Object> 
+    {
+        return this.http.post(REST_SERVICE_ROOT + '/server-settings', serverSettings);
     }
+
     public getDeviceAuthParameters(appName: string, networkName: string): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-networks/" + networkName, {});
     }
@@ -394,15 +395,6 @@ export class RestService {
     public getLogFile(offset:number, logType:string): Observable<Object>{
         return this.http.get(REST_SERVICE_ROOT + '/log-file/' + offset +'/10000/?logType='+ logType);
     }
-
-    public getLogLevel(): Observable<Object>{
-        return this.http.get(REST_SERVICE_ROOT + '/log-level');
-    }
-
-    public changeLogLevel(logLevel : string): Observable<Object>{
-        return this.http.get(REST_SERVICE_ROOT + '/admin/log-level-settings/'+logLevel);
-    }
-
 
     public getVodList(appName:string, offset:Number, size:Number, sortBy: String, orderBy: String, filterValue: String): Observable<Object>  {
         if(filterValue == null){

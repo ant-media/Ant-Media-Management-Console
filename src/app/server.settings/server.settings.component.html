@@ -75,7 +75,7 @@
     
                                                 <div class="col-sm-10">
     
-                                                    <select  type="text"  [name]="'resolutionHeight'" (ngModelChange)="logLevelChanged($event)" [(ngModel)]="currentLogLevel"
+                                                    <select  type="text"  [name]="'resolutionHeight'" (ngModelChange)="logLevelChanged($event)" [(ngModel)]="serverSettings.logLevel"
                                                              class="dropdown-toggle form-control" required>
                                                         <option value="{{logLevelInfo}}">{{logLevelInfo}}</option>
                                                         <option value="{{logLevelWarn}}">{{logLevelWarn}}</option>
@@ -234,7 +234,7 @@
 
                                                 <mat-cell *matCellDef="let row" class="justify-flex-end">
                                                     <button
-                                                            (click)="changeType(row)" title="Change Type"
+                                                            (click)="changeType(row)" title="Change Type" *ngIf="admin_check"
                                                             data-toggle="tooltip"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                             type="button">
@@ -245,7 +245,7 @@
 
                                                         </button>
 
-                                                    <button (click)="deleteUser(row.email)"
+                                                    <button (click)="deleteUser(row.email)" *ngIf="admin_check"
                                                         class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
                                                         type="button">
                                                         <span class="btn-label">
