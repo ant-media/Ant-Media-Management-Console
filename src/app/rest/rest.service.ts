@@ -133,6 +133,10 @@ export class RestService {
         REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest/v2";
     }
 
+    public getBlockedStatus(usermail: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/blockedStatus/' +usermail);
+    }
+
     public setSidebar(sidebar: SidebarComponent) {
         this.sidebar = sidebar;
     }
