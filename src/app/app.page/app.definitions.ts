@@ -3,7 +3,7 @@ export class Endpoint {
     endpointServiceId: string;
     rtmpUrl: string;
 }
-export declare interface User {
+export declare interface UserInf {
 
 	/**
 	 * Email of the user
@@ -13,7 +13,7 @@ export declare interface User {
 	/**
 	 * Type of the user
 	 */
-	userType:String;
+	userType:string;
 
 	/**
 	 * Name of the user
@@ -30,6 +30,9 @@ export declare interface User {
 	 */
     id:string;
 }
+export declare interface UserInfoTable {
+    dataRows: UserInf[];
+}
 
 export declare interface LiveComment {
     /**
@@ -45,7 +48,7 @@ export declare interface LiveComment {
 	/**
 	 * User who write this comment
 	 */
-	from:User;
+	from:UserInf;
 
 	/**
 	 * Origin of the comment
@@ -163,6 +166,7 @@ export class ServerSettings {
     constructor(public serverName: string,
                 public licenceKey: string,
                 public buildForMarket: boolean,
+                public logLevel: string
     ) {}
 }
 

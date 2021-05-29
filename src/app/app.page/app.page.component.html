@@ -39,7 +39,7 @@
 
                                 <div>
 
-                                    <div class="dropdown text-right" style="float: right">
+                                    <div class="dropdown text-right" style="float: right" *ngIf="admin_check==true">
                                         <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton"
                                             data-toggle="dropdown" role="button">New Live Stream
                                             <span class="caret"></span>
@@ -404,22 +404,16 @@
                                                                 i18n="@@newLiveStreamCancelButton"
                                                                 (click)="cancelPlaylist()">Cancel</button>
                                                         </div>
-
                                                     </div>
-
                                                 </div>
-
                                             </div>
                                         </div>
 
                                     </form>
                                 </div>
 
-                                <br>
-
                                 <div style="display: flex; justify-content: flex-end"
-                                    *ngIf="broadcastTableData.dataRows.length>=0">
-
+                                    *ngIf="broadcastTableData.dataRows.length>0">
                                     <div class="mat-header">
                                         <input (keyup)="applyFilter($event.target.value)" placeholder="Search">
                                     </div>
@@ -564,7 +558,7 @@
 
                                                     <div style="font-size: 1.1em">
 
-                                                        <ul class="nav navbar-right">
+                                                        <ul class="nav navbar-right" *ngIf = "admin_check==true">
                                                             <li (click)="contextDropdownClicked()" class="dropdown">
                                                                 <a href="#" class="dropdown-toggle btn-magnify"
                                                                     data-toggle="dropdown">
@@ -729,7 +723,7 @@
                                                         <!-- Edit Broadcast Button -->
 
                                                         <button
-                                                            *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
+                                                            *ngIf="admin_check==true && row.status!='broadcasting'&& row.type=='liveStream'"
                                                             (click)="openBroadcastEditDialog(row)" title="Edit"
                                                             data-toggle="tooltip"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -743,7 +737,7 @@
 
                                                         <!-- Edit IP Camera Button -->
 
-                                                        <button *ngIf="row.type=='ipCamera'"
+                                                        <button *ngIf="admin_check==true && row.type=='ipCamera'"
                                                             (click)="openSettingsDialog(row)"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                             type="button" data-toggle="tooltip" i18n-title
@@ -757,7 +751,7 @@
 
                                                         <!-- Edit Stream Source Button -->
 
-                                                        <button *ngIf="row.type=='streamSource'"
+                                                        <button *ngIf="admin_check==true && row.type=='streamSource'"
                                                             (click)="openStreamSourceSettingsDialog(row)"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                             type="button" data-toggle="tooltip" i18n-title
@@ -771,7 +765,7 @@
 
                                                         <!-- Edit Playlist Button -->
 
-                                                        <button *ngIf="row.status!='broadcasting'&& row.type=='playlist'"
+                                                        <button *ngIf="admin_check==true && row.status!='broadcasting'&& row.type=='playlist'"
                                                             (click)="openPlaylistEditDialog(row)" title="Edit"
                                                             data-toggle="tooltip"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -800,12 +794,11 @@
                                     </div>
                                 </div>
 
-                                <div class="main">
-                                    <div *ngIf="broadcastTableData.dataRows.length == 0"
+                                <p *ngIf="broadcastTableData.dataRows.length == 0"
                                          i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
                                         There is no stream at this time.
-                                    </div>
-                                </div>
+                                </p>
+                             
                                 <!-- /main -->
 
                             </div>
@@ -813,12 +806,12 @@
                             <div class="tab-pane" id="vod">
 
                                 <div class=" text-right">
-                                    <div>
+                                    <div *ngIf="admin_check==true">
                                         <button class="btn btn-fill btn-success" (click)="openVodUploadDialog()"
                                             data-toggle="dropdown" role="button">Upload VoD
                                         </button>
                                     </div>
-                                    <div>
+                                    <div *ngIf=" vodTableData.dataRows.length>0">
                                         <input style="margin-top:24px" (keyup)="applyFilterVod($event.target.value)" placeholder="Search">
                                     </div>
                                 </div>
@@ -876,7 +869,7 @@
                                                 </mat-cell>
                                             </ng-container>
 
-                                            <ng-container matColumnDef="actions">
+                                            <ng-container matColumnDef="actions" >
                                                 <mat-header-cell *matHeaderCellDef class="justify-flex-end"> Actions
                                                 </mat-header-cell>
 
@@ -913,6 +906,7 @@
                                                     </a>
 
                                                     <button (click)="deleteVoD(row.vodName, row.vodId, row.type)"
+                                                        *ngIf="admin_check==true"
                                                         class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
                                                         type="button">
                                                         <span class="btn-label">
@@ -1747,8 +1741,14 @@
 
                                             <div class="col-sm-12 col-md-12">
                                                 <div class="text-center">
+                                                    
+                                                    <div *ngIf="admin_check == false"
+                                                            i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+                                                        You need to be admin to change settings
+                                                    </div>
+                                                   
 
-                                                    <button class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
+                                                    <button class="btn btn-info" *ngIf="admin_check==true" i18n="@@saveForm" style="margin: 15px"
                                                         type="submit">Save
                                                     </button>
                                                     <!--

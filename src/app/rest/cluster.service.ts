@@ -37,7 +37,7 @@ export class ClusterRestService {
     }
 
     public deleteClusterNodes(node: ClusterNodeInfo): Observable<Object> {
-        return this.http.get(this.getRestServiceRoot() + '/deleteNode/'+ node.id);
+        return this.http.delete(this.getRestServiceRoot() + '/node/'+ node.id);
     }
 
 
