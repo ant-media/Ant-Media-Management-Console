@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit{
     public email = "";
     public password = "";
     public showIncorrectCredentials = false;
+    public blockLoginAttempt = false;
     public firstLogin = false;
     public firstUser: User;
     public temp_model_password:string;
