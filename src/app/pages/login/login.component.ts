@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthService} from '../../rest/auth.service';
 import {User} from '../../rest/rest.service';
+import {RestService} from '../../rest/rest.service';
 
 declare var $:any;
 
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit{
     public email = "";
     public password = "";
     public showIncorrectCredentials = false;
+    public blockLoginAttempt = false;
     public firstLogin = false;
     public firstUser: User;
     public temp_model_password:string;
@@ -26,7 +28,7 @@ export class LoginComponent implements OnInit{
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
 
-    constructor(private element : ElementRef, private auth: AuthService, private router: Router) {
+    constructor(private element : ElementRef, private auth: AuthService, private router: Router,private restService: RestService) {
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
         this.showYouCanLogin = false;
@@ -105,7 +107,11 @@ export class LoginComponent implements OnInit{
             }
 
         });
-
+        
+        this.restService.getBlockedStatus(this.email).subscribe(data => {
+            this.blockLoginAttempt = data["success"];           
+        });
+        
     }
 
 
