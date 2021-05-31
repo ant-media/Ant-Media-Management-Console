@@ -134,7 +134,7 @@ export class RestService {
     }
 
     public getBlockedStatus(usermail: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/blockedStatus/' +usermail);
+        return this.http.get(REST_SERVICE_ROOT + '/users/'+ usermail +'/blocked');
     }
 
     public setSidebar(sidebar: SidebarComponent) {

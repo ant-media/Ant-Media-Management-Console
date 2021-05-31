@@ -21,7 +21,6 @@ export class LoginComponent implements OnInit{
     public password = "";
     public showIncorrectCredentials = false;
     public blockLoginAttempt = false;
-    public testblock ;
     public firstLogin = false;
     public firstUser: User;
     public temp_model_password:string;
@@ -110,18 +109,9 @@ export class LoginComponent implements OnInit{
         });
         
         this.restService.getBlockedStatus(this.email).subscribe(data => {
-            this.testblock = data;
+            this.blockLoginAttempt = data["success"];           
         });
         
-        if (this.testblock ==true){
-            this.blockLoginAttempt=true;
-        }
-        else{
-            this.blockLoginAttempt=false;
-        }
-        console.log(this.blockLoginAttempt);
-        
-
     }
 
 

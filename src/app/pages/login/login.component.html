@@ -56,9 +56,9 @@
                                     i18n="@@loginFormIncorrectCredentials" >
                                             Username or password is incorrect
                                         </div>
-                                    <div class="form-group text-danger text-center" [hidden]="!blockLoginAttempt"
-                                    i18n="@@loginFormIncorrectCredentials" >
-                                            You have attempted 3 invalid login attempts. Please wait for 5 minutes to reattempt
+                                    <div class="form-group text-danger text-center" *ngIf="blockLoginAttempt"
+                                     >
+                                            You have 3 invalid login attempts. Please try again to login after 5 minutes
                                         </div>
                                 </div>
                                 <div class="card-footer text-center">
