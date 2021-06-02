@@ -214,10 +214,9 @@ export class AppSettings {
                 public s3SecretKey: string,
                 public s3RegionName: string,
                 public s3BucketName: string,
-                public s3Endpoint: string
-
+                public s3Endpoint: string,
                 public enableTimeTokenForPlay: boolean,
-                public enableTimeTokenForPublish: boolean
+                public enableTimeTokenForPublish: boolean,
 
     ) {}
 }
