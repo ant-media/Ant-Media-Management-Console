@@ -1446,10 +1446,6 @@
                                                             </div>
                                                         </div>
                                                         
-                                                        
-
-                                                        
-                                                        
                                                             
                                                             <div class="col-xs-12"> 
                                                                     <div class="checkbox">
@@ -1457,14 +1453,13 @@
                                                                             [(ngModel)]="appSettings.s3RecordingEnabled"
                                                                             id="s3RecordingEnabled"
                                                                             name="s3RecordingEnabled"
-                                                                            [disabled]="!appSettings.mp4MuxingEnabled && !appSettings.webMMuxingEnabled"
-
+                                                                           
                                                                             type="checkbox">
     
                                                                         <label for="s3RecordingEnabled"
-                                                                            i18n="@@s3RecordingEnabled">
+                                                                          >
                                                                             Enable S3 Recording <a
-                                                                            matTooltip="If you want to use this feature, you should check MP4 or WebM recording.">
+                                                                            matTooltip="This feature uploads recording files(MP4 or WebM) to the S3">
                                                                             <i
                                                                                 class="fa fa-info-circle"></i></a>
                                                                     </label>
