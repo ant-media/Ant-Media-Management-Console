@@ -209,9 +209,14 @@ export class AppSettings {
                 public playJwtControlEnabled: boolean,
                 public publishJwtControlEnabled: boolean,
                 public generatePreview: boolean,
-
+                public s3RecordingEnabled: boolean,
+                public s3AccessKey: string,
+                public s3SecretKey: string,
+                public s3RegionName: string,
+                public s3BucketName: string,
+                public s3Endpoint: string,
                 public enableTimeTokenForPlay: boolean,
-                public enableTimeTokenForPublish: boolean
+                public enableTimeTokenForPublish: boolean,
 
     ) {}
 }

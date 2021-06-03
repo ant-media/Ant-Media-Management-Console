@@ -1241,6 +1241,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
+
         if(this.appSettings.jwtControlEnabled){
             let jwt = require('jsonwebtoken');
             let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
