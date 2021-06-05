@@ -472,11 +472,19 @@ export class RestService {
     }
 
     /**
-     * This methods get live views count from social endpoint like facebook, youtube,...
+     * This methods get One Time Token
      */
-    public getToken(appName: string, streamId: string, expireDate:number) : Observable<Object>{
+    public getOneTimeToken(appName: string, streamId: string, expireDate:number) : Observable<Object>{
        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
             + "/rest/v2/broadcasts/"+ streamId + "/token&expireDate="  + expireDate + "&type=play" );
+    }
+
+    /**
+     * This methods get JWT Token
+     */
+    public getJWTToken(appName: string, streamId: string, expireDate:number) : Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
+            + "/rest/v2/broadcasts/"+ streamId + "/jwt-token&expireDate="  + expireDate + "&type=play" );
     }
 
     public getRtmpUrl(appName:string, streamId:string): string {
