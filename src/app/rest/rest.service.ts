@@ -24,8 +24,7 @@ export class User {
 let SERVER_ADDR = location.hostname;
 
 export var HTTP_SERVER_ROOT;
-export var REST_SERVICE_V2_ROOT;
-export var REST_SERVICE_V1_ROOT;
+export var REST_SERVICE_ROOT;
 
 export class LiveBroadcast {
     name: string;
@@ -117,7 +116,7 @@ export class RestService {
             let url = "https://" + location.hostname + ":5443/";
             this.http.head(url).subscribe(data => {
                 HTTP_SERVER_ROOT = url;
-                    REST_SERVICE_V2_ROOT = HTTP_SERVER_ROOT + "rest";
+                REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest";
             },
             error => {
                 console.log("No https avaiable");
@@ -131,12 +130,11 @@ export class RestService {
         else if (location.protocol.startsWith("https")){
             HTTP_SERVER_ROOT = "https://" + location.hostname + ":" + location.port + "/";
         }
-        REST_SERVICE_V2_ROOT = HTTP_SERVER_ROOT + "rest/v2";
-        REST_SERVICE_V1_ROOT = HTTP_SERVER_ROOT + "rest";
+        REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest/v2";
     }
 
     public getBlockedStatus(usermail: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + '/users/'+ usermail +'/blocked');
+        return this.http.get(REST_SERVICE_ROOT + '/users/'+ usermail +'/blocked');
     }
 
     public setSidebar(sidebar: SidebarComponent) {
@@ -148,49 +146,49 @@ export class RestService {
     }
 
     public isShutdownProperly(appNames: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + '/shutdown-proper-status?appNames=' + appNames);
+        return this.http.get(REST_SERVICE_ROOT + '/shutdown-proper-status?appNames=' + appNames);
     }
 
     public setShutdownProperly(appNames: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + '/shutdown-properly?appNames=' + appNames);
+        return this.http.get(REST_SERVICE_ROOT + '/shutdown-properly?appNames=' + appNames);
     }
 
     public getSystemResourcesInfo(): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + '/system-resources');
+        return this.http.get(REST_SERVICE_ROOT + '/system-resources');
     }
 
     public getCPULoad(): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + '/cpu-status');
+        return this.http.get(REST_SERVICE_ROOT + '/cpu-status');
     }
 
     public checkAuthStatus(networkName: string, appName: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-network-status/" + networkName,
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-network-status/" + networkName,
             {});
     }    
 
     public getVersion(): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/version");
+        return this.http.get(REST_SERVICE_ROOT + "/version");
     }
 
     public getDetectionList(appName:string, streamId:string, offset:number, size:Number): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/detections/'+offset+"/"+size);
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/detections/'+offset+"/"+size);
     }
 
     public getObjectDetectedTotal(appName:string, streamId:string): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/' + streamId + '/detections/count');
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/' + streamId + '/detections/count');
     }
 
     public getAppLiveStreams(appName:string, offset:Number, size:Number, sortBy:string, orderBy:string, filterValue:string): Observable<Object> {
         if(filterValue == null){
-            return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/list/'+offset+"/"+size
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/list/'+offset+"/"+size
             +"&sort_by="+sortBy+"&order_by="+orderBy,{});
         }else{
-            return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/list/'+offset+"/"+size
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/list/'+offset+"/"+size
                 +"&sort_by="+sortBy+"&order_by="+orderBy+"&search="+filterValue,{});
         }
     }
     public getBroadcast(appName: string, id: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + id);
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + id);
     }
 
     public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, REMOTE_REST_SERVICE_ROOT: string, socialNetworks:string): Observable<Object> {
@@ -201,7 +199,7 @@ export class RestService {
             autoStart = true;
         }
         if(REMOTE_REST_SERVICE_ROOT == null){
-            REST_SERVICE_ADDRESS = REST_SERVICE_V2_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/create&autoStart="+autoStart+"&socialNetworks="+socialNetworks;
+            REST_SERVICE_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/create&autoStart="+autoStart+"&socialNetworks="+socialNetworks;
         }
         else{
             REST_SERVICE_ADDRESS = REMOTE_REST_SERVICE_ROOT + "/" + appName + "/rest/v2/broadcasts/create?autoStart="+autoStart+"&socialNetworks="+socialNetworks;
@@ -212,31 +210,31 @@ export class RestService {
     }
 
     public createApplication(appName: string):Observable<Object> {
-        return this.http.post(REST_SERVICE_V2_ROOT + "/applications/" + appName, {});
+        return this.http.post(REST_SERVICE_ROOT + "/applications/" + appName, {});
     }
 
     public deleteApplication(appName: string):Observable<Object> {
-        return this.http.delete(REST_SERVICE_V2_ROOT + "/applications/" + appName, {});
+        return this.http.delete(REST_SERVICE_ROOT + "/applications/" + appName, {});
     }
 
     public updateLiveStream(appName: string, broadcast: LiveBroadcast, socialNetworks): Observable<Object> {
-        return this.http.put(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/"+broadcast.streamId+"?socialNetworks="+socialNetworks,
+        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/"+broadcast.streamId+"?socialNetworks="+socialNetworks,
             broadcast);
     }
 
     public stopStream(appName: string, streamId: string): Observable<Object> {
-        return this.http.post(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/stop", {});
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/stop", {});
     }
 
     public startStream(appName: string, streamId: string): Observable<Object> {
-        return this.http.post(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/start", {});
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + streamId + "/start", {});
     }
 
 
     public deleteBroadcast(appName: string, streamId:string, REMOTE_REST_SERVICE_ROOT:string): Observable<Object> {
         let REST_SERVICE_ADDRESS;
         if(REMOTE_REST_SERVICE_ROOT == null){
-            REST_SERVICE_ADDRESS = REST_SERVICE_V2_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+streamId;
+            REST_SERVICE_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+streamId;
         }
         else{
             REST_SERVICE_ADDRESS = REMOTE_REST_SERVICE_ROOT + "/" + appName + '/rest/v2/broadcasts/'+streamId;
@@ -245,24 +243,24 @@ export class RestService {
     }
 
     public deleteVoDFile(appName: string, vodName:string,id:number, type:string) {
-        return this.http.delete(REST_SERVICE_V2_ROOT + "/request?_path=" +  appName + '/rest/v2/vods/'+id, {});
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/vods/'+id, {});
     }
 
     public deleteRTMPEndpointV2(appName: string, id:number, endpointServiceId:string) {
-        return this.http.delete(REST_SERVICE_V2_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/rtmp-endpoint?endpointServiceId='+endpointServiceId, {});
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/rtmp-endpoint?endpointServiceId='+endpointServiceId, {});
     }
 
     public deleteRTMPEndpointV1(appName: string, id:number, rtmpUrl:string) {
-        return this.http.delete(REST_SERVICE_V2_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint?rtmpUrl='+rtmpUrl, {});
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint?rtmpUrl='+rtmpUrl, {});
     }
 
     public addRTMPEndpoint(appName: string,id:number, endpoint:Endpoint) {
-        return this.http.post(REST_SERVICE_V2_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/rtmp-endpoint',
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/rtmp-endpoint',
             endpoint);
     }
 
     public revokeSocialNetwork(appName: string, serviceId:string): Observable<Object> {
-        return this.http.delete(REST_SERVICE_V2_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/social-networks/'+serviceId, {});
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/social-networks/'+serviceId, {});
     }
 
     public isEnterpriseEdition(): Observable<Object> {    
@@ -271,7 +269,7 @@ export class RestService {
         {
             if (this.isEnterpriseObject == null) 
             {
-                this.http.get(REST_SERVICE_V2_ROOT + "/enterprise-edition").subscribe(data => {
+                this.http.get(REST_SERVICE_ROOT + "/enterprise-edition").subscribe(data => {
                   //cache value
                   this.isEnterpriseObject = data;
                   observer.next(this.isEnterpriseObject);
@@ -294,43 +292,43 @@ export class RestService {
     }
 
     public getApplications(): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + '/applications');
+        return this.http.get(REST_SERVICE_ROOT + '/applications');
     }
     public isAdmin(): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + '/admin-status');
+        return this.http.get(REST_SERVICE_ROOT + '/admin-status');
     }
 
     public authenticateUser(user: User): Observable<Object> {
-        return this.http.post(REST_SERVICE_V2_ROOT + "/users/authenticate", user);
+        return this.http.post(REST_SERVICE_ROOT + "/users/authenticate", user);
     }
 
     public changePassword(user: User): Observable<Object> {
-        return this.http.post(REST_SERVICE_V2_ROOT + "/users/password", user);
+        return this.http.post(REST_SERVICE_ROOT + "/users/password", user);
     }
 
     public isFirstLogin(): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/first-login-status");
+        return this.http.get(REST_SERVICE_ROOT + "/first-login-status");
     }
 
     public createFirstAccount(user: User): Observable<Object> {
-        return this.http.post(REST_SERVICE_V2_ROOT + "/users/initial", user);
+        return this.http.post(REST_SERVICE_ROOT + "/users/initial", user);
     }
 
     public createUser(user: User): Observable<Object> {
-        return this.http.post(REST_SERVICE_V2_ROOT + "/users", user);
+        return this.http.post(REST_SERVICE_ROOT + "/users", user);
     }
     public editUser(user:User): Observable<Object> {
-        return this.http.put(REST_SERVICE_V2_ROOT + "/users", user);
+        return this.http.put(REST_SERVICE_ROOT + "/users", user);
     }
     public deleteUser(email:string){
-        return this.http.delete(REST_SERVICE_V2_ROOT + "/users/" + email);
+        return this.http.delete(REST_SERVICE_ROOT + "/users/" + email);
     }
     public getUsers(){
-        return this.http.get(REST_SERVICE_V2_ROOT + "/user-list");
+        return this.http.get(REST_SERVICE_ROOT + "/user-list");
     }
 
     public isAuthenticated(): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/authentication-status");
+        return this.http.get(REST_SERVICE_ROOT + "/authentication-status");
     }
 
     public get(url: string, options:any): Observable<Object> {
@@ -338,114 +336,114 @@ export class RestService {
     }
 
     public getSocialEndpoints(appName: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-endpoints/0/20");
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-endpoints/0/20");
     }
 
     public setSocialNetworkChannel(appName: string, serviceId: string, type:string, value:string): Observable<Object> {
-        return this.http.put(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-networks-channels/"
+        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-networks-channels/"
             +serviceId+"/"+type+"/"+value, {});
     }
 
     public getSocialNetworkChannelList(appName: string, serviceId: string, type: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-networks-channel-lists/"+ serviceId +"/" + type);
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-networks-channel-lists/"+ serviceId +"/" + type);
     }
 
     public getSettings(appName: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/applications/settings/" + appName);
+        return this.http.get(REST_SERVICE_ROOT + "/applications/settings/" + appName);
     }
     public getServerSettings(): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/server-settings/" );
+        return this.http.get(REST_SERVICE_ROOT + "/server-settings/" );
     }
 
     public changeSettings(appName: string, appSettings: AppSettings ): Observable<Object> {
-        return this.http.post(REST_SERVICE_V2_ROOT + '/applications/settings/' + appName, appSettings);
+        return this.http.post(REST_SERVICE_ROOT + '/applications/settings/' + appName, appSettings);
     }
 
     public changeServerSettings(serverSettings: ServerSettings ): Observable<Object> 
     {
-        return this.http.post(REST_SERVICE_V2_ROOT + '/server-settings', serverSettings);
+        return this.http.post(REST_SERVICE_ROOT + '/server-settings', serverSettings);
     }
 
     public getDeviceAuthParameters(appName: string, networkName: string): Observable<Object> {
-        return this.http.post(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-networks/" + networkName, {});
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/social-networks/" + networkName, {});
     }
 
     public getLicenseStatus(licenceKey : string): Observable<Object> {
-        return  this.http.get(REST_SERVICE_V2_ROOT + '/licence-status/?key='+ licenceKey);
+        return  this.http.get(REST_SERVICE_ROOT + '/licence-status/?key='+ licenceKey);
     }
 
     public getLastLicenseStatus(): Observable<Object> {
-        return  this.http.get(REST_SERVICE_V2_ROOT + '/last-licence-status');
+        return  this.http.get(REST_SERVICE_ROOT + '/last-licence-status');
     }
 
     public getLiveClientsSize(): Observable<Object> {
-        return  this.http.get(REST_SERVICE_V2_ROOT + '/live-clients-size');
+        return  this.http.get(REST_SERVICE_ROOT + '/live-clients-size');
     }
 
     public getSystemMemoryInfo(): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + '/system-memory-status');
+        return this.http.get(REST_SERVICE_ROOT + '/system-memory-status');
     }
 
     public getFileSystemInfo(): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + '/file-system-status');
+        return this.http.get(REST_SERVICE_ROOT + '/file-system-status');
     }
 
     public getJVMMemoryInfo(): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + '/jvm-memory-status');
+        return this.http.get(REST_SERVICE_ROOT + '/jvm-memory-status');
     }
 
     public getApplicationsInfo(): Observable<Object>{
-        return this.http.get(REST_SERVICE_V2_ROOT + '/applications-info');
+        return this.http.get(REST_SERVICE_ROOT + '/applications-info');
     }
 
     public getLogFile(offset:number, logType:string): Observable<Object>{
-        return this.http.get(REST_SERVICE_V2_ROOT + '/log-file/' + offset +'/10000/?logType='+ logType);
+        return this.http.get(REST_SERVICE_ROOT + '/log-file/' + offset +'/10000/?logType='+ logType);
     }
 
     public getVodList(appName:string, offset:Number, size:Number, sortBy: String, orderBy: String, filterValue: String): Observable<Object>  {
         if(filterValue == null){
-            return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path="  +  appName + '/rest/v2/vods/list/'+offset+"/"+size
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/v2/vods/list/'+offset+"/"+size
                 +"&sort_by="+sortBy+"&order_by="+orderBy,{});
         }
         else{
-            return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path="  +  appName + '/rest/v2/vods/list/'+offset+"/"+size
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path="  +  appName + '/rest/v2/vods/list/'+offset+"/"+size
                 +"&sort_by="+sortBy+"&order_by="+orderBy+"&search="+filterValue,{});
         }
     }
 
     public getCameraError(appName: string , ipAddr:string): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/' + ipAddr + '/ip-camera-error', {});
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/' + ipAddr + '/ip-camera-error', {});
     }
 
 
     public getTotalVodNumber(appName: string, filterValue : string): Observable<Object> {
         if(filterValue == null){
-            return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/vods/count', {});
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/vods/count', {});
         }
         else{
-            return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/vods/count/' + filterValue, {});
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/vods/count/' + filterValue, {});
         }
     }
 
 
     public getTotalBroadcastNumber(appName: string, filterValue : string): Observable<Object> {
         if(filterValue == null){
-            return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/count', {});
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/count', {});
         }
         else{
-            return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/count/' + filterValue, {});
+            return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/count/' + filterValue, {});
         }
     }
 
     public uploadVod(fileName:string, formData:any,appName:string): Observable<Object>  {
-        return this.http.post(REST_SERVICE_V2_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create&name="+fileName, formData);
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create&name="+fileName, formData);
     }
 
     /**
      * This method gets comments from social endpoint like facebook, youtube, ...
      */
     public getLiveComments(appName: string, streamId: string, serviceId:string, offset:number, batch:number): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
                 + "/rest/v2/broadcasts/"+streamId+"/social-endpoints/" + serviceId + "/live-comments/" + offset + "/" + batch );
     }
 
@@ -453,7 +451,7 @@ export class RestService {
      * This methods get live comments count from social endpoint like facebook, youtube,...
      */
     public getLiveCommentsCount(appName: string, streamId: string, serviceId:string): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
                 + "/rest/v2/broadcasts/"+streamId+"/social-endpoints/" + serviceId + "/live-comments-count");
     }
 
@@ -461,7 +459,7 @@ export class RestService {
      * This methods get interactions(like, dislike, etc.) from social endpoint like facebook, youtube,...
      */
     public getInteraction(appName: string, streamId: string, serviceId:string) : Observable<Object>{
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
                     + "/rest/v2/broadcasts/" + streamId + "/social-endpoints/" + serviceId + "/interaction");
     }
 
@@ -469,7 +467,7 @@ export class RestService {
      * This methods get live views count from social endpoint like facebook, youtube,...
      */
     public getLiveViewsCount(appName: string, streamId: string, serviceId:string) : Observable<Object>{
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
                     + "/rest/v2/broadcasts/" + streamId + "/social-endpoints/" + serviceId + "/live-views-count");
     }
 
@@ -477,7 +475,7 @@ export class RestService {
      * This methods get One Time Token
      */
     public getOneTimeToken(appName: string, streamId: string, expireDate:number) : Observable<Object>{
-       return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName
+       return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
             + "/rest/v2/broadcasts/"+ streamId + "/token&expireDate="  + expireDate + "&type=play" );
     }
 
@@ -485,7 +483,7 @@ export class RestService {
      * This methods get JWT Token
      */
     public getJWTToken(appName: string, streamId: string, expireDate:number) : Observable<Object>{
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
             + "/rest/v2/broadcasts/"+ streamId + "/jwt-token&expireDate="  + expireDate + "&type=play" );
     }
 
@@ -499,7 +497,7 @@ export class RestService {
 
     public  autoDiscover(appName: string): Observable<any> {
 
-        let streamInfoUrl = REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/onvif-devices';
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/onvif-devices';
 
         return this.http.get(streamInfoUrl);
 
@@ -507,7 +505,7 @@ export class RestService {
 
     moveLeft(camera: LiveBroadcast,appName: string): Observable<Object> {
 
-        let streamInfoUrl = REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+camera.streamId+'/ip-camera/move-left';
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+camera.streamId+'/ip-camera/move-left';
 
         return this.http.post(streamInfoUrl, {});
     }
@@ -515,7 +513,7 @@ export class RestService {
     //TODO: test
     moveRight(camera: LiveBroadcast,appName: string): Observable<Object> {
 
-        let streamInfoUrl = REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+camera.streamId+'/ip-camera/move-right';
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+camera.streamId+'/ip-camera/move-right';
 
         return this.http.post(streamInfoUrl, {});
 
@@ -523,7 +521,7 @@ export class RestService {
 
     moveUp(camera: LiveBroadcast,appName: string): Observable<Object> {
 
-        let streamInfoUrl = REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+camera.streamId+'/ip-camera/move-up';
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+camera.streamId+'/ip-camera/move-up';
 
         return this.http.post(streamInfoUrl, {});
 
@@ -531,7 +529,7 @@ export class RestService {
 
     moveDown(camera: LiveBroadcast,appName: string): Observable<Object> {
 
-        let streamInfoUrl = REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+camera.streamId+'/ip-camera/move-down';
+        let streamInfoUrl = REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+camera.streamId+'/ip-camera/move-down';
 
         return this.http.post(streamInfoUrl, {});
     }
@@ -611,18 +609,18 @@ export class RestService {
     }
 
     public isInClusterMode(): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/cluster-mode-status");
+        return this.http.get(REST_SERVICE_ROOT + "/cluster-mode-status");
     }
 
     public getStats(appName:string, streamId:string): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/' + streamId + '/broadcast-statistics');
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/' + streamId + '/broadcast-statistics');
     }
 
     public getWebRTCStatsList(appName:string, streamId:string, offset:Number, size:Number): Observable<Object> {
-        return this.http.get(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/webrtc-client-stats/'+offset+"/"+size);
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/webrtc-client-stats/'+offset+"/"+size);
     }
     public setStreamRecordingStatus(appName:string, streamId:string, recordingStatus:boolean, recordingType:string): Observable<Object> {
-        return this.http.put(REST_SERVICE_V2_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/recording/'+recordingStatus+'?recordType='+recordingType,
+        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/recording/'+recordingStatus+'?recordType='+recordingType,
             {});
     }
 }

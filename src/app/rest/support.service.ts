@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
 import {HttpClient} from '@angular/common/http';
-import {REST_SERVICE_V1_ROOT} from './rest.service';
+import {REST_SERVICE_ROOT} from './rest.service';
 import {SupportRequest} from '../support/support.definitions'
 
 
@@ -25,7 +25,7 @@ export class SupportRestService {
     }
 
     private getRestServiceRoot():string {
-        return REST_SERVICE_V1_ROOT + "/support";
+        return REST_SERVICE_ROOT + "/support";
     }
 
     public sendRequest(request: SupportRequest): Observable<Object> {

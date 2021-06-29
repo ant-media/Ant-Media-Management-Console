@@ -7,7 +7,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
 import {HttpClient} from '@angular/common/http';
 import {ClusterNodeInfo} from '../cluster/cluster.definitions'
-import {REST_SERVICE_V2_ROOT} from './rest.service';
+import {REST_SERVICE_ROOT} from './rest.service';
 
 
 @Injectable()
@@ -25,7 +25,7 @@ export class ClusterRestService {
     }
 
     private getRestServiceRoot():string {
-        return REST_SERVICE_V2_ROOT + "/cluster";
+        return REST_SERVICE_ROOT + "/cluster";
     }
 
     public getClusterNodeCount() : Observable<Object> {
