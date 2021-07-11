@@ -66,9 +66,8 @@ export class AuthInterceptor implements HttpInterceptor{
         //For internal requests
         if(str.includes("_path=")) {
             var begin = str.indexOf("_path=");
-            var start = begin+6;
-            var last = str.indexOf("/rest/v2", start);
-            appName = str.substring(start, last);
+            var last = str.lastIndexOf("/rest/v2/");
+            appName = str.substring(begin+6, last);
         }
         //for remote requests
         else if(str.includes("rest/v2")){
