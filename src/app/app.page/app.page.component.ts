@@ -807,11 +807,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     playLive(streamId: string): void {
-
-
         if(this.appSettings.playTokenControlEnabled) 
         {
-            this.openPlayerWithToken(streamId, streamId,"640px", streamId);
+            this.openPlayerWithOneTimeToken(streamId, streamId,"640px", streamId);
+        }
+        if(this.appSettings.playJwtControlEnabled)
+        {
+            this.openPlayerWithJWTToken(streamId, streamId,"640px", streamId);
         }
         else 
         {
@@ -902,7 +904,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     playVoD(vodName: string, type: string, vodId:string, streamId:string, filePath:string): void {
 
-        if(this.appSettings.playTokenControlEnabled){
+        if(this.appSettings.playTokenControlEnabled || this.appSettings.playJwtControlEnabled){
             this.playVoDToken(vodName, type, vodId, streamId, filePath);
         }
         else {
@@ -925,12 +927,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             tokenParam = name.substring(0, extensionIndex);
         }
 
-        if (tokenParam != null) {
-
-            this.openPlayerWithToken(vodId, filePath,"640px", tokenParam);
+        if (tokenParam != null && this.appSettings.playTokenControlEnabled) {
+            this.openPlayerWithOneTimeToken(vodId, filePath,"640px", tokenParam);
+        }
+        else if (tokenParam != null && this.appSettings.playJwtControlEnabled) {
+            this.openPlayerWithJWTToken(vodId, filePath,"640px", tokenParam);
         }
         else {
-
             swal({
                 title: "Undefined VoD Type",
                 text: "It cannot get token for Undefined VoD type",
@@ -945,22 +948,27 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    openPlayerWithToken(id: string, path: string,width: string, tokenParam:string){
-
+    openPlayerWithOneTimeToken(id: string, path: string,width: string, tokenParam:string){
         let currentUnixTime : number = Math.floor(Date.now() / 1000)
         let expireDate : number = currentUnixTime + 100;
 
-        this.restService.getToken (this.appName, tokenParam, expireDate).subscribe(data => {
+        this.restService.getOneTimeToken (this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
-
             this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
         });
+    }
 
+    openPlayerWithJWTToken(id: string, path: string,width: string, tokenParam:string){
+        let currentUnixTime : number = Math.floor(Date.now() / 1000)
+        let expireDate : number = currentUnixTime + 100;
+
+        this.restService.getJWTToken(this.appName, tokenParam, expireDate).subscribe(data => {
+            this.token = <Token>data;
+            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
+        });
     }
 
     deleteVoD(fileName: string, vodId: number, type: string): void {
-
-
         swal({
             title: Locale.getLocaleInterface().are_you_sure,
             text: Locale.getLocaleInterface().wont_be_able_to_revert,
@@ -1521,7 +1529,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.streamNameEmpty = false;
 
         if (!isValid) {
-            //not valid form return directly aaa
+            //not valid form return directly
             return;
         }
 

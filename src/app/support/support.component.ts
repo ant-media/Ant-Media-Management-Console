@@ -130,6 +130,19 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 });
             }
+        },
+        error=> {
+            $.notify({
+                icon: "ti-alert",
+                message: "Your request couldn't be sent. Please try again or send email to support@antmedia.io"
+            }, {
+                type: 'warning',
+                delay: 1900,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
         });
     }
 }
