@@ -620,7 +620,7 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/webrtc-client-stats/'+offset+"/"+size);
     }
     public setStreamRecordingStatus(appName:string, streamId:string, recordingStatus:boolean, recordingType:string): Observable<Object> {
-        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/recording/'+recordingStatus+'?recordType='+recordingType,
+        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/recording/'+recordingStatus+'&recordType='+recordingType,
             {});
     }
 }
