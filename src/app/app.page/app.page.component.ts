@@ -1262,6 +1262,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             localStorage.setItem(this.appName+'jwtControlEnabled', "false");
         }
 
+        if (!this.appSettings.s3RecordingEnabled) 
+        {
+            this.appSettings.s3AccessKey = "";
+            this.appSettings.s3SecretKey = "";
+            this.appSettings.s3BucketName = "";
+            this.appSettings.s3Endpoint = "";
+            this.appSettings.s3RegionName = "";
+        }
+        
         this.appSettings.encoderSettings = [];
 
         this.encoderSettings.forEach((value, index) => {
