@@ -1341,6 +1341,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraActive = false;
         this.newStreamSourceActive = false;
         this.streamNameEmpty = false;
+        this.newPlaylistActive = false;
         this.liveBroadcast = new LiveBroadcast();
     }
 
@@ -1350,6 +1351,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraActive = true;
         this.newStreamSourceActive = false;
         this.streamNameEmpty = false;
+        this.newPlaylistActive = false;
         this.liveBroadcast = new LiveBroadcast();
     }
 
@@ -1359,6 +1361,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraActive = false;
         this.newStreamSourceActive = true;
         this.streamNameEmpty = false;
+        this.newPlaylistActive = false;
         this.liveBroadcast = new LiveBroadcast();
     }
 
@@ -1530,6 +1533,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
                 }
+            },
+            error => {
+                this.newIPCameraAdding = false;
+                $.notify({
+                    icon: "ti-save",
+                    message: error.error["message"]
+                }, {
+                    type: "warning",
+                    delay: 2000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
             });
     }
 
@@ -1651,7 +1668,22 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.liveBroadcast.username = "";
                 this.liveBroadcast.password = "";
                
-            });
+            }, 
+            error => {
+                    this.newStreamSourceAdding = false;
+                    $.notify({
+                        icon: "ti-save",
+                        message: error.error["message"]
+                    }, {
+                        type: "warning",
+                        delay: 2000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
+            );
     }
     addPlaylistItem(): void {
        
@@ -1751,6 +1783,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.newPlaylistAdding = false;
                 this.newPlaylistActive = false;
 
+            },
+            error => {
+                this.newPlaylistAdding = false;
+                $.notify({
+                    icon: "ti-save",
+                    message: error.error["message"]
+                }, {
+                    type: "warning",
+                    delay: 2000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
             });
 
     }
@@ -1947,6 +1993,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.newLiveStreamCreating = false;
                 this.getAppLiveStreamsNumber();
 
+            },
+            error => {
+                this.newLiveStreamCreating = false;
+                $.notify({
+                    icon: "ti-save",
+                    message: error.error["message"]
+                }, {
+                    type: "warning",
+                    delay: 2000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
             });
 
     }
