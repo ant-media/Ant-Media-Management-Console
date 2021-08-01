@@ -522,27 +522,10 @@
 
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'broadcasting'">
-                                                            <ng-container [ngSwitch]="row.quality">
-
-                                                                <ng-container *ngSwitchCase="'poor'">
-                                                                    <i class="ti-pulse"
-                                                                        style="color:#98000b;font-size: 1.1em"
-                                                                        data-toggle="tooltip" i18n-title
-                                                                        title="Quality: Poor"> </i>
-                                                                </ng-container>
-                                                                <ng-container *ngSwitchCase="'average'">
-                                                                    <i class="ti-pulse"
-                                                                        style="color:#190e98;font-size: 1.1em"
-                                                                        data-toggle="tooltip" i18n-title
-                                                                        title="Quality: Average"> </i></ng-container>
-                                                                <ng-container *ngSwitchCase="'good'">
-                                                                    <i class="ti-pulse"
-                                                                        style="color:#199826;font-size: 1.1em"
-                                                                        data-toggle="tooltip" i18n-title
-                                                                        title="Quality: Good"> </i>
-                                                                </ng-container>
+                                                            
+                                                            <i class="fa fa-circle " style="color:#28a745"
+                                                                *ngSwitchCase="'broadcasting'">&nbsp;</i>
                                                                 Broadcasting
-                                                            </ng-container>
 
                                                             <ng-container *ngIf="row.speed > 0">
                                                                 <i data-toggle="tooltip" i18n-title title="Speed">
@@ -555,6 +538,11 @@
                                                             <i class="fa fa-circle text-muted"
                                                                 *ngSwitchCase="'finished'">&nbsp;</i>Offline
                                                         </ng-container>
+                                                        <ng-container *ngSwitchCase="'preparing'">
+                                                            <i class="fa fa-circle " style="color:#ffc107"
+                                                                *ngSwitchCase="'preparing'">&nbsp;</i>Preparing
+                                                        </ng-container>
+
                                                     </ng-container>
 
                                                 </mat-cell>
