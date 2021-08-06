@@ -2190,8 +2190,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         var Index = this.appSettings.vodFolder.lastIndexOf("/");
         var folderName = this.appSettings.vodFolder.substring(Index);
 
-        var lastSlashIndex = name.lastIndexOf(".mp4");
-        var  VoDName = name.substring(0, lastSlashIndex);
+        var  VoDName = name;
 
         if(type == "uploadedVod"){
             VoDName = vodId ;
@@ -2202,7 +2201,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         let embedCode = '<iframe width="560" height="315" src="'
-            + HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + VoDName +"&playOrder=vod"
+            + HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + VoDName +"&playOrder=vod"
             + '" frameborder="0" allowfullscreen></iframe>';
 
         this.clipBoardService.copyFromContent(embedCode);
