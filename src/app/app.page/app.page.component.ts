@@ -23,6 +23,7 @@ import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
 import "rxjs/add/operator/toPromise";
 import {AppSettings, ServerSettings} from "./app.definitions";
+import { SelectionModel } from "@angular/cdk/collections";
 
 import {
     BroadcastInfo,
@@ -198,12 +199,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     ];
 
     public displayedColumnsStreams = ['name' , 'status', 'viewerCount', 'actions'];
-    public displayedColumnsVod = ['name', 'type', 'date', 'actions'];
+    public displayedColumnsVod = ['select','name', 'type', 'date', 'actions'];
     public displayedColumnsUserVod = ['name', 'date', 'actions'];
 
     public dataSource: MatTableDataSource<BroadcastInfo>;
 
     public dataSourceVod: MatTableDataSource<VodInfo>;
+    public selection =  new SelectionModel<string>(true, []);
 
     public streamsPageSize = 10;
     public vodPageSize = 10;
@@ -2502,7 +2504,56 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
+    selectHandler(vodId: string) {
 
+        this.selection.toggle(vodId);
+
+    }
+
+
+    deleteSelectedVoDs(): void {
+        swal({
+            title: Locale.getLocaleInterface().are_you_sure,
+            text: Locale.getLocaleInterface().wont_be_able_to_revert,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(() => {
+
+            for (let i of Object.keys(this.dataSourceVod.data)) {
+            
+                if(this.selection.isSelected(this.dataSourceVod.data[i].vodId)){
+                    console.log("Vod with id " + this.dataSourceVod.data[i].vodId + " will be deleted");
+                    this.restService.deleteVoDFile(this.appName, this.dataSourceVod.data[i].fileName, this.dataSourceVod.data[i].vodId, this.dataSourceVod.data[i].type).subscribe(data => {
+                        if (data["success"] == true) {
+
+                            $.notify({
+                                icon: "ti-save",
+                                message: Locale.getLocaleInterface().vod_deleted
+                            }, {
+                                type: "success",
+                                delay: 900,
+                                placement: {
+                                    from: 'top',
+                                    align: 'right'
+                                }
+                            });
+
+
+                        }
+                        else {
+                            this.showVoDFileNotDeleted();
+                        }
+                        this.getVoDStreams();
+                    });
+            }
+            }
+        }).catch(function () {
+
+        });
+    }
 }
 
 

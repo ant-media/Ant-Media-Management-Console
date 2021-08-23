@@ -853,6 +853,18 @@
                                         <mat-table [dataSource]="dataSourceVod" matSort
                                             (matSortChange)="sortVodList($event)">
 
+                                             <!-- Checkbox Column -->
+                                             <ng-container matColumnDef="select" class="w-5" >
+                                                <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+                                                <mat-cell *matCellDef="let row">
+                                                    <mat-checkbox   (click)="$event.stopPropagation()" 
+                                                                    (change)="$event ? selectHandler(row.vodId) : null"
+                                                                    [checked]="selection.isSelected(row.vodId)">
+                                                    </mat-checkbox>
+                                                </mat-cell>
+
+                                            </ng-container>
+
                                             <ng-container matColumnDef="name">
                                                 <mat-header-cell *matHeaderCellDef mat-sort-header>Name
                                                 </mat-header-cell>
@@ -954,6 +966,15 @@
                                         <mat-paginator [length]="vodLength" [pageSize]="pageSize"
                                             [pageSizeOptions]="pageSizeOptions" (page)="onPaginateChange($event)">
                                         </mat-paginator>
+
+                                        <div class=" text-left">
+                                            <div *ngIf="admin_check==true">
+                                                <button class="btn btn-fill btn-danger" (click)="deleteSelectedVoDs()"
+                                                    data-toggle="dropdown" role="button">Delete Selected VoDs
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
                                     </div>
 
                                 </div>
