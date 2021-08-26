@@ -198,14 +198,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         new HLSListType('Event', 'event'),
     ];
 
-    public displayedColumnsStreams = ['name' , 'status', 'viewerCount', 'actions'];
+    public displayedColumnsStreams = ['select','name' , 'status', 'viewerCount', 'actions'];
     public displayedColumnsVod = ['select','name', 'type', 'date', 'actions'];
     public displayedColumnsUserVod = ['name', 'date', 'actions'];
 
     public dataSource: MatTableDataSource<BroadcastInfo>;
 
     public dataSourceVod: MatTableDataSource<VodInfo>;
-    public selection =  new SelectionModel<string>(true, []);
+    public selectionVods =  new SelectionModel<string>(true, []);
+    public selectionStreams =  new SelectionModel<string>(true, []);
+
 
     public streamsPageSize = 10;
     public vodPageSize = 10;
@@ -2504,11 +2506,24 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-    selectHandler(vodId: string) {
+    selectHandlerVod(vodId: string) {
 
-        this.selection.toggle(vodId);
+        this.selectionVods.toggle(vodId);
 
     }
+
+    isAllVodsSelected() {
+        return this.dataSourceVod.data.every(row => this.selectionVods.isSelected(row.vodId));
+      }
+    
+      /** Selects all rows if they are not all selected; otherwise clear selection. */
+      masterToggleVods() {
+        if (this.isAllVodsSelected()) {
+          this.dataSourceVod.data.forEach(row => this.selectionVods.deselect(row.vodId));
+        } else {
+          this.dataSourceVod.data.forEach(row => this.selectionVods.select(row.vodId));
+        }
+      }
 
 
     deleteSelectedVoDs(): void {
@@ -2519,41 +2534,146 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: 'Yes, delete them!'
         }).then(() => {
+
+            let vods: Array<string> = [];
 
             for (let i of Object.keys(this.dataSourceVod.data)) {
             
-                if(this.selection.isSelected(this.dataSourceVod.data[i].vodId)){
+                if(this.selectionVods.isSelected(this.dataSourceVod.data[i].vodId)){
                     console.log("Vod with id " + this.dataSourceVod.data[i].vodId + " will be deleted");
-                    this.restService.deleteVoDFile(this.appName, this.dataSourceVod.data[i].fileName, this.dataSourceVod.data[i].vodId, this.dataSourceVod.data[i].type).subscribe(data => {
-                        if (data["success"] == true) {
-
-                            $.notify({
-                                icon: "ti-save",
-                                message: Locale.getLocaleInterface().vod_deleted
-                            }, {
-                                type: "success",
-                                delay: 900,
-                                placement: {
-                                    from: 'top',
-                                    align: 'right'
-                                }
-                            });
-
-
+                    vods.push(this.dataSourceVod.data[i].vodId);
+                }
+                    
+            }
+            this.restService.deleteVoDFiles(this.appName, vods).subscribe(data => {
+                if (data["success"] == true) {
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().vod_deleted
+                    }, {
+                        type: "success",
+                        delay: 900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
                         }
-                        else {
-                            this.showVoDFileNotDeleted();
-                        }
-                        this.getVoDStreams();
                     });
-            }
-            }
+                }
+                else {
+                    this.showVoDFileNotDeleted();
+                }
+                this.getVoDStreams();
+            });
         }).catch(function () {
 
         });
     }
+
+    selectHandlerStreams(streamId: string) {
+
+        this.selectionStreams.toggle(streamId);
+
+    }
+
+    isAllStreamsSelected() {
+        return this.dataSource.data.every(row => this.selectionStreams.isSelected(row.streamId));
+      }
+    
+      /** Selects all rows if they are not all selected; otherwise clear selection. */
+      masterToggleStreams() {
+        if (this.isAllStreamsSelected()) {
+          this.dataSource.data.forEach(row => this.selectionStreams.deselect(row.streamId));
+        } else {
+          this.dataSource.data.forEach(row => this.selectionStreams.select(row.streamId));
+        }
+      }
+
+
+    deleteSelectedStreams(): void {
+        let REMOTE_HOST_ADDRESS;
+        let hostAddress = localStorage.getItem('hostAddress');
+        let broadcastHostAddress =this.dataSource.data[0].originAdress;
+
+        // I didn't added broadcast status check. Because, some of stream sources status is finished but it's trying to connect sources.
+        if(this.isClusterMode && hostAddress != broadcastHostAddress) {
+            REMOTE_HOST_ADDRESS = "http://" + broadcastHostAddress + ":5080";
+
+            if(this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey != null){
+                $.notify({
+                    icon: "ti-save",
+                    message: "Please enable JWT Filter or Delete Broadcast in a stopped status"
+                }, {
+                    type: "danger",
+                    delay: 2000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+                return;
+            }
+        }
+
+        swal({
+            title: Locale.getLocaleInterface().are_you_sure,
+            text: Locale.getLocaleInterface().wont_be_able_to_revert,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete them!'
+        }).then(data => {
+
+            let streams: Array<string> = [];
+
+            for (let i of Object.keys(this.dataSource.data)) {
+            
+                if(this.selectionStreams.isSelected(this.dataSource.data[i].streamId)){
+                    console.log("Live Stream with id " + this.dataSource.data[i].streamId + " will be deleted");
+                    streams.push(this.dataSource.data[i].streamId);
+                }
+                    
+            }
+
+            this.restService.deleteBroadcasts(this.appName, streams , REMOTE_HOST_ADDRESS)
+                .subscribe(data => {
+                    if (data["success"] == true) {
+
+                        $.notify({
+                            icon: "ti-save",
+                            message: "Successfully deleted"
+                        }, {
+                            type: "success",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+
+                    }
+                    else {
+                        $.notify({
+                            icon: "ti-save",
+                            message: Locale.getLocaleInterface().broadcast_not_deleted
+                        }, {
+                            type: "warning",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                    }
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                    this.getAppLiveStreamsNumber();
+            console.log("Selected Streams are " + streams);
+
+            });
+        });
+
+    }
+
 }
-
-

@@ -21,3 +21,17 @@ table{
      -webkit-hyphens: auto;
      hyphens: auto;
    }
+
+
+   ::ng-deep .mat-checkbox-ripple .mat-ripple-element {
+    background-color: gray !important;
+  }
+  
+  ::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    background-color: gray !important;
+  }
+  
+  ::ng-deep .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+    background-color: gray !important;
+  }
+  
