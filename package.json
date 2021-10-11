@@ -59,6 +59,7 @@
     "material-design-lite": "1.3.0",
     "ngx-clipboard": "13.0.1",
     "nouislider": "14.6.0",
+    "otpauth": "^7.0.6",
     "popper.js": "^1.16.1",
     "rxjs": "^6.6.2",
     "tslib": "^2.0.1",

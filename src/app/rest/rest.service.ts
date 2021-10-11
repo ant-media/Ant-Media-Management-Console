@@ -474,9 +474,14 @@ export class RestService {
     /**
      * This methods get live views count from social endpoint like facebook, youtube,...
      */
-    public getToken(appName: string, streamId: string, expireDate:number) : Observable<Object>{
-       return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
-            + "/rest/v2/broadcasts/"+ streamId + "/token&expireDate="  + expireDate + "&type=play" );
+    public getToken(appName: string, streamId: string, expireDate:number, type: string) : Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
+            + "/rest/v2/broadcasts/"+ streamId + "/token&expireDate="  + expireDate + "&type=" + type );
+    }
+
+    public getJwtToken(appName: string, streamId: string, expireDate:number, type: string) : Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
+             + "/rest/v2/broadcasts/"+ streamId + "/jwt-token&expireDate="  + expireDate + "&type=" + type );
     }
 
     public getRtmpUrl(appName:string, streamId:string): string {

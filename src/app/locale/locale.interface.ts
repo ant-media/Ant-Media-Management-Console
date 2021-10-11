@@ -40,4 +40,5 @@ export interface LocaleInterface {
     missing_configuration_parameter_for_stalker: string;
     vod_deleted: string;
     support: string;
+    token_not_generated: string;
 }

@@ -42,4 +42,5 @@ export let Locale_English: LocaleInterface =
     missing_configuration_parameter_for_stalker: "Configuration params are missing. Please contact system admin",
     vod_deleted: "Vod file deleted successfully",
     support: "Support",
+    token_not_generated: "Token can't be generated, please check secret and streamId"
 }
