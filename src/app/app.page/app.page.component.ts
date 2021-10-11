@@ -1988,10 +1988,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-    /*getJwtPlayToken(){
-
-    }*/
-
     startDiscover() {
         this.discoveryStarted = true;
         this.onvifURLs = this.getDiscoveryList();
