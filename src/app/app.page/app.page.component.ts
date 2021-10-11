@@ -991,7 +991,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         let currentUnixTime : number = Math.floor(Date.now() / 1000)
         let expireDate : number = currentUnixTime + 100;
 
-        this.restService.getJwtToken(this.appName, tokenParam, expireDate).subscribe(data => {
+        this.restService.getJwtToken(this.appName, tokenParam, expireDate, "play").subscribe(data => {
             this.token = <Token>data;
             this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
         });
