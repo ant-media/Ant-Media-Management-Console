@@ -73,7 +73,7 @@
                                         </div>
                                         <div class="card-content">
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamName">Name</label>
+                                                <label i18n="@@newLiveStreamName">Name*</label>
                                                 <input type="text" required minlength="4" name="broadcastName"
                                                     i18n-placeholder="@@stream_name_place_holder"
                                                     placeholder="Stream name" class="form-control"
@@ -84,6 +84,16 @@
                                                 </small>
                                                 <small class="text-danger" *ngIf="streamNameEmpty">
                                                     Stream name should not be empty.
+                                                </small>
+                                            </div>
+                                            <div class="form-group text-left">
+                                                <label>Stream Id</label>
+                                                <input type="text" minlength="4" name="streamId"
+                                                    placeholder="Unique Id of the stream. If you do not enter a value, It will be generated automatically" class="form-control"
+                                                    [(ngModel)]="liveBroadcast.streamId" #streamId="ngModel">
+                                                <small [hidden]="streamId.valid || (!f.submitted)"
+                                                    class="text-danger">
+                                                    Stream Id should be at least 4 characters.
                                                 </small>
                                             </div>
 
@@ -150,7 +160,7 @@
                                         </div>
                                         <div class="card-content">
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamName">Name</label>
+                                                <label i18n="@@newLiveStreamName">Name*</label>
                                                 <input type="text" required minlength="4" name="broadcastName"
                                                     placeholder="Camera Name" class="form-control"
                                                     [(ngModel)]="liveBroadcast.name" #broadcastName="ngModel">
@@ -164,7 +174,7 @@
                                             </div>
 
                                             <div class="form-group text-left">
-                                                <label i18n="@@newOnvifIPUrl">ONVIF IP</label>
+                                                <label i18n="@@newOnvifIPUrl">ONVIF IP*</label>
                                                 <button (click)="startDiscover()"
                                                     class="btn btn-success btn-simple btn-magnify btn-xs "
                                                     type="button"> Auto-Discover
@@ -186,22 +196,33 @@
                                             </div>
 
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamName">User Name</label>
+                                                <label i18n="@@newLiveStreamName">User Name*</label>
                                                 <input type="text" name="username"
-                                                    i18n-placeholder="@@username_place_holder" placeholder="User Name"
+                                                    placeholder="User Name"
                                                     class="form-control" [(ngModel)]="liveBroadcast.username"
                                                     #username="ngModel">
 
                                             </div>
 
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamName">Password</label>
+                                                <label i18n="@@newLiveStreamName">Password*</label>
                                                 <input type="text" name="password"
-                                                    i18n-placeholder="@@password_place_holder" placeholder="Password "
+                                                     placeholder="Password "
                                                     type="password" class="form-control"
                                                     [(ngModel)]="liveBroadcast.password" #password="ngModel"
                                                     type="password">
 
+                                            </div>
+
+                                            <div class="form-group text-left">
+                                                <label>Stream Id</label>
+                                                <input type="text" minlength="4" name="streamId"
+                                                    placeholder="Unique Id of the stream. If you do not enter a value, It will be generated automatically" class="form-control"
+                                                    [(ngModel)]="liveBroadcast.streamId" #streamId="ngModel">
+                                                <small [hidden]="streamId.valid || (!f.submitted)"
+                                                    class="text-danger">
+                                                    Stream Id should be at least 4 characters.
+                                                </small>
                                             </div>
 
 
@@ -232,7 +253,7 @@
                                         </div>
                                         <div class="card-content">
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamName">Name</label>
+                                                <label i18n="@@newLiveStreamName">Name*</label>
                                                 <input type="text" required minlength="4" name="broadcastName"
                                                     i18n-placeholder="@@stream_name_place_holder"
                                                     placeholder="Stream name" class="form-control"
@@ -249,17 +270,27 @@
 
 
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamUrl">Stream URL</label>
+                                                <label i18n="@@newLiveStreamUrl">Stream URL*</label>
                                                 <input type="text" required minlength="4" name="broadcasturl"
-                                                    i18n-placeholder="@@stream_name_place_holder"
-                                                    placeholder="Stream Url" class="form-control"
+                                                    placeholder="Remote Stream URL" class="form-control"
                                                     [(ngModel)]="liveBroadcast.streamUrl" #broadcasturl="ngModel">
                                                 <small [hidden]="broadcasturl.valid || (!f.submitted)"
-                                                    class="text-danger" i18n="@@broadcastNameIsRequired">
+                                                    class="text-danger">
                                                     Stream URL is not valid
                                                 </small>
                                                 <small class="text-danger" *ngIf="!streamUrlValid">
                                                     Please write a valid stream URL
+                                                </small>
+                                            </div>
+
+                                            <div class="form-group text-left">
+                                                <label>Stream Id</label>
+                                                <input type="text" minlength="4" name="streamId"
+                                                    placeholder="Unique Id of the stream. If you do not enter a value, It will be generated automatically" class="form-control"
+                                                    [(ngModel)]="liveBroadcast.streamId" #streamId="ngModel">
+                                                <small [hidden]="streamId.valid || (!f.submitted)"
+                                                    class="text-danger">
+                                                    Stream Id should be at least 4 characters.
                                                 </small>
                                             </div>
 
@@ -337,7 +368,7 @@
                                                 <div class="row text-left">
                                                     <div class="col-sm-12 col-md-12">
                                                         <div>
-                                                            <label i18n="@@newLiveStreamName">Playlist Name</label>
+                                                            <label i18n="@@newLiveStreamName">Playlist Name*</label>
                                                             <input type="text" required minlength="4" name="playlistName"
                                                                 i18n-placeholder="@@stream_name_place_holder"
                                                                 placeholder="Stream name" class="form-control"
@@ -351,6 +382,16 @@
                                                                 Playlist name should not be empty.
                                                             </small>
             
+                                                        </div>
+                                                        <div class="form-group text-left">
+                                                            <label>Stream Id</label>
+                                                            <input type="text" minlength="4" name="streamId"
+                                                                placeholder="Unique Id of the stream. If you do not enter a value, It will be generated automatically" class="form-control"
+                                                                [(ngModel)]="liveBroadcast.streamId" #streamId="ngModel">
+                                                            <small [hidden]="streamId.valid || (!f.submitted)"
+                                                                class="text-danger">
+                                                                Stream Id should be at least 4 characters.
+                                                            </small>
                                                         </div>
 
                                                         <div *ngIf="liveBroadcast.playListItemList.length!=0">
@@ -481,27 +522,10 @@
 
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'broadcasting'">
-                                                            <ng-container [ngSwitch]="row.quality">
-
-                                                                <ng-container *ngSwitchCase="'poor'">
-                                                                    <i class="ti-pulse"
-                                                                        style="color:#98000b;font-size: 1.1em"
-                                                                        data-toggle="tooltip" i18n-title
-                                                                        title="Quality: Poor"> </i>
-                                                                </ng-container>
-                                                                <ng-container *ngSwitchCase="'average'">
-                                                                    <i class="ti-pulse"
-                                                                        style="color:#190e98;font-size: 1.1em"
-                                                                        data-toggle="tooltip" i18n-title
-                                                                        title="Quality: Average"> </i></ng-container>
-                                                                <ng-container *ngSwitchCase="'good'">
-                                                                    <i class="ti-pulse"
-                                                                        style="color:#199826;font-size: 1.1em"
-                                                                        data-toggle="tooltip" i18n-title
-                                                                        title="Quality: Good"> </i>
-                                                                </ng-container>
+                                                            
+                                                            <i class="fa fa-circle " style="color:#28a745"
+                                                                *ngSwitchCase="'broadcasting'">&nbsp;</i>
                                                                 Broadcasting
-                                                            </ng-container>
 
                                                             <ng-container *ngIf="row.speed > 0">
                                                                 <i data-toggle="tooltip" i18n-title title="Speed">
@@ -514,6 +538,11 @@
                                                             <i class="fa fa-circle text-muted"
                                                                 *ngSwitchCase="'finished'">&nbsp;</i>Offline
                                                         </ng-container>
+                                                        <ng-container *ngSwitchCase="'preparing'">
+                                                            <i class="fa fa-circle " style="color:#ffc107"
+                                                                *ngSwitchCase="'preparing'">&nbsp;</i>Preparing
+                                                        </ng-container>
+
                                                     </ng-container>
 
                                                 </mat-cell>

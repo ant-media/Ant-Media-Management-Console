@@ -66,7 +66,7 @@ export class AuthInterceptor implements HttpInterceptor{
         //For internal requests
         if(str.includes("_path=")) {
             var begin = str.indexOf("_path=");
-            var last = str.indexOf("/rest/v2");
+            var last = str.lastIndexOf("/rest/v2/");
             appName = str.substring(begin+6, last);
         }
         //for remote requests
@@ -218,7 +218,7 @@ export class RestService {
     }
 
     public updateLiveStream(appName: string, broadcast: LiveBroadcast, socialNetworks): Observable<Object> {
-        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/"+broadcast.streamId+"?socialNetworks="+socialNetworks,
+        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/"+broadcast.streamId+"&socialNetworks="+socialNetworks,
             broadcast);
     }
 
@@ -247,11 +247,11 @@ export class RestService {
     }
 
     public deleteRTMPEndpointV2(appName: string, id:number, endpointServiceId:string) {
-        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/rtmp-endpoint?endpointServiceId='+endpointServiceId, {});
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/rtmp-endpoint&endpointServiceId='+endpointServiceId, {});
     }
 
     public deleteRTMPEndpointV1(appName: string, id:number, rtmpUrl:string) {
-        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint?rtmpUrl='+rtmpUrl, {});
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint&rtmpUrl='+rtmpUrl, {});
     }
 
     public addRTMPEndpoint(appName: string,id:number, endpoint:Endpoint) {
@@ -472,16 +472,19 @@ export class RestService {
     }
 
     /**
-     * This methods get live views count from social endpoint like facebook, youtube,...
+     * This methods get One Time Token
      */
-    public getToken(appName: string, streamId: string, expireDate:number, type: string) : Observable<Object>{
+    public getOneTimeToken(appName: string, streamId: string, expireDate:number, type: string) : Observable<Object>{
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
             + "/rest/v2/broadcasts/"+ streamId + "/token&expireDate="  + expireDate + "&type=" + type );
     }
 
+    /**
+     * This methods get JWT Token
+     */
     public getJwtToken(appName: string, streamId: string, expireDate:number, type: string) : Observable<Object>{
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
-             + "/rest/v2/broadcasts/"+ streamId + "/jwt-token&expireDate="  + expireDate + "&type=" + type );
+            + "/rest/v2/broadcasts/"+ streamId + "/jwt-token&expireDate="  + expireDate + "&type=" + type );
     }
 
     public getRtmpUrl(appName:string, streamId:string): string {
@@ -617,7 +620,7 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/webrtc-client-stats/'+offset+"/"+size);
     }
     public setStreamRecordingStatus(appName:string, streamId:string, recordingStatus:boolean, recordingType:string): Observable<Object> {
-        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/recording/'+recordingStatus+'?recordType='+recordingType,
+        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/recording/'+recordingStatus+'&recordType='+recordingType,
             {});
     }
 }

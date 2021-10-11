@@ -835,11 +835,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     playLive(streamId: string): void {
-
-
         if(this.appSettings.playTokenControlEnabled) 
         {
-            this.openPlayerWithToken(streamId, streamId,"640px", streamId);
+            this.openPlayerWithOneTimeToken(streamId, streamId,"640px", streamId);
+        }
+        if(this.appSettings.playJwtControlEnabled)
+        {
+            this.openPlayerWithJWTToken(streamId, streamId,"640px", streamId);
         }
         else 
         {
@@ -930,7 +932,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     playVoD(vodName: string, type: string, vodId:string, streamId:string, filePath:string): void {
 
-        if(this.appSettings.playTokenControlEnabled){
+        if(this.appSettings.playTokenControlEnabled || this.appSettings.playJwtControlEnabled){
             this.playVoDToken(vodName, type, vodId, streamId, filePath);
         }
         else {
@@ -953,12 +955,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             tokenParam = name.substring(0, extensionIndex);
         }
 
-        if (tokenParam != null) {
-
-            this.openPlayerWithToken(vodId, filePath,"640px", tokenParam);
+        if (tokenParam != null && this.appSettings.playTokenControlEnabled) {
+            this.openPlayerWithOneTimeToken(vodId, filePath,"640px", tokenParam);
+        }
+        else if (tokenParam != null && this.appSettings.playJwtControlEnabled) {
+            this.openPlayerWithJWTToken(vodId, filePath,"640px", tokenParam);
         }
         else {
-
             swal({
                 title: "Undefined VoD Type",
                 text: "It cannot get token for Undefined VoD type",
@@ -973,22 +976,28 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    openPlayerWithToken(id: string, path: string,width: string, tokenParam:string){
-
+    openPlayerWithOneTimeToken(id: string, path: string,width: string, tokenParam:string){
         let currentUnixTime : number = Math.floor(Date.now() / 1000)
         let expireDate : number = currentUnixTime + 100;
 
-        this.restService.getToken (this.appName, tokenParam, expireDate, "play").subscribe(data => {
-            this.token = <Token>data;
 
+        this.restService.getOneTimeToken (this.appName, tokenParam, expireDate, "play").subscribe(data => {
+            this.token = <Token>data;
             this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
         });
+    }
 
+    openPlayerWithJWTToken(id: string, path: string,width: string, tokenParam:string){
+        let currentUnixTime : number = Math.floor(Date.now() / 1000)
+        let expireDate : number = currentUnixTime + 100;
+
+        this.restService.getJwtToken(this.appName, tokenParam, expireDate).subscribe(data => {
+            this.token = <Token>data;
+            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
+        });
     }
 
     deleteVoD(fileName: string, vodId: number, type: string): void {
-
-
         swal({
             title: Locale.getLocaleInterface().are_you_sure,
             text: Locale.getLocaleInterface().wont_be_able_to_revert,
@@ -1282,6 +1291,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             localStorage.setItem(this.appName+'jwtControlEnabled', "false");
         }
 
+        if (!this.appSettings.s3RecordingEnabled) 
+        {
+            this.appSettings.s3AccessKey = "";
+            this.appSettings.s3SecretKey = "";
+            this.appSettings.s3BucketName = "";
+            this.appSettings.s3Endpoint = "";
+            this.appSettings.s3RegionName = "";
+        }
+        
         this.appSettings.encoderSettings = [];
 
         this.encoderSettings.forEach((value, index) => {
@@ -1352,6 +1370,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraActive = false;
         this.newStreamSourceActive = false;
         this.streamNameEmpty = false;
+        this.newPlaylistActive = false;
         this.liveBroadcast = new LiveBroadcast();
     }
 
@@ -1361,6 +1380,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraActive = true;
         this.newStreamSourceActive = false;
         this.streamNameEmpty = false;
+        this.newPlaylistActive = false;
         this.liveBroadcast = new LiveBroadcast();
     }
 
@@ -1370,6 +1390,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newIPCameraActive = false;
         this.newStreamSourceActive = true;
         this.streamNameEmpty = false;
+        this.newPlaylistActive = false;
         this.liveBroadcast = new LiveBroadcast();
     }
 
@@ -1541,6 +1562,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getAppLiveStreamsNumber();
                 }
+            },
+            error => {
+                this.newIPCameraAdding = false;
+                $.notify({
+                    icon: "ti-save",
+                    message: error.error["message"]
+                }, {
+                    type: "warning",
+                    delay: 2000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
             });
     }
 
@@ -1549,7 +1584,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.streamNameEmpty = false;
 
         if (!isValid) {
-            //not valid form return directly aaa
+            //not valid form return directly
             return;
         }
 
@@ -1662,7 +1697,22 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.liveBroadcast.username = "";
                 this.liveBroadcast.password = "";
                
-            });
+            }, 
+            error => {
+                    this.newStreamSourceAdding = false;
+                    $.notify({
+                        icon: "ti-save",
+                        message: error.error["message"]
+                    }, {
+                        type: "warning",
+                        delay: 2000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
+            );
     }
     addPlaylistItem(): void {
        
@@ -1762,6 +1812,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.newPlaylistAdding = false;
                 this.newPlaylistActive = false;
 
+            },
+            error => {
+                this.newPlaylistAdding = false;
+                $.notify({
+                    icon: "ti-save",
+                    message: error.error["message"]
+                }, {
+                    type: "warning",
+                    delay: 2000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
             });
 
     }
@@ -1876,7 +1940,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.showTokenNotGenerated();
             }
             else{
-                this.restService.getToken (this.appName, this.oneTimeTokenPublishStreamId, expireDate, type).subscribe(data => {
+                this.restService.getOneTimeToken(this.appName, this.oneTimeTokenPublishStreamId, expireDate, type).subscribe(data => {
                     this.token = <Token>data;
                     if(data["tokenId"].length > 5){
                         this.oneTimePublishToken = this.token.tokenId;
@@ -1895,7 +1959,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.showTokenNotGenerated();
             }
             else{
-                this.restService.getToken (this.appName, this.oneTimeTokenPlayStreamId, expireDate, type).subscribe(data => {
+                this.restService.getOneTimeToken (this.appName, this.oneTimeTokenPlayStreamId, expireDate, type).subscribe(data => {
                     this.token = <Token>data;
                     if(data["tokenId"].length > 5){
                         this.oneTimePlayToken = this.token.tokenId;
@@ -2091,6 +2155,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.newLiveStreamCreating = false;
                 this.getAppLiveStreamsNumber();
 
+            },
+            error => {
+                this.newLiveStreamCreating = false;
+                $.notify({
+                    icon: "ti-save",
+                    message: error.error["message"]
+                }, {
+                    type: "warning",
+                    delay: 2000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
             });
 
     }
@@ -2274,8 +2352,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         var Index = this.appSettings.vodFolder.lastIndexOf("/");
         var folderName = this.appSettings.vodFolder.substring(Index);
 
-        var lastSlashIndex = name.lastIndexOf(".mp4");
-        var  VoDName = name.substring(0, lastSlashIndex);
+        var  VoDName = name;
 
         if(type == "uploadedVod"){
             VoDName = vodId ;
@@ -2286,7 +2363,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         let embedCode = '<iframe width="560" height="315" src="'
-            + HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + VoDName +"&playOrder=vod"
+            + HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + VoDName +"&playOrder=vod"
             + '" frameborder="0" allowfullscreen></iframe>';
 
         this.clipBoardService.copyFromContent(embedCode);
