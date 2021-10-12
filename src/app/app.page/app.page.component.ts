@@ -199,7 +199,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public oneTimeTokenPlayStreamIdCheck = true;
     public TOTPSecret = "mysecret";
     public TOTPNoOfDigits = 6;
-    public TOTPPeriod = 30;
+    public TOTPPeriod = 60;
     public TOTPToken : string;
     public TOTPGeneratorTimer = null;
     public timeLeftForTOTP = 0;
