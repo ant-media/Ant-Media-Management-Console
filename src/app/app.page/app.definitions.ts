@@ -215,6 +215,7 @@ export class AppSettings {
                 public s3RegionName: string,
                 public s3BucketName: string,
                 public s3Endpoint: string,
+                public s3Permission: string,
                 public enableTimeTokenForPlay: boolean,
                 public enableTimeTokenForPublish: boolean,
 
