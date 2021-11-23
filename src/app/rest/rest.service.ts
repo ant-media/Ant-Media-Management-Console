@@ -474,17 +474,17 @@ export class RestService {
     /**
      * This methods get One Time Token
      */
-    public getOneTimeToken(appName: string, streamId: string, expireDate:number) : Observable<Object>{
-       return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
-            + "/rest/v2/broadcasts/"+ streamId + "/token&expireDate="  + expireDate + "&type=play" );
+    public getOneTimeToken(appName: string, streamId: string, expireDate:number, type: string) : Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
+            + "/rest/v2/broadcasts/"+ streamId + "/token&expireDate="  + expireDate + "&type=" + type );
     }
 
     /**
      * This methods get JWT Token
      */
-    public getJWTToken(appName: string, streamId: string, expireDate:number) : Observable<Object>{
+    public getJwtToken(appName: string, streamId: string, expireDate:number, type: string) : Observable<Object>{
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName
-            + "/rest/v2/broadcasts/"+ streamId + "/jwt-token&expireDate="  + expireDate + "&type=play" );
+            + "/rest/v2/broadcasts/"+ streamId + "/jwt-token&expireDate="  + expireDate + "&type=" + type );
     }
 
     public getRtmpUrl(appName:string, streamId:string): string {

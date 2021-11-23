@@ -1695,7 +1695,7 @@
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.enableTimeTokenForPublish"
                                                                     id="enableTimeTokenForPublish" name="enableTimeTokenForPublish"
-                                                                    type="checkbox">
+                                                                    type="checkbox" (click)="generateTOTPToken()">
 
                                                                 <label for="enableTimeTokenForPublish">
                                                                     Enable TOTP for Publishing <a
@@ -1712,7 +1712,7 @@
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.enableTimeTokenForPlay"
                                                                     id="enableTimeTokenForPlay" name="enableTimeTokenForPlay"
-                                                                    type="checkbox">
+                                                                    type="checkbox" (click)="generateTOTPToken()">
 
                                                                 <label for="enableTimeTokenForPlay">
                                                                     Enable TOTP for Playing <a
@@ -1826,6 +1826,326 @@
                                                             </div>
                                                         </div>
 
+                                                        <div *ngIf="appSettings.publishJwtControlEnabled && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                            <label i18n="@@jwtFilter">
+                                                                Generate JWT token for publishing<a
+                                                                    matTooltip="Please configure jwt stream secret before trying to create a token, each token has an expiry time of 100 seconds"><i
+                                                                    class="fa fa-info-circle"></i></a>
+                                                            </label>
+                                                            <div class="form-group">
+                                                            
+                                                                <div class="form-group" style="margin-left: 5px;">
+
+                                                                    <label
+                                                                        class="col-sm-12 col-md-3 col-lg-3 control-label"
+                                                                        style="min-width: 190px; ">Stream ID</label>
+
+
+                                                                    <div class="col-sm-12 col-md-9 col-lg-6 text-left">
+                                                                        <input type="text" name="jwtPublishId"
+                                                                            placeholder="Write stream ID for generating token"
+                                                                            class="form-control"
+                                                                            [(ngModel)]="jwtPublishStreamId"
+                                                                            #vodFolderPath="ngModel">
+                                                                        <small
+                                                                            [hidden]="jwtPublishStreamIdCheck"
+                                                                            class="text-danger">
+                                                                            StreamID should be given
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                                
+
+                                                                <div class="form-group" style="margin-left: 5px;">
+
+                                                                    <label
+                                                                            class="col-sm-12 col-md-3 col-lg-3 control-label"
+                                                                            style="min-width: 190px; ">JWT Token</label>
+
+
+                                                                    <div class="col-sm-12 col-md-9 col-lg-6">
+                                                                        
+                                                                        <textarea name="jwtPublishTok" #jwtPublish="ngModel" [disabled]="!appSettings.publishJwtControlEnabled && !appSettings.playJwtControlEnabled"
+                                                                            [(ngModel)]="jwtPublishToken"
+                                                                            type="textarea" class="form-control"
+                                                                            placeholder="Token will be displayed here"
+                                                                            rows="1">{{jwtPublishToken}}
+                                                                        </textarea>
+                                                                        <button
+                                                                            (click)="getJwtStreamToken('publish')" class="btn pull-right btn-default" style="margin:5px"
+                                                                            type="button">
+                                                                                Generate
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div *ngIf="appSettings.playJwtControlEnabled && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                            <label i18n="@@jwtFilter">
+                                                                Generate JWT token for playing<a
+                                                                    matTooltip="Please configure jwt stream secret before trying to create a token, each token has an expiry time of 100 seconds"><i
+                                                                    class="fa fa-info-circle"></i></a>
+                                                            </label>
+                                                            <div class="form-group">
+                                                            
+                                                                <div class="form-group" style="margin-left: 5px;">
+
+                                                                    <label
+                                                                        class="col-sm-12 col-md-3 col-lg-3 control-label"
+                                                                        style="min-width: 190px; ">Stream ID</label>
+
+
+                                                                    <div class="col-sm-12 col-md-9 col-lg-6 text-left">
+                                                                        <input type="text" name="jwtPlayId"
+                                                                            placeholder="Write stream ID for generating token"
+                                                                            class="form-control"
+                                                                            [(ngModel)]="jwtPlayStreamId"
+                                                                            #vodFolderPath="ngModel">
+                                                                        <small
+                                                                            [hidden]="jwtPlayStreamIdCheck"
+                                                                            class="text-danger">
+                                                                            StreamID should be given
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group" style="margin-left: 5px;">
+
+                                                                    <label
+                                                                            class="col-sm-12 col-md-3 col-lg-3 control-label"
+                                                                            style="min-width: 190px; ">JWT Token</label>
+
+
+                                                                    <div class="col-sm-12 col-md-9 col-lg-6">
+                                                                        
+                                                                        <textarea name="jwtPlayTok" #jwtPlay="ngModel" [disabled]="!appSettings.publishJwtControlEnabled && !appSettings.playJwtControlEnabled"
+                                                                            [(ngModel)]="jwtPlayToken"
+                                                                            type="textarea" class="form-control"
+                                                                            placeholder="Token will be displayed here"
+                                                                            rows="1">{{jwtPlayToken}}
+                                                                        </textarea>
+                                                                        <button
+                                                                            (click)="getJwtStreamToken('play')" class="btn pull-right btn-default" style="margin:5px"
+                                                                            type="button">
+                                                                                Generate
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div *ngIf="appSettings.publishTokenControlEnabled && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                            <label i18n="@@jwtFilter">
+                                                                Generate One-Time token for publishing<a
+                                                                    matTooltip="Each token has an expiry time of 100 seconds"><i
+                                                                    class="fa fa-info-circle"></i></a>
+                                                            </label>
+                                                            <div class="form-group">
+                                                            
+                                                                <div class="form-group" style="margin-left: 5px;">
+
+                                                                    <label
+                                                                        class="col-sm-12 col-md-3 col-lg-3 control-label"
+                                                                        style="min-width: 190px; ">Stream ID</label>
+
+
+                                                                    <div class="col-sm-12 col-md-9 col-lg-6 text-left">
+                                                                        <input type="text" name="oneTimePublishId"
+                                                                            placeholder="Write stream ID for generating token"
+                                                                            class="form-control"
+                                                                            [(ngModel)]="oneTimeTokenPublishStreamId"
+                                                                            #vodFolderPath="ngModel">
+                                                                        <small
+                                                                            [hidden]="oneTimeTokenPublishStreamIdCheck"
+                                                                            class="text-danger">
+                                                                            StreamID should be given
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group" style="margin-left: 5px;">
+
+                                                                    <label
+                                                                            class="col-sm-12 col-md-3 col-lg-3 control-label"
+                                                                            style="min-width: 190px; ">One Time Token</label>
+
+
+                                                                    <div class="col-sm-12 col-md-9 col-lg-6">
+                                                                        
+                                                                        <textarea name="oneTimePublishTok" #jwtPublish="ngModel" [disabled]="!appSettings.publishTokenControlEnabled && !appSettings.playTokenControlEnabled"
+                                                                            [(ngModel)]="oneTimePublishToken"
+                                                                            type="textarea" class="form-control"
+                                                                            placeholder="Token will be displayed here"
+                                                                            rows="1">{{oneTimePublishToken}}
+                                                                        </textarea>
+                                                                        <button
+                                                                            (click)="getStreamToken('publish')" class="btn pull-right btn-default" style="margin:5px"
+                                                                            type="button">
+                                                                                Generate
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div *ngIf="appSettings.playTokenControlEnabled && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                            <label i18n="@@jwtFilter">
+                                                                Generate One-Time token for playing<a
+                                                                    matTooltip="Each token has an expiry time of 100 seconds"><i
+                                                                    class="fa fa-info-circle"></i></a>
+                                                            </label>
+                                                            <div class="form-group">
+                                                            
+                                                                <div class="form-group" style="margin-left: 5px;">
+
+                                                                    <label
+                                                                        class="col-sm-12 col-md-3 col-lg-3 control-label"
+                                                                        style="min-width: 190px; ">Stream ID</label>
+
+
+                                                                    <div class="col-sm-12 col-md-9 col-lg-6 text-left">
+                                                                        <input type="text" name="oneTimePlayId"
+                                                                            placeholder="Write stream ID for generating token"
+                                                                            class="form-control"
+                                                                            [(ngModel)]="oneTimeTokenPlayStreamId"
+                                                                            #vodFolderPath="ngModel">
+                                                                        <small
+                                                                            [hidden]="oneTimeTokenPlayStreamIdCheck"
+                                                                            class="text-danger">
+                                                                            StreamID should be given
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group" style="margin-left: 5px;">
+
+                                                                    <label
+                                                                            class="col-sm-12 col-md-3 col-lg-3 control-label"
+                                                                            style="min-width: 190px; ">One Time Token</label>
+
+
+                                                                    <div class="col-sm-12 col-md-9 col-lg-6">
+                                                                        
+                                                                        <textarea name="oneTimePlayTok" #jwtPublish="ngModel" [disabled]="!appSettings.publishTokenControlEnabled && !appSettings.playTokenControlEnabled"
+                                                                            [(ngModel)]="oneTimePlayToken"
+                                                                            type="textarea" class="form-control"
+                                                                            placeholder="Token will be displayed here"
+                                                                            rows="1">{{oneTimePlayToken}}
+                                                                        </textarea>
+                                                                        <button
+                                                                            (click)="getStreamToken('play')" class="btn pull-right btn-default" style="margin:5px"
+                                                                            type="button">
+                                                                                Generate
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div *ngIf="(appSettings.enableTimeTokenForPlay || appSettings.enableTimeTokenForPublish) && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                            <label i18n="@@jwtFilter">
+                                                                Generate TOTP token<a
+                                                                    matTooltip="Each token has an expiry time of 100 seconds"><i
+                                                                    class="fa fa-info-circle"></i></a>
+                                                            </label>
+                                                            <div class="form-group">
+                                                            
+                                                                <div class="form-group" style="margin-left: 5px;">
+
+                                                                    <label
+                                                                        class="col-sm-12 col-md-3 col-lg-3 control-label"
+                                                                        style="min-width: 190px; ">Secret</label>
+
+
+                                                                    <div class="col-sm-12 col-md-9 col-lg-6 text-left">
+                                                                        <input type="text" name="TOTPSecretInput"
+                                                                            placeholder="Write secret for subscriber"
+                                                                            class="form-control"
+                                                                            [(ngModel)]="TOTPSecret"
+                                                                            #totpSecret="ngModel" required type="text">
+                                                                        <small [hidden]="totpSecret.valid"
+                                                                            class="text-danger">
+                                                                            Secret is required
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group" style="margin-left: 5px;">
+
+                                                                    <label
+                                                                        class="col-sm-12 col-md-3 col-lg-3 control-label"
+                                                                        style="min-width: 190px; ">Number of Digits</label>
+
+
+                                                                    <div class="col-sm-12 col-md-9 col-lg-6 text-left">
+                                                                        <input type="text" name="TOTPPlayId"
+                                                                            placeholder="Write secret for subscriber"
+                                                                            class="form-control"
+                                                                            [(ngModel)]="TOTPNoOfDigits"
+                                                                            #totpNumberOfDigits="ngModel" required
+                                                                            type="number">
+                                                                        <small [hidden]="totpNumberOfDigits.valid"
+                                                                            class="text-danger">
+                                                                            Digit number is required
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group" style="margin-left: 5px;">
+
+                                                                    <label
+                                                                        class="col-sm-12 col-md-3 col-lg-3 control-label"
+                                                                        style="min-width: 190px; ">Token Period (s)</label>
+
+
+                                                                    <div class="col-sm-12 col-md-9 col-lg-6 text-left">
+                                                                        <input type="text" name="TOTPPeriod"
+                                                                            placeholder="Write secret for subscriber"
+                                                                            class="form-control"
+                                                                            [(ngModel)]="TOTPPeriod"
+                                                                            #totpPeriod="ngModel" required
+                                                                            type="number">
+                                                                        <small [hidden]="totpPeriod.valid"
+                                                                            class="text-danger">
+                                                                            Period is required
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group" style="margin-left: 5px;">
+
+                                                                    <label
+                                                                            class="col-sm-12 col-md-3 col-lg-3 control-label"
+                                                                            style="min-width: 190px; ">TOTP Token</label>
+
+
+                                                                    <div class="col-sm-12 col-md-9 col-lg-6">
+                                                                        
+                                                                        <textarea name="totptoken" #totpTok="ngModel" [disabled]="!appSettings.publishTokenControlEnabled && !appSettings.playTokenControlEnabled"
+                                                                            [(ngModel)]="TOTPToken"
+                                                                            type="textarea" class="form-control"
+                                                                            placeholder="Token will be displayed here"
+                                                                            rows="1">{{TOTPToken}}
+                                                                        </textarea>
+
+                                                                        <div class="form-group" style="margin-left: 5px;">
+                                                                            <div class="col-sm-12 col-md-9 col-lg-6 text-left">
+                                                                                <p>{{timeLeftForTOTP}} Seconds Left....</p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <button
+                                                                            (click)="generateTOTPToken()" class="btn pull-right btn-default" style="margin:5px"
+                                                                            type="button">
+                                                                                Generate
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
                                                     </div>
                                                 </div>
 
@@ -1890,7 +2210,7 @@
                                                                     matTooltip="Please enter at least 32 character"><i
                                                                     class="fa fa-info-circle"></i></a>
                                                             </label>
-
+                                                            
                                                             <div>
                                                                 <textarea name="jwtSecret" minlength="32"  #jwtSecret="ngModel" [disabled]="!appSettings.jwtControlEnabled"
                                                                           [(ngModel)]="appSettings.jwtSecretKey"

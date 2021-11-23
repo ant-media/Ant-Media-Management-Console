@@ -23,6 +23,7 @@ import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
 import "rxjs/add/operator/toPromise";
 import {AppSettings, ServerSettings} from "./app.definitions";
+import * as OTPAuth from 'otpauth';
 
 import {
     BroadcastInfo,
@@ -187,6 +188,27 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public clusterNodes: ClusterNode[];
     public user: User;
     public currentClusterNode: string;
+
+    public jwtPublishToken: String;
+    public jwtPlayToken: String;
+    public jwtPublishStreamId: string;
+    public jwtPlayStreamId: String;
+    public jwtPublishStreamIdCheck = true;
+    public jwtPlayStreamIdCheck = true;
+    public oneTimeTokenPublishStreamIdCheck = true;
+    public oneTimeTokenPlayStreamIdCheck = true;
+    public TOTPSecret = "mysecret";
+    public TOTPNoOfDigits = 6;
+    public TOTPPeriod = 60;
+    public TOTPToken : string;
+    public TOTPGeneratorTimer = null;
+    public timeLeftForTOTP = 0;
+
+    public oneTimeTokenPublishStreamId: string;
+    public oneTimePublishToken: string;
+    public oneTimePlayToken: string;
+    public oneTimeTokenPlayStreamId: string;
+
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
@@ -767,6 +789,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.timerId = null ;
         this.dropdownTimer = null ;
 
+        if(this.TOTPGeneratorTimer != null || typeof this.TOTPGeneratorTimer != "undefined"){
+            clearInterval(this.TOTPGeneratorTimer);
+
+            this.TOTPGeneratorTimer = null;
+        }
+
     }
 
     ngOnDestroy() {
@@ -952,7 +980,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         let currentUnixTime : number = Math.floor(Date.now() / 1000)
         let expireDate : number = currentUnixTime + 100;
 
-        this.restService.getOneTimeToken (this.appName, tokenParam, expireDate).subscribe(data => {
+
+        this.restService.getOneTimeToken (this.appName, tokenParam, expireDate, "play").subscribe(data => {
             this.token = <Token>data;
             this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
         });
@@ -962,7 +991,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         let currentUnixTime : number = Math.floor(Date.now() / 1000)
         let expireDate : number = currentUnixTime + 100;
 
-        this.restService.getJWTToken(this.appName, tokenParam, expireDate).subscribe(data => {
+        this.restService.getJwtToken(this.appName, tokenParam, expireDate, "play").subscribe(data => {
             this.token = <Token>data;
             this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
         });
@@ -1829,6 +1858,135 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.appSettings.jwtStreamSecretKey = str;
         return str;
     };
+
+    generateTOTPToken(){
+        if((this.TOTPGeneratorTimer == null || typeof this.TOTPGeneratorTimer == "undefined")){     
+            this.TOTPGeneratorTimer = setInterval(() => {
+                // Create a new TOTP object.
+                let totp = new OTPAuth.TOTP({
+                    algorithm: 'SHA1',
+                    digits: this.TOTPNoOfDigits,
+                    period: this.TOTPPeriod,
+                    secret: OTPAuth.Secret.fromBase32(this.TOTPSecret) 
+                });
+                // Generate a token.
+                this.TOTPToken = totp.generate();
+                let currentTime = Math.round(new Date().getTime() / 1000.0);
+                this.timeLeftForTOTP = this.TOTPPeriod - (currentTime % this.TOTPPeriod);
+                if(!this.appSettings.enableTimeTokenForPublish && !this.appSettings.enableTimeTokenForPlay){
+                    clearInterval(this.TOTPGeneratorTimer);
+                    this.TOTPGeneratorTimer = null;
+                }
+            },1000)
+        } 
+    }
+
+    //Get JWT token from the REST call to the server
+    getJwtStreamToken(type: string){
+        let currentUnixTime : number = Math.floor(Date.now() / 1000)
+        let expireDate : number = currentUnixTime + 100;
+
+        if(type == "publish"){
+            this.jwtPublishStreamIdCheck=true;
+            if(typeof this.jwtPublishStreamId == "undefined" || this.jwtPublishStreamId == null || this.jwtPublishStreamId == ""){
+                this.jwtPublishStreamIdCheck = false;
+                this.showTokenNotGenerated();
+            }
+            else{
+                this.restService.getJwtToken (this.appName, this.jwtPublishStreamId, expireDate, type).subscribe(data => {
+                    this.token = <Token>data;
+                    if(data["success"] == true){
+                        this.jwtPublishToken = this.token.tokenId;
+                    }
+                    else{
+                        this.showTokenNotGenerated();
+                    }
+                },
+                error =>{
+                    this.showTokenNotGenerated();
+                });
+            }
+        }
+        if(type == "play"){
+            this.jwtPlayStreamIdCheck=true;
+            if(typeof this.jwtPlayStreamId == "undefined" || this.jwtPlayStreamId == null || this.jwtPlayStreamId == ""){
+                this.jwtPlayStreamIdCheck = false;
+                this.showTokenNotGenerated();
+            }
+            else{
+                this.restService.getJwtToken (this.appName, this.jwtPublishStreamId, expireDate, type).subscribe(data => {
+                    this.token = <Token>data;
+                    if(data["success"] == true){
+                        this.jwtPlayToken = this.token.tokenId;
+                    }
+                    else{
+                        this.showTokenNotGenerated();
+                    }
+                },
+                error =>{
+                    this.showTokenNotGenerated();
+                });
+            }
+        }
+    }
+    getStreamToken(type: string){
+        let currentUnixTime : number = Math.floor(Date.now() / 1000)
+        let expireDate : number = currentUnixTime + 100;
+        
+        if(type == "publish"){
+            this.oneTimeTokenPublishStreamIdCheck=true;
+            if(typeof this.oneTimeTokenPublishStreamId == "undefined" || this.oneTimeTokenPublishStreamId == null || this.oneTimeTokenPublishStreamId == ""){
+                this.oneTimeTokenPublishStreamIdCheck = false;
+                this.showTokenNotGenerated();
+            }
+            else{
+                this.restService.getOneTimeToken(this.appName, this.oneTimeTokenPublishStreamId, expireDate, type).subscribe(data => {
+                    this.token = <Token>data;
+                    if(data["tokenId"].length > 5){
+                        this.oneTimePublishToken = this.token.tokenId;
+                    }
+                    else{
+                        this.showTokenNotGenerated();
+                    }
+
+                });
+            }
+        }
+        if(type == "play"){
+            this.oneTimeTokenPlayStreamIdCheck = true;
+            if(typeof this.oneTimeTokenPlayStreamId == "undefined" || this.oneTimeTokenPlayStreamId == null || this.oneTimeTokenPlayStreamId == ""){
+                this.oneTimeTokenPlayStreamIdCheck = false;
+                this.showTokenNotGenerated();
+            }
+            else{
+                this.restService.getOneTimeToken (this.appName, this.oneTimeTokenPlayStreamId, expireDate, type).subscribe(data => {
+                    this.token = <Token>data;
+                    if(data["tokenId"].length > 5){
+                        this.oneTimePlayToken = this.token.tokenId;
+                    }
+                    else{
+                        this.showTokenNotGenerated();
+                    }
+                },
+                error =>{
+                    this.showTokenNotGenerated();
+                });
+            }
+        }
+    }
+    showTokenNotGenerated() {
+        $.notify({
+            icon: "ti-save",
+            message: Locale.getLocaleInterface().token_not_generated
+        }, {
+            type: "warning",
+            delay: 900,
+            placement: {
+                from: 'top',
+                align: 'right'
+            }
+        });
+    }
 
     startDiscover() {
         this.discoveryStarted = true;

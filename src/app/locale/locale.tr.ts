@@ -43,5 +43,6 @@ export let Locale_Turkish: LocaleInterface =
     vod_deleted: "Vod başarıyla silindi.",
     cluster: "Cluster",
     support: "Destek",
+    token_not_generated: "Token oluşturulamadı, lütfen secret ve streamId yi kontrol edin."
 }
 
