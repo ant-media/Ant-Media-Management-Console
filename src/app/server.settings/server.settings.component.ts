@@ -73,10 +73,15 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     public newUserCreating = false;
     public AdminUserType : string = "ADMIN";
     public ReadOnlyUserType : string = "READ_ONLY";
+    public AllApps : string = "all";
     public currentUserType : string = "ADMIN";
+    public currentUserPermission: string = "all";
     public UserEditing : User;
+    public permission_check = false;
 
-    public displayedColumnsStreams = ['email', 'type', 'actions'];
+    public applications : any;
+
+    public displayedColumnsStreams = ['email', 'type', 'permissions', 'actions'];
 
     public dataSource: MatTableDataSource<UserInf>; 
 
@@ -121,6 +126,18 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this.userDataTable = {
             dataRows: [],
         };
+
+        this.restService.getApplications().subscribe(data => {
+            this.applications = data;
+            console.debug(data);
+        });
+
+        this.restService.hasPermission("all").subscribe(data => {
+            console.log(data);
+            if(data["success"] == true){
+                this.permission_check = true;
+            }
+        });
     }
 
     ngAfterViewInit() {
@@ -186,6 +203,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         console.log("userchange = " + user.email)
         this.UserEditing = new User(user.email, "");
         this.UserEditing.userType= user.userType;
+        this.UserEditing.allowedApp = user.allowedApp;
 
         console.log("UserEditing = " + this.UserEditing.userType)
         if (this.UserEditing) {
@@ -193,6 +211,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                 data: {
                     email : this.UserEditing.email,
                     type: this.UserEditing.userType,
+                    permission: this.UserEditing.allowedApp
                 },
                 width: "400px",
             });
@@ -225,6 +244,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             if(this.filter != "" || this.filter != undefined || this.filter != null){
                 this.dataSource.filter = this.filter;
             }
+
             this.cdr.detectChanges();
         });
 
@@ -439,6 +459,11 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             this.currentUserType = this.ReadOnlyUserType;
         }
     }
+
+    UserPermissionChanged(event:any){
+        this.currentUserPermission = event;
+    }
+
     cancelNewUser(): void {
         this.newUserActive = false;
     }
@@ -515,6 +540,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         }
 
         this.User.userType = this.currentUserType;
+        this.User.allowedApp = this.currentUserPermission;
 
         if (!this.restService.checkStreamName(this.User.email)){
             this.userNameEmpty = true;

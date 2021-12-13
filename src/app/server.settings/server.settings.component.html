@@ -1,4 +1,4 @@
-<div class="main-content">
+<div class="main-content" *ngIf="permission_check==true">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12 col-sm-12">
@@ -170,6 +170,17 @@
                                                 </select>
  
                                             </div>
+
+                                            <div class="form-group text-left" >
+                                                <label>Application permission</label>
+                                                <select type="text"  [name]="'ApplicationPermission'" (ngModelChange)="UserPermissionChanged($event)" [(ngModel)]="currentUserPermission"
+                                                class="dropdown-toggle form-control" required>
+                                                    <option value="{{AllApps}}" >{{AllApps}}</option>
+                                                    <option *ngFor="let eachVal of applications['applications']">
+                                                            {{eachVal}}
+                                                    </option>
+                                                  </select>
+                                            </div>
                                                                    
                                             <div class="form-group text-center">
 
@@ -217,17 +228,30 @@
                                                 </mat-cell>
                                             </ng-container>
 
-                                                    <ng-container matColumnDef="type">
-                                                        <mat-header-cell [ngClass]="'type-column'" *matHeaderCellDef
-                                                            mat-sort-header> User Type </mat-header-cell>
-        
-                                                        <mat-cell [ngClass]="'type-column'" *matCellDef="let row">
-                                                            <div style="padding-left: 12px;">
-                                                                {{row.userType}}
-                                                            </div>
+                                            <ng-container matColumnDef="type">
+                                                <mat-header-cell [ngClass]="'type-column'" *matHeaderCellDef
+                                                    mat-sort-header> User Type </mat-header-cell>
+
+                                                <mat-cell [ngClass]="'type-column'" *matCellDef="let row">
+                                                    <div style="padding-left: 12px;">
+                                                        {{row.userType}}
+                                                    </div>
 
                                                 </mat-cell>
                                             </ng-container>
+
+                                            <ng-container matColumnDef="permissions">
+                                                <mat-header-cell [ngClass]="'permissions-column'" *matHeaderCellDef
+                                                    mat-sort-header> User Permission </mat-header-cell>
+
+                                                <mat-cell [ngClass]="'permissions-column'" *matCellDef="let row">
+                                                    <div style="padding-left: 12px;">
+                                                        {{row.allowedApp}}
+                                                    </div>
+                                                </mat-cell>
+                                            </ng-container>
+
+
                                             <ng-container matColumnDef="actions">
                                                 <mat-header-cell *matHeaderCellDef class="justify-flex-end"> Actions
                                                 </mat-header-cell>
@@ -281,4 +305,9 @@
 
 
 
+</div>
+
+<div *ngIf="permission_check == false"
+    i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+You need to have all app permissions to reach server settings
 </div>

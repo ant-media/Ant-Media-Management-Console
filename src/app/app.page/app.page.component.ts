@@ -155,6 +155,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public waitingForConfirmation = false;
 
     public admin_check : boolean;
+    public permission_check : boolean;
     public camera: Camera;
     public onvifURLs: String[];
     public newOnvifURLs: String[];
@@ -443,6 +444,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 	            }
 	            else{
 	                this.admin_check = false;
+	            }
+        	});
+
+            this.restService.hasPermission(this.appName).subscribe(data => {
+	            console.log(data);
+	            if(data["success"] == true){
+	                this.permission_check = true;
+	            }
+	            else{
+	                this.permission_check = false;
 	            }
         	});
 

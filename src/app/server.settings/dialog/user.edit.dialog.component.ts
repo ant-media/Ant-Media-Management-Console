@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Locale } from "../../locale/locale";
 import { RestService, User } from '../../rest/rest.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -13,25 +13,37 @@ declare var swal: any;
     templateUrl: 'user.edit.dialog.component.html',
 })
 
-export class UserEditComponent {
+export class UserEditComponent implements OnInit {
 
     loading = false;
     public userUpdating = false;
     public userEditing: User;
     public userNameEmpty = false;
     public currentUserType : string;
+    public currentUserPermission: string;
+    public allowedApp : string;
     public AdminUserType : string = "ADMIN";
     public ReadOnlyUserType : string = "READ_ONLY";
     public changePassword = false;
     public newPasswordAgain = "";
+    public AllApps : string = "all";
+    public applications : any;
 
     constructor(
         public dialogRef: MatDialogRef<UserEditComponent>, public restService: RestService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
-            console.log(data.email + " anan " + data.type)
+            console.debug(data.email + " - " + data.type)
             this.currentUserType = data.type;
+            this.currentUserPermission = data.permission;
     }
 
+    ngOnInit(){
+        this.restService.getApplications().subscribe(data => {
+            this.applications = data;
+            console.log(data);
+        });
+
+    }
     onNoClick(): void {
         this.dialogRef.close();
     }
@@ -44,6 +56,10 @@ export class UserEditComponent {
             this.currentUserType = this.ReadOnlyUserType;
         }
     }
+    UserPermissionChanged(event:any){
+        this.currentUserPermission = event;
+    }
+
     updateUser(isValid: boolean): void {
         if (!isValid) {
             return;
@@ -53,6 +69,7 @@ export class UserEditComponent {
         
         this.userEditing.userType= this.currentUserType;
         this.userEditing.newPassword = this.dialogRef.componentInstance.data.newPassword;
+        this.userEditing.allowedApp = this.currentUserPermission;
         if(this.userEditing.newPassword == undefined){
             this.userEditing.newPassword = "";
         }

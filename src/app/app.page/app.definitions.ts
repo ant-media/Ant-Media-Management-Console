@@ -15,6 +15,11 @@ export declare interface UserInf {
 	 */
 	userType:string;
 
+    /**
+	 * Permission of user
+	 */
+    allowedApp:string;
+
 	/**
 	 * Name of the user
 	 */

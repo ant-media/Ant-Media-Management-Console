@@ -1,4 +1,4 @@
-<div class="main-content">
+<div class="main-content" *ngIf="permission_check==true">
     <div class="container-fluid">
         <div class="row">
 
@@ -1962,4 +1962,9 @@
 
 
 
+</div>
+
+<div *ngIf="permission_check == false"
+    i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
+You need to have permission to reach this app
 </div>

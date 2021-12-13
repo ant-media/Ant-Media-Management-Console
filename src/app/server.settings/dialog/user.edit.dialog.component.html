@@ -33,6 +33,7 @@
                         Passwords should match
                 </small>
             </div>
+
             <fieldset >
                 <div class="form-group text-left" >
                     <label>User type</label>
@@ -44,6 +45,19 @@
                     </select>
                 </div>
             </fieldset>
+
+
+                <div class="form-group text-left" >
+                    <label>Application permission</label>
+                    <select type="text"  [name]="'ApplicationPermission'" (ngModelChange)="UserPermissionChanged($event)" [(ngModel)]="currentUserPermission"
+                    class="dropdown-toggle form-control" required>
+                        <option value="{{AllApps}}" >{{AllApps}}</option>
+                        <option *ngFor="let eachVal of applications['applications']">
+                                {{eachVal}}
+                        </option>
+                        </select>
+                </div>
+
             <div class="form-group text-center">
 
                 <button type="submit" [disabled]='userUpdating' class="btn btn-fill btn-success" i18n="@@newLiveStreamSaveButton">
