@@ -1534,12 +1534,11 @@
                                                                            
                                                                             type="checkbox">
     
-                                                                        <label for="s3RecordingEnabled"
-                                                                          >
+                                                                        <label for="s3RecordingEnabled">
                                                                             Enable S3 Recording <a
-                                                                            matTooltip="This feature uploads recording files(MP4 or WebM) to the S3">
-                                                                            <i
-                                                                                class="fa fa-info-circle"></i></a>
+                                                                            href="https://antmedia.io/docs/s3"
+                                                                            matTooltip="This feature uploads recorded files(MP4, WebM, HLS) to the S3. Click to learn more...">
+                                                                            <i class="fa fa-info-circle"></i></a>
                                                                     </label>
                                                                     </div>
 
@@ -1548,7 +1547,7 @@
                                                                         <div class="col-sm-12 text-left col-md-12">
                                                                             <label class="col-sm-12 col-md-3 control-label"
                                                                                 style="min-width: 160px; "
-                                                                                i18n="@@s3AccessKey">Access Key</label>
+                                                                                i18n="@@s3AccessKey">Access Key*</label>
                                                                             <div class="col-sm-12 text-left col-md-10">
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3AccessKey="ngModel"
@@ -1568,7 +1567,7 @@
                                                                         <div class="col-sm-12 text-left col-md-12">
                                                                             <label class="col-sm-12 col-md-3 control-label"
                                                                                 style="min-width: 160px; "
-                                                                                i18n="@@s3SecretKey">Secret Key</label>
+                                                                                i18n="@@s3SecretKey">Secret Key*</label>
                                                                             <div class="col-sm-12 text-left col-md-10">
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3SecretKey="ngModel"
@@ -1587,7 +1586,7 @@
                                                                         <div class="col-sm-12 text-left col-md-12">
                                                                             <label class="col-sm-12 col-md-3 control-label"
                                                                                 style="min-width: 160px; "
-                                                                                i18n="@@s3RegionName">Region Name</label>
+                                                                                i18n="@@s3RegionName">Region Name*</label>
                                                                             <div class="col-sm-12 text-left col-md-10">
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3RegionName="ngModel"
@@ -1606,7 +1605,7 @@
                                                                         <div class="col-sm-12 text-left col-md-12">
                                                                             <label class="col-sm-12 col-md-3 control-label"
                                                                                 style="min-width: 160px; "
-                                                                                i18n="@@s3BucketName">Bucket Name</label>
+                                                                                i18n="@@s3BucketName">Bucket Name*</label>
                                                                             <div class="col-sm-12 text-left col-md-10">
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3BucketName="ngModel"
@@ -1634,10 +1633,26 @@
                                                                                     class="form-control" name="s3Endpoint" 
                                                                                     type="text"
                                                                                     />
-                                                                                
                                                                             </div>
-            
                                                                         </div>
+                                                                        <div class="col-sm-12 text-left col-md-12">
+                                                                            <label class="col-sm-12 col-md-3 control-label">
+                                                                                Permission
+                                                                            </label>
+                                                                            <div class="col-sm-12 col-md-10 text-left">
+                                                                                <select  [(ngModel)]="appSettings.s3Permission"  #s3Permission="ngModel"                                                                             
+                                                                                    class="dropdown-toggle form-control"  name="s3Permission"
+                                                                                    >
+                                                                                    <option value="public-read">Public-Read</option>
+                                                                                    <option value="private">Private</option>
+                                                                                    <option value="public-read-write"  >Public-Read-Write</option>
+                                                                                    <option value="authenticated-read">Authenticated-Read</option>
+                                                                                    <option value="bucket-owner-read">Bucket-Owner-Read</option>
+                                                                                    <option value="bucket-owner-full-control">Bucket-Owner-Full-Control</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        
                                                                         
                                                                     </div>
                                                             </div>
