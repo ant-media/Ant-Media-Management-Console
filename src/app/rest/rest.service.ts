@@ -242,8 +242,37 @@ export class RestService {
         return this.http.delete(REST_SERVICE_ADDRESS, {});
     }
 
+    public deleteBroadcasts(appName: string, streamIds:string [], REMOTE_REST_SERVICE_ROOT:string): Observable<Object> {
+        let REST_SERVICE_ADDRESS;
+        if(REMOTE_REST_SERVICE_ROOT == null){
+            REST_SERVICE_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/bulk';
+        }
+        else{
+            REST_SERVICE_ADDRESS = REMOTE_REST_SERVICE_ROOT + "/" + appName + '/rest/v2/broadcasts/bulk';
+        }
+
+        const options = {
+            headers: new HttpHeaders({
+              'Content-Type': 'application/json',
+            }),
+            body: streamIds,
+          };
+        
+        return this.http.delete(REST_SERVICE_ADDRESS, options);
+    }
+
     public deleteVoDFile(appName: string, vodName:string,id:number, type:string) {
         return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/vods/'+id, {});
+    }
+
+    public deleteVoDFiles(appName: string, vodIds:string[]): Observable<Object>  {
+        const options = {
+            headers: new HttpHeaders({
+              'Content-Type': 'application/json',
+            }),
+            body: vodIds,
+          };
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/vods/bulk/', options);
     }
 
     public deleteRTMPEndpointV2(appName: string, id:number, endpointServiceId:string) {
