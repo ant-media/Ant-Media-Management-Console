@@ -468,6 +468,24 @@
                                         <mat-table style="overflow: visible !important;" [dataSource]="dataSource" matSort
                                                    (matSortChange)="sortBroadcastList($event)">
 
+                                             <!-- Checkbox Column -->
+                                            <ng-container matColumnDef="select" >
+                                                
+                                                <mat-header-cell *matHeaderCellDef>
+                                                    <mat-checkbox (change)="$event ? masterToggleStreams() : null"
+                                                                  [checked]="selectionStreams.hasValue() && isAllStreamsSelected()"
+                                                                  [indeterminate]="selectionStreams.hasValue() && !isAllStreamsSelected()">
+                                                    </mat-checkbox>
+                                                </mat-header-cell>
+                                                <mat-cell *matCellDef="let row">
+                                                    <mat-checkbox (click)="$event.stopPropagation()" 
+                                                                    (change)="$event ? selectHandlerStreams(row.streamId) : null"
+                                                                    [checked]="selectionStreams.isSelected(row.streamId)">
+                                                    </mat-checkbox>
+                                                </mat-cell>
+
+                                            </ng-container>
+ 
                                             <ng-container matColumnDef="name">
                                                 <mat-header-cell [ngClass]="'stream-name-column'" *matHeaderCellDef
                                                     mat-sort-header> Stream Name </mat-header-cell>
@@ -816,6 +834,14 @@
                                             </mat-row>
                                         </mat-table>
 
+                                        <div class=" text-left">
+                                            <div *ngIf="admin_check==true">
+                                                <button class="btn btn-simple " (click)="deleteSelectedStreams()"
+                                                    role="button">Delete
+                                                </button>
+                                            </div>
+                                        </div>
+
                                         <mat-paginator [pageSizeOptions]="pageSizeOptions"
                                             (page)="onListPaginateChange($event)" [length]="listLength"
                                             [pageSize]="pageSize">
@@ -852,6 +878,24 @@
 
                                         <mat-table [dataSource]="dataSourceVod" matSort
                                             (matSortChange)="sortVodList($event)">
+
+                                             <!-- Checkbox Column -->
+                                            <ng-container matColumnDef="select" >
+                                                
+                                                <mat-header-cell *matHeaderCellDef>
+                                                    <mat-checkbox (change)="$event ? masterToggleVods() : null"
+                                                                  [checked]="selectionVods.hasValue() && isAllVodsSelected()"
+                                                                  [indeterminate]="selectionVods.hasValue() && !isAllVodsSelected()">
+                                                    </mat-checkbox>
+                                                </mat-header-cell>
+                                                <mat-cell *matCellDef="let row">
+                                                    <mat-checkbox (click)="$event.stopPropagation()" 
+                                                                    (change)="$event ? selectHandlerVod(row.vodId) : null"
+                                                                    [checked]="selectionVods.isSelected(row.vodId)">
+                                                    </mat-checkbox>
+                                                </mat-cell>
+
+                                            </ng-container>
 
                                             <ng-container matColumnDef="name">
                                                 <mat-header-cell *matHeaderCellDef mat-sort-header>Name
@@ -951,9 +995,18 @@
                                             </mat-row>
                                         </mat-table>
 
+                                        <div class=" text-left">
+                                            <div *ngIf="admin_check==true">
+                                                <button class="btn btn-simple " (click)="deleteSelectedVoDs()"
+                                                     role="button">Delete
+                                                </button>
+                                            </div>
+                                        </div>
+
                                         <mat-paginator [length]="vodLength" [pageSize]="pageSize"
                                             [pageSizeOptions]="pageSizeOptions" (page)="onPaginateChange($event)">
                                         </mat-paginator>
+                                        
                                     </div>
 
                                 </div>

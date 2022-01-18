@@ -11,18 +11,19 @@ import {
     Renderer2,
     ViewChild
 } from '@angular/core';
-import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {ActivatedRoute, Router} from '@angular/router';
-import {HTTP_SERVER_ROOT, LiveBroadcast, RestService} from '../rest/rest.service';
-import {AuthService} from '../rest/auth.service';
-import {ClipboardService} from 'ngx-clipboard';
-import {Locale} from "../locale/locale";
-import {MatDialog } from '@angular/material/dialog';
-import {MatPaginator, MatPaginatorIntl, PageEvent} from "@angular/material/paginator"
-import {MatTableDataSource} from "@angular/material/table"
-import {MatSort} from "@angular/material/sort"
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HTTP_SERVER_ROOT, LiveBroadcast, RestService } from '../rest/rest.service';
+import { AuthService } from '../rest/auth.service';
+import { ClipboardService } from 'ngx-clipboard';
+import { Locale } from "../locale/locale";
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator, MatPaginatorIntl, PageEvent } from "@angular/material/paginator"
+import { MatTableDataSource } from "@angular/material/table"
+import { MatSort } from "@angular/material/sort"
 import "rxjs/add/operator/toPromise";
-import {AppSettings, ServerSettings} from "./app.definitions";
+import { AppSettings, ServerSettings } from "./app.definitions";
+import { SelectionModel } from "@angular/cdk/collections";
 
 import {
     BroadcastInfo,
@@ -34,16 +35,16 @@ import {
     VodInfoTable,
     PlaylistItem
 } from './app.definitions';
-import {DetectedObjectListDialog} from './dialog/detected.objects.list';
-import {UploadVodDialogComponent} from './dialog/upload-vod-dialog';
-import {BroadcastEditComponent} from './dialog/broadcast.edit.dialog.component';
-import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
-import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
-import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialog.component';
-import {PlaylistEditComponent} from './dialog/playlist.edit.dialog.component';
-import {Observable} from "rxjs";
+import { DetectedObjectListDialog } from './dialog/detected.objects.list';
+import { UploadVodDialogComponent } from './dialog/upload-vod-dialog';
+import { BroadcastEditComponent } from './dialog/broadcast.edit.dialog.component';
+import { SocialMediaStatsComponent } from './dialog/social.media.stats.component';
+import { WebRTCClientStatsComponent } from './dialog/webrtcstats/webrtc.client.stats.component';
+import { RtmpEndpointEditDialogComponent } from './dialog/rtmp.endpoint.edit.dialog.component';
+import { PlaylistEditComponent } from './dialog/playlist.edit.dialog.component';
+import { Observable } from "rxjs";
 import "rxjs/add/observable/of";
-import {ClusterRestService} from "../rest/cluster.service";
+import { ClusterRestService } from "../rest/cluster.service";
 import {
     ClusterInfoTable,
     ClusterNode,
@@ -105,7 +106,7 @@ export class Token {
     public tokenId: string;
     public streamId: string;
     public expireDate: number;
-    public type:string;
+    public type: string;
 }
 
 
@@ -131,7 +132,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public gridTableData: CameraInfoTable;
     public vodTableData: VodInfoTable;
     public timerId: any;
-    public camereErrorTimerId:any;
+    public camereErrorTimerId: any;
     public checkAuthStatusTimerId: any;
     public newLiveStreamActive: boolean;
     public newIPCameraActive: boolean;
@@ -156,6 +157,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     public admin_check : boolean;
     public permission_check : boolean;
+
     public camera: Camera;
     public onvifURLs: String[];
     public newOnvifURLs: String[];
@@ -178,12 +180,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public videoServiceEndpoints: VideoServiceEndpoint[];
     public streamUrlValid = true;
     public jwtTokenValid = true;
-    public streamNameEmpty=false;
-    public playlistNameEmpty=false;
-    public encoderSettings:EncoderSettings[];
-    public acceptAllStreams : boolean;
+    public streamNameEmpty = false;
+    public playlistNameEmpty = false;
+    public encoderSettings: EncoderSettings[];
+    public acceptAllStreams: boolean;
     public dropdownTimer: any;
-    public enterpriseEditionText : any;
+    public enterpriseEditionText: any;
     public autoStart: false;
     public clusterNodes: ClusterNode[];
     public user: User;
@@ -198,13 +200,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         new HLSListType('Event', 'event'),
     ];
 
-    public displayedColumnsStreams = ['name' , 'status', 'viewerCount', 'actions'];
-    public displayedColumnsVod = ['name', 'type', 'date', 'actions'];
+    public displayedColumnsStreams = ['select', 'name', 'status', 'viewerCount', 'actions'];
+    public displayedColumnsVod = ['select', 'name', 'type', 'date', 'actions'];
     public displayedColumnsUserVod = ['name', 'date', 'actions'];
 
     public dataSource: MatTableDataSource<BroadcastInfo>;
 
     public dataSourceVod: MatTableDataSource<VodInfo>;
+    public selectionVods = new SelectionModel<string>(true, []);
+    public selectionStreams = new SelectionModel<string>(true, []);
+
 
     public streamsPageSize = 10;
     public vodPageSize = 10;
@@ -224,16 +229,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public importingVoDStreams = false;
     private tokenData: Observable<Token>;
     // MatPaginator Output
-    
+
     private vodSortBy = "";
     private vodOrderBy = "";
 
     private broadcastSortBy = "";
     private broadcastOrderBy = "";
 
-    @ViewChild(MatPaginator, {static:false}) paginator: MatPaginator;
-    @ViewChild(MatPaginator, {static:false}) paginatorVod: MatPaginator;
-    
+    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+    @ViewChild(MatPaginator, { static: false }) paginatorVod: MatPaginator;
+
     public clusterNodeTableData: ClusterInfoTable;
 
     public nodeColumns = ['nodeIp', 'cpu', 'memory', 'lastUpdateTime', 'inTheCluster', 'actions'];
@@ -248,17 +253,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild(MatSort) sort: MatSort;
 
     constructor(private route: ActivatedRoute,
-                private restService: RestService,
-                private clusterRestService: ClusterRestService,
-                private clipBoardService: ClipboardService,
-                private renderer: Renderer2,
-                public router: Router,
-                private zone: NgZone,
-                public dialog: MatDialog,
-                public sanitizer: DomSanitizer,
-                private cdr: ChangeDetectorRef,
-                private matpage: MatPaginatorIntl,
-                private authService: AuthService,
+        private restService: RestService,
+        private clusterRestService: ClusterRestService,
+        private clipBoardService: ClipboardService,
+        private renderer: Renderer2,
+        public router: Router,
+        private zone: NgZone,
+        public dialog: MatDialog,
+        public sanitizer: DomSanitizer,
+        private cdr: ChangeDetectorRef,
+        private matpage: MatPaginatorIntl,
+        private authService: AuthService,
 
 
     ) {
@@ -274,7 +279,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit() {
 
-        
+
 
         this.timerId = null;
         this.dropdownTimer = null;
@@ -321,20 +326,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    contextDropdownClicked(){
+    contextDropdownClicked() {
 
         this.clearTimer();
 
-        this.dropdownTimer = window.setInterval( () => {
-            if(this.authService.isAuthenticated) {
-                if(this.appName != "undefined"){
+        this.dropdownTimer = window.setInterval(() => {
+            if (this.authService.isAuthenticated) {
+                if (this.appName != "undefined") {
                     this.callTimer();
                 }
             }
         }, 8000);
     }
 
-    callTimer(){
+    callTimer() {
 
         console.log("Timer Started");
 
@@ -342,16 +347,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         //this timer gets the related information according to active application
         //so that it checks appname whether it is undefined
-            this.timerId = window.setInterval(() => {
-            if(this.authService.isAuthenticated) {
-                if(this.appName != "undefined"){
+        this.timerId = window.setInterval(() => {
+            if (this.authService.isAuthenticated) {
+                if (this.appName != "undefined") {
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getVoDStreams();
                     this.getAppLiveStreamsNumber();
                 }
             }
 
-            }, 5000);
+        }, 5000);
     }
 
     onPaginateChange(event) {
@@ -367,7 +372,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.keyword = null;
 
-        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy,this.filterValueVod).subscribe(data => {
+        this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy, this.filterValueVod).subscribe(data => {
             this.vodTableData.dataRows = [];
             for (var i in data) {
                 this.vodTableData.dataRows.push(data[i]);
@@ -404,8 +409,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    getInitParams (){
-	
+    getInitParams() {
+
         this.sub = this.route.params.subscribe(params => {
             //this method is called whenever app changes
 
@@ -437,15 +442,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.isEnterpriseEdition = data["success"];
             });
 
-			this.restService.isAdmin().subscribe(data => {
-	            console.log(data);
-	            if(data["success"] == true){
-	                this.admin_check = true;
-	            }
-	            else{
-	                this.admin_check = false;
-	            }
-        	});
+            this.restService.isAdmin().subscribe(data => {
+                console.log(data);
+                if (data["success"] == true) {
+                    this.admin_check = true;
+                }
+                else {
+                    this.admin_check = false;
+                }
+            });
 
             this.restService.hasPermission(this.appName).subscribe(data => {
 	            console.log(data);
@@ -461,12 +466,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.isClusterMode = data["success"];
                 if (this.isClusterMode) {
                     var clusterNodeCount = 0;
-                    this.clusterRestService.getClusterNodeCount().subscribe( data => {
+                    this.clusterRestService.getClusterNodeCount().subscribe(data => {
                         clusterNodeCount = data["number"];
                         this.clusterRestService.getClusterNodes(0, clusterNodeCount).subscribe(data => {
                             this.clusterNodeTableData.dataRows = [];
                             for (let i in data) {
-                                if(data[i].status == "alive") {
+                                if (data[i].status == "alive") {
                                     this.currentClusterNode = data[0].ip;
                                     this.clusterNodeTableData.dataRows.push(data[i]);
                                 }
@@ -490,11 +495,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     applyFilter(filterValue: string) {
-        if(this.filterValue != filterValue){
+        if (this.filterValue != filterValue) {
             this.filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
             this.getAppLiveStreamsNumber();
             this.paginator.firstPage();
-            this.getAppLiveStreams(0, this.pageSize);  
+            this.getAppLiveStreams(0, this.pageSize);
         }
     }
 
@@ -566,7 +571,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 appName: this.appName,
                 webRTCViewerLimit: this.selectedBroadcast.webRTCViewerLimit,
                 hlsViewerLimit: this.selectedBroadcast.hlsViewerLimit,
-                streamUrl:this.selectedBroadcast.streamUrl,
+                streamUrl: this.selectedBroadcast.streamUrl,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
             }
@@ -629,7 +634,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     appName: this.appName,
                     webRTCViewerLimit: this.liveStreamEditing.webRTCViewerLimit,
                     hlsViewerLimit: this.liveStreamEditing.hlsViewerLimit,
-                    endpointList: stream.endPointList,                    
+                    endpointList: stream.endPointList,
                     videoServiceEndpoints: this.videoServiceEndpoints,
                     // ************** TODO: open it *************************
                     //socialMediaAuthStatus:this.socialMediaAuthStatus
@@ -646,32 +651,27 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     openPlaylistEditDialog(stream: BroadcastInfo): void {
 
-            let dialogRef = this.dialog.open(PlaylistEditComponent, {
-                width: '640px',
-                data: {
-                    streamId: stream.streamId,
-                    appName: this.appName,
-                }
-            });
+        let dialogRef = this.dialog.open(PlaylistEditComponent, {
+            width: '640px',
+            data: {
+                streamId: stream.streamId,
+                appName: this.appName,
+            }
+        });
 
 
-            dialogRef.afterClosed().subscribe(result => {
-                console.log('The dialog was closed');
-                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-                this.getAppLiveStreamsNumber();
-            });
-    }
-
-
-    test() {
-        alert("test");
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+            this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+            this.getAppLiveStreamsNumber();
+        });
     }
 
     getAppLiveStreams(offset: number, size: number): void {
-        
+
         offset = offset * size;
 
-        this.restService.getAppLiveStreams(this.appName, offset, size, this.broadcastSortBy, this.broadcastOrderBy,this.filterValue).subscribe(data => {
+        this.restService.getAppLiveStreams(this.appName, offset, size, this.broadcastSortBy, this.broadcastOrderBy, this.filterValue).subscribe(data => {
 
             this.broadcastTableData.dataRows = [];
 
@@ -694,7 +694,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
     }
-   
+
 
     cleanURL(oldURL: string): SafeResourceUrl {
         console.log("clean url");
@@ -707,7 +707,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 this.listLength = data["number"];
             });
-        
+
         this.cdr.detectChanges();
     }
 
@@ -721,7 +721,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.getVoDStreams();
         console.log("vodSortBy->" + this.vodSortBy);
-        console.log("vodOrderBy->"+ this.vodOrderBy);
+        console.log("vodOrderBy->" + this.vodOrderBy);
     }
 
     sortBroadcastList(e) {
@@ -733,17 +733,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.getAppLiveStreams(this.streamListOffset, this.pageSize);
         console.log("broadcastSortBy->" + this.broadcastSortBy);
-        console.log("broadcastOrderBy->"+ this.broadcastOrderBy);
+        console.log("broadcastOrderBy->" + this.broadcastOrderBy);
     }
 
-    sortOrderBy(sortDirection: string, orderBy: string): string{
-        if((sortDirection == "" || orderBy == sortDirection) && orderBy == "asc" ){
+    sortOrderBy(sortDirection: string, orderBy: string): string {
+        if ((sortDirection == "" || orderBy == sortDirection) && orderBy == "asc") {
             orderBy = "desc";
         }
-        else if((sortDirection == "" || orderBy == sortDirection) && orderBy == "desc" ){
+        else if ((sortDirection == "" || orderBy == sortDirection) && orderBy == "desc") {
             orderBy = "asc";
         }
-        else{
+        else {
             orderBy = sortDirection;
         }
         return orderBy;
@@ -775,8 +775,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         clearInterval(this.timerId);
         clearInterval(this.dropdownTimer);
 
-        this.timerId = null ;
-        this.dropdownTimer = null ;
+        this.timerId = null;
+        this.dropdownTimer = null;
 
     }
 
@@ -808,52 +808,49 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    getIFrameSrc(streamId:string, autoplay:string, token:string):string {
-        return  HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId +"&autoplay="+autoplay +
-                (token != null ? "&token=" + token : "");
+    getIFrameSrc(streamId: string, autoplay: string, token: string): string {
+        return HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&autoplay=" + autoplay +
+            (token != null ? "&token=" + token : "");
     }
 
-    getIFrameEmbedCode(streamId:string): string {
+    getIFrameEmbedCode(streamId: string): string {
         return '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:480px"  ></iframe>';
     }
 
     playLive(streamId: string): void {
-        if(this.appSettings.playTokenControlEnabled) 
-        {
-            this.openPlayerWithOneTimeToken(streamId, streamId,"640px", streamId);
+        if (this.appSettings.playTokenControlEnabled) {
+            this.openPlayerWithOneTimeToken(streamId, streamId, "640px", streamId);
         }
-        if(this.appSettings.playJwtControlEnabled)
-        {
-            this.openPlayerWithJWTToken(streamId, streamId,"640px", streamId);
+        if (this.appSettings.playJwtControlEnabled) {
+            this.openPlayerWithJWTToken(streamId, streamId, "640px", streamId);
         }
-        else 
-        {
-            this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null);    
+        else {
+            this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null);
         }
     }
 
-    openPlayer(htmlCode:string, objectId:string, streamId: string, width: string, tokenId:string):void {
+    openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string): void {
 
         swal({
             html: htmlCode,
             showConfirmButton: false,
             width: width,
-            padding:"10px" ,
+            padding: "10px",
             animation: false,
             showCloseButton: true,
-            onOpen: () => {    
-              //the error in this callback does not show up in browser console.
-              var iframe = $('#' + objectId);
-              iframe.prop('src', this.getIFrameSrc(streamId, "true", tokenId));
+            onOpen: () => {
+                //the error in this callback does not show up in browser console.
+                var iframe = $('#' + objectId);
+                iframe.prop('src', this.getIFrameSrc(streamId, "true", tokenId));
             },
             onClose: function () {
                 var ifr = document.getElementById(objectId);
                 ifr.parentNode.removeChild(ifr);
             }
         })
-        .then(function () { }, function () { })
-        .catch(function () {
-        });
+            .then(function () { }, function () { })
+            .catch(function () {
+            });
     }
 
     openGridPlayers(index: number, size: number): void {
@@ -880,28 +877,28 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             for (var i in this.broadcastGridTableData.dataRows) {
                 id = this.broadcastGridTableData.dataRows[i]['streamId'];
                 var $iframe = $('#' + id);
-                $iframe.prop('src',  this.getIFrameSrc(id, "true", null));
+                $iframe.prop('src', this.getIFrameSrc(id, "true", null));
             }
 
         }, 1500);
     }
 
-    downloadFile(vodName: string, type: string, vodId:string, streamId:string): void {
+    downloadFile(vodName: string, type: string, vodId: string, streamId: string): void {
 
         var srcFile = null;
         var vodUrlName = null;
 
         if (type == "uploadedVod") {
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4'  ;
-            vodUrlName = vodId ;
-        }else if (type == "streamVod"){
+            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4';
+            vodUrlName = vodId;
+        } else if (type == "streamVod") {
             srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName;
-            vodUrlName = vodName ;
-        }else if (type == "userVod") {
+            vodUrlName = vodName;
+        } else if (type == "userVod") {
             var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
             var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
             srcFile = HTTP_SERVER_ROOT + this.appName + '/streams' + folderName + '/' + vodName;
-            vodUrlName = vodName ;
+            vodUrlName = vodName;
         }
 
         const link = document.createElement("a");
@@ -913,9 +910,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    playVoD(vodName: string, type: string, vodId:string, streamId:string, filePath:string): void {
+    playVoD(vodName: string, type: string, vodId: string, streamId: string, filePath: string): void {
 
-        if(this.appSettings.playTokenControlEnabled || this.appSettings.playJwtControlEnabled){
+        if (this.appSettings.playTokenControlEnabled || this.appSettings.playJwtControlEnabled) {
             this.playVoDToken(vodName, type, vodId, streamId, filePath);
         }
         else {
@@ -923,26 +920,25 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    playVoDToken(name: string, type: string, vodId:string, streamId:string, filePath:string):void
-    {
+    playVoDToken(name: string, type: string, vodId: string, streamId: string, filePath: string): void {
         let tokenParam;
-        
-        if(type == "uploadedVod" ){
+
+        if (type == "uploadedVod") {
             tokenParam = vodId;
         }
-        else if (type == "streamVod" ) {
+        else if (type == "streamVod") {
             tokenParam = streamId;
         }
-        else if (type == "userVod" ) {
+        else if (type == "userVod") {
             let extensionIndex = name.lastIndexOf(".mp4");
             tokenParam = name.substring(0, extensionIndex);
         }
 
         if (tokenParam != null && this.appSettings.playTokenControlEnabled) {
-            this.openPlayerWithOneTimeToken(vodId, filePath,"640px", tokenParam);
+            this.openPlayerWithOneTimeToken(vodId, filePath, "640px", tokenParam);
         }
         else if (tokenParam != null && this.appSettings.playJwtControlEnabled) {
-            this.openPlayerWithJWTToken(vodId, filePath,"640px", tokenParam);
+            this.openPlayerWithJWTToken(vodId, filePath, "640px", tokenParam);
         }
         else {
             swal({
@@ -959,19 +955,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    openPlayerWithOneTimeToken(id: string, path: string,width: string, tokenParam:string){
-        let currentUnixTime : number = Math.floor(Date.now() / 1000)
-        let expireDate : number = currentUnixTime + 100;
+    openPlayerWithOneTimeToken(id: string, path: string, width: string, tokenParam: string) {
+        let currentUnixTime: number = Math.floor(Date.now() / 1000)
+        let expireDate: number = currentUnixTime + 100;
 
-        this.restService.getOneTimeToken (this.appName, tokenParam, expireDate).subscribe(data => {
+        this.restService.getOneTimeToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
             this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
         });
     }
 
-    openPlayerWithJWTToken(id: string, path: string,width: string, tokenParam:string){
-        let currentUnixTime : number = Math.floor(Date.now() / 1000)
-        let expireDate : number = currentUnixTime + 100;
+    openPlayerWithJWTToken(id: string, path: string, width: string, tokenParam: string) {
+        let currentUnixTime: number = Math.floor(Date.now() / 1000)
+        let expireDate: number = currentUnixTime + 100;
 
         this.restService.getJWTToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
@@ -1033,7 +1029,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     editLiveBroadcast(stream: BroadcastInfo): void {
-       
+
         if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId) {
             this.liveStreamEditing = new LiveBroadcast();
             this.liveStreamEditing.streamId = stream.streamId;
@@ -1056,53 +1052,53 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.restService.updateLiveStream(this.appName, this.liveStreamEditing,
             socialNetworks).subscribe(data => {
-            this.liveStreamUpdating = false;
-            console.log(data["success"]);
-            if (data["success"]) {
-                this.liveStreamEditing = null;
-                //update the rows
-                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-                this.getAppLiveStreamsNumber();
-                $.notify({
-                    icon: "ti-save",
-                    message: Locale.getLocaleInterface().broadcast_updated
-                }, {
-                    type: "success",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
-            else {
-                $.notify({
-                    icon: "ti-alert",
-                    message: Locale.getLocaleInterface().broadcast_not_updated + " " + data["message"] + " " + data["errorId"]
-                }, {
-                    type: "warning",
-                    delay: 900,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-            }
-        });
+                this.liveStreamUpdating = false;
+                console.log(data["success"]);
+                if (data["success"]) {
+                    this.liveStreamEditing = null;
+                    //update the rows
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                    this.getAppLiveStreamsNumber();
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().broadcast_updated
+                    }, {
+                        type: "success",
+                        delay: 900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
+                else {
+                    $.notify({
+                        icon: "ti-alert",
+                        message: Locale.getLocaleInterface().broadcast_not_updated + " " + data["message"] + " " + data["errorId"]
+                    }, {
+                        type: "warning",
+                        delay: 900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
+            });
 
     }
 
 
 
-    deleteLiveBroadcast(streamId: string,broadcastHostAddress: string): void {
+    deleteLiveBroadcast(streamId: string, broadcastHostAddress: string): void {
         let REMOTE_HOST_ADDRESS;
         let hostAddress = localStorage.getItem('hostAddress');
 
         // I didn't added broadcast status check. Because, some of stream sources status is finished but it's trying to connect sources.
-        if(this.isClusterMode && hostAddress != broadcastHostAddress) {
+        if (this.isClusterMode && hostAddress != broadcastHostAddress) {
             REMOTE_HOST_ADDRESS = "http://" + broadcastHostAddress + ":5080";
 
-            if(this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey != null){
+            if (this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey != null) {
                 $.notify({
                     icon: "ti-save",
                     message: "Please enable JWT Filter or Delete Broadcast in a stopped status"
@@ -1127,7 +1123,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!'
         }).then(data => {
-            this.restService.deleteBroadcast(this.appName, streamId,REMOTE_HOST_ADDRESS)
+            this.restService.deleteBroadcast(this.appName, streamId, REMOTE_HOST_ADDRESS)
                 .subscribe(data => {
                     if (data["success"] == true) {
 
@@ -1181,34 +1177,34 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    clusterDropDownChanged(selectedNode:string){
-        if(this.currentClusterNode != selectedNode){
+    clusterDropDownChanged(selectedNode: string) {
+        if (this.currentClusterNode != selectedNode) {
             this.currentClusterNode = selectedNode;
         }
     }
-    dropDownChanged(event:any,i:number){
+    dropDownChanged(event: any, i: number) {
 
         if (event == 2160) {
             this.encoderSettings[i].videoBitrate = 6000;
             this.encoderSettings[i].audioBitrate = 256;
         }
-        if(event == 1080) {
+        if (event == 1080) {
             this.encoderSettings[i].videoBitrate = 2000;
             this.encoderSettings[i].audioBitrate = 256;
         }
-        if(event == 720) {
+        if (event == 720) {
             this.encoderSettings[i].videoBitrate = 1500;
             this.encoderSettings[i].audioBitrate = 128;
         }
-        if(event == 480) {
+        if (event == 480) {
             this.encoderSettings[i].videoBitrate = 1000;
             this.encoderSettings[i].audioBitrate = 96;
         }
-        if(event == 360) {
+        if (event == 360) {
             this.encoderSettings[i].videoBitrate = 800;
             this.encoderSettings[i].audioBitrate = 64;
         }
-        if(event == 240) {
+        if (event == 240) {
             this.encoderSettings[i].videoBitrate = 500;
             this.encoderSettings[i].audioBitrate = 32;
         }
@@ -1224,20 +1220,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
 
-            if(this.appSettings.jwtControlEnabled){
+            if (this.appSettings.jwtControlEnabled) {
                 let jwt = require('jsonwebtoken');
                 let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
 
-                localStorage.setItem(this.appName+'jwtToken', currentAppJWTToken);
-                localStorage.setItem(this.appName+'jwtControlEnabled', this.appSettings.jwtControlEnabled+"");
+                localStorage.setItem(this.appName + 'jwtToken', currentAppJWTToken);
+                localStorage.setItem(this.appName + 'jwtControlEnabled', this.appSettings.jwtControlEnabled + "");
             }
-            else{
-                localStorage.setItem(this.appName+'jwtToken', null);
-                localStorage.setItem(this.appName+'jwtControlEnabled', "false");
+            else {
+                localStorage.setItem(this.appName + 'jwtToken', null);
+                localStorage.setItem(this.appName + 'jwtControlEnabled', "false");
             }
             this.encoderSettings = [];
             this.appSettings.encoderSettings.forEach((value, index) => {
-                if (value != null ) {
+                if (value != null) {
                     this.encoderSettings.push({
                         height: this.appSettings.encoderSettings[index].height,
                         videoBitrate: this.appSettings.encoderSettings[index].videoBitrate / 1000,
@@ -1247,7 +1243,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             });
 
-            this.acceptAllStreams = !this.appSettings.acceptOnlyStreamsInDataStore ;
+            this.acceptAllStreams = !this.appSettings.acceptOnlyStreamsInDataStore;
 
 
         });
@@ -1261,31 +1257,30 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
 
-        if(this.appSettings.jwtControlEnabled){
+        if (this.appSettings.jwtControlEnabled) {
             let jwt = require('jsonwebtoken');
             let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
 
-            localStorage.setItem(this.appName+'jwtToken', currentAppJWTToken);
-            localStorage.setItem(this.appName+'jwtControlEnabled', this.appSettings.jwtControlEnabled+"");
+            localStorage.setItem(this.appName + 'jwtToken', currentAppJWTToken);
+            localStorage.setItem(this.appName + 'jwtControlEnabled', this.appSettings.jwtControlEnabled + "");
         }
-        else{
-            localStorage.setItem(this.appName+'jwtToken', null);
-            localStorage.setItem(this.appName+'jwtControlEnabled', "false");
+        else {
+            localStorage.setItem(this.appName + 'jwtToken', null);
+            localStorage.setItem(this.appName + 'jwtControlEnabled', "false");
         }
 
-        if (!this.appSettings.s3RecordingEnabled) 
-        {
+        if (!this.appSettings.s3RecordingEnabled) {
             this.appSettings.s3AccessKey = "";
             this.appSettings.s3SecretKey = "";
             this.appSettings.s3BucketName = "";
             this.appSettings.s3Endpoint = "";
             this.appSettings.s3RegionName = "";
         }
-        
+
         this.appSettings.encoderSettings = [];
 
         this.encoderSettings.forEach((value, index) => {
-            if (value != null ) {
+            if (value != null) {
                 this.appSettings.encoderSettings.push({
                     height: this.encoderSettings[index].height,
                     videoBitrate: this.encoderSettings[index].videoBitrate * 1000,
@@ -1297,11 +1292,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.appSettings.remoteAllowedCIDR = this.appSettings.remoteAllowedCIDR.trim();
 
-        if(this.appSettings.remoteAllowedCIDR == ""){
-        this.appSettings.remoteAllowedCIDR = "127.0.0.1";
+        if (this.appSettings.remoteAllowedCIDR == "") {
+            this.appSettings.remoteAllowedCIDR = "127.0.0.1";
         }
 
-        this.appSettings.acceptOnlyStreamsInDataStore = !this.acceptAllStreams ;
+        this.appSettings.acceptOnlyStreamsInDataStore = !this.acceptAllStreams;
 
         if (this.appSettings.vodFolder.endsWith("/")) {
             this.appSettings.vodFolder = this.appSettings.vodFolder.substring(0, this.appSettings.vodFolder.length - 1);
@@ -1335,9 +1330,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             this.appSettings.encoderSettings.forEach((value, index) => {
-                if (value != null ) {
-                    this.appSettings.encoderSettings[index].videoBitrate /= 1000 ;
-                    this.appSettings.encoderSettings[index].audioBitrate /= 1000 ;
+                if (value != null) {
+                    this.appSettings.encoderSettings[index].videoBitrate /= 1000;
+                    this.appSettings.encoderSettings[index].audioBitrate /= 1000;
                 }
             });
 
@@ -1386,50 +1381,50 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    checkIPCameraError(streamId:string): void {
-       
-            this.restService.getCameraError(this.appName , streamId) .subscribe(data => {
+    checkIPCameraError(streamId: string): void {
 
-                console.log("stream ID :  "+ streamId);
+        this.restService.getCameraError(this.appName, streamId).subscribe(data => {
 
-                if(data["success"] == false){
+            console.log("stream ID :  " + streamId);
 
-                    if (data["message"] != null && data["message"].includes("401")) {
+            if (data["success"] == false) {
 
-                        swal({
-                            title: "Authorization Error",
-                            text: "Please Check Username and/or Password",
-                            type: 'error',
+                if (data["message"] != null && data["message"].includes("401")) {
 
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
+                    swal({
+                        title: "Authorization Error",
+                        text: "Please Check Username and/or Password",
+                        type: 'error',
 
-                        }).catch(function () {
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
 
-                        });
-                    }
-                    else {
-                        swal({
-                            title: "Camera Error",
-                            text: "An unknown error occured for your IP Camera. Please report this case to support@antmedia.io with your logs and IP camera address",
-                            type: 'error',
+                    }).catch(function () {
 
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-
-                        }).catch(function () {
-
-                        });
-                    }
+                    });
                 }
-                else{
-                    console.log("no  camera error")
-                }
+                else {
+                    swal({
+                        title: "Camera Error",
+                        text: "An unknown error occured for your IP Camera. Please report this case to support@antmedia.io with your logs and IP camera address",
+                        type: 'error',
 
-                this.liveBroadcast.ipAddr = "";
-            });
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+
+                    }).catch(function () {
+
+                    });
+                }
+            }
+            else {
+                console.log("no  camera error")
+            }
+
+            this.liveBroadcast.ipAddr = "";
+        });
     }
 
 
@@ -1441,7 +1436,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        if (!this.restService.checkStreamName(this.liveBroadcast.name)){
+        if (!this.restService.checkStreamName(this.liveBroadcast.name)) {
             this.streamNameEmpty = true;
             return;
         }
@@ -1456,7 +1451,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 socialNetworks.push(this.videoServiceEndpoints[index].id);
             }
         });
-        this.restService.createLiveStream(this.appName, this.liveBroadcast,null, socialNetworks.join(","))
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, null, socialNetworks.join(","))
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 this.newIPCameraAdding = false;
@@ -1466,7 +1461,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     console.log("error: " + data["message"]);
 
                     this.newIPCameraActive = false;
-        
+
                     $.notify({
                         icon: "ti-save",
                         message: Locale.getLocaleInterface().new_broadcast_created
@@ -1484,7 +1479,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     //call 5 seconds later to let IP camera start
                     setTimeout(() => {
                         this.checkIPCameraError(data["dataId"]);
-                    }, 5000);    
+                    }, 5000);
                 }
                 else {
 
@@ -1545,20 +1540,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreamsNumber();
                 }
             },
-            error => {
-                this.newIPCameraAdding = false;
-                $.notify({
-                    icon: "ti-save",
-                    message: error.error["message"]
-                }, {
-                    type: "warning",
-                    delay: 2000,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
+                error => {
+                    this.newIPCameraAdding = false;
+                    $.notify({
+                        icon: "ti-save",
+                        message: error.error["message"]
+                    }, {
+                        type: "warning",
+                        delay: 2000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
                 });
-            });
     }
 
     addStreamSource(isValid: boolean): void {
@@ -1576,9 +1571,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        if(!this.restService.checkStreamUrl(this.liveBroadcast.streamUrl)){
+        if (!this.restService.checkStreamUrl(this.liveBroadcast.streamUrl)) {
             console.log("stream source address is not in correct format");
-            this.streamUrlValid=false;
+            this.streamUrlValid = false;
             return;
         }
         this.streamNameEmpty = false;
@@ -1594,10 +1589,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         let REMOTE_HOST_ADDRESS = null;
         let hostAddress = localStorage.getItem('hostAddress');
-        if(this.isClusterMode && hostAddress != this.currentClusterNode) {
+        if (this.isClusterMode && hostAddress != this.currentClusterNode) {
             REMOTE_HOST_ADDRESS = "http://" + this.currentClusterNode + ":5080";
 
-            if(this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey == null){
+            if (this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey == null) {
                 $.notify({
                     icon: "ti-save",
                     message: "Please enable JWT Filter or Delete Broadcast in a stopped status"
@@ -1634,7 +1629,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreamsNumber();
 
                     this.liveBroadcast.streamUrl = "";
-                    this.streamUrlValid=true;
+                    this.streamUrlValid = true;
                 }
                 else {
                     var errorCode = data["message"];
@@ -1678,9 +1673,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.liveBroadcast.ipAddr = "";
                 this.liveBroadcast.username = "";
                 this.liveBroadcast.password = "";
-               
-            }, 
-            error => {
+
+            },
+                error => {
                     this.newStreamSourceAdding = false;
                     $.notify({
                         icon: "ti-save",
@@ -1697,7 +1692,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             );
     }
     addPlaylistItem(): void {
-       
+
         this.liveBroadcast.playListItemList.push({
             streamUrl: "",
             type: "VoD",
@@ -1734,10 +1729,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     this.newPlaylistAdding = false;
 
-                  //  this.playlist = new Playlist ();
+                    //  this.playlist = new Playlist ();
 
-                  //  this.playlistItems = [];
-                  //  this.playlist.broadcastItemList = [];
+                    //  this.playlistItems = [];
+                    //  this.playlist.broadcastItemList = [];
 
                     $.notify({
                         icon: "ti-save",
@@ -1795,27 +1790,27 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.newPlaylistActive = false;
 
             },
-            error => {
-                this.newPlaylistAdding = false;
-                $.notify({
-                    icon: "ti-save",
-                    message: error.error["message"]
-                }, {
-                    type: "warning",
-                    delay: 2000,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
+                error => {
+                    this.newPlaylistAdding = false;
+                    $.notify({
+                        icon: "ti-save",
+                        message: error.error["message"]
+                    }, {
+                        type: "warning",
+                        delay: 2000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
                 });
-            });
 
     }
 
     setJwtRestFilterString(length: number) {
         // Declare all characters
         let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    
+
         // Pick characers randomly
         let str = '';
         for (let i = 0; i < length; i++) {
@@ -1900,21 +1895,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         },
 
 
-                    }).then((result) => 
-                    {
+                    }).then((result) => {
                         if (result) {
                             this.liveBroadcast.ipAddr = this.onvifURLs[result].toString();
                         }
                     })
 
-                } 
-                else 
-                {
+                }
+                else {
                     this.discoveryStarted = false;
                     this.noCamWarning = true;
                     this.camera.ipAddr = "";
                 }
-            } 
+            }
             else {
                 this.discoveryStarted = false;
                 this.noCamWarning = true;
@@ -1964,7 +1957,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.liveBroadcast.type = "liveStream";
 
-        if (!this.restService.checkStreamName(this.liveBroadcast.name)){
+        if (!this.restService.checkStreamName(this.liveBroadcast.name)) {
 
             this.streamNameEmpty = true;
             return;
@@ -2005,20 +1998,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.getAppLiveStreamsNumber();
 
             },
-            error => {
-                this.newLiveStreamCreating = false;
-                $.notify({
-                    icon: "ti-save",
-                    message: error.error["message"]
-                }, {
-                    type: "warning",
-                    delay: 2000,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
+                error => {
+                    this.newLiveStreamCreating = false;
+                    $.notify({
+                        icon: "ti-save",
+                        message: error.error["message"]
+                    }, {
+                        type: "warning",
+                        delay: 2000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
                 });
-            });
 
     }
 
@@ -2037,7 +2030,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-            }, );
+            });
         });
 
 
@@ -2101,7 +2094,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     setRecordingStatus(streamId: string, recordingStatus: boolean, recordingType: string): void {
 
         //Check H.264 is disabled
-        if(!this.appSettings.h264Enabled && recordingType == "mp4" && recordingStatus){
+        if (!this.appSettings.h264Enabled && recordingType == "mp4" && recordingStatus) {
             $.notify({
                 icon: "ti-save",
                 message: "Firstly, please enable H.264 Encoder in App Settings"
@@ -2116,7 +2109,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
         //Check WebM settings is disabled
-        if(!this.appSettings.vp8Enabled && recordingType == "webm" && recordingStatus){
+        if (!this.appSettings.vp8Enabled && recordingType == "webm" && recordingStatus) {
             $.notify({
                 icon: "ti-save",
                 message: "Firstly, please enable VP8 Encoder in App Settings"
@@ -2132,42 +2125,42 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         this.restService.setStreamRecordingStatus(this.appName, streamId, recordingStatus, recordingType).subscribe(data => {
-             if (data["success"] == true) {
+            if (data["success"] == true) {
 
-                 if(recordingStatus){
-                     var recordingMessage = "open";
-                 }
-                 else{
-                     var recordingMessage = "close";
-                 }
-
-                 this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-
-                 $.notify({
-                     icon: "ti-save",
-                     message: recordingType + " Recording will be " + recordingMessage + ". Please wait few seconds."
-                    }, {
-                        type: "success",
-                        delay: 1000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                if (recordingStatus) {
+                    var recordingMessage = "open";
                 }
-                else{
-                    $.notify({
-                        icon: "ti-save",
-                        message: recordingType + " Recording service failed"
-                    }, {
-                        type: "warning",
-                        delay: 3000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                else {
+                    var recordingMessage = "close";
                 }
+
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+
+                $.notify({
+                    icon: "ti-save",
+                    message: recordingType + " Recording will be " + recordingMessage + ". Please wait few seconds."
+                }, {
+                    type: "success",
+                    delay: 1000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+            else {
+                $.notify({
+                    icon: "ti-save",
+                    message: recordingType + " Recording service failed"
+                }, {
+                    type: "warning",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
         });
 
     }
@@ -2201,18 +2194,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         var Index = this.appSettings.vodFolder.lastIndexOf("/");
         var folderName = this.appSettings.vodFolder.substring(Index);
 
-        var  VoDName = name;
+        var VoDName = name;
 
-        if(type == "uploadedVod"){
-            VoDName = vodId ;
+        if (type == "uploadedVod") {
+            VoDName = vodId;
         }
-        else if(type == "userVod"){
-            VoDName = folderName + "/" + VoDName ;
+        else if (type == "userVod") {
+            VoDName = folderName + "/" + VoDName;
         }
 
 
         let embedCode = '<iframe width="560" height="315" src="'
-            + HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + VoDName +"&playOrder=vod"
+            + HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + VoDName + "&playOrder=vod"
             + '" frameborder="0" allowfullscreen></iframe>';
 
         this.clipBoardService.copyFromContent(embedCode);
@@ -2313,7 +2306,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         );
     }
 
-    webrtcStats(broadcast : LiveBroadcast) {
+    webrtcStats(broadcast: LiveBroadcast) {
         this.dialog.open(WebRTCClientStatsComponent, {
             width: '90%',
             data: {
@@ -2380,7 +2373,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 });
             }
-            else{
+            else {
 
                 $.notify({
                     icon: "ti-save",
@@ -2417,7 +2410,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 });
             }
-            else{
+            else {
 
                 $.notify({
                     icon: "ti-save",
@@ -2436,8 +2429,179 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
+    selectHandlerVod(vodId: string) {
+        this.selectionVods.toggle(vodId);
+    }
 
+    isAllVodsSelected() {
+        return this.dataSourceVod.data.every(row => this.selectionVods.isSelected(row.vodId));
+    }
+
+    /** Selects all rows if they are not all selected; otherwise clear selection. */
+    masterToggleVods() {
+        if (this.isAllVodsSelected()) {
+            this.dataSourceVod.data.forEach(row => this.selectionVods.deselect(row.vodId));
+        } else {
+            this.dataSourceVod.data.forEach(row => this.selectionVods.select(row.vodId));
+        }
+    }
+
+
+    deleteSelectedVoDs(): void {
+        if (this.selectionVods.isEmpty()) {
+
+            swal({
+                title: "Warning",
+                text: "Please Select Streams to Delete",
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            })
+            return;
+        }
+
+        swal({
+            title: Locale.getLocaleInterface().are_you_sure,
+            text: Locale.getLocaleInterface().wont_be_able_to_revert,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete them!'
+        }).then(() => {
+
+            let vods: Array<string> = [];
+
+            for (let i of Object.keys(this.dataSourceVod.data)) {
+
+                if (this.selectionVods.isSelected(this.dataSourceVod.data[i].vodId)) {
+                    vods.push(this.dataSourceVod.data[i].vodId);
+                }
+
+            }
+            this.restService.deleteVoDFiles(this.appName, vods).subscribe(data => {
+                if (data["success"] == true) {
+                    $.notify({
+                        icon: "ti-save",
+                        message: Locale.getLocaleInterface().vod_deleted
+                    }, {
+                        type: "success",
+                        delay: 900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+
+                    this.selectionVods.clear();
+                }
+                else {
+                    this.showVoDFileNotDeleted();
+                }
+                this.getVoDStreams();
+            });
+        }).catch(function () {
+
+        });
+    }
+
+    selectHandlerStreams(streamId: string) {
+
+        this.selectionStreams.toggle(streamId);
+
+    }
+
+    isAllStreamsSelected() {
+        return this.dataSource.data.every(row => this.selectionStreams.isSelected(row.streamId));
+    }
+
+    /** Selects all rows if they are not all selected; otherwise clear selection. */
+    masterToggleStreams() {
+        if (this.isAllStreamsSelected()) {
+            this.dataSource.data.forEach(row => this.selectionStreams.deselect(row.streamId));
+        } else {
+            this.dataSource.data.forEach(row => this.selectionStreams.select(row.streamId));
+        }
+    }
+
+
+    deleteSelectedStreams(): void {
+
+        if (this.selectionStreams.isEmpty()) {
+
+            swal({
+                title: "Warning",
+                text: "Please Select Streams to Delete",
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            })
+            return;
+        }
+
+        swal({
+            title: Locale.getLocaleInterface().are_you_sure,
+            text: Locale.getLocaleInterface().wont_be_able_to_revert,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete them!'
+        }).then(data => {
+
+            let streams: Array<string> = [];
+
+            for (let i of Object.keys(this.dataSource.data)) {
+
+                if (this.selectionStreams.isSelected(this.dataSource.data[i].streamId)) {
+                    streams.push(this.dataSource.data[i].streamId);
+                }
+
+            }
+
+            this.restService.deleteBroadcasts(this.appName, streams, null)
+                .subscribe(data => {
+                    if (data["success"] == true) {
+
+                        $.notify({
+                            icon: "ti-save",
+                            message: "Successfully deleted"
+                        }, {
+                            type: "success",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+
+                        this.selectionStreams.clear();
+
+                    }
+                    else {
+                        $.notify({
+                            icon: "ti-save",
+                            message: Locale.getLocaleInterface().broadcast_not_deleted
+                        }, {
+                            type: "warning",
+                            delay: 900,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                    }
+                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                    this.getAppLiveStreamsNumber();
+
+
+                });
+        })
+            .catch(function () {
+            });
+
+    }
 
 }
-
-
