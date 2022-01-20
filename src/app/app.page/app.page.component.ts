@@ -2128,17 +2128,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             if (data["success"] == true) {
 
                 if (recordingStatus) {
-                    var recordingMessage = "open";
+                    var recordingMessage = "starting";
                 }
                 else {
-                    var recordingMessage = "close";
+                    var recordingMessage = "stopping";
                 }
 
                 this.getAppLiveStreams(this.streamListOffset, this.pageSize);
 
                 $.notify({
                     icon: "ti-save",
-                    message: recordingType + " Recording will be " + recordingMessage + ". Please wait few seconds."
+                    message: recordingType + " recording is " + recordingMessage + ". Please wait few seconds."
                 }, {
                     type: "success",
                     delay: 1000,
@@ -2151,7 +2151,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             else {
                 $.notify({
                     icon: "ti-save",
-                    message: recordingType + " Recording service failed"
+                    message: "Operation has failed"
                 }, {
                     type: "warning",
                     delay: 3000,
