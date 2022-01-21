@@ -408,6 +408,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getInitParams() {
+        let currentServerJwtStatus =  localStorage.getItem('serverJWTControlEnabled');
 
         this.sub = this.route.params.subscribe(params => {
             //this method is called whenever app changes
@@ -442,7 +443,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.restService.isAdmin().subscribe(data => {
                 console.log(data);
-                if (data["success"] == true) {
+                // If JWT Server token is enable then no need to check admin status
+                if(data["success"] == true || currentServerJwtStatus){
                     this.admin_check = true;
                 }
                 else {
@@ -676,7 +678,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
-            console.log(this.dataSource)
             this.cdr.detectChanges();
 
         });

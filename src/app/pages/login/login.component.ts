@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {AuthService} from '../../rest/auth.service';
 import {User} from '../../rest/rest.service';
 import {RestService} from '../../rest/rest.service';
+import {ServerSettings} from "../../app.page/app.definitions";
 
 declare var $:any;
 
@@ -20,6 +21,7 @@ export class LoginComponent implements OnInit{
     public email = "";
     public password = "";
     public showIncorrectCredentials = false;
+    public showIncorrectJWTToken = false;
     public blockLoginAttempt = false;
     public firstLogin = false;
     public firstUser: User;
@@ -27,6 +29,8 @@ export class LoginComponent implements OnInit{
     public firstUserIsCreating:boolean;
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
+    public serverSettings: ServerSettings;
+    public serverJWTToken: string;
 
     constructor(private element : ElementRef, private auth: AuthService, private router: Router,private restService: RestService) {
         this.nativeElement = element.nativeElement;
@@ -52,6 +56,8 @@ export class LoginComponent implements OnInit{
                 this.firstUser = new User("", "");
             }
         });
+
+        this.serverSettings = new ServerSettings(null,null, false, "INFO",false);
 
         this.auth.licenceWarningDisplay = true;
         
@@ -94,24 +100,46 @@ export class LoginComponent implements OnInit{
 
     loginUser() {
 
-        this.auth.login(this.email, this.password).subscribe(data =>{
+        if(!this.serverSettings.jwtServerControlEnabled){
+            localStorage.clear();
+        }
 
-            if (data["success"] == true) {
-                this.auth.isAuthenticated = data["success"];
-                localStorage.setItem("authenticated", "true");
-                localStorage.setItem(LOCAL_STORAGE_EMAIL_KEY, this.email);
-                this.router.navigateByUrl("/dashboard");
-            }
-            else {
-                this.showIncorrectCredentials = true;
-            }
+        if(this.serverSettings.jwtServerControlEnabled) {
+            //We need to define this value in this line
+            //server JWT tokens needs to be define before rest request
+            localStorage.setItem('serverJWTControlEnabled', "true");
+            localStorage.setItem('serverJWTToken', this.serverJWTToken);
+            this.restService.getApplications().subscribe(data =>{
+                if ( data['applications'].length > 0) {
+                    localStorage.setItem("authenticated", "true");
+                    this.auth.isAuthenticated = true;
+                    this.router.navigateByUrl("/dashboard");
+                }
+                else{
+                    this.showIncorrectJWTToken = true;
+                }
+            },
+                error =>{
+                    this.showIncorrectJWTToken = true;
+                });
+        }
+        else{
+            this.auth.login(this.email, this.password).subscribe(data =>{
+                if (data["success"] == true) {
+                    this.auth.isAuthenticated = data["success"];
+                    localStorage.setItem("authenticated", "true");
+                    localStorage.setItem(LOCAL_STORAGE_EMAIL_KEY, this.email);
+                    this.router.navigateByUrl("/dashboard");
+                }
+                else {
+                    this.showIncorrectCredentials = true;
+                }
+            });
 
-        });
-        
-        this.restService.getBlockedStatus(this.email).subscribe(data => {
-            this.blockLoginAttempt = data["success"];           
-        });
-        
+            this.restService.getBlockedStatus(this.email).subscribe(data => {
+                this.blockLoginAttempt = data["success"];
+            });
+        }
     }
 
 
@@ -137,6 +165,10 @@ export class LoginComponent implements OnInit{
 
     credentialsChanged():void {
         this.showIncorrectCredentials = false;
+    }
+
+    JWTTokenChanged():void {
+        this.showIncorrectJWTToken = false;
     }
 
 }

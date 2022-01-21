@@ -166,7 +166,8 @@ export class ServerSettings {
     constructor(public serverName: string,
                 public licenceKey: string,
                 public buildForMarket: boolean,
-                public logLevel: string
+                public logLevel: string,
+                public jwtServerControlEnabled: boolean
     ) {}
 }
 

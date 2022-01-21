@@ -14,7 +14,6 @@ import {RestService, User} from "../rest/rest.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {DataService} from "../rest/data.service";
-import {MatPaginator, MatPaginatorIntl, PageEvent} from "@angular/material/paginator"
 import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
 import {UserEditComponent} from './dialog/user.edit.dialog.component';
@@ -113,7 +112,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     }
 
     ngOnInit(){
-        this.serverSettings = new ServerSettings(null,null, false, this.logLevelInfo);
+        this.serverSettings = new ServerSettings(null,null, false, this.logLevelInfo,false);
 
         this.callTimer();
        
@@ -124,13 +123,15 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     }
 
     ngAfterViewInit() {
+        let currentServerJwtStatus =  localStorage.getItem('serverJWTControlEnabled');
         this.restService.isEnterpriseEdition().subscribe(data => {
             this.isEnterpriseEdition = data["success"];
             this.getServerSettings();
         });
         this.restService.isAdmin().subscribe(data => {
             console.log(data);
-            if(data["success"] == true){
+            // If JWT Server token is enable then no need to check admin status
+            if(data["success"] == true || currentServerJwtStatus){
                 this.admin_check = true;
             }
             else{

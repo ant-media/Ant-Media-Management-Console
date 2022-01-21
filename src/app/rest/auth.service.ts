@@ -37,6 +37,8 @@ export class AuthService implements CanActivate {
 
     constructor(private restService: RestService, private router: Router, private datePipe: DatePipe) {
 
+        this.serverSettings = new ServerSettings(null,null, false, "INFO",true);
+
         setInterval(() => {
             this.checkServerIsAuthenticated();
 
@@ -95,12 +97,11 @@ export class AuthService implements CanActivate {
 
     checkServerIsAuthenticated(): void {
 
-        if (localStorage.getItem('authenticated')) {
+        if (localStorage.getItem('authenticated') && !this.serverSettings.jwtServerControlEnabled) {
             this.restService.isAuthenticated().subscribe(data => {
-
                     this.isAuthenticated = data["success"];
 
-                    if (!this.isAuthenticated) {
+                    if (!this.isAuthenticated ) {
                         console.debug("Not authenticated navigating to login ");
                         this.router.navigateByUrl('/pages/login');
                     }
@@ -113,6 +114,13 @@ export class AuthService implements CanActivate {
                     this.router.navigateByUrl('/pages/login');
                 });
         }
+        else if(localStorage.getItem('authenticated') && this.isAuthenticated  && this.serverSettings.jwtServerControlEnabled ){
+            this.isAuthenticated = true;
+
+            if(this.router.url=="/pages/login"){
+                this.router.navigateByUrl('/dashboard/overview');
+            }
+        }
         else{
             this.isAuthenticated = false;
         }
@@ -122,7 +130,7 @@ export class AuthService implements CanActivate {
         console.debug("AuthService: is authenticated: " + this.isAuthenticated
             + " local storage: " + localStorage.getItem('authenticated'));
 
-        if (localStorage.getItem('authenticated') && this.isAuthenticated) {
+        if (localStorage.getItem('authenticated') && this.isAuthenticated && !this.serverSettings.jwtServerControlEnabled) {
 
             this.restService.isAuthenticated().subscribe(data => {
 
@@ -141,7 +149,12 @@ export class AuthService implements CanActivate {
                 });
             return true;
         }
-        else {
+        else if(localStorage.getItem('authenticated') && this.isAuthenticated && this.serverSettings.jwtServerControlEnabled ){
+
+            this.isAuthenticated = true;
+            return true;
+        }
+        else{
             console.debug("AuthService navigating login")
             this.router.navigateByUrl('/pages/login');
             this.isAuthenticated = false;

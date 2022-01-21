@@ -7,7 +7,6 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
 import {HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Endpoint,PlaylistItem} from "../app.page/app.definitions";
-import { filter } from 'rxjs-compat/operator/filter';
 import {SidebarComponent} from "../sidebar/sidebar.component";
 
 declare function require(name: string);
@@ -78,11 +77,20 @@ export class AuthInterceptor implements HttpInterceptor{
         let currentAppJwtToken = localStorage.getItem(appName+'jwtToken');
         let currentAppJwtStatus =  localStorage.getItem(appName+'jwtControlEnabled');
 
+        let currentServerJwtToken = localStorage.getItem('serverJWTToken');
+        let currentServerJwtStatus =  localStorage.getItem('serverJWTControlEnabled');
+
         // Check AppName, JWT Token status and JWT Token not null
-        if(appName != null && currentAppJwtToken != null && currentAppJwtStatus != "false"){
+        if(appName != null && currentAppJwtToken != null && currentAppJwtStatus == "true"){
             req = req.clone({
                 withCredentials: true,
                 headers: req.headers.append('Authorization', currentAppJwtToken)
+            });
+        }
+        else if(currentServerJwtToken != null || currentServerJwtStatus == "true"){
+            req = req.clone({
+                withCredentials: true,
+                headers: req.headers.append('Authorization', currentServerJwtToken)
             });
         }
         else {
