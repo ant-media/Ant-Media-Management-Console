@@ -50,6 +50,7 @@ import {
     ClusterNode,
     ClusterNodeInfo
 } from '../cluster/cluster.definitions';
+import { LOCAL_STORAGE_SCOPE_KEY } from 'app/pages/login/login.component';
 
 declare var $: any;
 declare var Chartist: any;
@@ -151,12 +152,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public isClusterMode = false;
     public filterValue = null;
     public filterValueVod = null;
+    public admin_check = false;
 
     public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
-
-    public admin_check : boolean;
-    public permission_check : boolean;
 
     public camera: Camera;
     public onvifURLs: String[];
@@ -279,8 +278,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit() {
 
-
-
         this.timerId = null;
         this.dropdownTimer = null;
 
@@ -332,7 +329,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.dropdownTimer = window.setInterval(() => {
             if (this.authService.isAuthenticated) {
-                if (this.appName != "undefined") {
+                if (typeof this.appName != "undefined") {
                     this.callTimer();
                 }
             }
@@ -341,15 +338,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     callTimer() {
 
-        console.log("Timer Started");
-
         this.clearTimer();
 
         //this timer gets the related information according to active application
         //so that it checks appname whether it is undefined
         this.timerId = window.setInterval(() => {
             if (this.authService.isAuthenticated) {
-                if (this.appName != "undefined") {
+                if (typeof this.appName != "undefined") {
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getVoDStreams();
                     this.getAppLiveStreamsNumber();
@@ -415,19 +410,25 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             //this method is called whenever app changes
 
             this.appName = params['appname']; // (+) converts string 'id' to a number
-
+            let scope = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
             if (typeof this.appName == "undefined") {
 
-                this.restService.getApplications().subscribe(data => {
+                
+                if (scope == "system") {
+                    this.restService.getApplications().subscribe(data => {
 
-                    //second element is the Applications. It is not safe to make static binding.
+                        //second element is the Applications. It is not safe to make static binding.
 
-                    for (var i in data['applications']) {
-                        //console.log(data['applications'][i]);
-                        this.router.navigateByUrl("/applications/" + data['applications'][i]);
-                        break;
-                    }
-                });
+                        for (var i in data['applications']) {
+                            //console.log(data['applications'][i]);
+                            this.router.navigateByUrl("/applications/" + data['applications'][i]);
+                            break;
+                        }
+                    });
+                }
+                else {
+                    this.router.navigateByUrl("/applications/"+scope);
+                }
                 return;
             }
 
@@ -437,13 +438,32 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.vodSortBy = "";
 
             this.getSettings();
-
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
             });
 
+            if (scope == "system") {
+                this.restService.isInClusterMode().subscribe(data => {
+                    this.isClusterMode = data["success"];
+                    if (this.isClusterMode) {
+                        var clusterNodeCount = 0;
+                        this.clusterRestService.getClusterNodeCount().subscribe(data => {
+                            clusterNodeCount = data["number"];
+                            this.clusterRestService.getClusterNodes(0, clusterNodeCount).subscribe(data => {
+                                this.clusterNodeTableData.dataRows = [];
+                                for (let i in data) {
+                                    if (data[i].status == "alive") {
+                                        this.currentClusterNode = data[0].ip;
+                                        this.clusterNodeTableData.dataRows.push(data[i]);
+                                    }
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+
             this.restService.isAdmin().subscribe(data => {
-                console.log(data);
                 if (data["success"] == true) {
                     this.admin_check = true;
                 }
@@ -452,34 +472,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             });
 
-            this.restService.hasPermission(this.appName).subscribe(data => {
-	            console.log(data);
-	            if(data["success"] == true){
-	                this.permission_check = true;
-	            }
-	            else{
-	                this.permission_check = false;
-	            }
-        	});
-
-            this.restService.isInClusterMode().subscribe(data => {
-                this.isClusterMode = data["success"];
-                if (this.isClusterMode) {
-                    var clusterNodeCount = 0;
-                    this.clusterRestService.getClusterNodeCount().subscribe(data => {
-                        clusterNodeCount = data["number"];
-                        this.clusterRestService.getClusterNodes(0, clusterNodeCount).subscribe(data => {
-                            this.clusterNodeTableData.dataRows = [];
-                            for (let i in data) {
-                                if (data[i].status == "alive") {
-                                    this.currentClusterNode = data[0].ip;
-                                    this.clusterNodeTableData.dataRows.push(data[i]);
-                                }
-                            }
-                        });
-                    });
-                }
-            });
             this.getAppLiveStreamsNumber();
             this.getVoDStreams();
             this.getAppLiveStreams(0, this.pageSize);

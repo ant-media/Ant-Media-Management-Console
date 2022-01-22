@@ -1,4 +1,4 @@
-<div class="main-content" *ngIf="permission_check==true">
+<div class="main-content">
     <div class="container-fluid">
         <div class="row">
 
@@ -39,7 +39,7 @@
 
                                 <div>
 
-                                    <div class="dropdown text-right" style="float: right" *ngIf="admin_check==true">
+                                    <div class="dropdown text-right" style="float: right" >
                                         <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton"
                                             data-toggle="dropdown" role="button">New Live Stream
                                             <span class="caret"></span>
@@ -605,7 +605,7 @@
 
                                                     <div style="font-size: 1.1em">
 
-                                                        <ul class="nav navbar-right" *ngIf = "admin_check==true">
+                                                        <ul class="nav navbar-right" >
                                                             <li (click)="contextDropdownClicked()" class="dropdown">
                                                                 <a href="#" class="dropdown-toggle btn-magnify"
                                                                     data-toggle="dropdown">
@@ -770,7 +770,7 @@
                                                         <!-- Edit Broadcast Button -->
 
                                                         <button
-                                                            *ngIf="admin_check==true && row.status!='broadcasting'&& row.type=='liveStream'"
+                                                            *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
                                                             (click)="openBroadcastEditDialog(row)" title="Edit"
                                                             data-toggle="tooltip"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -784,7 +784,7 @@
 
                                                         <!-- Edit IP Camera Button -->
 
-                                                        <button *ngIf="admin_check==true && row.type=='ipCamera'"
+                                                        <button *ngIf="row.type=='ipCamera'"
                                                             (click)="openSettingsDialog(row)"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                             type="button" data-toggle="tooltip" i18n-title
@@ -798,7 +798,7 @@
 
                                                         <!-- Edit Stream Source Button -->
 
-                                                        <button *ngIf="admin_check==true && row.type=='streamSource'"
+                                                        <button *ngIf="row.type=='streamSource'"
                                                             (click)="openStreamSourceSettingsDialog(row)"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                             type="button" data-toggle="tooltip" i18n-title
@@ -812,7 +812,7 @@
 
                                                         <!-- Edit Playlist Button -->
 
-                                                        <button *ngIf="admin_check==true && row.status!='broadcasting'&& row.type=='playlist'"
+                                                        <button *ngIf="row.status!='broadcasting'&& row.type=='playlist'"
                                                             (click)="openPlaylistEditDialog(row)" title="Edit"
                                                             data-toggle="tooltip"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -835,7 +835,7 @@
                                         </mat-table>
 
                                         <div class=" text-left">
-                                            <div *ngIf="admin_check==true">
+                                            <div>
                                                 <button class="btn btn-simple " (click)="deleteSelectedStreams()"
                                                     role="button">Delete
                                                 </button>
@@ -861,7 +861,7 @@
                             <div class="tab-pane" id="vod">
 
                                 <div class=" text-right">
-                                    <div *ngIf="admin_check==true">
+                                    <div>
                                         <button class="btn btn-fill btn-success" (click)="openVodUploadDialog()"
                                             data-toggle="dropdown" role="button">Upload VoD
                                         </button>
@@ -979,7 +979,6 @@
                                                     </a>
 
                                                     <button (click)="deleteVoD(row.vodName, row.vodId, row.type)"
-                                                        *ngIf="admin_check==true"
                                                         class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
                                                         type="button">
                                                         <span class="btn-label">
@@ -996,7 +995,7 @@
                                         </mat-table>
 
                                         <div class=" text-left">
-                                            <div *ngIf="admin_check==true">
+                                            <div>
                                                 <button class="btn btn-simple " (click)="deleteSelectedVoDs()"
                                                      role="button">Delete
                                                 </button>
@@ -1969,13 +1968,13 @@
                                             <div class="col-sm-12 col-md-12">
                                                 <div class="text-center">
                                                     
-                                                    <div *ngIf="admin_check == false"
+                                                    <div *ngIf="!admin_check"
                                                             i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
                                                         You need to be admin to change settings
                                                     </div>
                                                    
 
-                                                    <button class="btn btn-info" *ngIf="admin_check==true" i18n="@@saveForm" style="margin: 15px"
+                                                    <button *ngIf="admin_check" class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
                                                         type="submit">Save
                                                     </button>
                                                     <!--
@@ -2012,12 +2011,4 @@
 
         </div>
     </div>
-
-
-
-</div>
-
-<div *ngIf="permission_check == false"
-    i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
-You need to have permission to reach this app
 </div>

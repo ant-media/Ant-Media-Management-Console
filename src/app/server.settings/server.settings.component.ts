@@ -73,11 +73,8 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     public newUserCreating = false;
     public AdminUserType : string = "ADMIN";
     public ReadOnlyUserType : string = "READ_ONLY";
-    public AllApps : string = "all";
-    public currentUserType : string = "ADMIN";
-    public currentUserPermission: string = "all";
-    public UserEditing : User;
-    public permission_check = false;
+    public BasicUserType : string = "USER";
+    public SYSTEM_SCOPE_OF_ACCESS : string = "system";
 
     public applications : any;
 
@@ -87,13 +84,11 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     public userDataTable : UserInfoTable;
 
-    public admin_check = false;
+    public admin_check = true;
 
     public userListOffset = 0;
     public pageSize = 0;
 
-    public username : string;
-    public password : string;
     public newUserActive : boolean;
     public userNameEmpty = false;
     public confirmPasswordModel: string;
@@ -122,7 +117,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
         this.callTimer();
        
-
         this.userDataTable = {
             dataRows: [],
         };
@@ -131,13 +125,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             this.applications = data;
             console.debug(data);
         });
-
-        this.restService.hasPermission("all").subscribe(data => {
-            console.log(data);
-            if(data["success"] == true){
-                this.permission_check = true;
-            }
-        });
     }
 
     ngAfterViewInit() {
@@ -145,15 +132,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             this.isEnterpriseEdition = data["success"];
             this.getServerSettings();
         });
-        this.restService.isAdmin().subscribe(data => {
-            console.log(data);
-            if(data["success"] == true){
-                this.admin_check = true;
-            }
-            else{
-                this.admin_check = false;
-            }
-        });
+
          this.getUserList(this.userListOffset,this.pageSize);
     }
 
@@ -184,7 +163,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this.dataSource.filter = filterValue;
     }
 
-    changeType(user: UserInf): void {
+    changeType(user: User): void {
         if (user.email == localStorage.getItem(LOCAL_STORAGE_EMAIL_KEY)) {
             $.notify({
                 icon: "ti-alert",
@@ -199,28 +178,21 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             });
             return;
         }
+        
+        let dialogRef = this.dialog.open(UserEditComponent, {
+            data: {
+                email : user.email,
+                type: user.userType,
+                scope: user.scope
+            },
+            width: "400px",
+        });
 
-        console.log("userchange = " + user.email)
-        this.UserEditing = new User(user.email, "");
-        this.UserEditing.userType= user.userType;
-        this.UserEditing.allowedApp = user.allowedApp;
-
-        console.log("UserEditing = " + this.UserEditing.userType)
-        if (this.UserEditing) {
-            let dialogRef = this.dialog.open(UserEditComponent, {
-                data: {
-                    email : this.UserEditing.email,
-                    type: this.UserEditing.userType,
-                    permission: this.UserEditing.allowedApp
-                },
-                width: "400px",
-            });
-
-            dialogRef.afterClosed().subscribe(result => {
-                console.log('The dialog was closed');
-                this.getUserList(this.userListOffset, this.pageSize);
-            });
-        }
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+            this.getUserList(this.userListOffset, this.pageSize);
+        });
+    
     }
 
     getUserList(offset: number, size: number): void {
@@ -255,14 +227,12 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
         this.clearTimer();
 
-        //this timer gets the related information according to active application
-        //so that it checks appname whether it is undefined
-            this.timerId = window.setInterval(() => {
+        this.timerId = window.setInterval(() => {
             if(this.authService.isAuthenticated) {
                 this.getUserList(this.userListOffset, this.pageSize);
             }
 
-            }, 5000);
+            }, 15000);
     }
     clearTimer() {
 
@@ -444,24 +414,9 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         }
     }
     newUser(): void {
-        this.username = "";
-        this.password = "";
         this.newUserActive = true;
         this.userNameEmpty = false;
         this.User = new User("","")
-    }
-    UserTypeChanged(event:any){
-
-        if(event == this.AdminUserType) {
-            this.currentUserType = this.AdminUserType;
-        }
-        if(event == this.ReadOnlyUserType) {
-            this.currentUserType = this.ReadOnlyUserType;
-        }
-    }
-
-    UserPermissionChanged(event:any){
-        this.currentUserPermission = event;
     }
 
     cancelNewUser(): void {
@@ -536,17 +491,17 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
         if (!isValid) {
             //not valid form return directly
+            console.log("Form is not valid");
             return;
         }
 
-        this.User.userType = this.currentUserType;
-        this.User.allowedApp = this.currentUserPermission;
-
+        console.log("create user called 2");
         if (!this.restService.checkStreamName(this.User.email)){
             this.userNameEmpty = true;
             return;
         }
 
+        console.log("create user called 3");
         this.newUserCreating = true;
         this.restService.createUser(this.User)
             .subscribe(data => {

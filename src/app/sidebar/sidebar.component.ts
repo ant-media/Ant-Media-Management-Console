@@ -1,7 +1,8 @@
 import { Component, OnInit, AfterViewInit, AfterViewChecked, AfterContentInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../rest/rest.service';
-
+import {LOCAL_STORAGE_SCOPE_KEY} from '../pages/login/login.component';
+import { isScopeSystem } from 'app/rest/auth.service';
 
 declare var $: any;
 //Metadata
@@ -66,6 +67,7 @@ export class SidebarComponent implements AfterViewInit {
     public menuItems: any[];
     public static apps: string[];
     public isClusterMode = false;
+    public scope: string;
 
     constructor(private http: HttpClient, private restService: RestService) { }
 
@@ -93,32 +95,48 @@ export class SidebarComponent implements AfterViewInit {
 
         this.restService.setSidebar(this);
 
+        this.scope = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
 
-        this.initApplications();
+        if (isScopeSystem(this.scope)) {
+            
+            //Init applications if the scope is system
+            this.initApplications();
+            this.restService.isInClusterMode().subscribe(data => {
+                this.isClusterMode = data['success'];
+            });
+        }
+        else {
+            this.initMenuApplicationItem([this.scope]);
+        }
         
-        this.restService.isInClusterMode().subscribe(data => {
-            this.isClusterMode = data['success'];
-        });
+       
     }
     ngAfterViewInit() {
     }
 
     initApplications() {
-        console.log("init applications........");
-        this.restService.getApplications().subscribe(data => {
-            SidebarComponent.apps = [];
-
-            //second element is the Applications. It is not safe to make static binding.
-            this.menuItems[1].children = [];
-            for (var i in data['applications']) {
-                //console.log(data['applications'][i]);
-                this.menuItems[1].children.push({ path: data['applications'][i], title: data['applications'][i], icontype: 'ti-file' });
-                SidebarComponent.apps.push(data['applications'][i]); 
-            }
+        this.restService.getApplications().subscribe(data => 
+            {
+                this.initMenuApplicationItem(data["applications"]);
         });
     }
     get getApps() {
         return SidebarComponent.apps;
     }
+
+    initMenuApplicationItem(applications:string[]) 
+    {
+        SidebarComponent.apps = [];
+         //second element is the Applications. It is not safe to make static binding.
+        this.menuItems[1].children = [];
+        for (var i in applications) 
+        {
+            //console.log(data['applications'][i]);
+            this.menuItems[1].children.push({ path: applications[i], title: applications[i], icontype: 'ti-file' });
+            SidebarComponent.apps.push(applications[i]); 
+        }
+    }
+
+    
 
 }

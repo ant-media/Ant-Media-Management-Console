@@ -17,7 +17,7 @@ export class User {
     public newPassword: string;
     public fullName: string;
     public userType: string;
-    public allowedApp: string;
+    public scope: string;
 
     constructor(public email: string, public password: string) { }
 }
@@ -326,10 +326,6 @@ export class RestService {
     }
     public isAdmin(): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + '/admin-status');
-    }
-
-    public hasPermission(appName: string): Observable<Object> {
-        return this.http.get(REST_SERVICE_ROOT + '/permission/' + appName);
     }
 
     public authenticateUser(user: User): Observable<Object> {
