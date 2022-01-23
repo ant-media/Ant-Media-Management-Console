@@ -2,6 +2,7 @@ import {Component, Inject, LOCALE_ID} from '@angular/core';
 import {Locale} from 'app/locale/locale';
 import {RestService} from '../../rest/rest.service';
 import {HttpClient} from '@angular/common/http';
+import { show403Error } from 'app/rest/auth.service';
 
 @Component({
     moduleId: module.id,
@@ -34,7 +35,7 @@ export class FooterComponent{
             this.versionName = data["versionName"];
             this.versionType = data["versionType"];
             this.buildNumber = data["buildNumber"];
-        });
+        }, error => { show403Error(error); });
     }
 
 }

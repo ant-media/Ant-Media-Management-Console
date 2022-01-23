@@ -8,6 +8,7 @@ import {
     MatDialogRef,
 } from '@angular/material/dialog';
 import {MatTableDataSource} from "@angular/material/table"
+import { show403Error } from 'app/rest/auth.service';
 import {HTTP_SERVER_ROOT, RestService} from '../../rest/rest.service';
 
 export class DetectedObject {
@@ -74,7 +75,7 @@ export class DetectedObjectListDialog {
         this.restService.getObjectDetectedTotal(appName, streamId).subscribe(data =>
         {
             this.detectedLenght = data["number"];
-        });
+        }, error => { show403Error(error); });
     }
 
     getDetectionList(appName:string, streamId:string, offset:number, batch:number) {
@@ -91,7 +92,7 @@ export class DetectedObjectListDialog {
             if(this.objectTableData.dataRows.length ==0){
                 this.noDetectedObject = true;
             }
-        });
+        }, error => { show403Error(error); });
 
     }
 
@@ -110,7 +111,7 @@ export class DetectedObjectListDialog {
             }
 
             this.dataSource = new MatTableDataSource(this.objectTableData.dataRows);
-        });
+        }, error => { show403Error(error); });
 
 
     }

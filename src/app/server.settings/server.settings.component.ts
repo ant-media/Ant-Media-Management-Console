@@ -9,7 +9,7 @@ import {MatDialog } from '@angular/material/dialog';
 import {AfterViewInit, Component, Injectable, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, Input, Output} from '@angular/core';
 import {ServerSettings, UserInfoTable, UserInf} from "../app.page/app.definitions";
 import {Locale} from "../locale/locale";
-import {AuthService} from "../rest/auth.service";
+import {AuthService, show403Error} from "../rest/auth.service";
 import {RestService, User} from "../rest/rest.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
@@ -73,22 +73,20 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     public newUserCreating = false;
     public AdminUserType : string = "ADMIN";
     public ReadOnlyUserType : string = "READ_ONLY";
-    public currentUserType : string = "ADMIN";
-    public UserEditing : User;
+    public BasicUserType : string = "USER";
+    public SYSTEM_SCOPE_OF_ACCESS : string = "system";
 
-    public displayedColumnsStreams = ['email', 'type', 'actions'];
+    public applications : any;
+
+    public displayedColumnsStreams = ['email', 'type', 'permissions', 'actions'];
 
     public dataSource: MatTableDataSource<UserInf>; 
 
     public userDataTable : UserInfoTable;
 
-    public admin_check = false;
-
     public userListOffset = 0;
     public pageSize = 0;
 
-    public username : string;
-    public password : string;
     public newUserActive : boolean;
     public userNameEmpty = false;
     public confirmPasswordModel: string;
@@ -117,26 +115,22 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
         this.callTimer();
        
-
         this.userDataTable = {
             dataRows: [],
         };
+
+        this.restService.getApplications().subscribe(data => {
+            this.applications = data;
+            console.debug(data);
+        }, error => { show403Error(error); });
     }
 
     ngAfterViewInit() {
         this.restService.isEnterpriseEdition().subscribe(data => {
             this.isEnterpriseEdition = data["success"];
             this.getServerSettings();
-        });
-        this.restService.isAdmin().subscribe(data => {
-            console.log(data);
-            if(data["success"] == true){
-                this.admin_check = true;
-            }
-            else{
-                this.admin_check = false;
-            }
-        });
+        }, error => { show403Error(error); });
+
          this.getUserList(this.userListOffset,this.pageSize);
     }
 
@@ -167,7 +161,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this.dataSource.filter = filterValue;
     }
 
-    changeType(user: UserInf): void {
+    changeType(user: User): void {
         if (user.email == localStorage.getItem(LOCAL_STORAGE_EMAIL_KEY)) {
             $.notify({
                 icon: "ti-alert",
@@ -182,26 +176,21 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             });
             return;
         }
+        
+        let dialogRef = this.dialog.open(UserEditComponent, {
+            data: {
+                email : user.email,
+                type: user.userType,
+                scope: user.scope
+            },
+            width: "400px",
+        });
 
-        console.log("userchange = " + user.email)
-        this.UserEditing = new User(user.email, "");
-        this.UserEditing.userType= user.userType;
-
-        console.log("UserEditing = " + this.UserEditing.userType)
-        if (this.UserEditing) {
-            let dialogRef = this.dialog.open(UserEditComponent, {
-                data: {
-                    email : this.UserEditing.email,
-                    type: this.UserEditing.userType,
-                },
-                width: "400px",
-            });
-
-            dialogRef.afterClosed().subscribe(result => {
-                console.log('The dialog was closed');
-                this.getUserList(this.userListOffset, this.pageSize);
-            });
-        }
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+            this.getUserList(this.userListOffset, this.pageSize);
+        });
+    
     }
 
     getUserList(offset: number, size: number): void {
@@ -225,8 +214,9 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             if(this.filter != "" || this.filter != undefined || this.filter != null){
                 this.dataSource.filter = this.filter;
             }
+
             this.cdr.detectChanges();
-        });
+        }, error => { show403Error(error); });
 
     }
     callTimer(){
@@ -235,14 +225,12 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
         this.clearTimer();
 
-        //this timer gets the related information according to active application
-        //so that it checks appname whether it is undefined
-            this.timerId = window.setInterval(() => {
+        this.timerId = window.setInterval(() => {
             if(this.authService.isAuthenticated) {
                 this.getUserList(this.userListOffset, this.pageSize);
             }
 
-            }, 5000);
+            }, 15000);
     }
     clearTimer() {
 
@@ -260,7 +248,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             this.restService.getLastLicenseStatus().subscribe(data => {
                 this.licenseStatusReceiving = false;
                 this.evaluateLicenseStatus(data);
-            });
+            }, error => { show403Error(error); });
         }
     }
 
@@ -273,7 +261,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             this.restService.getLicenseStatus(this.serverSettings.licenceKey ).subscribe(data => {
                 this.licenseStatusReceiving = false;
                 this.evaluateLicenseStatus(data);
-            });
+            }, error => { show403Error(error); });
 
         }
         return this.currentLicence;
@@ -420,25 +408,15 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                     });
 
                 }
-            });
+            }, error => { show403Error(error); });
         }
     }
     newUser(): void {
-        this.username = "";
-        this.password = "";
         this.newUserActive = true;
         this.userNameEmpty = false;
         this.User = new User("","")
     }
-    UserTypeChanged(event:any){
 
-        if(event == this.AdminUserType) {
-            this.currentUserType = this.AdminUserType;
-        }
-        if(event == this.ReadOnlyUserType) {
-            this.currentUserType = this.ReadOnlyUserType;
-        }
-    }
     cancelNewUser(): void {
         this.newUserActive = false;
     }
@@ -500,7 +478,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                         });
                     }
                     this.getUserList(this.userListOffset, this.pageSize);
-                });
+                }, error => { show403Error(error); });
         });
 
     }
@@ -511,16 +489,17 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
         if (!isValid) {
             //not valid form return directly
+            console.log("Form is not valid");
             return;
         }
 
-        this.User.userType = this.currentUserType;
-
+        console.log("create user called 2");
         if (!this.restService.checkStreamName(this.User.email)){
             this.userNameEmpty = true;
             return;
         }
 
+        console.log("create user called 3");
         this.newUserCreating = true;
         this.restService.createUser(this.User)
             .subscribe(data => {
@@ -555,7 +534,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                         }
                     });
                 }
-            })
+            }, error => { show403Error(error); });
             this.newUserCreating = false;
         }
     getServerSettings(): void {
@@ -567,7 +546,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                 this.getLastLicenseStatus()
             }
 
-        });
+        }, error => { show403Error(error); });
     }
 
     differenceInDays(firstDate: number, secondDate: number) {
