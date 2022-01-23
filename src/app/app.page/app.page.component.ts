@@ -14,7 +14,7 @@ import {
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HTTP_SERVER_ROOT, LiveBroadcast, RestService } from '../rest/rest.service';
-import { AuthService } from '../rest/auth.service';
+import { AuthService, show403Error } from '../rest/auth.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
 import { MatDialog } from '@angular/material/dialog';
@@ -152,7 +152,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public isClusterMode = false;
     public filterValue = null;
     public filterValueVod = null;
-    public admin_check = false;
 
     public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
@@ -376,7 +375,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
 
 
-        });
+        }, error => { show403Error(error); });
     }
 
     onListPaginateChange(event) {
@@ -413,7 +412,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             let scope = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
             if (typeof this.appName == "undefined") {
 
-                
                 if (scope == "system") {
                     this.restService.getApplications().subscribe(data => {
 
@@ -424,10 +422,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             this.router.navigateByUrl("/applications/" + data['applications'][i]);
                             break;
                         }
-                    });
+                    }, error => { show403Error(error); });
                 }
                 else {
-                    this.router.navigateByUrl("/applications/"+scope);
+                    if (scope == null) {
+                        this.router.navigateByUrl("/");
+                    }
+                    else {
+                        this.router.navigateByUrl("/applications/" + scope);
+                    }
                 }
                 return;
             }
@@ -440,7 +443,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.getSettings();
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
-            });
+            }, error => { show403Error(error); });
 
             if (scope == "system") {
                 this.restService.isInClusterMode().subscribe(data => {
@@ -457,20 +460,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                         this.clusterNodeTableData.dataRows.push(data[i]);
                                     }
                                 }
-                            });
-                        });
+                            }, error => { show403Error(error); });
+                        }, error => { show403Error(error); });
                     }
-                });
+                }, error => { show403Error(error); });
             }
-
-            this.restService.isAdmin().subscribe(data => {
-                if (data["success"] == true) {
-                    this.admin_check = true;
-                }
-                else {
-                    this.admin_check = false;
-                }
-            });
 
             this.getAppLiveStreamsNumber();
             this.getVoDStreams();
@@ -683,7 +677,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             console.log(this.dataSource)
             this.cdr.detectChanges();
 
-        });
+        }, error => { show403Error(error); });
 
     }
 
@@ -698,7 +692,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             data => {
 
                 this.listLength = data["number"];
-            });
+            }, error => { show403Error(error); });
 
         this.cdr.detectChanges();
     }
@@ -750,7 +744,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.restService.getTotalVodNumber(this.appName, this.filterValueVod).subscribe(data => {
             this.vodLength = data["number"];
-        });
+        }, error => { show403Error(error); });
 
 
         this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy, this.filterValueVod).subscribe(data => {
@@ -759,7 +753,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.vodTableData.dataRows.push(data[i]);
             }
             this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
-        });
+        }, error => { show403Error(error); });
     }
 
     clearTimer() {
@@ -862,7 +856,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
                 this.broadcastGridTableData.dataRows.push(data[i]);
             }
-        });
+        }, error => { show403Error(error); });
 
         setTimeout(() => {
 
@@ -954,7 +948,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.getOneTimeToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
             this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
-        });
+        }, error => { show403Error(error); });
     }
 
     openPlayerWithJWTToken(id: string, path: string, width: string, tokenParam: string) {
@@ -964,7 +958,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.getJWTToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
             this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
-        });
+        }, error => { show403Error(error); });
     }
 
     deleteVoD(fileName: string, vodId: number, type: string): void {
@@ -999,7 +993,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.showVoDFileNotDeleted();
                 }
                 this.getVoDStreams();
-            });
+            }, error => { show403Error(error); });
 
         }).catch(function () {
 
@@ -1076,7 +1070,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         }
                     });
                 }
-            });
+            }, error => { show403Error(error); });
 
     }
 
@@ -1149,7 +1143,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreamsNumber();
 
 
-                });
+                }, error => { show403Error(error); });
         });
 
     }
@@ -1238,7 +1232,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.acceptAllStreams = !this.appSettings.acceptOnlyStreamsInDataStore;
 
 
-        });
+        }, error => { show403Error(error); });
     }
 
 
@@ -1328,6 +1322,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             });
 
+        },
+        error => 
+        {
+           show403Error(error);
         });
 
 
@@ -1416,7 +1414,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             this.liveBroadcast.ipAddr = "";
-        });
+        }, error => { show403Error(error); });
     }
 
 
@@ -1533,6 +1531,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             },
                 error => {
+                    show403Error(error);
                     this.newIPCameraAdding = false;
                     $.notify({
                         icon: "ti-save",
@@ -1668,6 +1667,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             },
                 error => {
+                    show403Error(error);
                     this.newStreamSourceAdding = false;
                     $.notify({
                         icon: "ti-save",
@@ -1783,6 +1783,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             },
                 error => {
+                    show403Error(error);
                     this.newPlaylistAdding = false;
                     $.notify({
                         icon: "ti-save",
@@ -1925,6 +1926,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             error => {
                 console.log('!!!Error!!! ' + error);
+                show403Error(error);
             },
         );
 
@@ -2003,6 +2005,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             align: 'right'
                         }
                     });
+                    show403Error(error);
                 });
 
     }
@@ -2153,7 +2156,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 });
             }
-        });
+        }, error => { show403Error(error); });
 
     }
 
@@ -2260,6 +2263,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             error => {
                 console.log('!!!Error!!! ' + error);
+                show403Error(error);
             },
         );
     }
@@ -2271,6 +2275,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             error => {
                 console.log('!!!Error!!! ' + error);
+                show403Error(error);
             },
         );
     }
@@ -2282,6 +2287,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             error => {
                 console.log('!!!Error!!! ' + error);
+                show403Error(error);
             },
         );
     }
@@ -2294,6 +2300,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             error => {
                 console.log('!!!Error!!! ' + error);
+                show403Error(error);
             },
         );
     }
@@ -2380,7 +2387,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 });
             }
             this.callTimer();
-        });
+        }, error => { show403Error(error); });
 
     }
 
@@ -2418,7 +2425,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             }
             this.callTimer();
-        });
+        }, error => { show403Error(error); });
     }
 
     selectHandlerVod(vodId: string) {
@@ -2492,7 +2499,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.showVoDFileNotDeleted();
                 }
                 this.getVoDStreams();
-            });
+            }, error => { show403Error(error); });
         }).catch(function () {
 
         });
@@ -2589,7 +2596,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreamsNumber();
 
 
-                });
+                }, error => { show403Error(error); });
         })
             .catch(function () {
             });

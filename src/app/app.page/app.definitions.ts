@@ -16,9 +16,9 @@ export declare interface UserInf {
 	userType:string;
 
     /**
-	 * Permission of user
+	 * Scope of user
 	 */
-    allowedApp:string;
+    scope:string;
 
 	/**
 	 * Name of the user
@@ -35,9 +35,11 @@ export declare interface UserInf {
 	 */
     id:string;
 }
+
 export declare interface UserInfoTable {
     dataRows: UserInf[];
 }
+
 
 export declare interface LiveComment {
     /**

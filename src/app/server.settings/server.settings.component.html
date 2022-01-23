@@ -51,7 +51,7 @@
 
                                         </fieldset>
 
-                                        <fieldset *ngIf="!serverSettings.buildForMarket && isEnterpriseEdition && admin_check == true" >
+                                        <fieldset *ngIf="!serverSettings.buildForMarket && isEnterpriseEdition " >
                                             <div class="form-group"  >
                                                 <label class="col-sm-2 control-label">Submit License Key</label>
                                                 <div class="col-sm-10 text-left" >
@@ -88,18 +88,13 @@
                                         </fieldset>
 
                                         <fieldset>
-                                            <div class="form-group text-center" *ngIf ="admin_check == true" >
+                                            <div class="form-group text-center" >
                                                 <button type="submit" class="btn btn-fill btn-info" i18n="@@saveForm">Save</button>
                                             </div>
                                         </fieldset>
                                     </form>
 
-                                    <div class="main">
-                                        <div *ngIf="admin_check == false"
-                                             i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
-                                            You need to be admin to change settings
-                                        </div>
-                                    </div>
+        
                                 </div>
 
                                 <!-- don't let wrong configuration show the two messages at the same time-->
@@ -112,7 +107,7 @@
                                 </p>
                             </div>
                                 <div class="tab-pane container-fluid" id="users" >
-                                    <div class="text-right" style="float: right" *ngIf="admin_check">
+                                    <div class="text-right" style="float: right" >
                                         <button class="btn btn-fill btn-success" i18n="@@newUserButton"
                                         (click)="newUser()" role="button">New User
                                         </button>
@@ -271,7 +266,7 @@
 
                                                 <mat-cell *matCellDef="let row" class="justify-flex-end">
                                                     <button
-                                                            (click)="changeType(row)" title="Change Type" *ngIf="admin_check"
+                                                            (click)="changeType(row)" title="Change Type"
                                                             data-toggle="tooltip"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                             type="button">
@@ -282,7 +277,7 @@
 
                                                         </button>
 
-                                                    <button (click)="deleteUser(row.email)" *ngIf="admin_check"
+                                                    <button (click)="deleteUser(row.email)"
                                                         class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
                                                         type="button">
                                                         <span class="btn-label">
@@ -299,13 +294,10 @@
                                         </mat-table>
                                     </div>
                                 </div>
+                                <!-- just simple padding-->
+                                <p>&nbsp;</p>
 
-                                <div class="main">
-                                    <div *ngIf="userDataTable.dataRows.length == 0"
-                                         i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
-                                        You need to be admin to see the users.
-                                    </div>
-                                </div>
+                
                             </div>
                         </div>
                     </div>

@@ -3,7 +3,7 @@ import { Locale } from "../../locale/locale";
 import { RestService, User } from '../../rest/rest.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {ServerSettingsComponent} from "..//server.settings.component";
-import {MD5} from "../../rest/auth.service";
+import {MD5, show403Error} from "../../rest/auth.service";
 
 declare var $: any;
 declare var swal: any;
@@ -43,7 +43,7 @@ export class UserEditComponent implements OnInit {
     ngOnInit(){
         this.restService.getApplications().subscribe(data => {
             this.applications = data;
-        });
+        }, error => { show403Error(error); });
 
     }
 
@@ -100,7 +100,7 @@ export class UserEditComponent implements OnInit {
                     }
                 });
             }
-        });
+        }, error => { show403Error(error); });
     }
 
 

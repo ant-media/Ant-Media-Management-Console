@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AuthService} from '../../rest/auth.service';
+import {AuthService, show403Error} from '../../rest/auth.service';
 import {User} from '../../rest/rest.service';
 import {RestService} from '../../rest/rest.service';
 import {isScopeSystem} from "../../rest/auth.service";
@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit{
             if (this.firstLogin) {
                 this.firstUser = new User("", "");
             }
-        });
+        }, error => { show403Error(error); });
 
         this.auth.licenceWarningDisplay = true;
         
@@ -120,11 +120,11 @@ export class LoginComponent implements OnInit{
                 this.showIncorrectCredentials = true;
             }
 
-        });
+        }, error => { show403Error(error); });
         
         this.restService.getBlockedStatus(this.email).subscribe(data => {
             this.blockLoginAttempt = data["success"];           
-        });
+        }, error => { show403Error(error); });
         
     }
 
@@ -146,7 +146,7 @@ export class LoginComponent implements OnInit{
             else {
                 this.showFailedToCreateUserAccount = true;
             }
-        });
+        }, error => { show403Error(error); });
     }
 
     credentialsChanged():void {

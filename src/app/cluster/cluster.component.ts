@@ -26,6 +26,7 @@ import {
     ClusterNode,
     ClusterNodeInfo
 } from './cluster.definitions';
+import { show403Error } from 'app/rest/auth.service';
 
 declare var $: any;
 declare var Chartist: any;
@@ -124,7 +125,7 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
     getClusterNodeCount() {
         this.clusterRestService.getClusterNodeCount().subscribe( data => {
             this.nodeLength = data["number"];
-        });
+        }, error => { show403Error(error); });
     }
    
     getClusterNodes(offset: number, size:number): void {
@@ -135,7 +136,7 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         	
             this.dataSourceNode = new MatTableDataSource(this.nodeTableData.dataRows);
-        });
+        }, error => { show403Error(error); });
     }
 
     deleteNode(nodeId: string): void {
@@ -161,7 +162,7 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.showNodeNotDeleted();
                 };
                 this.getClusterNodes(this.currentOffset, this.pageSize);
-            });
+            }, error => { show403Error(error); });
 
         }).catch(function () {
 

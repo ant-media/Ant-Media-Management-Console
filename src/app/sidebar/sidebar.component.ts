@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, AfterViewChecked, AfterContentInit } 
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../rest/rest.service';
 import {LOCAL_STORAGE_SCOPE_KEY} from '../pages/login/login.component';
-import { isScopeSystem } from 'app/rest/auth.service';
+import { isScopeSystem, show403Error } from 'app/rest/auth.service';
 
 declare var $: any;
 //Metadata
@@ -103,7 +103,7 @@ export class SidebarComponent implements AfterViewInit {
             this.initApplications();
             this.restService.isInClusterMode().subscribe(data => {
                 this.isClusterMode = data['success'];
-            });
+            }, error => { show403Error(error); });
         }
         else {
             this.initMenuApplicationItem([this.scope]);

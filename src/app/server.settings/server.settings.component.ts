@@ -9,7 +9,7 @@ import {MatDialog } from '@angular/material/dialog';
 import {AfterViewInit, Component, Injectable, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, Input, Output} from '@angular/core';
 import {ServerSettings, UserInfoTable, UserInf} from "../app.page/app.definitions";
 import {Locale} from "../locale/locale";
-import {AuthService} from "../rest/auth.service";
+import {AuthService, show403Error} from "../rest/auth.service";
 import {RestService, User} from "../rest/rest.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
@@ -84,8 +84,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     public userDataTable : UserInfoTable;
 
-    public admin_check = true;
-
     public userListOffset = 0;
     public pageSize = 0;
 
@@ -124,14 +122,14 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this.restService.getApplications().subscribe(data => {
             this.applications = data;
             console.debug(data);
-        });
+        }, error => { show403Error(error); });
     }
 
     ngAfterViewInit() {
         this.restService.isEnterpriseEdition().subscribe(data => {
             this.isEnterpriseEdition = data["success"];
             this.getServerSettings();
-        });
+        }, error => { show403Error(error); });
 
          this.getUserList(this.userListOffset,this.pageSize);
     }
@@ -218,7 +216,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             }
 
             this.cdr.detectChanges();
-        });
+        }, error => { show403Error(error); });
 
     }
     callTimer(){
@@ -250,7 +248,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             this.restService.getLastLicenseStatus().subscribe(data => {
                 this.licenseStatusReceiving = false;
                 this.evaluateLicenseStatus(data);
-            });
+            }, error => { show403Error(error); });
         }
     }
 
@@ -263,7 +261,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             this.restService.getLicenseStatus(this.serverSettings.licenceKey ).subscribe(data => {
                 this.licenseStatusReceiving = false;
                 this.evaluateLicenseStatus(data);
-            });
+            }, error => { show403Error(error); });
 
         }
         return this.currentLicence;
@@ -410,7 +408,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                     });
 
                 }
-            });
+            }, error => { show403Error(error); });
         }
     }
     newUser(): void {
@@ -480,7 +478,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                         });
                     }
                     this.getUserList(this.userListOffset, this.pageSize);
-                });
+                }, error => { show403Error(error); });
         });
 
     }
@@ -536,7 +534,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                         }
                     });
                 }
-            })
+            }, error => { show403Error(error); });
             this.newUserCreating = false;
         }
     getServerSettings(): void {
@@ -548,7 +546,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                 this.getLastLicenseStatus()
             }
 
-        });
+        }, error => { show403Error(error); });
     }
 
     differenceInDays(firstDate: number, secondDate: number) {
