@@ -77,7 +77,7 @@ export class UploadWarFileDialogComponent {
 
                     });
 
-                } else if (data["message"] == "notMp4File") {
+                } else if (data["message"] == "notWarFile") {
 
                     this.uploading = false;
                     swal({

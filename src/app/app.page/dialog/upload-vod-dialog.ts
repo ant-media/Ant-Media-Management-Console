@@ -74,7 +74,7 @@ export class UploadVodDialogComponent {
 
                     });
 
-                } else if (data["message"] == "notWarFile") {
+                } else if (data["message"] == "notMp4File") {
 
                     this.uploading = false;
                     swal({
