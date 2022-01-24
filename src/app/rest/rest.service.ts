@@ -439,6 +439,10 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create&name="+fileName, formData);
     }
 
+    public uploadWarFile(appName:string, fileName:string,formData:any): Observable<Object>  {
+        return this.http.post(REST_SERVICE_ROOT + "/create/"+appName+"/"+fileName, formData);
+    }
+
     /**
      * This method gets comments from social endpoint like facebook, youtube, ...
      */

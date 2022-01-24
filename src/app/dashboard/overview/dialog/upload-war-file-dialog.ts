@@ -1,15 +1,15 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { RestService } from '../../rest/rest.service';
+import { RestService } from '../../../rest/rest.service';
 
 declare var swal: any;
 
 @Component({
-    selector: 'upload-vod-dialog',
-    templateUrl: 'upload-vod-dialog.html',
+    selector: 'upload-war-file-dialog',
+    templateUrl: 'upload-war-file-dialog.html',
 })
 
-export class UploadVodDialogComponent {
+export class UploadWarFileDialogComponent {
 
     uploading = false;
     fileToUpload: File = null;
@@ -18,7 +18,7 @@ export class UploadVodDialogComponent {
     appName: string;
 
     constructor(
-        public dialogRef: MatDialogRef<UploadVodDialogComponent>, public restService: RestService,
+        public dialogRef: MatDialogRef<UploadWarFileDialogComponent>, public restService: RestService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
     }
 
@@ -58,8 +58,11 @@ export class UploadVodDialogComponent {
 
             this.fileName = this.fileName.replace(/\s/g, '_');
 
+            let appName =this.fileName.substring(0, this.fileToUpload.name.lastIndexOf(".")); 
 
-            this.restService.uploadVod(this.fileName, formData, this.dialogRef.componentInstance.data.appName).subscribe(data => {
+            console.log("*********** = " + this.fileName)
+
+            this.restService.uploadWarFile(appName,this.fileName, formData).subscribe(data => {
 
                 if (data["success"] == true) {
 
@@ -74,7 +77,7 @@ export class UploadVodDialogComponent {
 
                     });
 
-                } else if (data["message"] == "notWarFile") {
+                } else if (data["message"] == "notMp4File") {
 
                     this.uploading = false;
                     swal({

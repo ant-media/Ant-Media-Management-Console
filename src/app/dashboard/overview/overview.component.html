@@ -107,11 +107,24 @@
             <div class="col-md-12">
 
                 <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title pull-left" i18n="@@applicationsTitle">Applications</h4>
-                        <button class="btn btn-fill btn-success pull-right"
-                       (click)="newApplication()" role="button">New Application
-                    </button>
+                <div style="padding-top:15px">
+                    <div class="dropdown text-right" style="float: right" >
+                        <button class="btn btn-fill btn-success" i18n="@@applicationsTitle"
+                            data-toggle="dropdown" role="button">New Application
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a (click)="newApplication()" role="button">Default App</a>
+                            </li>
+                            <li>
+                                <a (click)="openWarFileUploadDialog()" role="button">Upload War File</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <br>
+                    <br>
                 </div>
                 <div *ngIf="newApplicationActive" style="padding:45px">
                     <form method="post" #f="ngForm" validate (ngSubmit)="createApplication(f.valid)">

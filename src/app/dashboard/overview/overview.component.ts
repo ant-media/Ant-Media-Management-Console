@@ -9,6 +9,9 @@ import {AuthService} from "../../rest/auth.service";
 import {SupportRequest} from "../../support/support.definitions";
 import {ServerSettings} from "../../app.page/app.definitions";
 import {Locale} from "../../locale/locale";
+import {UploadWarFileDialogComponent} from './dialog/upload-war-file-dialog';
+import {MatDialog } from '@angular/material/dialog';
+
 
 declare var $: any;
 declare var Chartist: any;
@@ -67,7 +70,7 @@ export class OverviewComponent implements OnInit {
     public deployingApplication = false;
 
 
-    constructor(private auth: AuthService, private restService:RestService, private supportRestService:SupportRestService, private router:Router) {
+    constructor(private auth: AuthService, private restService:RestService, private supportRestService:SupportRestService, private router:Router , public dialog: MatDialog) {
 
     }
 
@@ -461,9 +464,19 @@ export class OverviewComponent implements OnInit {
         }).catch(function () {
 
         });
-
-
-
-        
     }
+    openWarFileUploadDialog(): void {
+
+        let dialogRef = this.dialog.open(UploadWarFileDialogComponent, {
+            data: { appName: "this.appName" },
+            width: '640px'
+
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+            this.getApplicationsInfo();
+        });
+    }
+
 }
