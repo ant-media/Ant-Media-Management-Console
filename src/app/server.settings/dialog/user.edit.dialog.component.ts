@@ -100,7 +100,10 @@ export class UserEditComponent implements OnInit {
                     }
                 });
             }
-        }, error => { show403Error(error); });
+        }, error => { 
+            show403Error(error); 
+            this.userUpdating = false;
+        });
     }
 
 

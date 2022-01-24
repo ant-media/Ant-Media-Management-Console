@@ -156,7 +156,9 @@
 
                                             </div>
                                             <div class="form-group text-left" >
-                                                <label>User type</label>    
+                                                <label>User type
+                                                    &nbsp;<i matTooltip="ADMIN user can do anything in their scope. USER can CRUD live streams/upload VoDs in their scope except they cannot change settings/users/applications. READ_ONLY user can only read in their scope" class="fa fa-info-circle"></i>
+                                                </label>    
         
                                                 <select  type="text"  [name]="'UserType'"  [(ngModel)]="User.userType"
                                                             class="dropdown-toggle form-control" required>
@@ -168,7 +170,9 @@
                                             </div>
 
                                             <div class="form-group text-left" >
-                                                <label>Scope of Access</label>
+                                                <label>Scope of Access
+                                                    &nbsp;<i matTooltip="'Everything' is access to applications/logs/settings. Application specific access is access to the related app" class="fa fa-info-circle"></i>
+                                                </label>
                                                 <select type="text"  [name]="'ApplicationPermission'" [(ngModel)]="User.scope"
                                                 class="dropdown-toggle form-control" required>
                                                     <option value="{{SYSTEM_SCOPE_OF_ACCESS}}" >Everything</option>
@@ -226,8 +230,10 @@
 
                                             <ng-container matColumnDef="type">
                                                 <mat-header-cell [ngClass]="'type-column'" *matHeaderCellDef
-                                                    mat-sort-header> User Type </mat-header-cell>
-
+                                                    mat-sort-header > User Type 
+                                                    &nbsp;<i matTooltip="ADMIN user can do anything in their scope. USER can CRUD live streams/upload VoDs in their scope except they cannot change settings/users/applications. READ_ONLY user can only read in their scope" class="fa fa-info-circle"></i>
+                                                </mat-header-cell>
+                                                   
                                                 <mat-cell [ngClass]="'type-column'" *matCellDef="let row">
                                                     <div style="padding-left: 12px;">
                                                         {{row.userType}}
@@ -238,7 +244,10 @@
 
                                             <ng-container matColumnDef="permissions">
                                                 <mat-header-cell [ngClass]="'permissions-column'" *matHeaderCellDef
-                                                    mat-sort-header> Scope of Access </mat-header-cell>
+                                                    mat-sort-header> Scope of Access 
+                                                    &nbsp;<i matTooltip="'Everything' is access to applications/logs/settings. Application specific access is access to the related app" class="fa fa-info-circle"></i>
+                                                
+                                                </mat-header-cell>
 
                                                 <mat-cell [ngClass]="'permissions-column'" *matCellDef="let row">
                                                     <div style="padding-left: 12px;">

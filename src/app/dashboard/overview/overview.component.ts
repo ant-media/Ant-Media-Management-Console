@@ -404,16 +404,18 @@ export class OverviewComponent implements OnInit {
                 error=> {
                     show403Error(error);
                     this.newAppCreating = false;
-                    swal({
-                        title: "Application is not created",
-                        text:  "Make sure that you use alphanumeric characters in the application name",
-                        type: 'error',
-        
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                    }).catch(function () {
-                    });
+                    if (error == null || error.status != 403 ) {
+                        swal({
+                            title: "Application is not created",
+                            text:  "Make sure that you use alphanumeric characters in the application name",
+                            type: 'error',
+            
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                        }).catch(function () {
+                        });
+                     }
                 });
     }
 
