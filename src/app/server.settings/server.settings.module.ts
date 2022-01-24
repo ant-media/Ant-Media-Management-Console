@@ -11,6 +11,7 @@ import {MatPaginatorModule} from '@angular/material/paginator'
 import {MatDialogModule} from '@angular/material/dialog'
 import {UserEditComponent} from './dialog/user.edit.dialog.component';
 import { EqualValidator } from './equal-validator.directive';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { EqualValidator } from './equal-validator.directive';
         MatTableModule,
         MatPaginatorModule,
         MatDialogModule,
+        MatTooltipModule
     ],
     declarations: [ServerSettingsComponent, UserEditComponent , EqualValidator],
     providers: [DataService],
