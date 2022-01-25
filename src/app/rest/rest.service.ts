@@ -8,6 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import {HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Endpoint,PlaylistItem} from "../app.page/app.definitions";
 import {SidebarComponent} from "../sidebar/sidebar.component";
+import { show403Error } from './auth.service';
 
 declare function require(name: string);
 
@@ -16,6 +17,7 @@ export class User {
     public newPassword: string;
     public fullName: string;
     public userType: string;
+    public scope: string;
 
     constructor(public email: string, public password: string) { }
 }
@@ -128,6 +130,7 @@ export class RestService {
             },
             error => {
                 console.log("No https avaiable");
+                show403Error(error);
             });
         }
         if (location.port == "4200")
@@ -310,7 +313,7 @@ export class RestService {
                   //cache value
                   this.isEnterpriseObject = data;
                   observer.next(this.isEnterpriseObject);
-                });
+                }, error => { show403Error(error); });
             }
             else {
                 //use the cached value 

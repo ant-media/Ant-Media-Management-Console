@@ -6,6 +6,7 @@ import {
     Endpoint,
     VideoServiceEndpoint,
 } from '../app.definitions';
+import { show403Error } from 'app/rest/auth.service';
 
 declare var $: any;
 declare var swal: any;
@@ -128,7 +129,7 @@ export class BroadcastEditComponent {
                                 if (!data2["success"]) {
                                     data["success"] = false;
                                 }
-                            });
+                            }, error => { show403Error(error); });
                         }
                     }
                 }
@@ -161,7 +162,7 @@ export class BroadcastEditComponent {
                     }
                 });
             }
-        });
+        }, error => { show403Error(error); });
 
         if(this.liveStreamEditing.type == "ipCamera") {
             setTimeout(()=>{
@@ -186,7 +187,7 @@ export class BroadcastEditComponent {
                         console.log("no  camera error")
                     }
                     this.data.url  = "";
-                });
+                }, error => { show403Error(error); });
 
             },5000)
         }

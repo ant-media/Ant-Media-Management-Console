@@ -51,7 +51,7 @@
 
                                         </fieldset>
 
-                                        <fieldset *ngIf="!serverSettings.buildForMarket && isEnterpriseEdition && admin_check == true" >
+                                        <fieldset *ngIf="!serverSettings.buildForMarket && isEnterpriseEdition " >
                                             <div class="form-group"  >
                                                 <label class="col-sm-2 control-label">Submit License Key</label>
                                                 <div class="col-sm-10 text-left" >
@@ -88,18 +88,13 @@
                                         </fieldset>
 
                                         <fieldset>
-                                            <div class="form-group text-center" *ngIf ="admin_check == true" >
+                                            <div class="form-group text-center" >
                                                 <button type="submit" class="btn btn-fill btn-info" i18n="@@saveForm">Save</button>
                                             </div>
                                         </fieldset>
                                     </form>
 
-                                    <div class="main">
-                                        <div *ngIf="admin_check == false"
-                                             i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
-                                            You need to be admin to change settings
-                                        </div>
-                                    </div>
+        
                                 </div>
 
                                 <!-- don't let wrong configuration show the two messages at the same time-->
@@ -112,14 +107,14 @@
                                 </p>
                             </div>
                                 <div class="tab-pane container-fluid" id="users" >
-                                    <div class="text-right" style="float: right" *ngIf="admin_check">
+                                    <div class="text-right" style="float: right" >
                                         <button class="btn btn-fill btn-success" i18n="@@newUserButton"
                                         (click)="newUser()" role="button">New User
                                         </button>
                                     </div>
 
                                 <div class="card" *ngIf="newUserActive">
-                                    <form method="post" #f="ngForm" validate (ngSubmit)="createUser(f.valid)">
+                                    <form method="post" #f="ngForm" validate (ngSubmit)="createUser(f.valid)" >
                                         <div class="card-header">
                                             <h4 class="card-title text-left">
                                                 New User
@@ -128,17 +123,17 @@
                                         <div class="card-content">
                                             <div class="form-group text-left">
                                                 <label>Username (e-mail)</label>
-                                                <input type="text" required minlength="4" name="userName"
-                                                    placeholder="Username" class="form-control"
-                                                    [(ngModel)]="User.email" #userName="ngModel">
-                                                <small [hidden]="userName.valid || (!f.submitted)"
+                                                <input type="text" required minlength="4" name="newUserName"
+                                                    placeholder="Username" class="form-control" 
+                                                    [(ngModel)]="User.email" #newUserName="ngModel">
+                                                <small [hidden]="newUserName.valid || (!f.submitted)"
                                                     class="text-danger">
                                                     Username should be at least 4 characters.
                                                 </small>
                                             </div>
                                             <div class="form-group text-left">
                                                 <label>Password</label>
-                                                <input type="password" required minlength="6" name="Password"
+                                                <input type="password" required minlength="6" name="Password" autocomplete="new-password"
                                                     placeholder="Password" class="form-control"
                                                     validateEqual="confirmPassword" reverse="true"
                                                     [(ngModel)]="User.password" #Password="ngModel">
@@ -149,7 +144,7 @@
                                             </div>
                                             <div class="form-group text-left">
                                                 <label i18n="@@newPassword">Confirm Password</label>
-                                                <input type="password" required minlength="6" name="confirmPassword"
+                                                <input type="password" required minlength="6" name="confirmPassword" autocomplete="new-password"
                                                     i18n-placeholder="@@password_place_holder"
                                                     placeholder="Password" class="form-control"
                                                     [(ngModel)]="confirmPasswordModel" reverse="false" validateEqual="Password"
@@ -161,14 +156,30 @@
 
                                             </div>
                                             <div class="form-group text-left" >
-                                                <label>User type</label>    
+                                                <label>User type
+                                                    &nbsp;<i matTooltip="ADMIN user can do anything in their scope. USER can CRUD live streams/upload VoDs in their scope except they cannot change settings/users/applications. READ_ONLY user can only read in their scope" class="fa fa-info-circle"></i>
+                                                </label>    
         
-                                                <select  type="text"  [name]="'UserType'" (ngModelChange)="UserTypeChanged($event)" [(ngModel)]="currentUserType"
+                                                <select  type="text"  [name]="'UserType'"  [(ngModel)]="User.userType"
                                                             class="dropdown-toggle form-control" required>
                                                     <option value="{{AdminUserType}}" >{{AdminUserType}}</option>
+                                                    <option value="{{BasicUserType}}" >{{BasicUserType}}</option>
                                                     <option value="{{ReadOnlyUserType}}">{{ReadOnlyUserType}}</option>
                                                 </select>
  
+                                            </div>
+
+                                            <div class="form-group text-left" >
+                                                <label>Scope of Access
+                                                    &nbsp;<i matTooltip="'Everything' is access to applications/logs/settings. Application specific access is access to the related app" class="fa fa-info-circle"></i>
+                                                </label>
+                                                <select type="text"  [name]="'ApplicationPermission'" [(ngModel)]="User.scope"
+                                                class="dropdown-toggle form-control" required>
+                                                    <option value="{{SYSTEM_SCOPE_OF_ACCESS}}" >Everything</option>
+                                                    <option *ngFor="let eachVal of applications['applications']">
+                                                            {{eachVal}}
+                                                    </option>
+                                                  </select>
                                             </div>
                                                                    
                                             <div class="form-group text-center">
@@ -217,24 +228,54 @@
                                                 </mat-cell>
                                             </ng-container>
 
-                                                    <ng-container matColumnDef="type">
-                                                        <mat-header-cell [ngClass]="'type-column'" *matHeaderCellDef
-                                                            mat-sort-header> User Type </mat-header-cell>
-        
-                                                        <mat-cell [ngClass]="'type-column'" *matCellDef="let row">
-                                                            <div style="padding-left: 12px;">
-                                                                {{row.userType}}
-                                                            </div>
+                                            <ng-container matColumnDef="type">
+                                                <mat-header-cell [ngClass]="'type-column'" *matHeaderCellDef
+                                                    mat-sort-header > User Type 
+                                                    &nbsp;<i matTooltip="ADMIN user can do anything in their scope. USER can CRUD live streams/upload VoDs in their scope except they cannot change settings/users/applications. READ_ONLY user can only read in their scope" class="fa fa-info-circle"></i>
+                                                </mat-header-cell>
+                                                   
+                                                <mat-cell [ngClass]="'type-column'" *matCellDef="let row">
+                                                    <div style="padding-left: 12px;">
+                                                        {{row.userType}}
+                                                    </div>
 
                                                 </mat-cell>
                                             </ng-container>
+
+                                            <ng-container matColumnDef="permissions">
+                                                <mat-header-cell [ngClass]="'permissions-column'" *matHeaderCellDef
+                                                    mat-sort-header> Scope of Access 
+                                                    &nbsp;<i matTooltip="'Everything' is access to applications/logs/settings. Application specific access is access to the related app" class="fa fa-info-circle"></i>
+                                                
+                                                </mat-header-cell>
+
+                                                <mat-cell [ngClass]="'permissions-column'" *matCellDef="let row">
+                                                    <div style="padding-left: 12px;">
+                                                        <ng-container [ngSwitch]="row.scope">
+                                                            <ng-container *ngSwitchCase="'system'">
+                                                                Everything
+                                                            </ng-container>
+                                                            <!-- show all apps if there is no allowed app field for backward compat-->
+                                                            <ng-container *ngSwitchCase="">
+                                                                Everything
+                                                            </ng-container>
+                                                            
+                                                            <ng-container *ngSwitchDefault>
+                                                                {{row.scope}}
+                                                            </ng-container>
+                                                        </ng-container>
+                                                    </div>
+                                                </mat-cell>
+                                            </ng-container>
+
+
                                             <ng-container matColumnDef="actions">
                                                 <mat-header-cell *matHeaderCellDef class="justify-flex-end"> Actions
                                                 </mat-header-cell>
 
                                                 <mat-cell *matCellDef="let row" class="justify-flex-end">
                                                     <button
-                                                            (click)="changeType(row)" title="Change Type" *ngIf="admin_check"
+                                                            (click)="changeType(row)" title="Change Type"
                                                             data-toggle="tooltip"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                             type="button">
@@ -245,7 +286,7 @@
 
                                                         </button>
 
-                                                    <button (click)="deleteUser(row.email)" *ngIf="admin_check"
+                                                    <button (click)="deleteUser(row.email)"
                                                         class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
                                                         type="button">
                                                         <span class="btn-label">
@@ -262,23 +303,16 @@
                                         </mat-table>
                                     </div>
                                 </div>
+                                <!-- just simple padding-->
+                                <p>&nbsp;</p>
 
-                                <div class="main">
-                                    <div *ngIf="userDataTable.dataRows.length == 0"
-                                         i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
-                                        You need to be admin to see the users.
-                                    </div>
-                                </div>
+                
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
-
-
-
 </div>
+

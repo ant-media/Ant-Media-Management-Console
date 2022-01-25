@@ -19,7 +19,7 @@
             <div class="form-group text-left" *ngIf="changePassword">
                 <label i18n="@@newPassword">New Password</label>
                 <input type="password" name="password"  i18n-placeholder="@@password_place_holder" placeholder="Password"
-                    class="form-control" [required]="changePassword" minlength="6" [(ngModel)]="data.newPassword" validateEqual="password_again" reverse="true" #password="ngModel" >
+                    class="form-control" [required]="userEditing.newPassword" minlength="6" [(ngModel)]="userEditing.newPassword" validateEqual="password_again" reverse="true" #password="ngModel" >
                 <small  [hidden]="password.valid || (!f.submitted)" class="text-danger">
                     Password is required and at least 6 characters
                 </small>
@@ -33,17 +33,32 @@
                         Passwords should match
                 </small>
             </div>
+
             <fieldset >
                 <div class="form-group text-left" >
                     <label>User type</label>
 
-                    <select  type="text"  [name]="'UserType'" (ngModelChange)="UserTypeChanged($event)" [(ngModel)]="currentUserType"
+                    <select  type="text"  [name]="'UserType'" [(ngModel)]="userEditing.userType" 
                             class="dropdown-toggle form-control" required>
-                        <option value="{{AdminUserType}}" >{{AdminUserType}}</option>
-                        <option value="{{ReadOnlyUserType}}">{{ReadOnlyUserType}}</option>
+                            <option value="{{AdminUserType}}" >{{AdminUserType}}</option>
+                            <option value="{{BasicUserType}}" >{{BasicUserType}}</option>
+                            <option value="{{ReadOnlyUserType}}">{{ReadOnlyUserType}}</option>
                     </select>
                 </div>
             </fieldset>
+
+
+                <div class="form-group text-left" >
+                    <label>Scope of Access</label>
+                    <select type="text"  [name]="'ApplicationPermission'" [(ngModel)]="userEditing.scope"
+                    class="dropdown-toggle form-control"*ngIf="applications" required>
+                        <option value="{{SYSTEM_SCOPE_OF_ACCESS}}" >Everything</option>
+                        <option *ngFor="let eachVal of applications['applications']"  [value]="eachVal" >
+                                {{eachVal}}
+                        </option>
+                        </select>
+                </div>
+
             <div class="form-group text-center">
 
                 <button type="submit" [disabled]='userUpdating' class="btn btn-fill btn-success" i18n="@@newLiveStreamSaveButton">

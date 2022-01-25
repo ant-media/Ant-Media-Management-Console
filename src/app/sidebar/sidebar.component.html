@@ -99,7 +99,7 @@
 
     <ul class="nav">
 
-        <li routerLinkActive="active">
+        <li routerLinkActive="active" *ngIf="scope == 'system'">
             <a routerLink="/dashboard">
                 <i class="ti-panel"></i>
                 <p i18n="@@dashboardMenuItem">Dashboard</p>
@@ -131,7 +131,7 @@
                 </ul>
             </div>
         </li>
-        <li *ngIf="isClusterMode" routerLinkActive="active">
+        <li *ngIf="isClusterMode && scope == 'system'" routerLinkActive="active">
             <a routerLink="/cluster">
                 <i class="ti-layout-grid3"></i>
                 <p i18n="@@clusterMenuItem">Cluster</p>
@@ -139,14 +139,14 @@
         </li>
 
 
-        <li routerLinkActive="active">
+        <li routerLinkActive="active" *ngIf="scope == 'system'">
             <a routerLink="/serverSettings">
                 <i class="ti-settings"></i>
                 <p i18n="@@dashboardMenuItem">Settings</p>
             </a>
         </li>
 
-        <li routerLinkActive="active">
+        <li routerLinkActive="active" *ngIf="scope == 'system'">
             <a routerLink="/logs">
                 <i class="ti-write"></i>
                 <p i18n="@@dashboardMenuItem">Logs</p>

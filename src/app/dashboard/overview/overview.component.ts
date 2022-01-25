@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {Licence} from "../../server.settings/server.settings.component";
-import {AuthService} from "../../rest/auth.service";
+import {AuthService, show403Error} from "../../rest/auth.service";
 import {SupportRequest} from "../../support/support.definitions";
 import {ServerSettings} from "../../app.page/app.definitions";
 import {Locale} from "../../locale/locale";
@@ -117,7 +117,7 @@ export class OverviewComponent implements OnInit {
                     this.checkShutdownProperly();
                 }, 10000);
             }
-        });
+        }, error => { show403Error(error); });
     }
 
     ngOnDestroy() {
@@ -189,14 +189,14 @@ export class OverviewComponent implements OnInit {
                                 }
                             });
                         }
-                    });
+                    }, error => { show403Error(error); });
 
                 }).catch(function (err) {
                     console.error("Error in shutdown properly: " + err)
                 });
 
                 this.restService.setShutdownProperly(appNames.join(",")).subscribe(data => {
-                });
+                }, error => { show403Error(error); });
 
             }
         },
@@ -204,6 +204,7 @@ export class OverviewComponent implements OnInit {
             console.error("Server returns error: " + error.status + " for shutdown-properly");
             //ask again until get a 200 response
             setTimeout(() => { this.checkShutdownProperly(); }, 10000);
+            show403Error(error);
         });
     }
 
@@ -263,6 +264,7 @@ export class OverviewComponent implements OnInit {
             console.log(this.router);
             //this.router.navigateByUrl("/pages/login");
         }
+        show403Error(error);
 
     }
 
@@ -272,7 +274,7 @@ export class OverviewComponent implements OnInit {
             for (var i in data) {
                 this.appTableData.dataRows.push(data[i]);
             }
-        });
+        }, error => { show403Error(error); });
     }
 
     isMobileMenu() {
@@ -324,6 +326,7 @@ export class OverviewComponent implements OnInit {
             },
             error=> {
                 console.log("Error occured: " + error);
+                show403Error(error);
             });
         }, 2000);
     }
@@ -362,7 +365,7 @@ export class OverviewComponent implements OnInit {
                 else {
                     this.checkApplicationCreated(appName);
                 }
-            });
+            }, error => { show403Error(error); });
 
         }, 2000);
     }
@@ -399,17 +402,20 @@ export class OverviewComponent implements OnInit {
 
                 }, 
                 error=> {
+                    show403Error(error);
                     this.newAppCreating = false;
-                    swal({
-                        title: "Application is not created",
-                        text:  "Make sure that you use alphanumeric characters in the application name",
-                        type: 'error',
-        
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                    }).catch(function () {
-                    });
+                    if (error == null || error.status != 403 ) {
+                        swal({
+                            title: "Application is not created",
+                            text:  "Make sure that you use alphanumeric characters in the application name",
+                            type: 'error',
+            
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                        }).catch(function () {
+                        });
+                     }
                 });
     }
 
@@ -445,16 +451,19 @@ export class OverviewComponent implements OnInit {
                     }
                 },
                 error => {
-                    swal({
-                        title: "Application is not deleted",
-                        text:  "Please send logs files under log directory to the Ant Media Support(support@antmedia.io)",
-                        type: 'error',
-        
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                    }).catch(function () {
-                    });
+                    show403Error(error);
+                    if (error == null || error.status != 403 ) {
+                        swal({
+                            title: "Application is not deleted",
+                            text:  "Please send logs files under log directory to the Ant Media Support(support@antmedia.io)",
+                            type: 'error',
+            
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                        }).catch(function () {
+                        });
+                    }
                 }
             );
 

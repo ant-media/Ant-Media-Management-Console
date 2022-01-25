@@ -2,6 +2,7 @@ import {Component, Inject} from '@angular/core';
 import {RestService} from '../../rest/rest.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Endpoint,} from '../app.definitions';
+import { show403Error } from 'app/rest/auth.service';
 
 declare var $: any;
 
@@ -72,7 +73,7 @@ export class RtmpEndpointEditDialogComponent {
                             break;
                         }
                     }
-                });
+                }, error => { show403Error(error); });
 
                 $.notify({
                     icon: "ti-save",
@@ -102,7 +103,7 @@ export class RtmpEndpointEditDialogComponent {
                 });
             }
 
-        });
+        }, error => { show403Error(error); });
     }
 
     removeRTMPEndpoint(endpoint: Endpoint, index: number) {
@@ -110,11 +111,11 @@ export class RtmpEndpointEditDialogComponent {
         if (endpoint.endpointServiceId != null) {
             this.restService.deleteRTMPEndpointV2(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, endpoint.endpointServiceId).subscribe(data => {
                 this.endpointDeleteProcess(endpoint,index,data);
-            });
+            }, error => { show403Error(error); });
         } else {
             this.restService.deleteRTMPEndpointV1(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, endpoint.rtmpUrl).subscribe(data => {
                 this.endpointDeleteProcess(endpoint,index,data);
-            });
+            }, error => { show403Error(error); });
         }
     }
 

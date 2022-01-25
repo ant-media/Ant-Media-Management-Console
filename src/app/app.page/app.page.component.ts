@@ -14,7 +14,7 @@ import {
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HTTP_SERVER_ROOT, LiveBroadcast, RestService } from '../rest/rest.service';
-import { AuthService } from '../rest/auth.service';
+import { AuthService, show403Error } from '../rest/auth.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
 import { MatDialog } from '@angular/material/dialog';
@@ -50,6 +50,7 @@ import {
     ClusterNode,
     ClusterNodeInfo
 } from '../cluster/cluster.definitions';
+import { LOCAL_STORAGE_SCOPE_KEY } from 'app/pages/login/login.component';
 
 declare var $: any;
 declare var Chartist: any;
@@ -155,7 +156,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public gettingDeviceParameters = false;
     public waitingForConfirmation = false;
 
-    public admin_check: boolean;
     public camera: Camera;
     public onvifURLs: String[];
     public newOnvifURLs: String[];
@@ -277,8 +277,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit() {
 
-
-
         this.timerId = null;
         this.dropdownTimer = null;
 
@@ -330,7 +328,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.dropdownTimer = window.setInterval(() => {
             if (this.authService.isAuthenticated) {
-                if (this.appName != "undefined") {
+                if (typeof this.appName != "undefined") {
                     this.callTimer();
                 }
             }
@@ -339,15 +337,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     callTimer() {
 
-        console.log("Timer Started");
-
         this.clearTimer();
 
         //this timer gets the related information according to active application
         //so that it checks appname whether it is undefined
         this.timerId = window.setInterval(() => {
             if (this.authService.isAuthenticated) {
-                if (this.appName != "undefined") {
+                if (typeof this.appName != "undefined") {
                     this.getAppLiveStreams(this.streamListOffset, this.pageSize);
                     this.getVoDStreams();
                     this.getAppLiveStreamsNumber();
@@ -379,7 +375,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
 
 
-        });
+        }, error => { show403Error(error); });
     }
 
     onListPaginateChange(event) {
@@ -414,19 +410,29 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             //this method is called whenever app changes
 
             this.appName = params['appname']; // (+) converts string 'id' to a number
-
+            let scope = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
             if (typeof this.appName == "undefined") {
 
-                this.restService.getApplications().subscribe(data => {
+                if (scope == "system") {
+                    this.restService.getApplications().subscribe(data => {
 
-                    //second element is the Applications. It is not safe to make static binding.
+                        //second element is the Applications. It is not safe to make static binding.
 
-                    for (var i in data['applications']) {
-                        //console.log(data['applications'][i]);
-                        this.router.navigateByUrl("/applications/" + data['applications'][i]);
-                        break;
+                        for (var i in data['applications']) {
+                            //console.log(data['applications'][i]);
+                            this.router.navigateByUrl("/applications/" + data['applications'][i]);
+                            break;
+                        }
+                    }, error => { show403Error(error); });
+                }
+                else {
+                    if (scope == null) {
+                        this.router.navigateByUrl("/");
                     }
-                });
+                    else {
+                        this.router.navigateByUrl("/applications/" + scope);
+                    }
+                }
                 return;
             }
 
@@ -436,40 +442,31 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.vodSortBy = "";
 
             this.getSettings();
-
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
-            });
+            }, error => { show403Error(error); });
 
-            this.restService.isAdmin().subscribe(data => {
-                console.log(data);
-                // If JWT Server token is enable then no need to check admin status
-                if(data["success"] == true || currentServerJwtStatus){
-                    this.admin_check = true;
-                }
-                else {
-                    this.admin_check = false;
-                }
-            });
-
-            this.restService.isInClusterMode().subscribe(data => {
-                this.isClusterMode = data["success"];
-                if (this.isClusterMode) {
-                    var clusterNodeCount = 0;
-                    this.clusterRestService.getClusterNodeCount().subscribe(data => {
-                        clusterNodeCount = data["number"];
-                        this.clusterRestService.getClusterNodes(0, clusterNodeCount).subscribe(data => {
-                            this.clusterNodeTableData.dataRows = [];
-                            for (let i in data) {
-                                if (data[i].status == "alive") {
-                                    this.currentClusterNode = data[0].ip;
-                                    this.clusterNodeTableData.dataRows.push(data[i]);
+            if (scope == "system") {
+                this.restService.isInClusterMode().subscribe(data => {
+                    this.isClusterMode = data["success"];
+                    if (this.isClusterMode) {
+                        var clusterNodeCount = 0;
+                        this.clusterRestService.getClusterNodeCount().subscribe(data => {
+                            clusterNodeCount = data["number"];
+                            this.clusterRestService.getClusterNodes(0, clusterNodeCount).subscribe(data => {
+                                this.clusterNodeTableData.dataRows = [];
+                                for (let i in data) {
+                                    if (data[i].status == "alive") {
+                                        this.currentClusterNode = data[0].ip;
+                                        this.clusterNodeTableData.dataRows.push(data[i]);
+                                    }
                                 }
-                            }
-                        });
-                    });
-                }
-            });
+                            }, error => { show403Error(error); });
+                        }, error => { show403Error(error); });
+                    }
+                }, error => { show403Error(error); });
+            }
+
             this.getAppLiveStreamsNumber();
             this.getVoDStreams();
             this.getAppLiveStreams(0, this.pageSize);
@@ -680,7 +677,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
             this.cdr.detectChanges();
 
-        });
+        }, error => { show403Error(error); });
 
     }
 
@@ -695,7 +692,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             data => {
 
                 this.listLength = data["number"];
-            });
+            }, error => { show403Error(error); });
 
         this.cdr.detectChanges();
     }
@@ -747,7 +744,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.restService.getTotalVodNumber(this.appName, this.filterValueVod).subscribe(data => {
             this.vodLength = data["number"];
-        });
+        }, error => { show403Error(error); });
 
 
         this.restService.getVodList(this.appName, this.vodListOffset, this.pageSize, this.vodSortBy, this.vodOrderBy, this.filterValueVod).subscribe(data => {
@@ -756,7 +753,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.vodTableData.dataRows.push(data[i]);
             }
             this.dataSourceVod = new MatTableDataSource(this.vodTableData.dataRows);
-        });
+        }, error => { show403Error(error); });
     }
 
     clearTimer() {
@@ -859,7 +856,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
                 this.broadcastGridTableData.dataRows.push(data[i]);
             }
-        });
+        }, error => { show403Error(error); });
 
         setTimeout(() => {
 
@@ -951,7 +948,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.getOneTimeToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
             this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
-        });
+        }, error => { show403Error(error); });
     }
 
     openPlayerWithJWTToken(id: string, path: string, width: string, tokenParam: string) {
@@ -961,7 +958,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.getJWTToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
             this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
-        });
+        }, error => { show403Error(error); });
     }
 
     deleteVoD(fileName: string, vodId: number, type: string): void {
@@ -996,7 +993,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.showVoDFileNotDeleted();
                 }
                 this.getVoDStreams();
-            });
+            }, error => { show403Error(error); });
 
         }).catch(function () {
 
@@ -1073,7 +1070,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         }
                     });
                 }
-            });
+            }, error => { show403Error(error); });
 
     }
 
@@ -1146,7 +1143,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreamsNumber();
 
 
-                });
+                }, error => { show403Error(error); });
         });
 
     }
@@ -1235,7 +1232,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.acceptAllStreams = !this.appSettings.acceptOnlyStreamsInDataStore;
 
 
-        });
+        }, error => { show403Error(error); });
     }
 
 
@@ -1325,6 +1322,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             });
 
+        },
+        error =>
+        {
+           show403Error(error);
         });
 
 
@@ -1413,7 +1414,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             this.liveBroadcast.ipAddr = "";
-        });
+        }, error => { show403Error(error); });
     }
 
 
@@ -1530,6 +1531,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             },
                 error => {
+                    show403Error(error);
                     this.newIPCameraAdding = false;
                     $.notify({
                         icon: "ti-save",
@@ -1665,6 +1667,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             },
                 error => {
+                    show403Error(error);
                     this.newStreamSourceAdding = false;
                     $.notify({
                         icon: "ti-save",
@@ -1780,6 +1783,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             },
                 error => {
+                    show403Error(error);
                     this.newPlaylistAdding = false;
                     $.notify({
                         icon: "ti-save",
@@ -1922,6 +1926,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             error => {
                 console.log('!!!Error!!! ' + error);
+                show403Error(error);
             },
         );
 
@@ -2000,6 +2005,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             align: 'right'
                         }
                     });
+                    show403Error(error);
                 });
 
     }
@@ -2117,17 +2123,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             if (data["success"] == true) {
 
                 if (recordingStatus) {
-                    var recordingMessage = "open";
+                    var recordingMessage = "starting";
                 }
                 else {
-                    var recordingMessage = "close";
+                    var recordingMessage = "stopping";
                 }
 
                 this.getAppLiveStreams(this.streamListOffset, this.pageSize);
 
                 $.notify({
                     icon: "ti-save",
-                    message: recordingType + " Recording will be " + recordingMessage + ". Please wait few seconds."
+                    message: recordingType + " recording is " + recordingMessage + ". Please wait few seconds."
                 }, {
                     type: "success",
                     delay: 1000,
@@ -2140,7 +2146,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             else {
                 $.notify({
                     icon: "ti-save",
-                    message: recordingType + " Recording service failed"
+                    message: "Operation has failed"
                 }, {
                     type: "warning",
                     delay: 3000,
@@ -2150,7 +2156,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 });
             }
-        });
+        }, error => { show403Error(error); });
 
     }
 
@@ -2257,6 +2263,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             error => {
                 console.log('!!!Error!!! ' + error);
+                show403Error(error);
             },
         );
     }
@@ -2268,6 +2275,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             error => {
                 console.log('!!!Error!!! ' + error);
+                show403Error(error);
             },
         );
     }
@@ -2279,6 +2287,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             error => {
                 console.log('!!!Error!!! ' + error);
+                show403Error(error);
             },
         );
     }
@@ -2291,6 +2300,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             error => {
                 console.log('!!!Error!!! ' + error);
+                show403Error(error);
             },
         );
     }
@@ -2377,7 +2387,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 });
             }
             this.callTimer();
-        });
+        }, error => { show403Error(error); });
 
     }
 
@@ -2415,7 +2425,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             }
             this.callTimer();
-        });
+        }, error => { show403Error(error); });
     }
 
     selectHandlerVod(vodId: string) {
@@ -2489,7 +2499,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.showVoDFileNotDeleted();
                 }
                 this.getVoDStreams();
-            });
+            }, error => { show403Error(error); });
         }).catch(function () {
 
         });
@@ -2586,7 +2596,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.getAppLiveStreamsNumber();
 
 
-                });
+                }, error => { show403Error(error); });
         })
             .catch(function () {
             });
