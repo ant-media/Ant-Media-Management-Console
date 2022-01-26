@@ -115,6 +115,20 @@ export class LoginComponent implements OnInit{
                     localStorage.setItem("authenticated", "true");
                     this.auth.isAuthenticated = true;
                     this.router.navigateByUrl("/dashboard");
+
+                    let scope = data["message"];
+                    if (isScopeSystem(scope)) {
+                        scope = "system";
+                    }
+                    localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
+                    if (isScopeSystem(scope))
+                    {
+                        this.router.navigateByUrl("/dashboard");
+                    }
+                    else
+                    {
+                        this.router.navigateByUrl("/applications/" + scope);
+                    }
                 }
                 else{
                     this.showIncorrectJWTToken = true;
