@@ -39,6 +39,7 @@ export class PlaylistEditComponent {
             this.playlistEditing.playListItemList = data["playListItemList"];
             this.playlistEditing.currentPlayIndex = data["currentPlayIndex"];
             this.playlistEditing.name = data["name"];
+            this.playlistEditing.playlistLoopEnabled = data["playlistLoopEnabled"];
         }, error => { show403Error(error); });
 
     }

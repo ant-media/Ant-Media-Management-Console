@@ -52,6 +52,7 @@ export class LiveBroadcast {
     webRTCViewerLimit: number;
     hlsViewerLimit: number;
     currentPlayIndex: number;
+    playlistLoopEnabled: boolean = true;
 
     constructor() {
         this.playListItemList = [];
