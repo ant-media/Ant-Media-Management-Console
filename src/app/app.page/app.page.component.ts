@@ -404,7 +404,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getInitParams() {
-        let currentServerJwtStatus =  localStorage.getItem('serverJWTControlEnabled');
 
         this.sub = this.route.params.subscribe(params => {
             //this method is called whenever app changes

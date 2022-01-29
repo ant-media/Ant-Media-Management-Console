@@ -63,11 +63,8 @@ export class AuthService implements CanActivate {
 
     constructor(private restService: RestService, private router: Router, private datePipe: DatePipe) {
 
-        this.serverSettings = new ServerSettings(null,null, false, "INFO",true);
-
         setInterval(() => {
             this.checkServerIsAuthenticated();
-
         }, 5000);
 
         //Check license every 300 seconds 5 minutes
@@ -131,8 +128,9 @@ export class AuthService implements CanActivate {
     }
 
     checkServerIsAuthenticated(): void {
+        let currentServerJwtStatus =  localStorage.getItem('serverJWTControlEnabled');
 
-        if (localStorage.getItem('authenticated') && !this.serverSettings.jwtServerControlEnabled)
+        if (localStorage.getItem('authenticated') && currentServerJwtStatus != "true")
         {
             this.restService.isAuthenticated().subscribe(data => {
 
@@ -159,7 +157,7 @@ export class AuthService implements CanActivate {
                     show403Error(error);
                 });
         }
-        else if(localStorage.getItem('authenticated') && this.isAuthenticated  && this.serverSettings.jwtServerControlEnabled ){
+        else if(localStorage.getItem('authenticated') && this.isAuthenticated  && currentServerJwtStatus == "true" ){
             this.isAuthenticated = true;
 
             if(this.router.url=="/pages/login"){
@@ -172,11 +170,12 @@ export class AuthService implements CanActivate {
     }
 
     canActivate(): boolean {
+        let currentServerJwtStatus =  localStorage.getItem('serverJWTControlEnabled');
+
         console.debug("AuthService: is authenticated: " + this.isAuthenticated
             + " local storage: " + localStorage.getItem('authenticated'));
 
-        if (localStorage.getItem('authenticated') && this.isAuthenticated && !this.serverSettings.jwtServerControlEnabled) {
-
+        if (localStorage.getItem('authenticated') && this.isAuthenticated && currentServerJwtStatus != "true") {
             this.restService.isAuthenticated().subscribe(data => {
 
                     this.isAuthenticated = data["success"];
@@ -195,7 +194,7 @@ export class AuthService implements CanActivate {
                 });
             return true;
         }
-        else if(localStorage.getItem('authenticated') && this.isAuthenticated && this.serverSettings.jwtServerControlEnabled ){
+        else if(localStorage.getItem('authenticated') && this.isAuthenticated && currentServerJwtStatus == "true"){
 
             this.isAuthenticated = true;
             return true;

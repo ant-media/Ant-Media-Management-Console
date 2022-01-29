@@ -4,8 +4,6 @@ import {AuthService, show403Error} from '../../rest/auth.service';
 import {User} from '../../rest/rest.service';
 import {RestService} from '../../rest/rest.service';
 import {isScopeSystem} from "../../rest/auth.service";
-import {ServerSettings} from "../../app.page/app.definitions";
-
 declare var $:any;
 
 @Component({
@@ -30,8 +28,8 @@ export class LoginComponent implements OnInit{
     public firstUserIsCreating:boolean;
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
-    public serverSettings: ServerSettings;
     public serverJWTToken: string;
+    public serverJWTControlEnabled: boolean;
 
     constructor(private element : ElementRef, private auth: AuthService, private router: Router,private restService: RestService) {
         this.nativeElement = element.nativeElement;
@@ -57,8 +55,6 @@ export class LoginComponent implements OnInit{
                 this.firstUser = new User("", "");
             }
         }, error => { show403Error(error); });
-
-        this.serverSettings = new ServerSettings(null,null, false, "INFO",false);
 
         this.auth.licenceWarningDisplay = true;
         
@@ -101,38 +97,23 @@ export class LoginComponent implements OnInit{
 
     loginUser() {
 
-        if(!this.serverSettings.jwtServerControlEnabled){
-            localStorage.clear();
-        }
+        localStorage.clear();
 
-        if(this.serverSettings.jwtServerControlEnabled) {
+        if(this.serverJWTControlEnabled) {
+
             //We need to define this value in this line
             //server JWT tokens needs to be define before rest request
             localStorage.setItem('serverJWTControlEnabled', "true");
             localStorage.setItem('serverJWTToken', this.serverJWTToken);
-            this.restService.getApplications().subscribe(data =>{
-                if ( data['applications'].length > 0) {
+            this.restService.isInClusterMode().subscribe(data =>{
+
                     localStorage.setItem("authenticated", "true");
                     this.auth.isAuthenticated = true;
-                    this.router.navigateByUrl("/dashboard");
 
-                    let scope = data["message"];
-                    if (isScopeSystem(scope)) {
-                        scope = "system";
-                    }
+                    let scope = "system";
                     localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
-                    if (isScopeSystem(scope))
-                    {
-                        this.router.navigateByUrl("/dashboard");
-                    }
-                    else
-                    {
-                        this.router.navigateByUrl("/applications/" + scope);
-                    }
-                }
-                else{
-                    this.showIncorrectJWTToken = true;
-                }
+
+                    this.router.navigateByUrl("/dashboard");
             },
                 error =>{
                     this.showIncorrectJWTToken = true;

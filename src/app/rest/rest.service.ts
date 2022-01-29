@@ -63,7 +63,10 @@ export class AuthInterceptor implements HttpInterceptor{
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         let str = req.url;
-        let appName;
+        let appName = null;
+        let currentAppJwtToken = null;
+        let currentAppJwtStatus = null;
+
         //For internal requests
         if(str.includes("_path=")) {
             var begin = str.indexOf("_path=");
@@ -71,22 +74,31 @@ export class AuthInterceptor implements HttpInterceptor{
             appName = str.substring(begin+6, last);
         }
         //for remote requests
-        else if(str.includes("rest/v2")){
+        //It can be confuse from internal requests that's why I changed
+        else if(!str.includes(":5080/rest/v2")){
             var begin = str.indexOf(":5080/");
             var last = str.indexOf("/rest/v2");
             appName = str.substring(begin+6, last);
         }
-        let currentAppJwtToken = localStorage.getItem(appName+'jwtToken');
-        let currentAppJwtStatus =  localStorage.getItem(appName+'jwtControlEnabled');
+        if(appName != null ){
+            currentAppJwtToken = localStorage.getItem(appName+'jwtToken');
+            currentAppJwtStatus =  localStorage.getItem(appName+'jwtControlEnabled');
+        }
 
         let currentServerJwtToken = localStorage.getItem('serverJWTToken');
         let currentServerJwtStatus =  localStorage.getItem('serverJWTControlEnabled');
 
-        // Check AppName, JWT Token status and JWT Token not null
-        if(appName != null && currentAppJwtToken != null && currentAppJwtStatus == "true"){
+        if(appName !=  null && currentAppJwtToken != null && currentAppJwtStatus == "true" && currentServerJwtToken != null && currentServerJwtStatus == "true" ){
             req = req.clone({
                 withCredentials: true,
-                headers: req.headers.append('Authorization', currentAppJwtToken)
+                headers: req.headers.append('ProxyAuthorization', currentAppJwtToken).append('Authorization', currentServerJwtToken)
+            });
+        }
+        // Check AppName, JWT Token status and JWT Token not null
+        else if(appName != null && currentAppJwtToken != null && currentAppJwtStatus == "true"){
+            req = req.clone({
+                withCredentials: true,
+                headers: req.headers.append('ProxyAuthorization', currentAppJwtToken)
             });
         }
         else if(currentServerJwtToken != null || currentServerJwtStatus == "true"){

@@ -18,7 +18,6 @@ import {AuthInterceptor, RestService,} from './rest/rest.service';
 import {ClusterRestService} from './rest/cluster.service';
 import {SupportRestService} from './rest/support.service';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
-//import { AuthInterceptor } from './rest/auth.interceptor';
 import {ClipboardModule} from 'ngx-clipboard';
 import {Locale} from './locale/locale';
 import {AppPageComponent} from "./app.page/app.page.component";
