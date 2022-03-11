@@ -430,6 +430,22 @@
                                                                 Add Playlist Item</button>
                                                         </div>
 
+                                                        <div>
+                                                            <div class="col-xs-12">
+                                                                <div class="checkbox">
+                                                                    <input
+                                                                            [(ngModel)]="liveBroadcast.playlistLoopEnabled"
+                                                                            id="playlistLoopEnabled"
+                                                                            name="playlistLoopEnabled" type="checkbox">
+
+                                                                    <label for="playlistLoopEnabled"
+                                                                           i18n="@@playlistLoopEnabled">
+                                                                        Loop Playlist
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                         <div class="row text-center" style="padding-top: 20px">
 
                                                             <button type="submit" [disabled]='newPlaylistWarn'
