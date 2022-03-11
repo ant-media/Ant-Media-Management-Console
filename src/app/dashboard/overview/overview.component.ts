@@ -4,10 +4,9 @@ import {SupportRestService} from '../../rest/support.service';
 import {Router} from '@angular/router';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import {Licence} from "../../server.settings/server.settings.component";
 import {AuthService, show403Error} from "../../rest/auth.service";
 import {SupportRequest} from "../../support/support.definitions";
-import {ServerSettings} from "../../app.page/app.definitions";
+import {ServerSettings,Licence} from "../../app.page/app.definitions";
 import {Locale} from "../../locale/locale";
 
 declare var $: any;
