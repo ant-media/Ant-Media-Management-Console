@@ -108,19 +108,9 @@
 
                 <div class="card">
                 <div style="padding-top:15px">
-                    <div class="dropdown text-right" style="float: right" >
-                        <button class="btn btn-fill btn-success" i18n="@@applicationsTitle"
-                            data-toggle="dropdown" role="button">New Application
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right">
-                            <li>
-                                <a (click)="newApplication()" role="button">Default App</a>
-                            </li>
-                            <li>
-                                <a (click)="openWarFileUploadDialog()" role="button">Upload War File</a>
-                            </li>
-                        </ul>
+                    <div class="text-right" style="float:right;margin-right:15px;" >
+                        <button class="btn btn-fill btn-success" i18n="@@applicationsTitle" (click)="newApplication()"
+                           role="button">New Application</button>
                     </div>
 
                     <br>
@@ -129,7 +119,7 @@
                 <div *ngIf="newApplicationActive" style="padding:45px">
                     <form method="post" #f="ngForm" validate (ngSubmit)="createApplication(f.valid)">
                             <div class="form-group text-left">
-                                <label>New Application Name</label>
+                                <label>Application Name*</label>
                                 <input type="text" required minlength="4" name="applicationName"
                                     placeholder="Application name" class="form-control"
                                     [(ngModel)]="newApplicationName" #applicationName="ngModel">
@@ -141,6 +131,13 @@
                                     Application name should not be empty.
                                 </small>
                             </div>
+                            <div class="form-group text-left">
+                                <label>WAR File</label>
+                                <input type="file" class="upload" (change)="handleWarFileInput($event.target.files)" accept=".war"/>
+                                <small  class="help-block">This field is optional. If you have a custom app in a .war format, you may install by uploading.</small>
+                                
+                            </div>
+
                             <div class="form-group text-center">
                                 <button type="submit" [disabled]='newAppCreating'
                                     class="btn btn-fill btn-success">

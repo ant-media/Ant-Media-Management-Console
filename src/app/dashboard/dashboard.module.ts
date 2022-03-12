@@ -9,7 +9,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {DataService} from "../rest/data.service";
 import {ServerSettingsComponent} from "../server.settings/server.settings.component";
 import {MatDialogModule} from '@angular/material/dialog';
-import {UploadWarFileDialogComponent} from './overview/dialog/upload-war-file-dialog';
 
 
 @NgModule({
@@ -20,7 +19,7 @@ import {UploadWarFileDialogComponent} from './overview/dialog/upload-war-file-di
         HttpClientModule,
         MatDialogModule
     ],
-    declarations: [OverviewComponent, UploadWarFileDialogComponent],
+    declarations: [OverviewComponent],
     providers: [DataService,ServerSettingsComponent],
 
 })
