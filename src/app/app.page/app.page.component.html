@@ -39,7 +39,7 @@
 
                                 <div>
 
-                                    <div class="dropdown text-right" style="float: right" *ngIf="admin_check==true">
+                                    <div class="dropdown text-right" style="float: right" >
                                         <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton"
                                             data-toggle="dropdown" role="button">New Live Stream
                                             <span class="caret"></span>
@@ -432,6 +432,22 @@
                                                                 Add Playlist Item</button>
                                                         </div>
 
+                                                        <div>
+                                                            <div class="col-xs-12">
+                                                                <div class="checkbox">
+                                                                    <input
+                                                                            [(ngModel)]="liveBroadcast.playlistLoopEnabled"
+                                                                            id="playlistLoopEnabled"
+                                                                            name="playlistLoopEnabled" type="checkbox">
+
+                                                                    <label for="playlistLoopEnabled"
+                                                                           i18n="@@playlistLoopEnabled">
+                                                                        Loop Playlist
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                         <div class="row text-center" style="padding-top: 20px">
 
                                                             <button type="submit" [disabled]='newPlaylistWarn'
@@ -468,6 +484,24 @@
                                         <mat-table style="overflow: visible !important;" [dataSource]="dataSource" matSort
                                                    (matSortChange)="sortBroadcastList($event)">
 
+                                             <!-- Checkbox Column -->
+                                            <ng-container matColumnDef="select" >
+                                                
+                                                <mat-header-cell *matHeaderCellDef>
+                                                    <mat-checkbox (change)="$event ? masterToggleStreams() : null"
+                                                                  [checked]="selectionStreams.hasValue() && isAllStreamsSelected()"
+                                                                  [indeterminate]="selectionStreams.hasValue() && !isAllStreamsSelected()">
+                                                    </mat-checkbox>
+                                                </mat-header-cell>
+                                                <mat-cell *matCellDef="let row">
+                                                    <mat-checkbox (click)="$event.stopPropagation()" 
+                                                                    (change)="$event ? selectHandlerStreams(row.streamId) : null"
+                                                                    [checked]="selectionStreams.isSelected(row.streamId)">
+                                                    </mat-checkbox>
+                                                </mat-cell>
+
+                                            </ng-container>
+ 
                                             <ng-container matColumnDef="name">
                                                 <mat-header-cell [ngClass]="'stream-name-column'" *matHeaderCellDef
                                                     mat-sort-header> Stream Name </mat-header-cell>
@@ -587,7 +621,7 @@
 
                                                     <div style="font-size: 1.1em">
 
-                                                        <ul class="nav navbar-right" *ngIf = "admin_check==true">
+                                                        <ul class="nav navbar-right" >
                                                             <li (click)="contextDropdownClicked()" class="dropdown">
                                                                 <a href="#" class="dropdown-toggle btn-magnify"
                                                                     data-toggle="dropdown">
@@ -752,7 +786,7 @@
                                                         <!-- Edit Broadcast Button -->
 
                                                         <button
-                                                            *ngIf="admin_check==true && row.status!='broadcasting'&& row.type=='liveStream'"
+                                                            *ngIf="row.status!='broadcasting'&& row.type=='liveStream'"
                                                             (click)="openBroadcastEditDialog(row)" title="Edit"
                                                             data-toggle="tooltip"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -766,7 +800,7 @@
 
                                                         <!-- Edit IP Camera Button -->
 
-                                                        <button *ngIf="admin_check==true && row.type=='ipCamera'"
+                                                        <button *ngIf="row.type=='ipCamera'"
                                                             (click)="openSettingsDialog(row)"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                             type="button" data-toggle="tooltip" i18n-title
@@ -780,7 +814,7 @@
 
                                                         <!-- Edit Stream Source Button -->
 
-                                                        <button *ngIf="admin_check==true && row.type=='streamSource'"
+                                                        <button *ngIf="row.type=='streamSource'"
                                                             (click)="openStreamSourceSettingsDialog(row)"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
                                                             type="button" data-toggle="tooltip" i18n-title
@@ -794,7 +828,7 @@
 
                                                         <!-- Edit Playlist Button -->
 
-                                                        <button *ngIf="admin_check==true && row.status!='broadcasting'&& row.type=='playlist'"
+                                                        <button *ngIf="row.status!='broadcasting'&& row.type=='playlist'"
                                                             (click)="openPlaylistEditDialog(row)" title="Edit"
                                                             data-toggle="tooltip"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -816,6 +850,14 @@
                                             </mat-row>
                                         </mat-table>
 
+                                        <div class=" text-left">
+                                            <div>
+                                                <button class="btn btn-simple " (click)="deleteSelectedStreams()"
+                                                    role="button">Delete
+                                                </button>
+                                            </div>
+                                        </div>
+
                                         <mat-paginator [pageSizeOptions]="pageSizeOptions"
                                             (page)="onListPaginateChange($event)" [length]="listLength"
                                             [pageSize]="pageSize">
@@ -835,7 +877,7 @@
                             <div class="tab-pane" id="vod">
 
                                 <div class=" text-right">
-                                    <div *ngIf="admin_check==true">
+                                    <div>
                                         <button class="btn btn-fill btn-success" (click)="openVodUploadDialog()"
                                             data-toggle="dropdown" role="button">Upload VoD
                                         </button>
@@ -852,6 +894,24 @@
 
                                         <mat-table [dataSource]="dataSourceVod" matSort
                                             (matSortChange)="sortVodList($event)">
+
+                                             <!-- Checkbox Column -->
+                                            <ng-container matColumnDef="select" >
+                                                
+                                                <mat-header-cell *matHeaderCellDef>
+                                                    <mat-checkbox (change)="$event ? masterToggleVods() : null"
+                                                                  [checked]="selectionVods.hasValue() && isAllVodsSelected()"
+                                                                  [indeterminate]="selectionVods.hasValue() && !isAllVodsSelected()">
+                                                    </mat-checkbox>
+                                                </mat-header-cell>
+                                                <mat-cell *matCellDef="let row">
+                                                    <mat-checkbox (click)="$event.stopPropagation()" 
+                                                                    (change)="$event ? selectHandlerVod(row.vodId) : null"
+                                                                    [checked]="selectionVods.isSelected(row.vodId)">
+                                                    </mat-checkbox>
+                                                </mat-cell>
+
+                                            </ng-container>
 
                                             <ng-container matColumnDef="name">
                                                 <mat-header-cell *matHeaderCellDef mat-sort-header>Name
@@ -935,7 +995,6 @@
                                                     </a>
 
                                                     <button (click)="deleteVoD(row.vodName, row.vodId, row.type)"
-                                                        *ngIf="admin_check==true"
                                                         class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
                                                         type="button">
                                                         <span class="btn-label">
@@ -951,9 +1010,18 @@
                                             </mat-row>
                                         </mat-table>
 
+                                        <div class=" text-left">
+                                            <div>
+                                                <button class="btn btn-simple " (click)="deleteSelectedVoDs()"
+                                                     role="button">Delete
+                                                </button>
+                                            </div>
+                                        </div>
+
                                         <mat-paginator [length]="vodLength" [pageSize]="pageSize"
                                             [pageSizeOptions]="pageSizeOptions" (page)="onPaginateChange($event)">
                                         </mat-paginator>
+                                        
                                     </div>
 
                                 </div>
@@ -1481,12 +1549,11 @@
                                                                            
                                                                             type="checkbox">
     
-                                                                        <label for="s3RecordingEnabled"
-                                                                          >
+                                                                        <label for="s3RecordingEnabled">
                                                                             Enable S3 Recording <a
-                                                                            matTooltip="This feature uploads recording files(MP4 or WebM) to the S3">
-                                                                            <i
-                                                                                class="fa fa-info-circle"></i></a>
+                                                                            href="https://antmedia.io/docs/s3"
+                                                                            matTooltip="This feature uploads recorded files(MP4, WebM, HLS) to the S3. Click to learn more...">
+                                                                            <i class="fa fa-info-circle"></i></a>
                                                                     </label>
                                                                     </div>
 
@@ -1495,7 +1562,7 @@
                                                                         <div class="col-sm-12 text-left col-md-12">
                                                                             <label class="col-sm-12 col-md-3 control-label"
                                                                                 style="min-width: 160px; "
-                                                                                i18n="@@s3AccessKey">Access Key</label>
+                                                                                i18n="@@s3AccessKey">Access Key*</label>
                                                                             <div class="col-sm-12 text-left col-md-10">
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3AccessKey="ngModel"
@@ -1515,7 +1582,7 @@
                                                                         <div class="col-sm-12 text-left col-md-12">
                                                                             <label class="col-sm-12 col-md-3 control-label"
                                                                                 style="min-width: 160px; "
-                                                                                i18n="@@s3SecretKey">Secret Key</label>
+                                                                                i18n="@@s3SecretKey">Secret Key*</label>
                                                                             <div class="col-sm-12 text-left col-md-10">
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3SecretKey="ngModel"
@@ -1534,7 +1601,7 @@
                                                                         <div class="col-sm-12 text-left col-md-12">
                                                                             <label class="col-sm-12 col-md-3 control-label"
                                                                                 style="min-width: 160px; "
-                                                                                i18n="@@s3RegionName">Region Name</label>
+                                                                                i18n="@@s3RegionName">Region Name*</label>
                                                                             <div class="col-sm-12 text-left col-md-10">
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3RegionName="ngModel"
@@ -1553,7 +1620,7 @@
                                                                         <div class="col-sm-12 text-left col-md-12">
                                                                             <label class="col-sm-12 col-md-3 control-label"
                                                                                 style="min-width: 160px; "
-                                                                                i18n="@@s3BucketName">Bucket Name</label>
+                                                                                i18n="@@s3BucketName">Bucket Name*</label>
                                                                             <div class="col-sm-12 text-left col-md-10">
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3BucketName="ngModel"
@@ -1581,10 +1648,26 @@
                                                                                     class="form-control" name="s3Endpoint" 
                                                                                     type="text"
                                                                                     />
-                                                                                
                                                                             </div>
-            
                                                                         </div>
+                                                                        <div class="col-sm-12 text-left col-md-12">
+                                                                            <label class="col-sm-12 col-md-3 control-label">
+                                                                                Permission
+                                                                            </label>
+                                                                            <div class="col-sm-12 col-md-10 text-left">
+                                                                                <select  [(ngModel)]="appSettings.s3Permission"  #s3Permission="ngModel"                                                                             
+                                                                                    class="dropdown-toggle form-control"  name="s3Permission"
+                                                                                    >
+                                                                                    <option value="public-read">Public-Read</option>
+                                                                                    <option value="private">Private</option>
+                                                                                    <option value="public-read-write"  >Public-Read-Write</option>
+                                                                                    <option value="authenticated-read">Authenticated-Read</option>
+                                                                                    <option value="bucket-owner-read">Bucket-Owner-Read</option>
+                                                                                    <option value="bucket-owner-full-control">Bucket-Owner-Full-Control</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        
                                                                         
                                                                     </div>
                                                             </div>
@@ -1900,14 +1983,8 @@
 
                                             <div class="col-sm-12 col-md-12">
                                                 <div class="text-center">
-                                                    
-                                                    <div *ngIf="admin_check == false"
-                                                            i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
-                                                        You need to be admin to change settings
-                                                    </div>
-                                                   
-
-                                                    <button class="btn btn-info" *ngIf="admin_check==true" i18n="@@saveForm" style="margin: 15px"
+                                                                                                     
+                                                    <button class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
                                                         type="submit">Save
                                                     </button>
                                                     <!--
@@ -1944,7 +2021,4 @@
 
         </div>
     </div>
-
-
-
 </div>

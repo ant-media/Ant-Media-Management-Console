@@ -1,8 +1,9 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Locale } from "../../locale/locale";
 import { RestService, User } from '../../rest/rest.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import {ServerSettingsComponent} from "..//server.settings.component"
+import {ServerSettingsComponent} from "..//server.settings.component";
+import {MD5, show403Error} from "../../rest/auth.service";
 
 declare var $: any;
 declare var swal: any;
@@ -13,53 +14,55 @@ declare var swal: any;
     templateUrl: 'user.edit.dialog.component.html',
 })
 
-export class UserEditComponent {
+export class UserEditComponent implements OnInit {
 
     loading = false;
     public userUpdating = false;
     public userEditing: User;
     public userNameEmpty = false;
-    public currentUserType : string;
-    public AdminUserType : string = "ADMIN";
-    public ReadOnlyUserType : string = "READ_ONLY";
+    public allowedApp : string;
     public changePassword = false;
     public newPasswordAgain = "";
+
+    //TODO: duplicate variables
+    public AdminUserType : string = "ADMIN";
+    public ReadOnlyUserType : string = "READ_ONLY";
+    public BasicUserType : string = "USER";
+    public SYSTEM_SCOPE_OF_ACCESS : string = "system";
+	public applications : any;
 
     constructor(
         public dialogRef: MatDialogRef<UserEditComponent>, public restService: RestService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
-            console.log(data.email + " anan " + data.type)
-            this.currentUserType = data.type;
+            console.debug(data.email + " - " + data.type)
+            this.userEditing = new User(data.email,"");
+            this.userEditing.scope = data.scope;
+            this.userEditing.userType = data.type;
+    }
+
+    ngOnInit(){
+        this.restService.getApplications().subscribe(data => {
+            this.applications = data;
+        }, error => { show403Error(error); });
+
     }
 
     onNoClick(): void {
         this.dialogRef.close();
     }
-    UserTypeChanged(event:any){
 
-        if(event == this.AdminUserType) {
-            this.currentUserType = this.AdminUserType;
-        }
-        if(event == this.ReadOnlyUserType) {
-            this.currentUserType = this.ReadOnlyUserType;
-        }
-    }
     updateUser(isValid: boolean): void {
         if (!isValid) {
             return;
         }
 
-        this.userEditing = new User(this.dialogRef.componentInstance.data.email, "");
-        
-        this.userEditing.userType= this.currentUserType;
-        this.userEditing.newPassword = this.dialogRef.componentInstance.data.newPassword;
-        if(this.userEditing.newPassword == undefined){
-            this.userEditing.newPassword = "";
-        }
-
         if (!this.restService.checkStreamName(this.userEditing.email)){
             this.userNameEmpty = true;
             return;
+        }
+        console.log("user pass word " + this.userEditing.newPassword);
+        if (this.userEditing.newPassword != "" && this.userEditing.newPassword != undefined) {
+            this.userEditing.newPassword = MD5(this.userEditing.newPassword);
         }
         this.userUpdating = true;
 
@@ -97,6 +100,9 @@ export class UserEditComponent {
                     }
                 });
             }
+        }, error => { 
+            show403Error(error); 
+            this.userUpdating = false;
         });
     }
 

@@ -15,6 +15,11 @@ export declare interface UserInf {
 	 */
 	userType:string;
 
+    /**
+	 * Scope of user
+	 */
+    scope:string;
+
 	/**
 	 * Name of the user
 	 */
@@ -30,9 +35,11 @@ export declare interface UserInf {
 	 */
     id:string;
 }
+
 export declare interface UserInfoTable {
     dataRows: UserInf[];
 }
+
 
 export declare interface LiveComment {
     /**
@@ -215,6 +222,7 @@ export class AppSettings {
                 public s3RegionName: string,
                 public s3BucketName: string,
                 public s3Endpoint: string,
+                public s3Permission: string,
                 public enableTimeTokenForPlay: boolean,
                 public enableTimeTokenForPublish: boolean,
 
