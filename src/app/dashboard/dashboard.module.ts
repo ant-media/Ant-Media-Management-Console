@@ -8,6 +8,7 @@ import {DashboardRoutes} from './dashboard.routing';
 import {HttpClientModule} from '@angular/common/http';
 import {DataService} from "../rest/data.service";
 import {ServerSettingsComponent} from "../server.settings/server.settings.component";
+import {MatDialogModule} from '@angular/material/dialog';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import {ServerSettingsComponent} from "../server.settings/server.settings.compon
         RouterModule.forChild(DashboardRoutes),
         FormsModule,
         HttpClientModule,
+        MatDialogModule
     ],
     declarations: [OverviewComponent],
     providers: [DataService,ServerSettingsComponent],

@@ -213,8 +213,13 @@ export class RestService {
     liveBroadcast);
     }
 
-    public createApplication(appName: string):Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/applications/" + appName, {});
+    public createApplication(appName: string, formData:any):Observable<Object> {
+        if (formData != null) {
+            return this.http.put(REST_SERVICE_ROOT + "/applications/" + appName, formData);
+        }
+        else {
+            return this.http.post(REST_SERVICE_ROOT + "/applications/" + appName, {});
+        }
     }
 
     public deleteApplication(appName: string):Observable<Object> {
