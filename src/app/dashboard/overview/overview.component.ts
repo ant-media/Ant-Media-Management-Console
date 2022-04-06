@@ -9,6 +9,9 @@ import {AuthService, show403Error} from "../../rest/auth.service";
 import {SupportRequest} from "../../support/support.definitions";
 import {ServerSettings} from "../../app.page/app.definitions";
 import {Locale} from "../../locale/locale";
+import {MatDialog } from '@angular/material/dialog';
+import { NULL_EXPR } from '@angular/compiler/src/output/output_ast';
+
 
 declare var $: any;
 declare var Chartist: any;
@@ -65,9 +68,10 @@ export class OverviewComponent implements OnInit {
     public newAppCreating = false;
     public newApplicationName: string;
     public deployingApplication = false;
+    public warFileToUpload: File = null;
 
 
-    constructor(private auth: AuthService, private restService:RestService, private supportRestService:SupportRestService, private router:Router) {
+    constructor(private auth: AuthService, private restService:RestService, private supportRestService:SupportRestService, private router:Router , public dialog: MatDialog) {
 
     }
 
@@ -286,6 +290,11 @@ export class OverviewComponent implements OnInit {
 
     newApplication() {
         this.newApplicationActive = true;
+        this.warFileToUpload = null;
+    }
+
+    handleWarFileInput(files: FileList) {
+        this.warFileToUpload = files.item(0);
     }
 
     cancelNewApplication() {
@@ -376,7 +385,14 @@ export class OverviewComponent implements OnInit {
             return;
         }
         this.newAppCreating = true;
-        this.restService.createApplication(this.newApplicationName)
+        var formData:any = null;
+        if (this.warFileToUpload != null) {
+            formData = new FormData();
+            formData.append('file', this.warFileToUpload);
+            formData.append('file_info', this.warFileToUpload.name);
+        }
+        
+        this.restService.createApplication(this.newApplicationName, formData)
             .subscribe(
                 data => {
                    
@@ -470,9 +486,6 @@ export class OverviewComponent implements OnInit {
         }).catch(function () {
 
         });
-
-
-
-        
     }
+
 }
