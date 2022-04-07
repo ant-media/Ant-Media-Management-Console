@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit{
     public email = "";
     public password = "";
     public showIncorrectCredentials = false;
+    public showIncorrectJWTToken = false;
     public blockLoginAttempt = false;
     public firstLogin = false;
     public firstUser: User;
@@ -27,6 +28,8 @@ export class LoginComponent implements OnInit{
     public firstUserIsCreating:boolean;
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
+    public serverJWTToken: string;
+    public serverJWTControlEnabled: boolean;
 
     constructor(private element : ElementRef, private auth: AuthService, private router: Router,private restService: RestService) {
         this.nativeElement = element.nativeElement;
@@ -94,38 +97,60 @@ export class LoginComponent implements OnInit{
 
     loginUser() {
 
-        this.auth.login(this.email, this.password).subscribe(data =>{
+        localStorage.clear();
 
-            if (data["success"] == true) 
-            {
-                this.auth.isAuthenticated = data["success"];
-                localStorage.setItem("authenticated", "true");
-                localStorage.setItem(LOCAL_STORAGE_EMAIL_KEY, this.email);
-               
-                let scope = data["message"];
-                if (isScopeSystem(scope)) {
-                    scope = "system";
-                }
-                localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
-                if (isScopeSystem(scope)) 
-                {
+        if(this.serverJWTControlEnabled) {
+
+            //We need to define this value in this line
+            //server JWT tokens needs to be define before rest request
+            localStorage.setItem('serverJWTControlEnabled', "true");
+            localStorage.setItem('serverJWTToken', this.serverJWTToken);
+            this.restService.isInClusterMode().subscribe(data =>{
+
+                    localStorage.setItem("authenticated", "true");
+                    this.auth.isAuthenticated = true;
+
+                    let scope = "system";
+                    localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
+
                     this.router.navigateByUrl("/dashboard");
-                }
-                else 
+            },
+                error =>{
+                    this.showIncorrectJWTToken = true;
+                });
+        }
+        else{
+            this.auth.login(this.email, this.password).subscribe(data =>{
+                if (data["success"] == true)
                 {
-                    this.router.navigateByUrl("/applications/" + scope);
-                }
-            }
-            else {
-                this.showIncorrectCredentials = true;
-            }
+                    this.auth.isAuthenticated = data["success"];
+                    localStorage.setItem("authenticated", "true");
+                    localStorage.setItem(LOCAL_STORAGE_EMAIL_KEY, this.email);
 
-        }, error => { show403Error(error); });
-        
-        this.restService.getBlockedStatus(this.email).subscribe(data => {
-            this.blockLoginAttempt = data["success"];           
-        }, error => { show403Error(error); });
-        
+                    let scope = data["message"];
+                    if (isScopeSystem(scope)) {
+                        scope = "system";
+                    }
+                    localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
+                    if (isScopeSystem(scope))
+                    {
+                        this.router.navigateByUrl("/dashboard");
+                    }
+                    else
+                    {
+                        this.router.navigateByUrl("/applications/" + scope);
+                    }
+                }
+                else {
+                    this.showIncorrectCredentials = true;
+                }
+
+            }, error => { show403Error(error); });
+
+            this.restService.getBlockedStatus(this.email).subscribe(data => {
+                this.blockLoginAttempt = data["success"];
+            }, error => { show403Error(error); });
+        }
     }
 
 
@@ -152,6 +177,11 @@ export class LoginComponent implements OnInit{
     credentialsChanged():void {
         this.showIncorrectCredentials = false;
     }
+
+    JWTTokenChanged():void {
+        this.showIncorrectJWTToken = false;
+    }
+
 }
 
 export const LOCAL_STORAGE_EMAIL_KEY = "email";

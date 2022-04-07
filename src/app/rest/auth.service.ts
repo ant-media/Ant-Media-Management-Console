@@ -15,24 +15,24 @@ export var isScopeSystem = function(scope) {
     return scope == "" || scope == null || scope == "null" || scope == "system";
 }
 
-export var show403Error = function(error) 
+export var show403Error = function(error)
 {
-    //if it's 403 error, show an alert 
-    if (error && error.status == 403) {       
+    //if it's 403 error, show an alert
+    if (error && error.status == 403) {
         let message = "You are not allowed to access this resource. Contact your system administrator"
-            
+
         $.notify({
             icon: "ti-alert",
             message: message
         }, {
             type: 'warning',
             delay: 3000,
-            
+
             placement: {
                 from: 'bottom',
                 align: 'center'
             }
-            
+
         });
     }
 }
@@ -65,33 +65,32 @@ export class AuthService implements CanActivate {
 
         setInterval(() => {
             this.checkServerIsAuthenticated();
-
         }, 5000);
 
         //Check license every 300 seconds 5 minutes
         setInterval(() => {
             this.checkLicense();
         }, 300000);
-         
+
 
     }
 
     public checkLicense() {
         let scope  = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
-        if (this.isAuthenticated && scope == "system") 
+        if (this.isAuthenticated && scope == "system")
         {
-            if (this.serverSettings != null) 
+            if (this.serverSettings != null)
             {
-                this.restService.isEnterpriseEdition().subscribe(data => 
+                this.restService.isEnterpriseEdition().subscribe(data =>
                 {
                     this.isEnterpriseEdition = data["success"];
                     if (this.isEnterpriseEdition) {
                         this.getLicenceStatus(this.serverSettings.licenceKey);
                     }
-                }, error => { 
+                }, error => {
                     show403Error(error);
                  });
-                
+
             } else {
                 this.getServerSettings();
             }
@@ -129,8 +128,9 @@ export class AuthService implements CanActivate {
     }
 
     checkServerIsAuthenticated(): void {
+        let currentServerJwtStatus =  localStorage.getItem('serverJWTControlEnabled');
 
-        if (localStorage.getItem('authenticated')) 
+        if (localStorage.getItem('authenticated') && currentServerJwtStatus != "true")
         {
             this.restService.isAuthenticated().subscribe(data => {
 
@@ -157,17 +157,25 @@ export class AuthService implements CanActivate {
                     show403Error(error);
                 });
         }
+        else if(localStorage.getItem('authenticated') && this.isAuthenticated  && currentServerJwtStatus == "true" ){
+            this.isAuthenticated = true;
+
+            if(this.router.url=="/pages/login"){
+                this.router.navigateByUrl('/dashboard/overview');
+            }
+        }
         else{
             this.isAuthenticated = false;
         }
     }
 
     canActivate(): boolean {
+        let currentServerJwtStatus =  localStorage.getItem('serverJWTControlEnabled');
+
         console.debug("AuthService: is authenticated: " + this.isAuthenticated
             + " local storage: " + localStorage.getItem('authenticated'));
 
-        if (localStorage.getItem('authenticated') && this.isAuthenticated) {
-
+        if (localStorage.getItem('authenticated') && this.isAuthenticated && currentServerJwtStatus != "true") {
             this.restService.isAuthenticated().subscribe(data => {
 
                     this.isAuthenticated = data["success"];
@@ -186,7 +194,12 @@ export class AuthService implements CanActivate {
                 });
             return true;
         }
-        else {
+        else if(localStorage.getItem('authenticated') && this.isAuthenticated && currentServerJwtStatus == "true"){
+
+            this.isAuthenticated = true;
+            return true;
+        }
+        else{
             console.debug("AuthService navigating login")
             this.router.navigateByUrl('/pages/login');
             this.isAuthenticated = false;
@@ -201,8 +214,8 @@ export class AuthService implements CanActivate {
             this.serverSettings = <ServerSettings>data;
             localStorage.setItem('hostAddress', data["hostAddress"]);
             this.getLicenceStatus(this.serverSettings.licenceKey)
-        }, error => { 
-            show403Error(error); 
+        }, error => {
+            show403Error(error);
         });
     }
 

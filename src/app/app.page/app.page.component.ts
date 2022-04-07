@@ -674,7 +674,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
-            console.log(this.dataSource)
             this.cdr.detectChanges();
 
         }, error => { show403Error(error); });
@@ -1323,7 +1322,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
         },
-        error => 
+        error =>
         {
            show403Error(error);
         });

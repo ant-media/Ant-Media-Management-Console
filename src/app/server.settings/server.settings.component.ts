@@ -111,10 +111,10 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     }
 
     ngOnInit(){
-        this.serverSettings = new ServerSettings(null,null, false, this.logLevelInfo);
+        this.serverSettings = new ServerSettings(null,null, false, this.logLevelInfo,true);
 
         this.callTimer();
-       
+
         this.userDataTable = {
             dataRows: [],
         };
@@ -176,7 +176,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             });
             return;
         }
-        
+
         let dialogRef = this.dialog.open(UserEditComponent, {
             data: {
                 email : user.email,
@@ -190,7 +190,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             console.log('The dialog was closed');
             this.getUserList(this.userListOffset, this.pageSize);
         });
-    
+
     }
 
     getUserList(offset: number, size: number): void {
