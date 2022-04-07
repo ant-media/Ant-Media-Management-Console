@@ -92,20 +92,20 @@ export class AuthInterceptor implements HttpInterceptor{
         if(appName !=  null && currentAppJwtToken != null && currentAppJwtStatus == "true" && currentServerJwtToken != null && currentServerJwtStatus == "true" ){
             req = req.clone({
                 withCredentials: true,
-                headers: req.headers.append('ProxyAuthorization', currentAppJwtToken).append('Authorization', currentServerJwtToken)
+                headers: req.headers.append('ProxyAuthorization', currentServerJwtToken).append('Authorization', currentAppJwtToken)
             });
         }
         // Check AppName, JWT Token status and JWT Token not null
         else if(appName != null && currentAppJwtToken != null && currentAppJwtStatus == "true"){
             req = req.clone({
                 withCredentials: true,
-                headers: req.headers.append('ProxyAuthorization', currentAppJwtToken)
+                headers: req.headers.append('Authorization', currentAppJwtToken)
             });
         }
         else if(currentServerJwtToken != null || currentServerJwtStatus == "true"){
             req = req.clone({
                 withCredentials: true,
-                headers: req.headers.append('Authorization', currentServerJwtToken)
+                headers: req.headers.append('ProxyAuthorization', currentServerJwtToken)
             });
         }
         else {
