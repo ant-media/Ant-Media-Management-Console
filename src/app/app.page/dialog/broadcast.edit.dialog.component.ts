@@ -78,6 +78,7 @@ export class BroadcastEditComponent {
         this.liveStreamEditing.streamId = this.dialogRef.componentInstance.data.streamId;
         this.liveStreamEditing.webRTCViewerLimit = this.dialogRef.componentInstance.data.webRTCViewerLimit;
         this.liveStreamEditing.hlsViewerLimit = this.dialogRef.componentInstance.data.hlsViewerLimit;
+        this.liveStreamEditing.dashViewerLimit = this.dialogRef.componentInstance.data.dashViewerLimit;
         this.liveStreamEditing.type = this.dialogRef.componentInstance.data.type;
 
 
