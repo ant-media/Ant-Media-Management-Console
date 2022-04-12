@@ -9,8 +9,11 @@ export interface LocaleInterface {
     broadcast_not_deleted:string;
     playlist_not_deleted:string;
     settings_saved:string;
+    license_saved: string;
+    log_level_changed: string;
     settings_not_saved :string;
     new_broadcast_created :string;
+    new_user_created : string;
     new_broadcast_error: string;
     new_playlist_created :string;
     new_playlist_error: string;

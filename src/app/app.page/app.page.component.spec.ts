@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ExpectedConditions } from 'protractor';
 import {ClusterRestService} from "../rest/cluster.service";
+import { LOCAL_STORAGE_SCOPE_KEY } from 'app/pages/login/login.component';
 
 
 describe('AppComponent', () => {
@@ -68,13 +69,15 @@ describe('AppComponent', () => {
   }));
 
   beforeEach(() => {
-    
+    //localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, "LiveApp");
     fixture = TestBed.createComponent(AppPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it(`check share endpoint is defined`, async(() => {
+  it(`check share endpoint is defined`, async(() => 
+  {
+   
      expect(component).toBeDefined();
      expect(component.shareEndpoint).toBeUndefined();
      component.newIPCamera();

@@ -6,6 +6,7 @@ import {
     VideoServiceEndpoint,
     LiveComment,
 } from '../app.definitions';
+import { show403Error } from 'app/rest/auth.service';
 
 declare var $: any;
 declare var swal: any;
@@ -92,7 +93,7 @@ export class SocialMediaStatsComponent {
             if (data["status"] != "broadcasting") {
                 this.dialogRef.close();
             }
-        });
+        }, error => { show403Error(error); });
         var tempViewCalled = 0;
         var tempLikeCalled = 0;
         var tempCommentCalled = 0;
@@ -125,7 +126,7 @@ export class SocialMediaStatsComponent {
                             this.commentCount[typeName] = this.tempCommentCount[typeName];
                         }
                     }
-                });
+                }, error => { show403Error(error); });
 
             this.restService.getLiveViewsCount(this.appName, this.streamId, element.endpointServiceId)
                 .subscribe(data => {
@@ -138,7 +139,7 @@ export class SocialMediaStatsComponent {
                             this.viewCount[typeName] = this.tempViewCount[typeName];
                         }
                     }
-                });
+                }, error => { show403Error(error); });
 
             this.restService.getInteraction(this.appName, this.streamId, element.endpointServiceId)
                 .subscribe(data => {
@@ -155,7 +156,7 @@ export class SocialMediaStatsComponent {
                             }
                         }
                     }
-                });
+                }, error => { show403Error(error); });
         }
     }
 

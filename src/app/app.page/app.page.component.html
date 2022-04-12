@@ -39,7 +39,7 @@
 
                                 <div>
 
-                                    <div class="dropdown text-right" style="float: right">
+                                    <div class="dropdown text-right" style="float: right" >
                                         <button class="btn btn-fill btn-success" i18n="@@newLiveStreamButton"
                                             data-toggle="dropdown" role="button">New Live Stream
                                             <span class="caret"></span>
@@ -73,7 +73,7 @@
                                         </div>
                                         <div class="card-content">
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamName">Name</label>
+                                                <label i18n="@@newLiveStreamName">Name*</label>
                                                 <input type="text" required minlength="4" name="broadcastName"
                                                     i18n-placeholder="@@stream_name_place_holder"
                                                     placeholder="Stream name" class="form-control"
@@ -84,6 +84,16 @@
                                                 </small>
                                                 <small class="text-danger" *ngIf="streamNameEmpty">
                                                     Stream name should not be empty.
+                                                </small>
+                                            </div>
+                                            <div class="form-group text-left">
+                                                <label>Stream Id</label>
+                                                <input type="text" minlength="4" name="streamId"
+                                                    placeholder="Unique Id of the stream. If you do not enter a value, It will be generated automatically" class="form-control"
+                                                    [(ngModel)]="liveBroadcast.streamId" #streamId="ngModel">
+                                                <small [hidden]="streamId.valid || (!f.submitted)"
+                                                    class="text-danger">
+                                                    Stream Id should be at least 4 characters.
                                                 </small>
                                             </div>
 
@@ -150,7 +160,7 @@
                                         </div>
                                         <div class="card-content">
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamName">Name</label>
+                                                <label i18n="@@newLiveStreamName">Name*</label>
                                                 <input type="text" required minlength="4" name="broadcastName"
                                                     placeholder="Camera Name" class="form-control"
                                                     [(ngModel)]="liveBroadcast.name" #broadcastName="ngModel">
@@ -164,7 +174,7 @@
                                             </div>
 
                                             <div class="form-group text-left">
-                                                <label i18n="@@newOnvifIPUrl">ONVIF IP</label>
+                                                <label i18n="@@newOnvifIPUrl">ONVIF IP*</label>
                                                 <button (click)="startDiscover()"
                                                     class="btn btn-success btn-simple btn-magnify btn-xs "
                                                     type="button"> Auto-Discover
@@ -186,22 +196,33 @@
                                             </div>
 
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamName">User Name</label>
+                                                <label i18n="@@newLiveStreamName">User Name*</label>
                                                 <input type="text" name="username"
-                                                    i18n-placeholder="@@username_place_holder" placeholder="User Name"
+                                                    placeholder="User Name"
                                                     class="form-control" [(ngModel)]="liveBroadcast.username"
                                                     #username="ngModel">
 
                                             </div>
 
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamName">Password</label>
+                                                <label i18n="@@newLiveStreamName">Password*</label>
                                                 <input type="text" name="password"
-                                                    i18n-placeholder="@@password_place_holder" placeholder="Password "
+                                                     placeholder="Password "
                                                     type="password" class="form-control"
                                                     [(ngModel)]="liveBroadcast.password" #password="ngModel"
                                                     type="password">
 
+                                            </div>
+
+                                            <div class="form-group text-left">
+                                                <label>Stream Id</label>
+                                                <input type="text" minlength="4" name="streamId"
+                                                    placeholder="Unique Id of the stream. If you do not enter a value, It will be generated automatically" class="form-control"
+                                                    [(ngModel)]="liveBroadcast.streamId" #streamId="ngModel">
+                                                <small [hidden]="streamId.valid || (!f.submitted)"
+                                                    class="text-danger">
+                                                    Stream Id should be at least 4 characters.
+                                                </small>
                                             </div>
 
 
@@ -232,7 +253,7 @@
                                         </div>
                                         <div class="card-content">
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamName">Name</label>
+                                                <label i18n="@@newLiveStreamName">Name*</label>
                                                 <input type="text" required minlength="4" name="broadcastName"
                                                     i18n-placeholder="@@stream_name_place_holder"
                                                     placeholder="Stream name" class="form-control"
@@ -249,17 +270,27 @@
 
 
                                             <div class="form-group text-left">
-                                                <label i18n="@@newLiveStreamUrl">Stream URL</label>
+                                                <label i18n="@@newLiveStreamUrl">Stream URL*</label>
                                                 <input type="text" required minlength="4" name="broadcasturl"
-                                                    i18n-placeholder="@@stream_name_place_holder"
-                                                    placeholder="Stream Url" class="form-control"
+                                                    placeholder="Remote Stream URL" class="form-control"
                                                     [(ngModel)]="liveBroadcast.streamUrl" #broadcasturl="ngModel">
                                                 <small [hidden]="broadcasturl.valid || (!f.submitted)"
-                                                    class="text-danger" i18n="@@broadcastNameIsRequired">
+                                                    class="text-danger">
                                                     Stream URL is not valid
                                                 </small>
                                                 <small class="text-danger" *ngIf="!streamUrlValid">
                                                     Please write a valid stream URL
+                                                </small>
+                                            </div>
+
+                                            <div class="form-group text-left">
+                                                <label>Stream Id</label>
+                                                <input type="text" minlength="4" name="streamId"
+                                                    placeholder="Unique Id of the stream. If you do not enter a value, It will be generated automatically" class="form-control"
+                                                    [(ngModel)]="liveBroadcast.streamId" #streamId="ngModel">
+                                                <small [hidden]="streamId.valid || (!f.submitted)"
+                                                    class="text-danger">
+                                                    Stream Id should be at least 4 characters.
                                                 </small>
                                             </div>
 
@@ -337,7 +368,7 @@
                                                 <div class="row text-left">
                                                     <div class="col-sm-12 col-md-12">
                                                         <div>
-                                                            <label i18n="@@newLiveStreamName">Playlist Name</label>
+                                                            <label i18n="@@newLiveStreamName">Playlist Name*</label>
                                                             <input type="text" required minlength="4" name="playlistName"
                                                                 i18n-placeholder="@@stream_name_place_holder"
                                                                 placeholder="Stream name" class="form-control"
@@ -351,6 +382,16 @@
                                                                 Playlist name should not be empty.
                                                             </small>
             
+                                                        </div>
+                                                        <div class="form-group text-left">
+                                                            <label>Stream Id</label>
+                                                            <input type="text" minlength="4" name="streamId"
+                                                                placeholder="Unique Id of the stream. If you do not enter a value, It will be generated automatically" class="form-control"
+                                                                [(ngModel)]="liveBroadcast.streamId" #streamId="ngModel">
+                                                            <small [hidden]="streamId.valid || (!f.submitted)"
+                                                                class="text-danger">
+                                                                Stream Id should be at least 4 characters.
+                                                            </small>
                                                         </div>
 
                                                         <div *ngIf="liveBroadcast.playListItemList.length!=0">
@@ -391,6 +432,22 @@
                                                                 Add Playlist Item</button>
                                                         </div>
 
+                                                        <div>
+                                                            <div class="col-xs-12">
+                                                                <div class="checkbox">
+                                                                    <input
+                                                                            [(ngModel)]="liveBroadcast.playlistLoopEnabled"
+                                                                            id="playlistLoopEnabled"
+                                                                            name="playlistLoopEnabled" type="checkbox">
+
+                                                                    <label for="playlistLoopEnabled"
+                                                                           i18n="@@playlistLoopEnabled">
+                                                                        Loop Playlist
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                         <div class="row text-center" style="padding-top: 20px">
 
                                                             <button type="submit" [disabled]='newPlaylistWarn'
@@ -404,22 +461,16 @@
                                                                 i18n="@@newLiveStreamCancelButton"
                                                                 (click)="cancelPlaylist()">Cancel</button>
                                                         </div>
-
                                                     </div>
-
                                                 </div>
-
                                             </div>
                                         </div>
 
                                     </form>
                                 </div>
 
-                                <br>
-
                                 <div style="display: flex; justify-content: flex-end"
-                                    *ngIf="broadcastTableData.dataRows.length>=0">
-
+                                    *ngIf="broadcastTableData.dataRows.length>0">
                                     <div class="mat-header">
                                         <input (keyup)="applyFilter($event.target.value)" placeholder="Search">
                                     </div>
@@ -433,6 +484,24 @@
                                         <mat-table style="overflow: visible !important;" [dataSource]="dataSource" matSort
                                                    (matSortChange)="sortBroadcastList($event)">
 
+                                             <!-- Checkbox Column -->
+                                            <ng-container matColumnDef="select" >
+                                                
+                                                <mat-header-cell *matHeaderCellDef>
+                                                    <mat-checkbox (change)="$event ? masterToggleStreams() : null"
+                                                                  [checked]="selectionStreams.hasValue() && isAllStreamsSelected()"
+                                                                  [indeterminate]="selectionStreams.hasValue() && !isAllStreamsSelected()">
+                                                    </mat-checkbox>
+                                                </mat-header-cell>
+                                                <mat-cell *matCellDef="let row">
+                                                    <mat-checkbox (click)="$event.stopPropagation()" 
+                                                                    (change)="$event ? selectHandlerStreams(row.streamId) : null"
+                                                                    [checked]="selectionStreams.isSelected(row.streamId)">
+                                                    </mat-checkbox>
+                                                </mat-cell>
+
+                                            </ng-container>
+ 
                                             <ng-container matColumnDef="name">
                                                 <mat-header-cell [ngClass]="'stream-name-column'" *matHeaderCellDef
                                                     mat-sort-header> Stream Name </mat-header-cell>
@@ -487,27 +556,10 @@
 
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'broadcasting'">
-                                                            <ng-container [ngSwitch]="row.quality">
-
-                                                                <ng-container *ngSwitchCase="'poor'">
-                                                                    <i class="ti-pulse"
-                                                                        style="color:#98000b;font-size: 1.1em"
-                                                                        data-toggle="tooltip" i18n-title
-                                                                        title="Quality: Poor"> </i>
-                                                                </ng-container>
-                                                                <ng-container *ngSwitchCase="'average'">
-                                                                    <i class="ti-pulse"
-                                                                        style="color:#190e98;font-size: 1.1em"
-                                                                        data-toggle="tooltip" i18n-title
-                                                                        title="Quality: Average"> </i></ng-container>
-                                                                <ng-container *ngSwitchCase="'good'">
-                                                                    <i class="ti-pulse"
-                                                                        style="color:#199826;font-size: 1.1em"
-                                                                        data-toggle="tooltip" i18n-title
-                                                                        title="Quality: Good"> </i>
-                                                                </ng-container>
+                                                            
+                                                            <i class="fa fa-circle " style="color:#28a745"
+                                                                *ngSwitchCase="'broadcasting'">&nbsp;</i>
                                                                 Broadcasting
-                                                            </ng-container>
 
                                                             <ng-container *ngIf="row.speed > 0">
                                                                 <i data-toggle="tooltip" i18n-title title="Speed">
@@ -520,6 +572,11 @@
                                                             <i class="fa fa-circle text-muted"
                                                                 *ngSwitchCase="'finished'">&nbsp;</i>Offline
                                                         </ng-container>
+                                                        <ng-container *ngSwitchCase="'preparing'">
+                                                            <i class="fa fa-circle " style="color:#ffc107"
+                                                                *ngSwitchCase="'preparing'">&nbsp;</i>Preparing
+                                                        </ng-container>
+
                                                     </ng-container>
 
                                                 </mat-cell>
@@ -564,7 +621,7 @@
 
                                                     <div style="font-size: 1.1em">
 
-                                                        <ul class="nav navbar-right">
+                                                        <ul class="nav navbar-right" >
                                                             <li (click)="contextDropdownClicked()" class="dropdown">
                                                                 <a href="#" class="dropdown-toggle btn-magnify"
                                                                     data-toggle="dropdown">
@@ -793,6 +850,14 @@
                                             </mat-row>
                                         </mat-table>
 
+                                        <div class=" text-left">
+                                            <div>
+                                                <button class="btn btn-simple " (click)="deleteSelectedStreams()"
+                                                    role="button">Delete
+                                                </button>
+                                            </div>
+                                        </div>
+
                                         <mat-paginator [pageSizeOptions]="pageSizeOptions"
                                             (page)="onListPaginateChange($event)" [length]="listLength"
                                             [pageSize]="pageSize">
@@ -800,12 +865,11 @@
                                     </div>
                                 </div>
 
-                                <div class="main">
-                                    <div *ngIf="broadcastTableData.dataRows.length == 0"
+                                <p *ngIf="broadcastTableData.dataRows.length == 0"
                                          i18n="no live stream info | text messages appears when no live streams@@noLiveStreamExistsMessage">
                                         There is no stream at this time.
-                                    </div>
-                                </div>
+                                </p>
+                             
                                 <!-- /main -->
 
                             </div>
@@ -818,7 +882,7 @@
                                             data-toggle="dropdown" role="button">Upload VoD
                                         </button>
                                     </div>
-                                    <div>
+                                    <div *ngIf=" vodTableData.dataRows.length>0">
                                         <input style="margin-top:24px" (keyup)="applyFilterVod($event.target.value)" placeholder="Search">
                                     </div>
                                 </div>
@@ -830,6 +894,24 @@
 
                                         <mat-table [dataSource]="dataSourceVod" matSort
                                             (matSortChange)="sortVodList($event)">
+
+                                             <!-- Checkbox Column -->
+                                            <ng-container matColumnDef="select" >
+                                                
+                                                <mat-header-cell *matHeaderCellDef>
+                                                    <mat-checkbox (change)="$event ? masterToggleVods() : null"
+                                                                  [checked]="selectionVods.hasValue() && isAllVodsSelected()"
+                                                                  [indeterminate]="selectionVods.hasValue() && !isAllVodsSelected()">
+                                                    </mat-checkbox>
+                                                </mat-header-cell>
+                                                <mat-cell *matCellDef="let row">
+                                                    <mat-checkbox (click)="$event.stopPropagation()" 
+                                                                    (change)="$event ? selectHandlerVod(row.vodId) : null"
+                                                                    [checked]="selectionVods.isSelected(row.vodId)">
+                                                    </mat-checkbox>
+                                                </mat-cell>
+
+                                            </ng-container>
 
                                             <ng-container matColumnDef="name">
                                                 <mat-header-cell *matHeaderCellDef mat-sort-header>Name
@@ -876,7 +958,7 @@
                                                 </mat-cell>
                                             </ng-container>
 
-                                            <ng-container matColumnDef="actions">
+                                            <ng-container matColumnDef="actions" >
                                                 <mat-header-cell *matHeaderCellDef class="justify-flex-end"> Actions
                                                 </mat-header-cell>
 
@@ -928,9 +1010,18 @@
                                             </mat-row>
                                         </mat-table>
 
+                                        <div class=" text-left">
+                                            <div>
+                                                <button class="btn btn-simple " (click)="deleteSelectedVoDs()"
+                                                     role="button">Delete
+                                                </button>
+                                            </div>
+                                        </div>
+
                                         <mat-paginator [length]="vodLength" [pageSize]="pageSize"
                                             [pageSizeOptions]="pageSizeOptions" (page)="onPaginateChange($event)">
                                         </mat-paginator>
+                                        
                                     </div>
 
                                 </div>
@@ -1262,7 +1353,9 @@
 
                                                                                 <label for="objectDetection">
                                                                                     Use Object Detection <a
-                                                                                        matTooltip="If you use this feature, you should add Adaptive Streaming. If you still have a problem, review FAQ page in docs.antmedia.io">
+                                                                                        matTooltip="If you want to use this feature, you should first install necessary libraries by running install_tensorflow_plugin.sh script in the installation directory. 
+                                                                                        Also you should add Adaptive Streaming. 
+                                                                                        If you still have a problem, review FAQ page in docs.antmedia.io">
                                                                                         <i
                                                                                             class="fa fa-info-circle"></i></a>
                                                                                 </label>
@@ -1404,65 +1497,210 @@
                                                 </div>
                                                 <div class="card-content text-left">
                                                     <div class="form-group">
-                                                            <div *ngIf="!appSettings.h264Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
-                                                                <i
-                                                                    class="fa fa-exclamation-circle"></i>
-                                                                    H.264 is not enabled. Please enable H.264 for MP4 Recording
-                                                            </div>
-                                                            <div *ngIf="appSettings.h264Enabled">
-                                                                <div class="col-xs-12">
-                                                                    <div class="checkbox">
-                                                                        <input
-                                                                            [(ngModel)]="appSettings.mp4MuxingEnabled"
-                                                                            id="mp4MuxingEnabled"
-                                                                            name="mp4MuxingEnabled" type="checkbox">
+                                                        <div *ngIf="!appSettings.h264Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
+                                                            <i
+                                                                class="fa fa-exclamation-circle"></i>
+                                                                H.264 is not enabled. Please enable H.264 for MP4 Recording
+                                                        </div>
+                                                        <div *ngIf="appSettings.h264Enabled">
+                                                            <div class="col-xs-12">
+                                                                <div class="checkbox">
+                                                                    <input
+                                                                        [(ngModel)]="appSettings.mp4MuxingEnabled"
+                                                                        id="mp4MuxingEnabled"
+                                                                        name="mp4MuxingEnabled" type="checkbox">
 
-                                                                        <label for="mp4MuxingEnabled"
-                                                                            i18n="@@enableMP4Recording">
-                                                                            Record Live Streams as MP4
-                                                                        </label>
-                                                                    </div>
+                                                                    <label for="mp4MuxingEnabled"
+                                                                        i18n="@@enableMP4Recording">
+                                                                        Record Live Streams as MP4
+                                                                    </label>
                                                                 </div>
                                                             </div>
-                                                            <div *ngIf="!appSettings.vp8Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
-                                                                <i 
-                                                                    class="fa fa-exclamation-circle"></i> 
-                                                                    VP8 is not enabled. Please enable VP8 for WebM Recording
-                                                            </div>
-                                                            <div *ngIf="appSettings.vp8Enabled">
-                                                                <div class="col-xs-12">
-                                                                    <div class="checkbox">
-                                                                        <input
-                                                                            [(ngModel)]="appSettings.webMMuxingEnabled"
-                                                                            id="webMMuxingEnabled"
-                                                                            name="webMMuxingEnabled" type="checkbox">
+                                                        </div>
 
-                                                                        <label for="webMMuxingEnabled"
-                                                                            i18n="@@enableWebMRecording">
-                                                                            Record Live Streams as WebM
-                                                                        </label>
-                                                                    </div>
+                                                        <div *ngIf="!appSettings.vp8Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
+                                                            <i 
+                                                                class="fa fa-exclamation-circle"></i> 
+                                                                VP8 is not enabled. Please enable VP8 for WebM Recording
+                                                        </div>
+                                                        <div *ngIf="appSettings.vp8Enabled">
+                                                            <div class="col-xs-12">
+                                                                <div class="checkbox">
+                                                                    <input
+                                                                        [(ngModel)]="appSettings.webMMuxingEnabled"
+                                                                        id="webMMuxingEnabled"
+                                                                        name="webMMuxingEnabled" type="checkbox">
+
+                                                                    <label for="webMMuxingEnabled"
+                                                                        i18n="@@enableWebMRecording">
+                                                                        Record Live Streams as WebM
+                                                                    </label>
                                                                 </div>
                                                             </div>
-
-                                                            <div>
-                                                                <div class="col-xs-12">
+                                                        </div>
+                                                        
+                                                            
+                                                            <div class="col-xs-12"> 
                                                                     <div class="checkbox">
-
                                                                         <input
-                                                                            [(ngModel)]="appSettings.addDateTimeToMp4FileName"
-                                                                            id="addDateTimeToMp4FileName"
-                                                                            name="addDateTimeToMp4FileName"
+                                                                            [(ngModel)]="appSettings.s3RecordingEnabled"
+                                                                            id="s3RecordingEnabled"
+                                                                            name="s3RecordingEnabled"
+                                                                           
                                                                             type="checkbox">
-
-                                                                        <label for="addDateTimeToMp4FileName"
-                                                                            i18n="@@addDateTimeToMP4Recordings">
-                                                                            Add Date-Time to Record File names
-                                                                        </label>
-
+    
+                                                                        <label for="s3RecordingEnabled">
+                                                                            Enable S3 Recording <a
+                                                                            href="https://antmedia.io/docs/s3"
+                                                                            matTooltip="This feature uploads recorded files(MP4, WebM, HLS) to the S3. Click to learn more...">
+                                                                            <i class="fa fa-info-circle"></i></a>
+                                                                    </label>
                                                                     </div>
+
+                                                                    <div *ngIf="appSettings.s3RecordingEnabled" class="form-group">
+                                                                
+                                                                        <div class="col-sm-12 text-left col-md-12">
+                                                                            <label class="col-sm-12 col-md-3 control-label"
+                                                                                style="min-width: 160px; "
+                                                                                i18n="@@s3AccessKey">Access Key*</label>
+                                                                            <div class="col-sm-12 text-left col-md-10">
+                                                                                <input style="min-width: 125px;"
+                                                                                    #s3AccessKey="ngModel"
+                                                                                    [(ngModel)]="appSettings.s3AccessKey"
+                                                                                    class="form-control" name="s3AccessKey" required
+                                                                                    type="text"
+                                                                                    required/>
+                                                                            <small
+                                                                                [hidden]="s3AccessKey.valid || !f.submitted"
+                                                                                class="text-danger">
+                                                                                S3 Access Key is Required.
+                                                                            </small>
+                                                                                
+                                                                            </div>
+                                                                        </div>
+                                                                                                                                        
+                                                                        <div class="col-sm-12 text-left col-md-12">
+                                                                            <label class="col-sm-12 col-md-3 control-label"
+                                                                                style="min-width: 160px; "
+                                                                                i18n="@@s3SecretKey">Secret Key*</label>
+                                                                            <div class="col-sm-12 text-left col-md-10">
+                                                                                <input style="min-width: 125px;"
+                                                                                    #s3SecretKey="ngModel"
+                                                                                    [(ngModel)]="appSettings.s3SecretKey"
+                                                                                    class="form-control" name="s3SecretKey" required
+                                                                                    type="text"
+                                                                                    required/>
+                                                                                <small
+                                                                                    [hidden]="s3SecretKey.valid || !f.submitted"
+                                                                                    class="text-danger">
+                                                                                    S3 Secret Key is Required.
+                                                                                </small>
+                                                                            </div>
+                                                                        </div>
+            
+                                                                        <div class="col-sm-12 text-left col-md-12">
+                                                                            <label class="col-sm-12 col-md-3 control-label"
+                                                                                style="min-width: 160px; "
+                                                                                i18n="@@s3RegionName">Region Name*</label>
+                                                                            <div class="col-sm-12 text-left col-md-10">
+                                                                                <input style="min-width: 125px;"
+                                                                                    #s3RegionName="ngModel"
+                                                                                    [(ngModel)]="appSettings.s3RegionName"
+                                                                                    class="form-control" name="s3RegionName" required
+                                                                                    type="text"
+                                                                                    required/>
+                                                                                <small
+                                                                                    [hidden]="s3RegionName.valid || !f.submitted"
+                                                                                    class="text-danger">
+                                                                                    S3 Region Name is Required.
+                                                                                </small>
+                                                                            </div>
+                                                                        </div>
+            
+                                                                        <div class="col-sm-12 text-left col-md-12">
+                                                                            <label class="col-sm-12 col-md-3 control-label"
+                                                                                style="min-width: 160px; "
+                                                                                i18n="@@s3BucketName">Bucket Name*</label>
+                                                                            <div class="col-sm-12 text-left col-md-10">
+                                                                                <input style="min-width: 125px;"
+                                                                                    #s3BucketName="ngModel"
+                                                                                    [(ngModel)]="appSettings.s3BucketName"
+                                                                                    class="form-control" name="s3BucketName" required
+                                                                                    type="text"
+                                                                                    required/>
+                                                                                <small
+                                                                                    [hidden]="s3BucketName.valid || !f.submitted"
+                                                                                    class="text-danger">
+                                                                                    S3 Bucket Name is Required.
+                                                                                </small>
+                                                                            </div>
+            
+                                                                        </div>
+        
+                                                                        <div class="col-sm-12 text-left col-md-12">
+                                                                            <label class="col-sm-12 col-md-3 control-label"
+                                                                                style="min-width: 160px; "
+                                                                                i18n="@@s3Endpoint">Endpoint</label>
+                                                                            <div class="col-sm-12 text-left col-md-10">
+                                                                                <input style="min-width: 125px;"
+                                                                                    #s3Endpoint="ngModel"
+                                                                                    [(ngModel)]="appSettings.s3Endpoint"
+                                                                                    class="form-control" name="s3Endpoint" 
+                                                                                    type="text"
+                                                                                    />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-sm-12 text-left col-md-12">
+                                                                            <label class="col-sm-12 col-md-3 control-label">
+                                                                                Permission
+                                                                            </label>
+                                                                            <div class="col-sm-12 col-md-10 text-left">
+                                                                                <select  [(ngModel)]="appSettings.s3Permission"  #s3Permission="ngModel"                                                                             
+                                                                                    class="dropdown-toggle form-control"  name="s3Permission"
+                                                                                    >
+                                                                                    <option value="public-read">Public-Read</option>
+                                                                                    <option value="private">Private</option>
+                                                                                    <option value="public-read-write"  >Public-Read-Write</option>
+                                                                                    <option value="authenticated-read">Authenticated-Read</option>
+                                                                                    <option value="bucket-owner-read">Bucket-Owner-Read</option>
+                                                                                    <option value="bucket-owner-full-control">Bucket-Owner-Full-Control</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                        
+                                                                    </div>
+                                                            </div>
+                                                            
+                                                            
+                                                            
+                                                            
+                                                       
+
+                                                        <div>
+                                                            <div class="col-xs-12">
+                                                                <div class="checkbox">
+
+                                                                    <input
+                                                                        [(ngModel)]="appSettings.addDateTimeToMp4FileName"
+                                                                        id="addDateTimeToMp4FileName"
+                                                                        name="addDateTimeToMp4FileName"
+                                                                        type="checkbox">
+
+                                                                    <label for="addDateTimeToMp4FileName"
+                                                                        i18n="@@addDateTimeToMP4Recordings">
+                                                                        Add Date-Time to Record File names
+                                                                    </label>
+
                                                                 </div>
                                                             </div>
+                                                        </div>
+
+                                                        
+                                                        
+                                                        
+                                                            
+                                                            
 
                                                     </div>
                                                 </div>
@@ -1519,22 +1757,43 @@
                                                             </div>
                                                         </div>
 
+                                                        
+
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
-                                                                <input [(ngModel)]="appSettings.timeTokenSubscriberOnly"
-                                                                    id="timeTokenSubscriberOnly" name="timeTokenSubscriberOnly"
+                                                                <input [(ngModel)]="appSettings.enableTimeTokenForPublish"
+                                                                    id="enableTimeTokenForPublish" name="enableTimeTokenForPublish"
                                                                     type="checkbox">
 
-                                                                <label for="timeTokenSubscriberOnly">
-                                                                    Accept only time based token Subscribers <a
+                                                                <label for="enableTimeTokenForPublish">
+                                                                    Enable TOTP for Publishing <a
                                                                         href=""
                                                                         target="_blank"
-                                                                        matTooltip="After enabling this option, only time based token subscribers are accepted as publisher or players for the streams. Subscribers should be added through REST API. Click for more information."><i
+                                                                        matTooltip="After enabling this option, publishing can be done with TOTP"><i
                                                                             style="font-size: 20px;"
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>                                                                
                                                             </div>
                                                         </div>
+
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="appSettings.enableTimeTokenForPlay"
+                                                                    id="enableTimeTokenForPlay" name="enableTimeTokenForPlay"
+                                                                    type="checkbox">
+
+                                                                <label for="enableTimeTokenForPlay">
+                                                                    Enable TOTP for Playing <a
+                                                                        href=""
+                                                                        target="_blank"
+                                                                        matTooltip="After enabling this option, playing can be done with TOTP"><i
+                                                                            style="font-size: 20px;"
+                                                                            class="fa fa-info-circle"></i></a>
+                                                                </label>                                                                
+                                                            </div>
+                                                        </div>
+
+
 
                                                         <div *ngIf=!isEnterpriseEdition class="text-left">
                                                             <div class="col-xs-12">
@@ -1724,7 +1983,7 @@
 
                                             <div class="col-sm-12 col-md-12">
                                                 <div class="text-center">
-
+                                                                                                     
                                                     <button class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
                                                         type="submit">Save
                                                     </button>
@@ -1762,7 +2021,4 @@
 
         </div>
     </div>
-
-
-
 </div>

@@ -27,6 +27,7 @@ import "rxjs/add/operator/toPromise";
 import {
     SupportRequest
 } from './support.definitions';
+import { show403Error } from 'app/rest/auth.service';
 
 declare var $: any;
 declare var Chartist: any;
@@ -72,11 +73,12 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
     ngOnInit() {
         this.restService.isEnterpriseEdition().subscribe(data => {
             this.isEnterpriseEdition = data["success"];
-        });
+        }, error => { show403Error(error); });
         
         this.restService.getServerSettings().subscribe(data => {
             this.isMarketBuild = data["buildForMarket"];
-        });
+        }, error => { //don't show 403 error because redundant
+         });
     }
 
     ngAfterViewInit() 
@@ -118,6 +120,22 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 });
             } else {
+                $.notify({
+                    icon: "ti-alert",
+                    message: "Your request couldn't be sent. Please try again or send email to support@antmedia.io"
+                }, {
+                    type: 'warning',
+                    delay: 1900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+        },
+        error=> {
+            show403Error(error);
+            if (!error && error.status != 403) {
                 $.notify({
                     icon: "ti-alert",
                     message: "Your request couldn't be sent. Please try again or send email to support@antmedia.io"

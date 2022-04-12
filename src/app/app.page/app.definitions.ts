@@ -3,7 +3,7 @@ export class Endpoint {
     endpointServiceId: string;
     rtmpUrl: string;
 }
-export declare interface User {
+export declare interface UserInf {
 
 	/**
 	 * Email of the user
@@ -13,7 +13,12 @@ export declare interface User {
 	/**
 	 * Type of the user
 	 */
-	userType:String;
+	userType:string;
+
+    /**
+	 * Scope of user
+	 */
+    scope:string;
 
 	/**
 	 * Name of the user
@@ -31,6 +36,11 @@ export declare interface User {
     id:string;
 }
 
+export declare interface UserInfoTable {
+    dataRows: UserInf[];
+}
+
+
 export declare interface LiveComment {
     /**
 	 * id of the comment
@@ -45,7 +55,7 @@ export declare interface LiveComment {
 	/**
 	 * User who write this comment
 	 */
-	from:User;
+	from:UserInf;
 
 	/**
 	 * Origin of the comment
@@ -163,6 +173,7 @@ export class ServerSettings {
     constructor(public serverName: string,
                 public licenceKey: string,
                 public buildForMarket: boolean,
+                public logLevel: string
     ) {}
 }
 
@@ -187,7 +198,9 @@ export class AppSettings {
                 public objectDetectionEnabled: boolean,
                 public publishTokenControlEnabled: boolean,
                 public playTokenControlEnabled: boolean,
+
                 public timeTokenSubscriberOnly: boolean,
+
                 public webRTCEnabled: boolean,
                 public webRTCFrameRate: number,
                 public remoteAllowedCIDR: string,
@@ -202,7 +215,16 @@ export class AppSettings {
                 public jwtStreamSecretKey: string,
                 public playJwtControlEnabled: boolean,
                 public publishJwtControlEnabled: boolean,
-                public generatePreview: boolean
+                public generatePreview: boolean,
+                public s3RecordingEnabled: boolean,
+                public s3AccessKey: string,
+                public s3SecretKey: string,
+                public s3RegionName: string,
+                public s3BucketName: string,
+                public s3Endpoint: string,
+                public s3Permission: string,
+                public enableTimeTokenForPlay: boolean,
+                public enableTimeTokenForPublish: boolean,
 
     ) {}
 }

@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
     PlaylistItem,
 } from '../app.definitions';
+import { show403Error } from 'app/rest/auth.service';
 
 declare var $: any;
 
@@ -38,7 +39,8 @@ export class PlaylistEditComponent {
             this.playlistEditing.playListItemList = data["playListItemList"];
             this.playlistEditing.currentPlayIndex = data["currentPlayIndex"];
             this.playlistEditing.name = data["name"];
-        });
+            this.playlistEditing.playlistLoopEnabled = data["playlistLoopEnabled"];
+        }, error => { show403Error(error); });
 
     }
 
@@ -90,7 +92,7 @@ export class PlaylistEditComponent {
                     }
                 });
             }
-        });
+        }, error => { show403Error(error); });
     }
 
     addPlaylistItemEditing(): void 

@@ -1,0 +1,71 @@
+<div>
+
+    <form method="post" #f="ngForm" validate (ngSubmit)="updateUser(f.valid)">
+        <div class="card-content" style="padding-top:0px">
+            <h4 class="card-title text-left" i18n="@@editUserCardTitle">
+                Edit User
+            </h4>
+        </div>
+        <div class="card-content">
+            <div class="checkbox">
+                <input enabled id="change_password" name="change_password"
+                    [(ngModel)]="changePassword"
+                    type="checkbox">
+
+                <label for="change_password">
+                    Change Password 
+                </label>
+            </div>
+            <div class="form-group text-left" *ngIf="changePassword">
+                <label i18n="@@newPassword">New Password</label>
+                <input type="password" name="password"  i18n-placeholder="@@password_place_holder" placeholder="Password"
+                    class="form-control" [required]="userEditing.newPassword" minlength="6" [(ngModel)]="userEditing.newPassword" validateEqual="password_again" reverse="true" #password="ngModel" >
+                <small  [hidden]="password.valid || (!f.submitted)" class="text-danger">
+                    Password is required and at least 6 characters
+                </small>
+            </div>
+            <div class="form-group text-left" *ngIf="changePassword">
+           
+                <label i18n="@@newPassword">New Password(Again)</label>
+                <input type="password" name="password_again" [required]="changePassword" minlength="6" placeholder="Password" reverse="false"
+                    class="form-control" [(ngModel)]="newPasswordAgain" #password_again="ngModel" validateEqual="password">
+                <small  [hidden]="password_again.valid || (!f.submitted)" class="text-danger">
+                        Passwords should match
+                </small>
+            </div>
+
+            <fieldset >
+                <div class="form-group text-left" >
+                    <label>User type</label>
+
+                    <select  type="text"  [name]="'UserType'" [(ngModel)]="userEditing.userType" 
+                            class="dropdown-toggle form-control" required>
+                            <option value="{{AdminUserType}}" >{{AdminUserType}}</option>
+                            <option value="{{BasicUserType}}" >{{BasicUserType}}</option>
+                            <option value="{{ReadOnlyUserType}}">{{ReadOnlyUserType}}</option>
+                    </select>
+                </div>
+            </fieldset>
+
+
+                <div class="form-group text-left" >
+                    <label>Scope of Access</label>
+                    <select type="text"  [name]="'ApplicationPermission'" [(ngModel)]="userEditing.scope"
+                    class="dropdown-toggle form-control"*ngIf="applications" required>
+                        <option value="{{SYSTEM_SCOPE_OF_ACCESS}}" >Everything</option>
+                        <option *ngFor="let eachVal of applications['applications']"  [value]="eachVal" >
+                                {{eachVal}}
+                        </option>
+                        </select>
+                </div>
+
+            <div class="form-group text-center">
+
+                <button type="submit" [disabled]='userUpdating' class="btn btn-fill btn-success" i18n="@@newLiveStreamSaveButton">
+                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="userUpdating" aria-hidden="true"></i>Save</button>
+
+                <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelEditLiveStream()">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>
