@@ -85,24 +85,35 @@
                                             i18n="@@failed_to_create_user_account" >
                                             Failed to create user account. There can be already an user
                                             </div>
+                           
+                              
 
                                             <div class="form-group">
-                                                <label i18n="@@registerUserFullName">Full Name<span class="star">*</span></label>
-                                                <input type="text" name="fullname" class="form-control input-no-border"
-                                                   [(ngModel)]="firstUser.fullName" #fullName="ngModel" required minlength="6">
-                                                <small i18n="@@fullNameIsRequired" [hidden]="fullName.valid || (fullName.pristine && !registerForm.submitted)" class="text-danger">
-                                                Full name is required and it should be at least 6 characters
+                                                <label i18n="@@registerUserFullName">First Name<span class="star">*</span></label>
+                                                <input type="text" name="firstName" class="form-control input-no-border"
+                                                   [(ngModel)]="firstUser.firstName" #firstName="ngModel" required minlength="2">
+                                                <small [hidden]="firstName.valid || (firstName.pristine && !registerForm.submitted)" class="text-danger">
+                                                First name is required
                                                 </small>
                                              </div>
-                                           
-                                            <div class="form-group">
-                                                <label i18n="@@loginFormEmail">Username<span class="star">*</span></label>
-                                                <input  type="email" name="firstEmail" class="form-control input-no-border" 
+                                             <div class="form-group">
+                                                <label i18n="@@registerUserFullName">Last Name<span class="star">*</span></label>
+                                                <input type="text" name="lastName" class="form-control input-no-border"
+                                                   [(ngModel)]="firstUser.lastName" #lastName="ngModel" required minlength="2">
+                                                <small [hidden]="lastName.valid || (lastName.pristine && !registerForm.submitted)" class="text-danger">
+                                                Last name is required 
+                                                </small>
+                                             </div>
+
+                                             <div class="form-group">
+                                                <label i18n="@@loginFormEmail">Username (E-mail)<span class="star">*</span></label>
+                                                <input  type="email" name="firstEmail" class="form-control input-no-border" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
                                                     [(ngModel)]="firstUser.email" required #firstAccountEmail="ngModel" minlength="5">
                                                     <small i18n="@@fistAccountEmailRequired" [hidden]="firstAccountEmail.valid || (firstAccountEmail.pristine && !registerForm.submitted)" class="text-danger">
-                                                    Username should be at least 5 characters
+                                                    E-mail is required and it should be in correct form
                                                     </small>
                                             </div>
+
                                             <div class="form-group">
                                                 <label i18n="@@loginFormPassword">Password<span class="star">*</span></label>
                                                 <input type="password" name="first_password" 
@@ -119,7 +130,8 @@
                                                         <small i18n="@@password_mismatch" [hidden]="firstPasswordAgain.valid || (firstPasswordAgain.pristine && !registerForm.submitted)" class="text-danger">
                                                         Password mismatch
                                                         </small>
-                                                </div>
+                                            </div>
+                        
                                         </div>
                                         <div class="card-footer text-center">
                                             <button type="submit" [disabled]='firstUserIsCreating' 

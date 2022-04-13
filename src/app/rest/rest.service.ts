@@ -19,6 +19,8 @@ export class User {
     public fullName: string;
     public userType: string;
     public scope: string;
+    public firstName: string;
+    public lastName: string;
 
     constructor(public email: string, public password: string) { }
 }

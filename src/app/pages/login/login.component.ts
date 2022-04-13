@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthService, show403Error} from '../../rest/auth.service';
 import {User} from '../../rest/rest.service';
+import {SupportRestService} from "../../rest/support.service";
 import {RestService} from '../../rest/rest.service';
 import {isScopeSystem} from "../../rest/auth.service";
 declare var $:any;
@@ -28,7 +29,9 @@ export class LoginComponent implements OnInit{
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
 
-    constructor(private element : ElementRef, private auth: AuthService, private router: Router,private restService: RestService) {
+    constructor(private element : ElementRef, private supportRestService:SupportRestService, private auth: AuthService, private router: Router, private restService: RestService) 
+	{
+
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
         this.showYouCanLogin = false;
@@ -141,7 +144,6 @@ export class LoginComponent implements OnInit{
             if (data["success"] == true) {
                 this.firstLogin = false;
                 this.showYouCanLogin = true;
-
             }
             else {
                 this.showFailedToCreateUserAccount = true;
