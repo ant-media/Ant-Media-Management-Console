@@ -122,34 +122,12 @@ export class OverviewComponent implements OnInit {
                 }, 10000);
             }
         }, error => { show403Error(error); });
-
-        if(this.auth.isCommunityCheckboxEnabled){
-            this.sendCommunityEmailMessage();
-        }
-
     }
 
     ngOnDestroy() {
         if (this.timerId) {
             clearInterval(this.timerId);
         }
-    }
-
-    sendCommunityEmailMessage():void {
-        let request = new SupportRequest();
-
-        request.name = this.auth.user.fullName;
-        request.email = this.auth.user.email;
-        request.sendSystemInfo = false;
-
-        request.title = "Community Edition campaign email";
-        request.description = "Community Edition campaign email";
-
-        this.supportRestService.sendRequest(request).subscribe(data => {
-            if (data["success"] == true) {
-                console.log("Community campaign mail sent properly");
-            }
-        });
     }
 
     checkShutdownProperly(): void{

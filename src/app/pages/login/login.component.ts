@@ -28,7 +28,6 @@ export class LoginComponent implements OnInit{
     public firstUserIsCreating:boolean;
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
-    public communityEditionCheckbox:boolean;
 
     constructor(private element : ElementRef, private supportRestService:SupportRestService, private auth: AuthService, private router: Router, private restService: RestService) 
 	{
@@ -145,8 +144,6 @@ export class LoginComponent implements OnInit{
             if (data["success"] == true) {
                 this.firstLogin = false;
                 this.showYouCanLogin = true;
-
-                this.auth.isCommunityCheckboxEnabled = this.communityEditionCheckbox;
             }
             else {
                 this.showFailedToCreateUserAccount = true;
