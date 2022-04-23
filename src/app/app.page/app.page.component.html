@@ -1313,7 +1313,153 @@
 
                                                             </div>
                                                         </div>
+
+                                                        <div class="form-group">
+                                                            <div class="col-sm-12 col-md-12 text-left">
+                                                                <div class="checkbox">
+
+                                                                    <input [(ngModel)]="appSettings.deleteHLSFilesOnEnded"
+                                                                        id="deleteHLSFilesOnEnded" name="deleteHLSFilesOnEnded"
+                                                                        type="checkbox">
+
+                                                                    <label for="deleteHLSFilesOnEnded"
+                                                                        i18n="@@deleteHLSFilesOnEnded"> 
+                                                                        Delete HLS files after stream finished
+                                                                    </label>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                 </div>
+
+                                                <div class="card-header">
+                                                    <legend class="text-left">
+                                                        DASH Streaming
+                                                    </legend>
+                                                </div>
+
+                                                <div *ngIf="!appSettings.h264Enabled"
+                                                    class="card-content text-left">
+                                                        <i style="font-size: 20px;color:#DD0330"
+                                                            class="fa fa-exclamation-circle"></i> H.264 is not enabled. Please enable H.264 for DASH Streaming
+                                                </div>
+                                                <div *ngIf="appSettings.h264Enabled" class="card-content text-left">
+
+                                                        <div class="form-group">
+                                                            <div class="col-sm-12 col-md-12 text-left">
+                                                                <div class="checkbox">
+
+                                                                    <input [(ngModel)]="appSettings.dashMuxingEnabled"
+                                                                        id="dashMuxingEnabled" name="dashMuxingEnabled"
+                                                                        type="checkbox">
+
+                                                                    <label for="dashMuxingEnabled"
+                                                                        i18n="@@enableDASHLiveStreaming">
+                                                                        Create DASH Streaming
+                                                                    </label>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="col-sm-12 text-left col-md-12">
+
+
+                                                                <label class="col-sm-12 col-md-3 control-label"
+                                                                    style="min-width: 160px; "
+                                                                    i18n="@@dashSegDuration">Segment Duration</label>
+
+
+                                                                <div class="col-sm-12 text-left col-md-3">
+                                                                    <input style="min-width: 125px;"
+                                                                        #dashSegDuration="ngModel"
+                                                                        [(ngModel)]="appSettings.dashSegDuration"
+                                                                        class="form-control" name="dashSegDuration" required
+                                                                        type="number">
+                                                                    <small [hidden]="dashSegDuration.valid"
+                                                                        class="text-danger">
+                                                                        Segment duration is required
+                                                                    </small>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="col-sm-12 text-left col-md-12">
+
+                                                                <label class="col-sm-12 col-md-3 control-label"
+                                                                    style="min-width: 160px; "
+                                                                    i18n="@@DASHSegmentDuration">Fragment Duration</label>
+
+                                                                <div class="col-sm-12 text-left col-md-3">
+                                                                    <input style="min-width: 125px;" #dashFragmentDuration="ngModel"
+                                                                        [(ngModel)]="appSettings.dashFragmentDuration"
+                                                                        class="form-control" name="dashFragmentDuration" required
+                                                                        type="number">
+                                                                    <small [hidden]="dashFragmentDuration.valid" class="text-danger">
+                                                                        Fragment duration is required
+                                                                    </small>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="col-sm-12 col-md-12 text-left">
+                                                                <div class="checkbox">
+
+                                                                    <input [(ngModel)]="appSettings.lLDashEnabled"
+                                                                        id="lLDashEnabled" name="lLDashEnabled"
+                                                                        type="checkbox">
+
+                                                                    <label for="lLDashEnabled"
+                                                                        i18n="@@lLDashEnabled">
+                                                                        Enable Low Latency DASH Streaming
+                                                                    </label>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="col-sm-12 col-md-12 text-left">
+                                                                <div class="checkbox">
+
+                                                                    <input [(ngModel)]="appSettings.lLHLSEnabled"
+                                                                        id="lLHLSEnabled" name="lLHLSEnabled"
+                                                                        type="checkbox">
+
+                                                                    <label for="lLHLSEnabled"
+                                                                        i18n="@@lLHLSEnabled">
+                                                                        Enable Low Latency HLS Streaming
+                                                                    </label>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="col-sm-12 col-md-12 text-left">
+                                                                <div class="checkbox">
+
+                                                                    <input [(ngModel)]="appSettings.deleteDASHFilesOnEnded"
+                                                                        id="deleteDASHFilesOnEnded" name="deleteDASHFilesOnEnded"
+                                                                        type="checkbox">
+
+                                                                    <label for="deleteDASHFilesOnEnded"
+                                                                        i18n="@@deleteDASHFilesOnEnded"> 
+                                                                        Delete DASH files after stream finished
+                                                                    </label>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                </div>
+
                                                 <!--<div [hidden]="!advancedSetting">-->
                                                 <div>
                                                     <div class="card-header">
