@@ -1080,26 +1080,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         let REMOTE_HOST_ADDRESS;
         let hostAddress = localStorage.getItem('hostAddress');
 
-        // I didn't added broadcast status check. Because, some of stream sources status is finished but it's trying to connect sources.
-        if (this.isClusterMode && hostAddress != broadcastHostAddress) {
-            REMOTE_HOST_ADDRESS = "http://" + broadcastHostAddress + ":5080";
-
-            if (this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey != null) {
-                $.notify({
-                    icon: "ti-save",
-                    message: "Please enable JWT Filter or Delete Broadcast in a stopped status"
-                }, {
-                    type: "danger",
-                    delay: 2000,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-                return;
-            }
-        }
-
         swal({
             title: Locale.getLocaleInterface().are_you_sure,
             text: Locale.getLocaleInterface().wont_be_able_to_revert,
