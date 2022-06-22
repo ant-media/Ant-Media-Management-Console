@@ -186,6 +186,7 @@ export class AppSettings {
                 public hlsListSize: number,
                 public hlsTime: number,
                 public hlsPlayListType: string,
+                public deleteHLSFilesOnEnded: boolean,
                 public facebookClientId: string,
                 public facebookClientSecret: string,
                 public youtubeClientId: string,
@@ -225,6 +226,12 @@ export class AppSettings {
                 public s3Permission: string,
                 public enableTimeTokenForPlay: boolean,
                 public enableTimeTokenForPublish: boolean,
+                public dashMuxingEnabled: boolean,
+                public dashSegmentDuration: number,
+                public dashFragmentDuration: number,
+                public lLDashEnabled: boolean, 
+                public lLHLSEnabled: boolean,
+                public deleteDASHFilesOnEnded: boolean
 
     ) {}
 }
