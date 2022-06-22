@@ -48,11 +48,13 @@ export class LiveBroadcast {
     endPointList:Endpoint[];
     playListItemList: PlaylistItem[];
     hlsViewerCount: number = 0;
+    dashViewerCount: number = 0;
     webRTCViewerCount : number = 0;
     rtmpViewerCount : number = 0;
     mp4Enabled : number = 0;
     webRTCViewerLimit: number;
     hlsViewerLimit: number;
+    dashViewerLimit: number;
     currentPlayIndex: number;
     playlistLoopEnabled: boolean = true;
 

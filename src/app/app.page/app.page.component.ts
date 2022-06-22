@@ -514,6 +514,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 appName: this.appName,
                 webRTCViewerLimit: this.selectedBroadcast.webRTCViewerLimit,
                 hlsViewerLimit: this.selectedBroadcast.hlsViewerLimit,
+                dashViewerLimit: this.selectedBroadcast.dashViewerLimit,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
             }
@@ -557,6 +558,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 appName: this.appName,
                 webRTCViewerLimit: this.selectedBroadcast.webRTCViewerLimit,
                 hlsViewerLimit: this.selectedBroadcast.hlsViewerLimit,
+                dashViewerLimit: this.selectedBroadcast.dashViewerLimit,
                 streamUrl: this.selectedBroadcast.streamUrl,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
@@ -609,6 +611,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.liveStreamEditing.name = stream.name;
         this.liveStreamEditing.webRTCViewerLimit = stream.webRTCViewerLimit;
         this.liveStreamEditing.hlsViewerLimit = stream.hlsViewerLimit;
+        this.liveStreamEditing.dashViewerLimit = stream.dashViewerLimit;
         this.liveStreamEditing.description = "";
 
         if (this.liveStreamEditing) {
@@ -620,6 +623,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     appName: this.appName,
                     webRTCViewerLimit: this.liveStreamEditing.webRTCViewerLimit,
                     hlsViewerLimit: this.liveStreamEditing.hlsViewerLimit,
+                    dashViewerLimit: this.liveStreamEditing.dashViewerLimit,
                     endpointList: stream.endPointList,
                     videoServiceEndpoints: this.videoServiceEndpoints,
                     // ************** TODO: open it *************************

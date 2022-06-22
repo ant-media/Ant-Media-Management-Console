@@ -593,6 +593,10 @@
                                                         <i class="ti-eye " style="color:#199826; font-size: 1.1em"> </i>
                                                         HLS : {{row.hlsViewerCount}}
                                                     </div>
+                                                    <div *ngIf="row.dashViewerCount > 0">
+                                                        <i class="ti-eye " style="color:#199826; font-size: 1.1em"> </i>
+                                                        DASH : {{row.dashViewerCount}}
+                                                    </div>
                                                     <div *ngIf="row.webRTCViewerCount > 0">
                                                         <i class="ti-eye " style="color:#199826;font-size: 1.1em"
                                                             (click)="webrtcStats(row)"> </i>
@@ -604,7 +608,7 @@
                                                     </div>
 
                                                     <ng-container
-                                                        *ngIf="row.webRTCViewerCount == 0 &&row.hlsViewerCount == 0 &&row.rtmpViewerCount == 0 ">
+                                                        *ngIf="row.webRTCViewerCount == 0 &&row.hlsViewerCount == 0 &&row.dashViewerCount == 0 &&row.rtmpViewerCount == 0 ">
                                                         No viewer
                                                     </ng-container>
                                                 </mat-cell>

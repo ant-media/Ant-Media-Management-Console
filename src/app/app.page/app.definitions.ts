@@ -87,9 +87,11 @@ export declare interface BroadcastInfo {
     quality: string;
     speed: number;
     hlsViewerCount: number;
+    dashViewerCount: number;
     webRTCViewerCount : number;
     webRTCViewerLimit : number;
     hlsViewerLimit: number;
+    dashViewerLimit: number;
     rtmpViewerCount : number;
     mp4Enabled : number;
     webMEnabled : number;
