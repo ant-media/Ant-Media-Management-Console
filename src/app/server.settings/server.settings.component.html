@@ -141,7 +141,7 @@
                                             <div class="form-group text-left">
                                                 <label>Username (E-mail)</label>
                                                 <input type="text" required minlength="4" name="newUserName"
-                                                    placeholder="Username" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+                                                    placeholder="Username" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,16}$"
                                                     [(ngModel)]="User.email" #newUserName="ngModel">
                                                 <small [hidden]="newUserName.valid || (!f.submitted)"
                                                     class="text-danger">
