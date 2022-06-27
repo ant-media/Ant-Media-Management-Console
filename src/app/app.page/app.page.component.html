@@ -1342,13 +1342,24 @@
                                                         DASH Streaming
                                                     </legend>
                                                 </div>
+                                                
 
                                                 <div *ngIf="!appSettings.h264Enabled"
-                                                    class="card-content text-left">
+                                                    class="form-group text-left" style="margin-left:0px;">
                                                         <i style="font-size: 20px;color:#DD0330"
                                                             class="fa fa-exclamation-circle"></i> H.264 is not enabled. Please enable H.264 for DASH Streaming
                                                 </div>
-                                                <div *ngIf="appSettings.h264Enabled" class="card-content text-left">
+
+                                                <div *ngIf=!isEnterpriseEdition class="form-group text-left" style="margin-left:0px;">
+                                                    <div class="col-xs-12">
+                                                        <label i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                            Get <a href="https://antmedia.io/#products">Enterprise
+                                                                Edition</a> to use DASH Streaming feature.
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <div *ngIf="appSettings.h264Enabled && isEnterpriseEdition" class="card-content text-left">
 
                                                         <div class="form-group">
                                                             <div class="col-sm-12 col-md-12 text-left">
