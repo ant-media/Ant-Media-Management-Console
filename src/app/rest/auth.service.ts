@@ -18,7 +18,7 @@ export var isScopeSystem = function(scope) {
 export var show403Error = function(error) 
 {
     //if it's 403 error, show an alert 
-    if (error && error.status == 403) {       
+    if (error && error.status == 403 && localStorage.getItem('authenticated')) {
         let message = "You are not allowed to access this resource. Contact your system administrator"
             
         $.notify({
