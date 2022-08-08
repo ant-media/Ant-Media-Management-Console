@@ -18,7 +18,7 @@ import {MatPaginator, MatPaginatorIntl, PageEvent} from "@angular/material/pagin
 import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
 import {UserEditComponent} from './dialog/user.edit.dialog.component';
-import {LOCAL_STORAGE_EMAIL_KEY} from '../pages/login/login.component';
+import {LOCAL_STORAGE_EMAIL_KEY, LOCAL_STORAGE_ROLE_KEY} from '../pages/login/login.component';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -102,6 +102,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     public TRIAL_PERIOD_ENDED: string = "TRIAL_PERIOD_ENDED";
 
+    public userRole: string = localStorage.getItem(LOCAL_STORAGE_ROLE_KEY).toUpperCase();
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
                 private restService: RestService,

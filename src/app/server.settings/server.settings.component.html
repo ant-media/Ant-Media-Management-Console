@@ -108,7 +108,7 @@
                             </div>
                                 <div class="tab-pane container-fluid" id="users" >
                                     <div class="text-right" style="float: right" >
-                                        <button class="btn btn-fill btn-success" i18n="@@newUserButton"
+                                        <button *ngIf="userRole !== ReadOnlyUserType" class="btn btn-fill btn-success" i18n="@@newUserButton"
                                         (click)="newUser()" role="button">New User
                                         </button>
                                     </div>
