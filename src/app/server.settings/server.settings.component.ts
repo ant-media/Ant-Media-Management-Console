@@ -28,14 +28,16 @@ declare var $:any;
 declare var swal: any;
 
 export class Licence {
-    licenceId: string;
-    startDate: number;
-    endDate: number;
-    type: string;
-    licenceCount: string;
-    owner: string;
-    status: string;
-    hourUsed: number;
+    constructor(
+    licenceId: string,
+    startDate: number,
+    endDate: number,
+    type: string,
+    licenceCount: string,
+    owner: string,
+    status: string,
+    hourUsed: number = 0
+    ){}
 }
 
 @Component({
@@ -54,7 +56,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     set messageReceived(value: string) {
         this._messageReceived = value;
     }
-    public currentBill = "0";
     public serverSettings: ServerSettings;
     public settingsReceived = false;
     public licenseStatus = "Getting license status";
@@ -114,6 +115,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     ngOnInit(){
         this.serverSettings = new ServerSettings(null,null, false, this.logLevelInfo);
+        this.currentLicence = new Licence(null,null,null,null,null,null,null);
 
         this.callTimer();
        
@@ -276,48 +278,8 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
         if (data != null) {
             this.currentLicence  = <Licence>data;
-
-            let totalAmount : any;
-            let discountHourPrice : any;
-            let hourlyBillPrice: any;
-            if(this.currentLicence.hourUsed < 100){
-                this.currentBill = "0";
-            }
-            else if(100 < this.currentLicence.hourUsed && this.currentLicence.hourUsed <= 1000){
-                discountHourPrice = Number(0.24 * this.currentLicence.hourUsed);
-                totalAmount = discountHourPrice - 100*0.24;
-                hourlyBillPrice = 0.24 * this.currentLicence.hourUsed;
-                this.currentBill =  hourlyBillPrice.toFixed(2) + "$ - 100 hour discount (24$) = " + totalAmount.toFixed(2) + "$";
-            }
-            else if(1000 < this.currentLicence.hourUsed && this.currentLicence.hourUsed <= 5000)
-            {
-                discountHourPrice = Number(0.19 * this.currentLicence.hourUsed);
-                totalAmount = discountHourPrice - 100*0.19;
-                hourlyBillPrice = 0.19 * this.currentLicence.hourUsed;
-                this.currentBill =  hourlyBillPrice.toFixed(2) + "$ - 100 hour discount (19$) = " + totalAmount.toFixed(2) + "$";
-            }
-            else if(5000 < this.currentLicence.hourUsed && this.currentLicence.hourUsed <= 20000)
-            {			
-                discountHourPrice = Number(0.15 * this.currentLicence.hourUsed);
-                totalAmount = discountHourPrice - 100*0.15;
-                hourlyBillPrice = 0.15 * this.currentLicence.hourUsed;
-                this.currentBill =  hourlyBillPrice.toFixed(2) + "$ - 100 hour discount (15$) = " + totalAmount.toFixed(2) + "$";
-            }
-            else if(20000 < this.currentLicence.hourUsed && this.currentLicence.hourUsed <= 50000)
-            {		
-                discountHourPrice = Number(0.11 * this.currentLicence.hourUsed);
-                totalAmount = discountHourPrice - 100*0.11;
-                hourlyBillPrice = 0.11 * this.currentLicence.hourUsed;
-                this.currentBill =  hourlyBillPrice.toFixed(2) + "$ - 100 hour discount (11$) = " + totalAmount.toFixed(2) + "$";
-            }
-            else if(50000 < this.currentLicence.hourUsed)
-            {
-                discountHourPrice = Number(0.09 * this.currentLicence.hourUsed);
-                totalAmount = discountHourPrice - 100*0.09;
-                hourlyBillPrice = 0.09 * this.currentLicence.hourUsed;
-                this.currentBill =  hourlyBillPrice.toFixed(2) + "$ - 100 hour discount (9$) = " + totalAmount.toFixed(2) + "$";
-            }
         }
+
         if(this.currentLicence == null || this.currentLicence.licenceId == null)  {
 
             this.licenseStatus = "Invalid";
