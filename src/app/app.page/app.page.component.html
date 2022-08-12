@@ -1729,14 +1729,8 @@
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3AccessKey="ngModel"
                                                                                     [(ngModel)]="appSettings.s3AccessKey"
-                                                                                    class="form-control" name="s3AccessKey" required
-                                                                                    type="text"
-                                                                                    required/>
-                                                                            <small
-                                                                                [hidden]="s3AccessKey.valid || !f.submitted"
-                                                                                class="text-danger">
-                                                                                S3 Access Key is Required.
-                                                                            </small>
+                                                                                    class="form-control" name="s3AccessKey"
+                                                                                    type="text"/>
                                                                                 
                                                                             </div>
                                                                         </div>
@@ -1749,14 +1743,8 @@
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3SecretKey="ngModel"
                                                                                     [(ngModel)]="appSettings.s3SecretKey"
-                                                                                    class="form-control" name="s3SecretKey" required
-                                                                                    type="text"
-                                                                                    required/>
-                                                                                <small
-                                                                                    [hidden]="s3SecretKey.valid || !f.submitted"
-                                                                                    class="text-danger">
-                                                                                    S3 Secret Key is Required.
-                                                                                </small>
+                                                                                    class="form-control" name="s3SecretKey"
+                                                                                    type="text"/>
                                                                             </div>
                                                                         </div>
             
