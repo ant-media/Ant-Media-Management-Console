@@ -9,6 +9,7 @@ import {HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRe
 import {Endpoint,PlaylistItem} from "../app.page/app.definitions";
 import { filter } from 'rxjs-compat/operator/filter';
 import {SidebarComponent} from "../sidebar/sidebar.component";
+import { show403Error } from './auth.service';
 
 declare function require(name: string);
 
@@ -17,6 +18,9 @@ export class User {
     public newPassword: string;
     public fullName: string;
     public userType: string;
+    public scope: string;
+    public firstName: string;
+    public lastName: string;
 
     constructor(public email: string, public password: string) { }
 }
@@ -44,12 +48,15 @@ export class LiveBroadcast {
     endPointList:Endpoint[];
     playListItemList: PlaylistItem[];
     hlsViewerCount: number = 0;
+    dashViewerCount: number = 0;
     webRTCViewerCount : number = 0;
     rtmpViewerCount : number = 0;
     mp4Enabled : number = 0;
     webRTCViewerLimit: number;
     hlsViewerLimit: number;
+    dashViewerLimit: number;
     currentPlayIndex: number;
+    playlistLoopEnabled: boolean = true;
 
     constructor() {
         this.playListItemList = [];
@@ -120,6 +127,7 @@ export class RestService {
             },
             error => {
                 console.log("No https avaiable");
+                show403Error(error);
             });
         }
         if (location.port == "4200")
@@ -209,8 +217,13 @@ export class RestService {
     liveBroadcast);
     }
 
-    public createApplication(appName: string):Observable<Object> {
-        return this.http.post(REST_SERVICE_ROOT + "/applications/" + appName, {});
+    public createApplication(appName: string, formData:any):Observable<Object> {
+        if (formData != null) {
+            return this.http.put(REST_SERVICE_ROOT + "/applications/" + appName, formData);
+        }
+        else {
+            return this.http.post(REST_SERVICE_ROOT + "/applications/" + appName, {});
+        }
     }
 
     public deleteApplication(appName: string):Observable<Object> {
@@ -242,8 +255,37 @@ export class RestService {
         return this.http.delete(REST_SERVICE_ADDRESS, {});
     }
 
+    public deleteBroadcasts(appName: string, streamIds:string [], REMOTE_REST_SERVICE_ROOT:string): Observable<Object> {
+        let REST_SERVICE_ADDRESS;
+        if(REMOTE_REST_SERVICE_ROOT == null){
+            REST_SERVICE_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/bulk';
+        }
+        else{
+            REST_SERVICE_ADDRESS = REMOTE_REST_SERVICE_ROOT + "/" + appName + '/rest/v2/broadcasts/bulk';
+        }
+
+        const options = {
+            headers: new HttpHeaders({
+              'Content-Type': 'application/json',
+            }),
+            body: streamIds,
+          };
+        
+        return this.http.delete(REST_SERVICE_ADDRESS, options);
+    }
+
     public deleteVoDFile(appName: string, vodName:string,id:number, type:string) {
         return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/vods/'+id, {});
+    }
+
+    public deleteVoDFiles(appName: string, vodIds:string[]): Observable<Object>  {
+        const options = {
+            headers: new HttpHeaders({
+              'Content-Type': 'application/json',
+            }),
+            body: vodIds,
+          };
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/vods/bulk/', options);
     }
 
     public deleteRTMPEndpointV2(appName: string, id:number, endpointServiceId:string) {
@@ -273,7 +315,7 @@ export class RestService {
                   //cache value
                   this.isEnterpriseObject = data;
                   observer.next(this.isEnterpriseObject);
-                });
+                }, error => { show403Error(error); });
             }
             else {
                 //use the cached value 

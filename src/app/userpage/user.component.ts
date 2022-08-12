@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../rest/auth.service';
+import { AuthService, show403Error } from '../rest/auth.service';
 import { NgForm } from '@angular/forms';
 
 declare var $: any;
@@ -37,14 +37,12 @@ export class UserComponent{
                         form.resetForm();
                         this.showYourPasswordChanged = true;
                         this.showPasswordNotChangedError = false;
-
-
                     }
                     else {
                         this.showPasswordNotChangedError = true;
                     }
                     
-                });
+                }, error => { show403Error(error); });
     }
 
  }

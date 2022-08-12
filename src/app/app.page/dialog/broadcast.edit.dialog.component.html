@@ -40,6 +40,16 @@
                     </small>
                 </div>
 
+                <div class="form-group text-left">
+                    <label i18n="@@dashViewerLimit">DASH Viewer Limit</label>
+                    <input type="text" name="dashViewerLimit" i18n-placeholder="@@dash_viewer_limit_place_holder" placeholder="DASH Viewer Limit"
+                           class="form-control" [(ngModel)]="data.dashViewerLimit" #onvifUrl="ngModel" style="width: 400px">
+
+                    <small class="text-danger" *ngIf="data.dashViewerLimit<1&& data.dashViewerLimit!=-1">
+                        Please write a limit larger than 1 or -1 for unlimited
+                    </small>
+                </div>
+
                 <div class="form-group text-left" *ngIf="data.type=='streamSource'">
                     <label i18n="@@newStreamUrl">Stream Url</label>
                     <input type="text" name="streamUrl" i18n-placeholder="@@onvif_url_place_holder" placeholder="Stream Url"

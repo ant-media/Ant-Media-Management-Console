@@ -6,6 +6,7 @@ import {
     Endpoint,
     VideoServiceEndpoint,
 } from '../app.definitions';
+import { show403Error } from 'app/rest/auth.service';
 
 declare var $: any;
 declare var swal: any;
@@ -77,6 +78,7 @@ export class BroadcastEditComponent {
         this.liveStreamEditing.streamId = this.dialogRef.componentInstance.data.streamId;
         this.liveStreamEditing.webRTCViewerLimit = this.dialogRef.componentInstance.data.webRTCViewerLimit;
         this.liveStreamEditing.hlsViewerLimit = this.dialogRef.componentInstance.data.hlsViewerLimit;
+        this.liveStreamEditing.dashViewerLimit = this.dialogRef.componentInstance.data.dashViewerLimit;
         this.liveStreamEditing.type = this.dialogRef.componentInstance.data.type;
 
 
@@ -128,7 +130,7 @@ export class BroadcastEditComponent {
                                 if (!data2["success"]) {
                                     data["success"] = false;
                                 }
-                            });
+                            }, error => { show403Error(error); });
                         }
                     }
                 }
@@ -161,7 +163,7 @@ export class BroadcastEditComponent {
                     }
                 });
             }
-        });
+        }, error => { show403Error(error); });
 
         if(this.liveStreamEditing.type == "ipCamera") {
             setTimeout(()=>{
@@ -186,7 +188,7 @@ export class BroadcastEditComponent {
                         console.log("no  camera error")
                     }
                     this.data.url  = "";
-                });
+                }, error => { show403Error(error); });
 
             },5000)
         }

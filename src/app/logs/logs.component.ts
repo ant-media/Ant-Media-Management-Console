@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {RestService} from '../rest/rest.service';
 import {Router} from '@angular/router';
+import { show403Error } from 'app/rest/auth.service';
 
 
 declare var $: any;
@@ -62,7 +63,7 @@ export class LogsComponent implements OnInit {
             else {
                 this.logFileOffset +=  data["logContentSize"];
             }
-        });
+        }, error => { show403Error(error); });
 
     }
 

@@ -4,6 +4,7 @@ import * as legend from 'chartist-plugin-legend';
 import {RestService} from '../../../rest/rest.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {WebRTCClientStat,} from '../../app.definitions';
+import { show403Error } from 'app/rest/auth.service';
 
 
 declare var $: any;
@@ -62,14 +63,14 @@ export class WebRTCClientStatsComponent {
     getStats(): void {
         this.restService.getWebRTCStatsList(this.appName, this.streamId, this.webrtcListOffset, this.pageSize).subscribe(data => {
             this.update(data);
-        });
+        }, error => { show403Error(error); });
     }
 
     getWebRTCStatsTotal(appName:string, streamId:string) {
         this.restService.getStats(appName, streamId).subscribe(data =>
         {
             this.webrtcLenght = data["totalWebRTCWatchersCount"];   
-        });
+        }, error => { show403Error(error); });
     }
 
 
@@ -84,7 +85,7 @@ export class WebRTCClientStatsComponent {
 
             this.update(data);
 
-        });
+        }, error => { show403Error(error); });
 
 
     }

@@ -1,9 +1,10 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AuthService} from '../../rest/auth.service';
+import {AuthService, show403Error} from '../../rest/auth.service';
 import {User} from '../../rest/rest.service';
+import {SupportRestService} from "../../rest/support.service";
 import {RestService} from '../../rest/rest.service';
-
+import {isScopeSystem} from "../../rest/auth.service";
 declare var $:any;
 
 @Component({
@@ -28,7 +29,9 @@ export class LoginComponent implements OnInit{
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
 
-    constructor(private element : ElementRef, private auth: AuthService, private router: Router,private restService: RestService) {
+    constructor(private element : ElementRef, private supportRestService:SupportRestService, private auth: AuthService, private router: Router, private restService: RestService) 
+	{
+
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
         this.showYouCanLogin = false;
@@ -51,7 +54,7 @@ export class LoginComponent implements OnInit{
             if (this.firstLogin) {
                 this.firstUser = new User("", "");
             }
-        });
+        }, error => { show403Error(error); });
 
         this.auth.licenceWarningDisplay = true;
         
@@ -96,21 +99,35 @@ export class LoginComponent implements OnInit{
 
         this.auth.login(this.email, this.password).subscribe(data =>{
 
-            if (data["success"] == true) {
+            if (data["success"] == true) 
+            {
                 this.auth.isAuthenticated = data["success"];
                 localStorage.setItem("authenticated", "true");
                 localStorage.setItem(LOCAL_STORAGE_EMAIL_KEY, this.email);
-                this.router.navigateByUrl("/dashboard");
+               
+                let scope = data["message"];
+                if (isScopeSystem(scope)) {
+                    scope = "system";
+                }
+                localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
+                if (isScopeSystem(scope)) 
+                {
+                    this.router.navigateByUrl("/dashboard");
+                }
+                else 
+                {
+                    this.router.navigateByUrl("/applications/" + scope);
+                }
             }
             else {
                 this.showIncorrectCredentials = true;
             }
 
-        });
+        }, error => { show403Error(error); });
         
         this.restService.getBlockedStatus(this.email).subscribe(data => {
             this.blockLoginAttempt = data["success"];           
-        });
+        }, error => { show403Error(error); });
         
     }
 
@@ -127,18 +144,17 @@ export class LoginComponent implements OnInit{
             if (data["success"] == true) {
                 this.firstLogin = false;
                 this.showYouCanLogin = true;
-
             }
             else {
                 this.showFailedToCreateUserAccount = true;
             }
-        });
+        }, error => { show403Error(error); });
     }
 
     credentialsChanged():void {
         this.showIncorrectCredentials = false;
     }
-
 }
 
 export const LOCAL_STORAGE_EMAIL_KEY = "email";
+export const LOCAL_STORAGE_SCOPE_KEY = "scope;"

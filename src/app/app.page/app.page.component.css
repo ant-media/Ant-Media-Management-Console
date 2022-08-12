@@ -1,3 +1,37 @@
 html, body {
     height: 100%;
 }
+
+table{
+    width: 100%;
+   }
+   
+   .mat-column-select {
+     word-wrap: break-word !important;
+     white-space: unset !important;
+     flex: 0 0 5% !important;
+     width: 5% !important;
+     overflow-wrap: break-word;
+     word-wrap: break-word;
+   
+     word-break: break-word;
+   
+     -ms-hyphens: auto;
+     -moz-hyphens: auto;
+     -webkit-hyphens: auto;
+     hyphens: auto;
+   }
+
+
+   ::ng-deep .mat-checkbox-ripple .mat-ripple-element {
+    background-color: gray !important;
+  }
+  
+  ::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    background-color: gray !important;
+  }
+  
+  ::ng-deep .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+    background-color: gray !important;
+  }
+  

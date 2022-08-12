@@ -15,6 +15,11 @@ export declare interface UserInf {
 	 */
 	userType:string;
 
+    /**
+	 * Scope of user
+	 */
+    scope:string;
+
 	/**
 	 * Name of the user
 	 */
@@ -30,9 +35,11 @@ export declare interface UserInf {
 	 */
     id:string;
 }
+
 export declare interface UserInfoTable {
     dataRows: UserInf[];
 }
+
 
 export declare interface LiveComment {
     /**
@@ -80,9 +87,11 @@ export declare interface BroadcastInfo {
     quality: string;
     speed: number;
     hlsViewerCount: number;
+    dashViewerCount: number;
     webRTCViewerCount : number;
     webRTCViewerLimit : number;
     hlsViewerLimit: number;
+    dashViewerLimit: number;
     rtmpViewerCount : number;
     mp4Enabled : number;
     webMEnabled : number;
@@ -179,6 +188,7 @@ export class AppSettings {
                 public hlsListSize: number,
                 public hlsTime: number,
                 public hlsPlayListType: string,
+                public deleteHLSFilesOnEnded: boolean,
                 public facebookClientId: string,
                 public facebookClientSecret: string,
                 public youtubeClientId: string,
@@ -215,8 +225,15 @@ export class AppSettings {
                 public s3RegionName: string,
                 public s3BucketName: string,
                 public s3Endpoint: string,
+                public s3Permission: string,
                 public enableTimeTokenForPlay: boolean,
                 public enableTimeTokenForPublish: boolean,
+                public dashMuxingEnabled: boolean,
+                public dashSegmentDuration: number,
+                public dashFragmentDuration: number,
+                public lLDashEnabled: boolean, 
+                public lLHLSEnabled: boolean,
+                public deleteDASHFilesOnEnded: boolean
 
     ) {}
 }
