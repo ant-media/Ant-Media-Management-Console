@@ -1,4 +1,5 @@
 import { Component, Inject } from '@angular/core';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { show403Error } from 'app/rest/auth.service';
 import { RestService } from '../../rest/rest.service';
@@ -17,6 +18,7 @@ export class UploadVodDialogComponent {
     fileselected = false;
     fileName: string;
     appName: string;
+    progress: number = 0;
 
     constructor(
         public dialogRef: MatDialogRef<UploadVodDialogComponent>, public restService: RestService,
@@ -62,47 +64,57 @@ export class UploadVodDialogComponent {
 
             this.restService.uploadVod(this.fileName, formData, this.dialogRef.componentInstance.data.appName).subscribe(data => {
 
-                if (data["success"] == true) {
+                switch (data["type"]) {
+                    case HttpEventType.Sent:
+                        // The request was sent out over the wire.
+                        this.progress = 0;
+                        break;
+                    case HttpEventType.UploadProgress:
+                        this.progress = Math.round(data["loaded"] / data["total"] * 100);
+                        break;
+                    case HttpEventType.Response:
+                            this.progress = 100;
+                            if (data["body"]["success"] == true) {
 
-                    this.uploading = false;
+                                this.uploading = false;
 
-                    this.dialogRef.close();
-                    swal({
-                        type: "success",
-                        title: " File is successfully uploaded!",
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-success"
+                                this.dialogRef.close();
+                                swal({
+                                    type: "success",
+                                    title: " File is successfully uploaded!",
+                                    buttonsStyling: false,
+                                    confirmButtonClass: "btn btn-success"
 
-                    });
+                                });
 
-                } else if (data["message"] == "notMp4File") {
+                            } else if (data["body"]["message"] == "notMp4File") {
 
-                    this.uploading = false;
-                    swal({
-                        type: "error",
-                        title: "Only Mp4 files are accepted!",
+                                this.uploading = false;
+                                swal({
+                                    type: "error",
+                                    title: "Only Mp4 files are accepted!",
 
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-error"
+                                    buttonsStyling: false,
+                                    confirmButtonClass: "btn btn-error"
 
-                    });
+                                });
 
-                } else {
-                    this.uploading = false;
+                            } else {
+                                this.uploading = false;
 
-                    this.dialogRef.close();
-                    swal({
-                        type: "error",
-                        title: "An Error Occured!",
+                                this.dialogRef.close();
+                                swal({
+                                    type: "error",
+                                    title: "An Error Occured!",
 
-                        buttonsStyling: false,
-                        confirmButtonClass: "btn btn-error"
+                                    buttonsStyling: false,
+                                    confirmButtonClass: "btn btn-error"
 
-                    });
+                                });
 
-
-                }
-
+                            }
+                            break;
+                        }
             }, error => { show403Error(error); });
 
         }

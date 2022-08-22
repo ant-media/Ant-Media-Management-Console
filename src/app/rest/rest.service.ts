@@ -478,7 +478,7 @@ export class RestService {
     }
 
     public uploadVod(fileName:string, formData:any,appName:string): Observable<Object>  {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create&name="+fileName, formData);
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create&name="+fileName, formData, {reportProgress: true, observe: 'events'});
     }
 
     /**
