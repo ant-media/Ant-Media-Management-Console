@@ -2,8 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {CanActivate, Router} from '@angular/router';
 import {RestService, User} from './rest.service';
-import {Licence} from "../server.settings/server.settings.component";
-import {ServerSettings} from "../app.page/app.definitions";
+import {ServerSettings,Licence} from "../app.page/app.definitions";
 import {DatePipe} from '@angular/common';
 import { LOCAL_STORAGE_SCOPE_KEY } from 'app/pages/login/login.component';
 

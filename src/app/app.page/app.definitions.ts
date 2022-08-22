@@ -179,6 +179,17 @@ export class ServerSettings {
     ) {}
 }
 
+
+export declare class Licence {
+    licenceId: string;
+    startDate: number;
+    endDate: number;
+    type: string;
+    licenceCount: string;
+    owner: string;
+    status: string;
+}
+
 export class AppSettings {
 
     constructor(public mp4MuxingEnabled: boolean,

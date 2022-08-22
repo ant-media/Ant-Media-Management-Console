@@ -22,7 +22,7 @@ import { MatPaginator, MatPaginatorIntl, PageEvent } from "@angular/material/pag
 import { MatTableDataSource } from "@angular/material/table"
 import { MatSort } from "@angular/material/sort"
 import "rxjs/add/operator/toPromise";
-import { AppSettings, ServerSettings } from "./app.definitions";
+import { AppSettings, ServerSettings, Licence } from "./app.definitions";
 import { SelectionModel } from "@angular/cdk/collections";
 
 import {
@@ -56,7 +56,6 @@ declare var $: any;
 declare var Chartist: any;
 declare var swal: any;
 declare var classie: any;
-
 
 const ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID = -1;
 const ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT = -2;
@@ -188,6 +187,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public clusterNodes: ClusterNode[];
     public user: User;
     public currentClusterNode: string;
+    public currentLicence : Licence;
+    public licenseText:string;
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
@@ -443,6 +444,22 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.getSettings();
             this.restService.isEnterpriseEdition().subscribe(data => {
                 this.isEnterpriseEdition = data["success"];
+                if(this.isEnterpriseEdition){
+                    this.restService.getLastLicenseStatus().subscribe(data => {
+                        this.currentLicence  = <Licence>data;
+                        const currentDate = new Date();
+                        const licenseDate = new Date(this.currentLicence.endDate);
+                        
+                        const daysDiff:number = Math.floor(Math.abs(Number(licenseDate) - Number(currentDate)) / (1000*60*60*24));
+       
+                        if(this.currentLicence.type == "trial" && daysDiff < 7){
+                            this.licenseText = "<label>Your Enterprise Edition trial expires in "+daysDiff+" days. Now is a good time to upgrade and get all the awesome benefits. <a target=\"_blank\" href=\"https://antmedia.io/#product\">Buy now</label>";
+                        }
+                            }, error => { show403Error(error); });
+                    }
+                    else{
+                        this.licenseText = "<label>Get <a target=\"_blank\" href=\"https://antmedia.io/#contact\">Enterprise Edition</a> for Ultra Low Latency Streaming</label>";
+                    }
             }, error => { show403Error(error); });
 
             if (scope == "system") {
