@@ -3,6 +3,7 @@ import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { show403Error } from 'app/rest/auth.service';
 import { RestService } from '../../rest/rest.service';
+import {Subscription} from "rxjs/Subscription";
 
 declare var swal: any;
 
@@ -18,6 +19,7 @@ export class UploadVodDialogComponent {
     fileselected = false;
     fileName: string;
     appName: string;
+    uploadSub: Subscription;
     progress: number = 0;
 
     constructor(
@@ -62,7 +64,7 @@ export class UploadVodDialogComponent {
             this.fileName = this.fileName.replace(/\s/g, '_');
 
 
-            this.restService.uploadVod(this.fileName, formData, this.dialogRef.componentInstance.data.appName).subscribe(data => {
+            this.uploadSub = this.restService.uploadVod(this.fileName, formData, this.dialogRef.componentInstance.data.appName).subscribe(data => {
 
                 switch (data["type"]) {
                     case HttpEventType.Sent:
@@ -120,6 +122,12 @@ export class UploadVodDialogComponent {
         }
 
 
+    }
+
+    cancelUpload() {
+        this.uploading = false;
+        this.progress = 0;
+        this.uploadSub.unsubscribe();
     }
 
 }
