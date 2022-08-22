@@ -104,12 +104,16 @@ export class LoginComponent implements OnInit{
                 this.auth.isAuthenticated = data["success"];
                 localStorage.setItem("authenticated", "true");
                 localStorage.setItem(LOCAL_STORAGE_EMAIL_KEY, this.email);
-               
-                let scope = data["message"];
+
+                var messageData = data["message"].split("/");
+                let scope = messageData[0];
                 if (isScopeSystem(scope)) {
                     scope = "system";
                 }
                 localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
+                if (messageData.length > 1) {
+                    localStorage.setItem(LOCAL_STORAGE_ROLE_KEY, messageData[1]);
+                }
                 if (isScopeSystem(scope)) 
                 {
                     this.router.navigateByUrl("/dashboard");
@@ -157,4 +161,5 @@ export class LoginComponent implements OnInit{
 }
 
 export const LOCAL_STORAGE_EMAIL_KEY = "email";
-export const LOCAL_STORAGE_SCOPE_KEY = "scope;"
+export const LOCAL_STORAGE_SCOPE_KEY = "scope";
+export const LOCAL_STORAGE_ROLE_KEY = "role";
