@@ -808,6 +808,39 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     playLive(streamId: string, playMethod: string): void {
+
+        // Let's check if it's community edition or play method settings are not enabled
+        if((playMethod == "webrtc" || playMethod == "dash") && !this.isEnterpriseEdition){
+            $.notify({
+                icon: "ti-save",
+                message: "You need to use Enterprise Edition for using WebRTC or DASH."
+            }, {
+                type: "warning",
+                delay: 4000,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+        }
+
+        if((playMethod == "webrtc" && !this.appSettings.webRTCEnabled) || 
+        (playMethod == "hls" && !this.appSettings.hlsMuxingEnabled) || 
+        (playMethod == "dash" && !this.appSettings.dashMuxingEnabled)){
+            $.notify({
+                icon: "ti-save",
+                message: "Please enable "+playMethod+" on app settings"
+            }, {
+                type: "warning",
+                delay: 4000,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+            return;
+        }
+
         if (this.appSettings.playTokenControlEnabled) {
             this.openPlayerWithOneTimeToken(streamId, streamId, "640px", streamId, playMethod);
         }
