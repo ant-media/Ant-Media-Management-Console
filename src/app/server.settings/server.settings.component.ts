@@ -7,7 +7,7 @@ import {MatDialog } from '@angular/material/dialog';
 
 
 import {AfterViewInit, Component, Injectable, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, Input, Output} from '@angular/core';
-import {ServerSettings, UserInfoTable, UserInf} from "../app.page/app.definitions";
+import {ServerSettings, UserInfoTable, UserInf, Licence} from "../app.page/app.definitions";
 import {Locale} from "../locale/locale";
 import {AuthService, show403Error} from "../rest/auth.service";
 import {RestService, User} from "../rest/rest.service";
@@ -26,19 +26,6 @@ import 'rxjs/add/operator/catch';
 
 declare var $:any;
 declare var swal: any;
-
-export class Licence {
-    constructor(
-    licenceId: string,
-    startDate: number,
-    endDate: number,
-    type: string,
-    licenceCount: string,
-    owner: string,
-    status: string,
-    hourUsed: number = 0
-    ){}
-}
 
 @Component({
     moduleId: module.id,

@@ -237,3 +237,16 @@ export class AppSettings {
 
     ) {}
 }
+
+export class Licence {
+    constructor(
+    public licenceId: string,
+    public startDate: number,
+    public endDate: number,
+    public type: string,
+    public licenceCount: string,
+    public owner: string,
+    public status: string,
+    public hourUsed: number = 0
+    ){}
+}

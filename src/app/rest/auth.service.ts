@@ -2,8 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {CanActivate, Router} from '@angular/router';
 import {RestService, User} from './rest.service';
-import {Licence} from "../server.settings/server.settings.component";
-import {ServerSettings} from "../app.page/app.definitions";
+import {ServerSettings,Licence} from "../app.page/app.definitions";
 import {DatePipe} from '@angular/common';
 import { LOCAL_STORAGE_SCOPE_KEY } from 'app/pages/login/login.component';
 
@@ -55,13 +54,15 @@ export class AuthService implements CanActivate {
 
     public licenceWarningDisplay = true;
 
-    public currentLicence : Licence = null;
+    public currentLicence : Licence;
     public leftDays : number;
 
     public isEnterpriseEdition = false;
 
 
     constructor(private restService: RestService, private router: Router, private datePipe: DatePipe) {
+
+        this.currentLicence = new Licence("",null,null,null,null,null,null);
 
         setInterval(() => {
             this.checkServerIsAuthenticated();
@@ -73,7 +74,6 @@ export class AuthService implements CanActivate {
             this.checkLicense();
         }, 300000);
          
-
     }
 
     public checkLicense() {
