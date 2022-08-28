@@ -682,7 +682,7 @@
 
                                                                     <!-- Copy Publish URL to Clipboard -->
 
-                                                                    <li *ngIf="row.status!='broadcasting'">
+                                                                    <li>
                                                                         <a class="dropdown-link"
                                                                             (click)="copyPublishUrl(row.streamId)">
                                                                             <ng-container i18n="@@copyPublishUrl">Copy
@@ -1171,6 +1171,7 @@
                                                                                 required>
                                                                                 <option value="0" selected disabled>
                                                                                     Choose One</option>
+                                                                                <option value="2880">2880p</option>
                                                                                 <option value="2160">2160p</option>
                                                                                 <option value="1080">1080p</option>
                                                                                 <option value="720">720p</option>
@@ -1342,13 +1343,24 @@
                                                         DASH Streaming
                                                     </legend>
                                                 </div>
+                                                
 
                                                 <div *ngIf="!appSettings.h264Enabled"
-                                                    class="card-content text-left">
+                                                    class="form-group text-left" style="margin-left:0px;">
                                                         <i style="font-size: 20px;color:#DD0330"
                                                             class="fa fa-exclamation-circle"></i> H.264 is not enabled. Please enable H.264 for DASH Streaming
                                                 </div>
-                                                <div *ngIf="appSettings.h264Enabled" class="card-content text-left">
+
+                                                <div *ngIf=!isEnterpriseEdition class="form-group text-left" style="margin-left:0px;">
+                                                    <div class="col-xs-12">
+                                                        <label i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                            Get <a href="https://antmedia.io/#products">Enterprise
+                                                                Edition</a> to use DASH Streaming feature.
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <div *ngIf="appSettings.h264Enabled && isEnterpriseEdition" class="card-content text-left">
 
                                                         <div class="form-group">
                                                             <div class="col-sm-12 col-md-12 text-left">
@@ -1717,14 +1729,8 @@
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3AccessKey="ngModel"
                                                                                     [(ngModel)]="appSettings.s3AccessKey"
-                                                                                    class="form-control" name="s3AccessKey" required
-                                                                                    type="text"
-                                                                                    required/>
-                                                                            <small
-                                                                                [hidden]="s3AccessKey.valid || !f.submitted"
-                                                                                class="text-danger">
-                                                                                S3 Access Key is Required.
-                                                                            </small>
+                                                                                    class="form-control" name="s3AccessKey"
+                                                                                    type="text"/>
                                                                                 
                                                                             </div>
                                                                         </div>
@@ -1737,14 +1743,8 @@
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3SecretKey="ngModel"
                                                                                     [(ngModel)]="appSettings.s3SecretKey"
-                                                                                    class="form-control" name="s3SecretKey" required
-                                                                                    type="text"
-                                                                                    required/>
-                                                                                <small
-                                                                                    [hidden]="s3SecretKey.valid || !f.submitted"
-                                                                                    class="text-danger">
-                                                                                    S3 Secret Key is Required.
-                                                                                </small>
+                                                                                    class="form-control" name="s3SecretKey"
+                                                                                    type="text"/>
                                                                             </div>
                                                                         </div>
             
