@@ -140,6 +140,7 @@
 
                                             <div class="form-group text-left">
                                                 <label>Username (E-mail)</label>
+                                                <!-- REFACTOR NEEDED: This pattern is also used in login.component.html, use pattern from angular side-->
                                                 <input type="text" required minlength="4" name="newUserName"
                                                     placeholder="Username" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,16}$"
                                                     [(ngModel)]="User.email" #newUserName="ngModel">
