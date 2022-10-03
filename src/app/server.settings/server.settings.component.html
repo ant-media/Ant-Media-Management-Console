@@ -87,6 +87,20 @@
                                             </div>
                                         </fieldset>
 
+                                        <fieldset *ngIf="isEnterpriseEdition && !serverSettings.buildForMarket  && currentLicence.type ==='hourly'"> <!-- -->
+                                            <div class="form-group"  >
+                                                <label class="col-sm-2 control-label">Hour Used <a
+                                                    href="https://license.antmedia.io/?licenseId={{serverSettings.licenceKey}}"
+                                                    target="_blank"
+                                                    matTooltip="Please click it for more usage detail">
+                                                    <i class="fa fa-info-circle"></i></a>
+                                                    </label>
+                                                <div class="col-sm-10 text-left" >
+                                                    <p class="form-control-static text-left"> <i class="ti-alarm-clock" style="color:#199826;font-size: 1.1em"  aria-hidden="true"></i>  {{currentLicence.hourUsed}} </p>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    
                                         <fieldset>
                                             <div class="form-group text-center" >
                                                 <button type="submit" class="btn btn-fill btn-info" i18n="@@saveForm">Save</button>
