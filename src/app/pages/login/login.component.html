@@ -107,7 +107,8 @@
 
                                              <div class="form-group">
                                                 <label i18n="@@loginFormEmail">Username (E-mail)<span class="star">*</span></label>
-                                                <input  type="email" name="firstEmail" class="form-control input-no-border" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+                                                 <!-- REFACTOR NEEDED: This pattern is also used in server.settings.html, use pattern from angular side-->
+                                                <input  type="email" name="firstEmail" class="form-control input-no-border" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,16}$"
                                                     [(ngModel)]="firstUser.email" required #firstAccountEmail="ngModel" minlength="5">
                                                     <small i18n="@@fistAccountEmailRequired" [hidden]="firstAccountEmail.valid || (firstAccountEmail.pristine && !registerForm.submitted)" class="text-danger">
                                                     E-mail is required and it should be in correct form

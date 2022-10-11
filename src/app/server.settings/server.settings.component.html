@@ -87,6 +87,20 @@
                                             </div>
                                         </fieldset>
 
+                                        <fieldset *ngIf="isEnterpriseEdition && !serverSettings.buildForMarket  && currentLicence.type ==='hourly'"> <!-- -->
+                                            <div class="form-group"  >
+                                                <label class="col-sm-2 control-label">Hour Used <a
+                                                    href="https://license.antmedia.io/?licenseId={{serverSettings.licenceKey}}"
+                                                    target="_blank"
+                                                    matTooltip="Please click it for more usage detail">
+                                                    <i class="fa fa-info-circle"></i></a>
+                                                    </label>
+                                                <div class="col-sm-10 text-left" >
+                                                    <p class="form-control-static text-left"> <i class="ti-alarm-clock" style="color:#199826;font-size: 1.1em"  aria-hidden="true"></i>  {{currentLicence.hourUsed}} </p>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    
                                         <fieldset>
                                             <div class="form-group text-center" >
                                                 <button type="submit" class="btn btn-fill btn-info" i18n="@@saveForm">Save</button>
@@ -108,7 +122,7 @@
                             </div>
                                 <div class="tab-pane container-fluid" id="users" >
                                     <div class="text-right" style="float: right" >
-                                        <button class="btn btn-fill btn-success" i18n="@@newUserButton"
+                                        <button *ngIf="userRole !== ReadOnlyUserType" class="btn btn-fill btn-success" i18n="@@newUserButton"
                                         (click)="newUser()" role="button">New User
                                         </button>
                                     </div>
@@ -140,6 +154,7 @@
 
                                             <div class="form-group text-left">
                                                 <label>Username (E-mail)</label>
+                                                <!-- REFACTOR NEEDED: This pattern is also used in login.component.html, use pattern from angular side-->
                                                 <input type="text" required minlength="4" name="newUserName"
                                                     placeholder="Username" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,16}$"
                                                     [(ngModel)]="User.email" #newUserName="ngModel">

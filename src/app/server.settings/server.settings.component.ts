@@ -7,7 +7,7 @@ import {MatDialog } from '@angular/material/dialog';
 
 
 import {AfterViewInit, Component, Injectable, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, Input, Output} from '@angular/core';
-import {ServerSettings, UserInfoTable, UserInf} from "../app.page/app.definitions";
+import {ServerSettings, UserInfoTable, UserInf, Licence} from "../app.page/app.definitions";
 import {Locale} from "../locale/locale";
 import {AuthService, show403Error} from "../rest/auth.service";
 import {RestService, User} from "../rest/rest.service";
@@ -18,7 +18,7 @@ import {MatPaginator, MatPaginatorIntl, PageEvent} from "@angular/material/pagin
 import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
 import {UserEditComponent} from './dialog/user.edit.dialog.component';
-import {LOCAL_STORAGE_EMAIL_KEY} from '../pages/login/login.component';
+import {LOCAL_STORAGE_EMAIL_KEY, LOCAL_STORAGE_ROLE_KEY} from '../pages/login/login.component';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -26,15 +26,6 @@ import 'rxjs/add/operator/catch';
 
 declare var $:any;
 declare var swal: any;
-
-export class Licence {
-    licenceId: string;
-    startDate: number;
-    endDate: number;
-    type: string;
-    licenceCount: string;
-    owner: string;
-    status: string;}
 
 @Component({
     moduleId: module.id,
@@ -52,7 +43,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     set messageReceived(value: string) {
         this._messageReceived = value;
     }
-
     public serverSettings: ServerSettings;
     public settingsReceived = false;
     public licenseStatus = "Getting license status";
@@ -102,6 +92,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     public TRIAL_PERIOD_ENDED: string = "TRIAL_PERIOD_ENDED";
 
+    public userRole: string = localStorage.getItem(LOCAL_STORAGE_ROLE_KEY).toUpperCase();
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
                 private restService: RestService,
@@ -112,6 +103,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     ngOnInit(){
         this.serverSettings = new ServerSettings(null,null, false, this.logLevelInfo);
+        this.currentLicence = new Licence(null,null,null,null,null,null,null);
 
         this.callTimer();
        
@@ -264,6 +256,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             }, error => { show403Error(error); });
 
         }
+
         return this.currentLicence;
     }
 
@@ -274,6 +267,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         if (data != null) {
             this.currentLicence  = <Licence>data;
         }
+
         if(this.currentLicence == null || this.currentLicence.licenceId == null)  {
 
             this.licenseStatus = "Invalid";
