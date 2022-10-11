@@ -1519,19 +1519,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             },
                 error => {
-                    show403Error(error);
                     this.newIPCameraAdding = false;
-                    $.notify({
-                        icon: "ti-save",
-                        message: error.error["message"]
-                    }, {
-                        type: "warning",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                    
+                    if (show403Error(error) == false) {
+                        $.notify({
+                            icon: "ti-save",
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                        }, {
+                            type: "warning",
+                            delay: 2000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                     }
                 });
     }
 
@@ -1655,19 +1657,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             },
                 error => {
-                    show403Error(error);
                     this.newStreamSourceAdding = false;
-                    $.notify({
-                        icon: "ti-save",
-                        message: error.error["message"]
-                    }, {
-                        type: "warning",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                    
+                    if (show403Error(error) == false) {
+                        $.notify({
+                            icon: "ti-save",
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                        }, {
+                            type: "warning",
+                            delay: 2000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                     }
                 }
             );
     }
@@ -1771,19 +1775,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             },
                 error => {
-                    show403Error(error);
                     this.newPlaylistAdding = false;
-                    $.notify({
-                        icon: "ti-save",
-                        message: error.error["message"]
-                    }, {
-                        type: "warning",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                
+                    if (show403Error(error) == false) {
+                        $.notify({
+                            icon: "ti-save",
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                        }, {
+                            type: "warning",
+                            delay: 2000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                     }
                 });
 
     }
@@ -1982,18 +1988,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
                 error => {
                     this.newLiveStreamCreating = false;
-                    $.notify({
-                        icon: "ti-save",
-                        message: error.error["message"]
-                    }, {
-                        type: "warning",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
-                    show403Error(error);
+                    if (show403Error(error) == false) {
+                        $.notify({
+                            icon: "ti-save",
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                        }, {
+                            type: "warning",
+                            delay: 2000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                     }
+                   
                 });
 
     }

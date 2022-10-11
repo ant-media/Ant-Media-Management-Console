@@ -48,7 +48,9 @@ export var show403Error = function(error)
             }
             
         });
+        return true;
     }
+    return false;
 }
 
 export class LiveBroadcast {
