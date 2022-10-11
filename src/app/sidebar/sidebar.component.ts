@@ -1,8 +1,7 @@
 import { Component, OnInit, AfterViewInit, AfterViewChecked, AfterContentInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { RestService } from '../rest/rest.service';
-import {LOCAL_STORAGE_SCOPE_KEY} from '../pages/login/login.component';
-import { isScopeSystem, show403Error } from 'app/rest/auth.service';
+import { RestService, show403Error } from '../rest/rest.service';
+import { isScopeSystem, LOCAL_STORAGE_SCOPE_KEY } from 'app/rest/auth.service';
 
 declare var $: any;
 //Metadata

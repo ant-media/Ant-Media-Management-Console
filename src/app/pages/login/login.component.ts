@@ -1,10 +1,10 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AuthService, show403Error} from '../../rest/auth.service';
-import {User} from '../../rest/rest.service';
+import {AuthService} from '../../rest/auth.service';
+import {User, show403Error} from '../../rest/rest.service';
 import {SupportRestService} from "../../rest/support.service";
 import {RestService} from '../../rest/rest.service';
-import {isScopeSystem} from "../../rest/auth.service";
+import {isScopeSystem, LOCAL_STORAGE_EMAIL_KEY, LOCAL_STORAGE_ROLE_KEY, LOCAL_STORAGE_SCOPE_KEY} from "../../rest/auth.service";
 declare var $:any;
 
 @Component({
@@ -160,6 +160,4 @@ export class LoginComponent implements OnInit{
     }
 }
 
-export const LOCAL_STORAGE_EMAIL_KEY = "email";
-export const LOCAL_STORAGE_SCOPE_KEY = "scope";
-export const LOCAL_STORAGE_ROLE_KEY = "role";
+

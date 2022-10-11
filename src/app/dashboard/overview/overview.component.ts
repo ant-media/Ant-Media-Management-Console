@@ -1,10 +1,10 @@
 import {Component,  EventEmitter, OnInit, Output} from '@angular/core';
-import {RestService} from '../../rest/rest.service';
+import {RestService, show403Error} from '../../rest/rest.service';
 import {SupportRestService} from '../../rest/support.service';
 import {Router} from '@angular/router';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import {AuthService, show403Error} from "../../rest/auth.service";
+import {AuthService} from "../../rest/auth.service";
 import {SupportRequest} from "../../support/support.definitions";
 import {ServerSettings,Licence} from "../../app.page/app.definitions";
 import {Locale} from "../../locale/locale";
