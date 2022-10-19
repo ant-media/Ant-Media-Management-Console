@@ -14,7 +14,6 @@ import { Router } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ExpectedConditions } from 'protractor';
 import {ClusterRestService} from "../rest/cluster.service";
-import { LOCAL_STORAGE_SCOPE_KEY } from 'app/pages/login/login.component';
 
 
 describe('AppComponent', () => {
