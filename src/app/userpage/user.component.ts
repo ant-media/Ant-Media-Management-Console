@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { AuthService, show403Error } from '../rest/auth.service';
+import { AuthService } from '../rest/auth.service';
 import { NgForm } from '@angular/forms';
+import { show403Error } from '../rest/rest.service';
 
 declare var $: any;
 
