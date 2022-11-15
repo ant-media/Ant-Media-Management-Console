@@ -9,8 +9,8 @@ import {MatDialog } from '@angular/material/dialog';
 import {AfterViewInit, Component, Injectable, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, Input, Output} from '@angular/core';
 import {ServerSettings, UserInfoTable, UserInf, Licence} from "../app.page/app.definitions";
 import {Locale} from "../locale/locale";
-import {AuthService, show403Error} from "../rest/auth.service";
-import {RestService, User} from "../rest/rest.service";
+import {AuthService} from "../rest/auth.service";
+import {RestService, User, show403Error} from "../rest/rest.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {DataService} from "../rest/data.service";
@@ -18,7 +18,7 @@ import {MatPaginator, MatPaginatorIntl, PageEvent} from "@angular/material/pagin
 import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
 import {UserEditComponent} from './dialog/user.edit.dialog.component';
-import {LOCAL_STORAGE_EMAIL_KEY, LOCAL_STORAGE_ROLE_KEY} from '../pages/login/login.component';
+import {LOCAL_STORAGE_EMAIL_KEY, LOCAL_STORAGE_ROLE_KEY} from '../rest/auth.service';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';

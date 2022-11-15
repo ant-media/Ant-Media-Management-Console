@@ -8,7 +8,7 @@ import {
     MatDialogRef,
 } from '@angular/material/dialog';
 import {MatTableDataSource} from "@angular/material/table"
-import { show403Error } from 'app/rest/auth.service';
+import { show403Error } from 'app/rest/rest.service';
 import {HTTP_SERVER_ROOT, RestService} from '../../rest/rest.service';
 
 export class DetectedObject {

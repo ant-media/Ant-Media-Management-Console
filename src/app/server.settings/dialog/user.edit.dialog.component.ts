@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Locale } from "../../locale/locale";
-import { RestService, User } from '../../rest/rest.service';
+import { RestService, User,show403Error } from '../../rest/rest.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {ServerSettingsComponent} from "..//server.settings.component";
-import {MD5, show403Error} from "../../rest/auth.service";
+import {MD5} from "../../rest/auth.service";
 
 declare var $: any;
 declare var swal: any;

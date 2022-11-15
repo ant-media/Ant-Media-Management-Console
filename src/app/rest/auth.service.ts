@@ -1,11 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {CanActivate, Router} from '@angular/router';
-import {RestService, User} from './rest.service';
+import {RestService, User, show403Error} from './rest.service';
 import {ServerSettings,Licence} from "../app.page/app.definitions";
 import {DatePipe} from '@angular/common';
-import { LOCAL_STORAGE_SCOPE_KEY } from 'app/pages/login/login.component';
-
 
 declare var swal: any;
 declare var $: any;
@@ -14,27 +12,7 @@ export var isScopeSystem = function(scope) {
     return scope == "" || scope == null || scope == "null" || scope == "system";
 }
 
-export var show403Error = function(error) 
-{
-    //if it's 403 error, show an alert 
-    if (error && error.status == 403 && localStorage.getItem('authenticated')) {
-        let message = "You are not allowed to access this resource. Contact your system administrator"
-            
-        $.notify({
-            icon: "ti-alert",
-            message: message
-        }, {
-            type: 'warning',
-            delay: 3000,
-            
-            placement: {
-                from: 'bottom',
-                align: 'center'
-            }
-            
-        });
-    }
-}
+
 
 @Injectable()
 export class AuthService implements CanActivate {
@@ -283,3 +261,7 @@ export class AuthService implements CanActivate {
     }
 
 }
+
+export const LOCAL_STORAGE_EMAIL_KEY = "email";
+export const LOCAL_STORAGE_SCOPE_KEY = "scope";
+export const LOCAL_STORAGE_ROLE_KEY = "role";

@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
     PlaylistItem,
 } from '../app.definitions';
-import { show403Error } from 'app/rest/auth.service';
+import { show403Error } from 'app/rest/rest.service';
 
 declare var $: any;
 

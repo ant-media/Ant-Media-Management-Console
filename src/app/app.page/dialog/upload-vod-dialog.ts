@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { show403Error } from 'app/rest/auth.service';
+import { show403Error } from 'app/rest/rest.service';
 import { RestService } from '../../rest/rest.service';
 import {Subscription} from "rxjs/Subscription";
 

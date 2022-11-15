@@ -4,7 +4,7 @@ import * as legend from 'chartist-plugin-legend';
 import {RestService} from '../../../rest/rest.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {WebRTCClientStat,} from '../../app.definitions';
-import { show403Error } from 'app/rest/auth.service';
+import { show403Error } from 'app/rest/rest.service';
 
 
 declare var $: any;

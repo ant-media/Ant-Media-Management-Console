@@ -6,7 +6,7 @@ import {
     VideoServiceEndpoint,
     LiveComment,
 } from '../app.definitions';
-import { show403Error } from 'app/rest/auth.service';
+import { show403Error } from 'app/rest/rest.service';
 
 declare var $: any;
 declare var swal: any;
