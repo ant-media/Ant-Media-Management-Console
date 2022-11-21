@@ -1572,21 +1572,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         let hostAddress = localStorage.getItem('hostAddress');
         if (this.isClusterMode && hostAddress != this.currentClusterNode) {
             REMOTE_HOST_ADDRESS = "http://" + this.currentClusterNode + ":5080";
-
-            if (this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey == null) {
-                $.notify({
-                    icon: "ti-save",
-                    message: "Please enable JWT Filter or Delete Broadcast in a stopped status"
-                }, {
-                    type: "danger",
-                    delay: 2000,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-                return;
-            }
         }
 
         this.restService.createLiveStream(this.appName, this.liveBroadcast, REMOTE_HOST_ADDRESS, socialNetworks.join(","))
