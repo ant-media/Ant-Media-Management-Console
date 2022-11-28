@@ -1078,8 +1078,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-
-
     deleteLiveBroadcast(streamId: string, broadcastHostAddress: string): void {
         let REMOTE_HOST_ADDRESS;
         let hostAddress = localStorage.getItem('hostAddress');
@@ -1147,11 +1145,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    clusterDropDownChanged(selectedNode: string) {
-        if (this.currentClusterNode != selectedNode) {
-            this.currentClusterNode = selectedNode;
-        }
-    }
     dropDownChanged(event: any, i: number) {
 
         if (event == 2880) {
