@@ -1570,9 +1570,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         let REMOTE_HOST_ADDRESS = null;
         let hostAddress = localStorage.getItem('hostAddress');
-        if (this.isClusterMode && hostAddress != this.currentClusterNode) {
-            REMOTE_HOST_ADDRESS = "http://" + this.currentClusterNode + ":5080";
-        }
 
         this.restService.createLiveStream(this.appName, this.liveBroadcast, REMOTE_HOST_ADDRESS, socialNetworks.join(","))
             .subscribe(data => {
