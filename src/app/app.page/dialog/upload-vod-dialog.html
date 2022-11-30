@@ -9,7 +9,14 @@
             <input type="text" name="vodName" i18n-placeholder="@@onvif_url_place_holder" placeholder="VoD Name"
                    class="form-control" [(ngModel)]="fileName" #onvifUrl="ngModel">
 
+        <div *ngIf="progress > 0" style="width: 100%">
+            <progress value="{{progress}}" max="100" style="width: 90%"></progress>
+
+            <button type="button" class="btn btn-simple" style="width: 10%;font-size: 21px" (click)="cancelUpload()">
+                &#10006;
+            </button>
         </div>
+    </div>
 
     <br><br>
 

@@ -1,8 +1,7 @@
 import {Component, Inject, LOCALE_ID} from '@angular/core';
 import {Locale} from 'app/locale/locale';
-import {RestService} from '../../rest/rest.service';
+import {RestService, show403Error} from '../../rest/rest.service';
 import {HttpClient} from '@angular/common/http';
-import { show403Error } from 'app/rest/auth.service';
 
 @Component({
     moduleId: module.id,

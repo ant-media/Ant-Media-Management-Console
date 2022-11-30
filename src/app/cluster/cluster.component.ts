@@ -26,7 +26,7 @@ import {
     ClusterNode,
     ClusterNodeInfo
 } from './cluster.definitions';
-import { show403Error } from 'app/rest/auth.service';
+import { show403Error } from 'app/rest/rest.service';
 
 declare var $: any;
 declare var Chartist: any;

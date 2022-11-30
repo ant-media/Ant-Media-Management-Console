@@ -9,7 +9,6 @@ import {HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRe
 import {Endpoint,PlaylistItem} from "../app.page/app.definitions";
 import { filter } from 'rxjs-compat/operator/filter';
 import {SidebarComponent} from "../sidebar/sidebar.component";
-import { show403Error } from './auth.service';
 
 declare function require(name: string);
 
@@ -29,6 +28,30 @@ let SERVER_ADDR = location.hostname;
 
 export var HTTP_SERVER_ROOT;
 export var REST_SERVICE_ROOT;
+declare var $: any;
+export var show403Error = function(error) 
+{
+    //if it's 403 error, show an alert 
+    if (error && error.status == 403 && localStorage.getItem('authenticated')) {
+        let message = "You are not allowed to access this resource. Contact your system administrator"
+            
+        $.notify({
+            icon: "ti-alert",
+            message: message
+        }, {
+            type: 'warning',
+            delay: 3000,
+            
+            placement: {
+                from: 'bottom',
+                align: 'center'
+            }
+            
+        });
+        return true;
+    }
+    return false;
+}
 
 export class LiveBroadcast {
     name: string;
@@ -478,7 +501,7 @@ export class RestService {
     }
 
     public uploadVod(fileName:string, formData:any,appName:string): Observable<Object>  {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create&name="+fileName, formData);
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + "/rest/v2/vods/create&name="+fileName, formData, {reportProgress: true, observe: 'events'});
     }
 
     /**

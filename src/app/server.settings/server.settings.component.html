@@ -87,6 +87,20 @@
                                             </div>
                                         </fieldset>
 
+                                        <fieldset *ngIf="isEnterpriseEdition && !serverSettings.buildForMarket  && currentLicence.type ==='hourly'"> <!-- -->
+                                            <div class="form-group"  >
+                                                <label class="col-sm-2 control-label">Hour Used <a
+                                                    href="https://license.antmedia.io/?licenseId={{serverSettings.licenceKey}}"
+                                                    target="_blank"
+                                                    matTooltip="Please click it for more usage detail">
+                                                    <i class="fa fa-info-circle"></i></a>
+                                                    </label>
+                                                <div class="col-sm-10 text-left" >
+                                                    <p class="form-control-static text-left"> <i class="ti-alarm-clock" style="color:#199826;font-size: 1.1em"  aria-hidden="true"></i>  {{currentLicence.hourUsed}} </p>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    
                                         <fieldset>
                                             <div class="form-group text-center" >
                                                 <button type="submit" class="btn btn-fill btn-info" i18n="@@saveForm">Save</button>
@@ -125,7 +139,7 @@
                                                 <label i18n="@@registerUserFullName">First Name<span class="star">*</span></label>
                                                 <input type="text" name="firstName" class="form-control input-no-border"
                                                    [(ngModel)]="User.firstName" #firstName="ngModel" required minlength="2">
-                                                <small [hidden]="firstName.valid || (firstName.pristine && !registerForm.submitted)" class="text-danger">
+                                                <small [hidden]="firstName.valid || (firstName.pristine && !f.submitted)" class="text-danger">
                                                 First name is required
                                                 </small>
                                              </div>
@@ -133,17 +147,18 @@
                                                 <label i18n="@@registerUserFullName">Last Name<span class="star">*</span></label>
                                                 <input type="text" name="lastName" class="form-control input-no-border"
                                                    [(ngModel)]="User.lastName" #lastName="ngModel" required minlength="2">
-                                                <small [hidden]="lastName.valid || (lastName.pristine && !registerForm.submitted)" class="text-danger">
+                                                <small [hidden]="lastName.valid || (lastName.pristine && !f.submitted)" class="text-danger">
                                                 Last name is required 
                                                 </small>
                                              </div>
 
                                             <div class="form-group text-left">
                                                 <label>Username (E-mail)</label>
+                                                <!-- REFACTOR NEEDED: This pattern is also used in login.component.html, use pattern from angular side-->
                                                 <input type="text" required minlength="4" name="newUserName"
                                                     placeholder="Username" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,16}$"
                                                     [(ngModel)]="User.email" #newUserName="ngModel">
-                                                <small [hidden]="newUserName.valid || (!f.submitted)"
+                                                <small [hidden]="newUserName.valid || (newUserName.pristine && !f.submitted)"
                                                     class="text-danger">
                                                     E-mail is required in correct form.
                                                 </small>
@@ -154,7 +169,7 @@
                                                     placeholder="Password" class="form-control"
                                                     validateEqual="confirmPassword" reverse="true"
                                                     [(ngModel)]="User.password" #Password="ngModel">
-                                                <small [hidden]="Password.valid || (!f.submitted)"
+                                                <small [hidden]="Password.valid || (Password.pristine && !f.submitted)"
                                                     class="text-danger">
                                                     Password should be at least 6 characters.
                                                 </small>

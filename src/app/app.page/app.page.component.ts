@@ -13,8 +13,8 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HTTP_SERVER_ROOT, LiveBroadcast, RestService } from '../rest/rest.service';
-import { AuthService, show403Error } from '../rest/auth.service';
+import { HTTP_SERVER_ROOT, LiveBroadcast, RestService , show403Error} from '../rest/rest.service';
+import { AuthService } from '../rest/auth.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
 import { MatDialog } from '@angular/material/dialog';
@@ -50,7 +50,7 @@ import {
     ClusterNode,
     ClusterNodeInfo
 } from '../cluster/cluster.definitions';
-import { LOCAL_STORAGE_SCOPE_KEY } from 'app/pages/login/login.component';
+import { LOCAL_STORAGE_SCOPE_KEY } from 'app/rest/auth.service';
 
 declare var $: any;
 declare var Chartist: any;
@@ -1552,19 +1552,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             },
                 error => {
-                    show403Error(error);
                     this.newIPCameraAdding = false;
-                    $.notify({
-                        icon: "ti-save",
-                        message: error.error["message"]
-                    }, {
-                        type: "warning",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                    
+                    if (show403Error(error) == false) {
+                        $.notify({
+                            icon: "ti-save",
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                        }, {
+                            type: "warning",
+                            delay: 2000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                     }
                 });
     }
 
@@ -1688,19 +1690,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             },
                 error => {
-                    show403Error(error);
                     this.newStreamSourceAdding = false;
-                    $.notify({
-                        icon: "ti-save",
-                        message: error.error["message"]
-                    }, {
-                        type: "warning",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                    
+                    if (show403Error(error) == false) {
+                        $.notify({
+                            icon: "ti-save",
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                        }, {
+                            type: "warning",
+                            delay: 2000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                     }
                 }
             );
     }
@@ -1804,19 +1808,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             },
                 error => {
-                    show403Error(error);
                     this.newPlaylistAdding = false;
-                    $.notify({
-                        icon: "ti-save",
-                        message: error.error["message"]
-                    }, {
-                        type: "warning",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
+                
+                    if (show403Error(error) == false) {
+                        $.notify({
+                            icon: "ti-save",
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                        }, {
+                            type: "warning",
+                            delay: 2000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                     }
                 });
 
     }
@@ -2015,18 +2021,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
                 error => {
                     this.newLiveStreamCreating = false;
-                    $.notify({
-                        icon: "ti-save",
-                        message: error.error["message"]
-                    }, {
-                        type: "warning",
-                        delay: 2000,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
-                    show403Error(error);
+                    if (show403Error(error) == false) {
+                        $.notify({
+                            icon: "ti-save",
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                        }, {
+                            type: "warning",
+                            delay: 2000,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                     }
+                   
                 });
 
     }

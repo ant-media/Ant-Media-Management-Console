@@ -27,7 +27,7 @@ import "rxjs/add/operator/toPromise";
 import {
     SupportRequest
 } from './support.definitions';
-import { show403Error } from 'app/rest/auth.service';
+import { show403Error } from 'app/rest/rest.service';
 
 declare var $: any;
 declare var Chartist: any;
