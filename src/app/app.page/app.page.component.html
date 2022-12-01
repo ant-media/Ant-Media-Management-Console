@@ -329,16 +329,6 @@
                                                 </ng-container>
                                             </div>
 
-                                                <div class="form-group text-left"  *ngIf="isClusterMode">
-                                                    <select (change)="clusterDropDownChanged($event.target.value)" data-toggle="dropdown" class="btn dropdown-toggle btn-block" id="clusterNode">
-                                                        <option *ngFor="let row of clusterNodeTableData.dataRows;" [value]="row.ip">
-                                                            {{row.ip}}
-                                                        </option>
-                                                    </select>
-                                                    <small class="text-danger" *ngIf="!jwtTokenValid">
-                                                        Please enable JWT Token and enter JWT secret key: {{jwtTokenValid}}
-                                                    </small>
-                                                </div>
                                             <div class="form-group text-center">
                                                 <button type="submit" [disabled]='newStreamSourceWarn'
                                                     class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">

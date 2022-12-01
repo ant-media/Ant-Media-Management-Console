@@ -1078,8 +1078,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-
-
     deleteLiveBroadcast(streamId: string, broadcastHostAddress: string): void {
         let REMOTE_HOST_ADDRESS;
         let hostAddress = localStorage.getItem('hostAddress');
@@ -1147,11 +1145,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    clusterDropDownChanged(selectedNode: string) {
-        if (this.currentClusterNode != selectedNode) {
-            this.currentClusterNode = selectedNode;
-        }
-    }
     dropDownChanged(event: any, i: number) {
 
         if (event == 2880) {
@@ -1570,24 +1563,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         let REMOTE_HOST_ADDRESS = null;
         let hostAddress = localStorage.getItem('hostAddress');
-        if (this.isClusterMode && hostAddress != this.currentClusterNode) {
-            REMOTE_HOST_ADDRESS = "http://" + this.currentClusterNode + ":5080";
-
-            if (this.appSettings.jwtControlEnabled != true && this.appSettings.jwtSecretKey == null) {
-                $.notify({
-                    icon: "ti-save",
-                    message: "Please enable JWT Filter or Delete Broadcast in a stopped status"
-                }, {
-                    type: "danger",
-                    delay: 2000,
-                    placement: {
-                        from: 'top',
-                        align: 'right'
-                    }
-                });
-                return;
-            }
-        }
 
         this.restService.createLiveStream(this.appName, this.liveBroadcast, REMOTE_HOST_ADDRESS, socialNetworks.join(","))
             .subscribe(data => {
