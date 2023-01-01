@@ -17,6 +17,9 @@
                                     <li>
                                         <a href="#ssl" (click) ="sslTabSelected()" data-toggle="tab">SSL</a>
                                     </li>
+                                    <li>
+                                        <a href="#ssl" (click) ="sslTabSelected()" data-toggle="tab">SSL</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -349,11 +352,30 @@
                                         <fieldset>
                                             <div class="form-group" >
                                                 <label class="col-sm-2 control-label">SSL Status</label>
+    
+                                        
+                                                
                                                 <div class="col-sm-10">
                                                     <p *ngIf="currentSslSettings.configurationType == 'NO_SSL'" class="form-control-static text-left">  <i class="fa fa-times" style="color: #98000d"></i> No SSL Configured</p>
                                                     <p *ngIf="currentSslSettings.configurationType != 'NO_SSL'" class="form-control-static text-left">  <i class="fa fa-check" style="color: #199826"></i> SSL Configured | {{getSslConfigurationTypeMessage()}}
-                                                    <span>| <a href="{{getDomainAsHttpsLink()}}">{{getDomainAsHttpsLink()}}</a></span>
+                                                    <span *ngIf="currentSslSettings.configurationType == 'ANTMEDIA_SUBDOMAIN' || currentSslSettings.configurationType == 'CUSTOM_DOMAIN'">| <a href="{{getDomainAsHttpsLink()}}">{{getDomainAsHttpsLink()}}</a></span>
+
                                                     </p>
+
+    
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset *ngIf="currentSslSettings.configurationType == 'CUSTOM_CERTIFICATE'">
+                                            <div class="form-group" >
+                                                <label class="col-sm-2 control-label">Used Certificate Files</label>
+    
+                            
+                                                <div  class="col-sm-10">
+                                                    <p class="form-control-static text-left">{{currentSslSettings.certificateFile}}, {{currentSslSettings.chainFile}}, {{currentSslSettings.keyFile}}</p>
+
+                                                
+    
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -413,6 +435,11 @@
                                                                    id="fullChainFileInput"
                                                                    (change)="handleSslCertificateFileInput($event)">
                                                             
+                                                          <!--   <span *ngFor="let certificateFile of newSslSettings.certificateFiles; let i = index">
+                                                                {{certificateFile.name}}<span *ngIf="newSslSettings.certificateFiles.length-1 != i">,</span>
+                                                            </span> -->
+    
+    
                                                         </div>
     
                                                     </div>
@@ -429,6 +456,11 @@
                                                             <input #sslFileInput type="file"
                                                                    id="keyFileInput"
                                                                    (change)="handleSslCertificateFileInput($event)">
+                                                            
+                                                          <!--   <span *ngFor="let certificateFile of newSslSettings.certificateFiles; let i = index">
+                                                                {{certificateFile.name}}<span *ngIf="newSslSettings.certificateFiles.length-1 != i">,</span>
+                                                            </span> -->
+    
     
                                                         </div>
     
@@ -446,6 +478,11 @@
                                                             <input #sslFileInput type="file"
                                                                    id="chainFileInput"
                                                                    (change)="handleSslCertificateFileInput($event)">
+                                                            
+                                                          <!--   <span *ngFor="let certificateFile of newSslSettings.certificateFiles; let i = index">
+                                                                {{certificateFile.name}}<span *ngIf="newSslSettings.certificateFiles.length-1 != i">,</span>
+                                                            </span> -->
+    
     
                                                         </div>
     
