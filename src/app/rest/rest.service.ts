@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {AppSettings, ServerSettings, SslSettings} from "../app.page/app.definitions";
+import {AppSettings, ServerSettings} from "../app.page/app.definitions";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
@@ -419,9 +419,6 @@ export class RestService {
     public getServerSettings(): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/server-settings/" );
     }
-    public getSslSettings(): Observable<Object>{
-        return this.http.get(REST_SERVICE_ROOT + "/ssl-settings/" );
-    }
 
     public changeSettings(appName: string, appSettings: AppSettings ): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + '/applications/settings/' + appName, appSettings);
@@ -430,11 +427,6 @@ export class RestService {
     public changeServerSettings(serverSettings: ServerSettings ): Observable<Object> 
     {
         return this.http.post(REST_SERVICE_ROOT + '/server-settings', serverSettings);
-    }
-
-    public changeSslSettings(sslSettings: SslSettings ): Observable<Object> 
-    {
-        return this.http.post(REST_SERVICE_ROOT + '/ssl-settings', sslSettings);
     }
 
     public getDeviceAuthParameters(appName: string, networkName: string): Observable<Object> {
