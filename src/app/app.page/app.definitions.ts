@@ -175,44 +175,8 @@ export class ServerSettings {
     constructor(public serverName: string,
                 public licenceKey: string,
                 public buildForMarket: boolean,
-                public logLevel: string,
-                public sslSettings:SslSettings
+                public logLevel: string
     ) {}
-}
-
-export enum SslConfigurationType {
-    NO_SSL = "No SSL",
-    CUSTOM_DOMAIN ="Use custom domain.",
-    ANTMEDIA_SUBDOMAIN ="Use antmedia cloud subdomain.",
-    CUSTOM_CERTIFICATE = "Import custom certificate."
-    
-  }
-  
-
-export class SslSettings{
-    public configurationType:string;
-    public customDomain:string
-    public antMediaSubDomain:string
-
-    public keyFileContent:string
-    public fullChainFileContent:string
-    public chainFileContent:string
-
-    public keyFileName:string
-    public fullChainFileName:string
-    public chainFileName:string
-
-    constructor(configurationType: string,antMediaSubDomain:string,customDomain:string
-       
-) {
-    this.configurationType = configurationType
-    this.antMediaSubDomain = antMediaSubDomain
-    this.customDomain = customDomain
-
-
-}
-
-
 }
 
 export class AppSettings {
