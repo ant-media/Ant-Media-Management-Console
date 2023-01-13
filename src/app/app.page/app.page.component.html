@@ -749,19 +749,45 @@
 
 
                                                         <!-- Play Button -->
+                                                        <ul class="nav navbar-right" *ngIf="row.status=='broadcasting'">
+                                                            <li class="dropdown"> 
+                                                                <a href="#" class="dropdown-toggle btn-magnify" data-toggle="dropdown">
+                                                                    <i class="ti-control-play"></i> Play Live 
+                                                                    <span class="notification"></span>
+                                                                    <b class="caret"></b>
+                                                                    <p class="hidden-md hidden-lg">
+                                                                    </p>
+                                                                </a>
+                                                                <ul class="dropdown-menu">          
+                                                                    <li><a (click)="playLive(row.streamId, 'webrtc')" 
+                                                                            data-toggle="tooltip" type="button" 
+                                                                            class="dropdown-link">
+                                                                            <span>
+                                                                                <i class="ti-control-play"></i> Play WebRTC 
+                                                                            </span>
+                                                                        </a>
+                                                                        </li>
 
-                                                        <button
-                                                            *ngIf="row.status=='broadcasting' && (appSettings.webRTCEnabled == true|| appSettings.hlsMuxingEnabled == true) "
-                                                            data-toggle="tooltip" i18n-title title="Play Stream"
-                                                            (click)="playLive(row.streamId)"
-                                                            class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
-                                                            type="button">
-                                                            <span class="btn-label">
-                                                                <i class="ti-control-play"></i>
-                                                            </span>
-                                                            <ng-container i18n="@@tablePlayButton"></ng-container>
-                                                        </button>
+                                                                    <li><a (click)="playLive(row.streamId, 'hls')" 
+                                                                        data-toggle="tooltip" type="button" 
+                                                                        class="dropdown-link">
+                                                                        <span>
+                                                                        <i class="ti-control-play"></i> Play HLS  
+                                                                        </span>
+                                                                        </a>
+                                                                    </li>
 
+                                                                    <li><a (click)="playLive(row.streamId, 'dash')" 
+                                                                        data-toggle="tooltip" type="button" 
+                                                                        class="dropdown-link">
+                                                                        <span>
+                                                                        <i class="ti-control-play"></i> Play DASH
+                                                                        </span>
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
 
                                                         <button
                                                             *ngIf="row.status=='broadcasting' && appSettings.webRTCEnabled == false  && appSettings.hlsMuxingEnabled == false"

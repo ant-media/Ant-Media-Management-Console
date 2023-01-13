@@ -126,20 +126,16 @@ select.selectpicker {
     flex: 0 1 25%!important;
 }
 .status-column{
-    flex: 0 1 25% !important;
+    flex: 0 1 15% !important;
 }
 .viewer-column{
-    flex: 0 1 25% !important;
- }
-.social-column{
-    flex: 0 1 15% !important;
+    flex: 0 1 20% !important;
  }
 .action-column{
-    flex: 0 1 25% !important;
+    flex: 0 1 40% !important;
     justify-content:flex-end;
 }
 .justify-flex-end {
     justify-content:flex-end;
 }
-
 
