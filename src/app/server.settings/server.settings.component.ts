@@ -168,7 +168,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this.sslConfType = event
     }
     openSSLForm() {
-        this.sslFormActive = false;
+        this.sslFormActive = true;
     }
     
     async handleSslCertificateFileInput(event: any) {
