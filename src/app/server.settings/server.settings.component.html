@@ -15,7 +15,7 @@
                                         <a href="#users" data-toggle="tab" i18n="user settings |log@@LogTabHeader">Users</a>
                                     </li>
                                     <li>
-                                        <a href="#ssl" (click) ="sslTabSelected()" data-toggle="tab">SSL</a>
+                                        <a href="#ssl" data-toggle="tab">SSL</a>
                                     </li>
                                 </ul>
                             </div>
@@ -56,7 +56,7 @@
 
                                         <fieldset *ngIf="!serverSettings.buildForMarket && isEnterpriseEdition " >
                                             <div class="form-group"  >
-                                                <label class="col-sm-2 control-label">Submit License Key</label>
+                                                <label class="col-sm-2 control-label">License Key</label>
                                                 <div class="col-sm-10 text-left" >
 
                                                     <input type="text" required minlength="1" name="licenseKey"
@@ -345,50 +345,41 @@
                             </div>
                             <div class="tab-pane container-fluid" id="ssl">
                                 <div>
-                                    <form class="form-horizontal"> 
+                                    <form class="form-horizontal" >     
                                         <fieldset>
                                             <div class="form-group" >
-                                                <label class="col-sm-2 control-label">SSL Status</label>
-    
-                                        
-                                                
-                                                <div class="col-sm-10">
-                                                    <p *ngIf="currentSslSettings.configurationType == 'NO_SSL'" class="form-control-static text-left">  <i class="fa fa-times" style="color: #98000d"></i> No SSL Configured</p>
-                                                    <p *ngIf="currentSslSettings.configurationType != 'NO_SSL'" class="form-control-static text-left">  <i class="fa fa-check" style="color: #199826"></i> SSL Configured | {{getSslConfigurationTypeMessage()}}
-                                                    <span *ngIf="currentSslSettings.configurationType == 'ANTMEDIA_SUBDOMAIN' || currentSslSettings.configurationType == 'CUSTOM_DOMAIN'">| <a href="{{getDomainAsHttpsLink()}}">{{getDomainAsHttpsLink()}}</a></span>
+                                                <label class=" col-sm-2 control-label">SSL Status</label>
+                                                <div class="col-sm-10 ">
+                                                    <p *ngIf="!serverSettings.sslEnabled" class="form-control-static text-left">  <i class="fa fa-times" style="color: #98000d"></i> Inactive</p>
+                                                    <p *ngIf="serverSettings.sslEnabled" class="form-control-static text-left">  <i class="fa fa-check" style="color: #199826"></i> Active
 
+                                                        <ng-container  *ngIf="serverSettings.sslEnabled && !serverSettings.serverName != ''">
+                                                            <a href="{{getDomainAsHttpsLink()}}">{{getDomainAsHttpsLink()}}</a>
+                                                        </ng-container>
+                                                        
+                                                        <ng-container  *ngIf="serverSettings.sslEnabled"> |
+                                                         <button type="button" class="btn btn-simple" style="padding-left:3px"
+                                                            (click)="openSSLForm()">Change SSL</button>
+                                                        </ng-container>
                                                     </p>
-
-    
                                                 </div>
                                             </div>
                                         </fieldset>
-                                        <fieldset *ngIf="currentSslSettings.configurationType == 'CUSTOM_CERTIFICATE'">
-                                            <div class="form-group" >
-                                                <label class="col-sm-2 control-label">Used Certificate Files</label>
-    
-                            
-                                                <div  class="col-sm-10">
-                                                    <p class="form-control-static text-left">{{currentSslSettings.certificateFile}}, {{currentSslSettings.chainFile}}, {{currentSslSettings.keyFile}}</p>
-
-                                                
-    
-                                                </div>
-                                            </div>
-                                        </fieldset>
+                                        <ng-container  *ngIf="sslFormActive">
                                         <fieldset>
                                             <div class="form-group" >
-                                                <label class="col-sm-2 control-label">Configuration Type</label>
+                                                <label class="col-sm-2 control-label">Type</label>
     
                                                 <div class="col-sm-10">
     
-                                                    <select #sslConfigurationSelect  type="text"  [name]="'resolutionHeight'" (ngModelChange)="sslConfigurationChanged($event)" [(ngModel)]="newSslSettings.configurationType"
+                                                    <select #sslConfigurationSelect  type="text"  [name]="'configurationType'" (ngModelChange)="sslConfigurationChanged($event)" [(ngModel)]="sslConfType"
                                                              class="dropdown-toggle form-control" required>
-                                                        <option *ngIf ="licenseStatus == 'Valid'" value="{{getSslConfigurationTypeName(sslConfigurationType.ANTMEDIA_SUBDOMAIN)}}">{{ sslConfigurationType.ANTMEDIA_SUBDOMAIN }}</option>
-                                                        <option disabled="true" *ngIf ="licenseStatus != 'Valid'" value="{{getSslConfigurationTypeName(sslConfigurationType.ANTMEDIA_SUBDOMAIN)}}">{{ sslConfigurationType.ANTMEDIA_SUBDOMAIN }} - Enterprise License Required</option>
+                                                        <option value="{{getSslConfigurationTypeName(ConfigurationTypes.CUSTOM_DOMAIN)}}">{{ ConfigurationTypes.CUSTOM_DOMAIN }}</option>
+                                                       
+                                                        <option *ngIf ="licenseStatus == 'Valid'" value="{{getSslConfigurationTypeName(ConfigurationTypes.ANTMEDIA_SUBDOMAIN)}}">{{ ConfigurationTypes.ANTMEDIA_SUBDOMAIN }}</option>
+                                                        <option disabled="true" *ngIf ="licenseStatus != 'Valid'" value="{{getSslConfigurationTypeName(ConfigurationTypes.ANTMEDIA_SUBDOMAIN)}}">{{ ConfigurationTypes.ANTMEDIA_SUBDOMAIN }} - Enterprise License Required</option>
 
-                                                        <option value="{{getSslConfigurationTypeName(sslConfigurationType.CUSTOM_DOMAIN)}}">{{ sslConfigurationType.CUSTOM_DOMAIN }}</option>
-                                                        <option value="{{getSslConfigurationTypeName(sslConfigurationType.CUSTOM_CERTIFICATE)}}">{{ sslConfigurationType.CUSTOM_CERTIFICATE }}</option>
+                                                        <option value="{{getSslConfigurationTypeName(ConfigurationTypes.CUSTOM_CERTIFICATE)}}">{{ ConfigurationTypes.CUSTOM_CERTIFICATE }}</option>
                                                         
                                                         <!-- <option *ngIf ="currentSslSettings.configurationType != 'NO_SSL'" value="{{getSslConfigurationTypeName(sslConfigurationType.NO_SSL)}}">Remove ssl</option> -->
                                                         
@@ -397,33 +388,29 @@
                                                 </div>
                                             </div>
                                         </fieldset>
-                                        <div class="form-group" *ngIf="newSslSettings.configurationType == getSslConfigurationTypeName(sslConfigurationType.ANTMEDIA_SUBDOMAIN) || newSslSettings.configurationType == getSslConfigurationTypeName(sslConfigurationType.CUSTOM_DOMAIN) || newSslSettings.configurationType == getSslConfigurationTypeName(sslConfigurationType.CUSTOM_CERTIFICATE)" >
+                                        <div class="form-group" >
 
                                         <fieldset>
-                                                <label class="col-sm-2 control-label">SSL Domain</label>
-    
-                                                <div class="col-sm-10" *ngIf="newSslSettings.configurationType == getSslConfigurationTypeName(sslConfigurationType.ANTMEDIA_SUBDOMAIN) && (currentSslSettings.antMediaSubDomain != null && currentSslSettings.antMediaSubDomain != '')">
-                                                    <p class="form-control-static text-left">{{currentSslSettings.antMediaSubDomain}}</p>
-                                                </div>
-                                                <div class="col-sm-10" *ngIf="newSslSettings.configurationType == getSslConfigurationTypeName(sslConfigurationType.ANTMEDIA_SUBDOMAIN) && (currentSslSettings.antMediaSubDomain == null || currentSslSettings.antMediaSubDomain == '')">
-                                                    <p class="form-control-static text-left">You will be automatically provided with an Ant Media Cloud subdomain after you configure SSL.</p>
+                                                <label class="col-sm-2 control-label">Domain (FQDN)</label>
+
+                                                <div class="col-sm-10" *ngIf="sslConfType == getSslConfigurationTypeName(ConfigurationTypes.ANTMEDIA_SUBDOMAIN)">
+                                                    <p class="form-control-static text-left">Subdomain of antmedia.cloud will be automatically allocated for you</p>
                                                 </div>
                                 
-                                                <div class="col-sm-10" *ngIf="newSslSettings.configurationType == getSslConfigurationTypeName(sslConfigurationType.CUSTOM_DOMAIN) || newSslSettings.configurationType == getSslConfigurationTypeName(sslConfigurationType.CUSTOM_CERTIFICATE)">
+                                                <div class="col-sm-10" *ngIf="sslConfType == getSslConfigurationTypeName(ConfigurationTypes.CUSTOM_DOMAIN) || sslConfType == getSslConfigurationTypeName(ConfigurationTypes.CUSTOM_CERTIFICATE)">
                                                     <input type="text" required minlength="1" name="sslDomain"
                                                     placeholder="Type your domain"
                                                     class="form-control"
-                                                    [(ngModel)]="newSslSettings.customDomain"
+                                                    [(ngModel)]="fqdn"
                                                     #sslDomain="ngModel">
                                                 </div>
 
                                         </fieldset>
                                      
                                      </div>
-                                        <div *ngIf="newSslSettings.configurationType == getSslConfigurationTypeName(sslConfigurationType.CUSTOM_CERTIFICATE)">
+                                        <div *ngIf="sslConfType == getSslConfigurationTypeName(ConfigurationTypes.CUSTOM_CERTIFICATE)">
                                             <fieldset>
                                                 <div class="form-group"  >
-                                                    
                                                     <div >
                                                         <label class="col-sm-2 control-label">Full Chain File(.crt or .pem)</label>
         
@@ -431,16 +418,8 @@
                                                             <input #sslFileInput type="file"
                                                                    id="fullChainFileInput"
                                                                    (change)="handleSslCertificateFileInput($event)">
-                                                            
-                                                          <!--   <span *ngFor="let certificateFile of newSslSettings.certificateFiles; let i = index">
-                                                                {{certificateFile.name}}<span *ngIf="newSslSettings.certificateFiles.length-1 != i">,</span>
-                                                            </span> -->
-    
-    
                                                         </div>
-    
                                                     </div>
-    
                                                 </div>
                                             </fieldset>
                                             <fieldset>
@@ -453,12 +432,7 @@
                                                             <input #sslFileInput type="file"
                                                                    id="keyFileInput"
                                                                    (change)="handleSslCertificateFileInput($event)">
-                                                            
-                                                          <!--   <span *ngFor="let certificateFile of newSslSettings.certificateFiles; let i = index">
-                                                                {{certificateFile.name}}<span *ngIf="newSslSettings.certificateFiles.length-1 != i">,</span>
-                                                            </span> -->
-    
-    
+                                                       
                                                         </div>
     
                                                     </div>
@@ -475,14 +449,8 @@
                                                             <input #sslFileInput type="file"
                                                                    id="chainFileInput"
                                                                    (change)="handleSslCertificateFileInput($event)">
-                                                            
-                                                          <!--   <span *ngFor="let certificateFile of newSslSettings.certificateFiles; let i = index">
-                                                                {{certificateFile.name}}<span *ngIf="newSslSettings.certificateFiles.length-1 != i">,</span>
-                                                            </span> -->
-    
-    
                                                         </div>
-    
+
                                                     </div>
     
                                                 </div>
@@ -490,20 +458,14 @@
 
 
                                         </div>
-                                       
-                                        <fieldset *ngIf="newSslSettings.configurationType != getSslConfigurationTypeName(sslConfigurationType.CUSTOM_CERTIFICATE) || newSslSettings.fullChainFileContent && newSslSettings.keyFileContent && newSslSettings.chainFileContent">
+                                        <fieldset>
                                             <div class="form-group text-center" >
                                                 <button  [disabled]="!configureSslEnabled" (click)="configureSsl()" type="submit" class="btn btn-fill btn-info" >
-                                                    <div *ngIf="!configureSslEnabled" style="display: flex; align-items: center;">
-                                                        <i  class="fa fa-spinner fa-spin" style="font-size:24px"></i>
-                                                        <span style="margin-left: 5px;">Configure</span>
-                                                    </div>
-                                                    <span *ngIf="configureSslEnabled">Configure</span>
-
+                                                        <i  *ngIf="!configureSslEnabled" class="fa fa-spinner fa-pulse  fa-fw" ></i>Activate
                                                     </button>
                                             </div>
                                         </fieldset>
-
+                                    </ng-container>
                                     </form>
 
 

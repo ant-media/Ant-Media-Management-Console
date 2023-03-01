@@ -3,7 +3,7 @@ import {HTTP_SERVER_ROOT, LiveBroadcast} from '../rest/rest.service';
 import {ClipboardService} from 'ngx-clipboard';
 import {MatDialog } from '@angular/material/dialog';
 import {AfterViewInit, Component, Injectable, OnInit, OnDestroy, ChangeDetectorRef, ElementRef, ViewChild, Input, Output} from '@angular/core';
-import {ServerSettings, UserInfoTable, UserInf, Licence, SslSettings, SslConfigurationType} from "../app.page/app.definitions";
+import {ServerSettings, UserInfoTable, UserInf, Licence, SslConfigurationType} from "../app.page/app.definitions";
 import {Locale} from "../locale/locale";
 import {AuthService} from "../rest/auth.service";
 import {RestService, User, show403Error} from "../rest/rest.service";
@@ -43,13 +43,13 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this._messageReceived = value;
     }
     public serverSettings: ServerSettings;
-    public newSslSettings: SslSettings;
+    public sslConfType: string;
+    public fqdn:string;
     public sslConfigurationResultDialog: MatDialog;
     private httpsPort = 5443;
     public crtFileExtension = "crt"
     public keyFileExtension = "key"
     public pemFileExtension = "pem"
-    public currentSslSettings:SslSettings;
     public settingsReceived = false;
     public licenseStatus = "Getting license status";
     public licenseStatusExplaination: string;
@@ -101,6 +101,11 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     public userRole: string = localStorage.getItem(LOCAL_STORAGE_ROLE_KEY).toUpperCase();
 
+    public fullChainFile: File;
+    public privateKeyFile: File;
+    public chainFile: File;
+    public sslFormActive: boolean = false;
+
     constructor(private http: HttpClient, private route: ActivatedRoute,
                 private restService: RestService,
                 public dialog: MatDialog,
@@ -109,9 +114,8 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     }
 
     ngOnInit(){
-        this.newSslSettings = new SslSettings(SslConfigurationType.CUSTOM_DOMAIN,"","")
-        this.currentSslSettings = new SslSettings(SslConfigurationType.ANTMEDIA_SUBDOMAIN,"","")
-        this.serverSettings = new ServerSettings(null,null, false, this.logLevelInfo, this.currentSslSettings);
+        this.sslConfType = this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_DOMAIN);
+        this.serverSettings = new ServerSettings('',null, false, this.logLevelInfo, false);
         this.currentLicence = new Licence(null,null,null,null,null,null,null);
 
         this.callTimer();
@@ -161,70 +165,26 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     }
 
     sslConfigurationChanged(event:any){
-        this.newSslSettings.configurationType = event
+        this.sslConfType = event
+    }
+    openSSLForm() {
+        this.sslFormActive = false;
     }
     
-    isCertificateFileInputCorrect(certificateFile: File, allowedFileExtensions:Array<string>): boolean {
-        return allowedFileExtensions.includes(this.getFileExtensionFromFileName(certificateFile.name))
-    }
-
-    getFileExtensionFromFileName(fileName:string):string{
-        return fileName.slice(fileName.lastIndexOf('.') + 1);
-    }
-
-    readFileContent(file:File):Promise<string>{
-        var reader = new FileReader();  
-
-        return new Promise(function (resolve, reject) {
-            reader.onload = function(e) {  
-                var text = reader.result.toString()
-                resolve(text)
-            }
-            reader.readAsText(file, "UTF-8");
-        });
-       
-    }
-
     async handleSslCertificateFileInput(event: any) {
         var certificateFile = event.target.files[0]
         var inputId = event.target["id"].toString()
         switch(inputId){
             case "fullChainFileInput":
-                if(this.isCertificateFileInputCorrect(certificateFile,[this.crtFileExtension,this.pemFileExtension])){
-                    let fileContent =   await this.readFileContent(certificateFile)
-                    this.newSslSettings.fullChainFileContent = fileContent
-                    this.newSslSettings.fullChainFileName = certificateFile.name
-                    
-                }else{
-                    event.target.value = null;
-                    alert("Wrong full chain file input! Only .crt and .pem files are allowed.")
-                    
-                }
+                this.fullChainFile = certificateFile;
                 break
 
             case "keyFileInput":
-                if(this.isCertificateFileInputCorrect(certificateFile,[this.keyFileExtension,this.pemFileExtension])){
-                    let fileContent =   await this.readFileContent(certificateFile)
-                    this.newSslSettings.keyFileContent = fileContent
-                    this.newSslSettings.keyFileName = certificateFile.name
-
-                }else{
-                    event.target.value = null;
-
-                    alert("Wrong key file input! Only .key and .pem files are allowed.")
-                }
+                this.privateKeyFile = certificateFile;
                 break
+
             case "chainFileInput":
-                if(this.isCertificateFileInputCorrect(certificateFile,[this.crtFileExtension,this.pemFileExtension])){
-                    let fileContent =   await this.readFileContent(certificateFile)
-                    this.newSslSettings.chainFileContent = fileContent
-                    this.newSslSettings.chainFileName = certificateFile.name
-
-                }else{
-                    event.target.value = null;
-
-                    alert("Wrong chain file input! Only .crt and .pem files are allowed.")
-                }
+                this.chainFile = certificateFile;
                 break
 
 
@@ -496,27 +456,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this.userNameEmpty = false;
         this.User = new User("","")
     }
-
-    sslTabSelected(){
-        this.newSslSettings.configurationType = this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_DOMAIN)
-    }
-
-    getSslConfigurationTypeMessage():string{
-  
-        if(this.currentSslSettings.configurationType == "ANTMEDIA_SUBDOMAIN"){
-            return "Antmedia cloud subdomain"
-        }else if(this.currentSslSettings.configurationType == "CUSTOM_DOMAIN"){
-            return "Using custom domain"
-        }else if(this.currentSslSettings.configurationType == "CUSTOM_CERTIFICATE"){
-            return "Using custom certificate"
-        }else{
-            return "No SSL Configured"
-
-        }
-       
-
-    }
-
      isValidDomain(domain):boolean {
         let regex = new RegExp(/^(?!-)[A-Za-z0-9-]+([\-\.]{1}[a-z0-9]+)*\.[A-Za-z]{2,6}$/);
 
@@ -531,113 +470,107 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     }
 
     getDomainAsHttpsLink(){
+        return "https://"+this.serverSettings.serverName+":"+this.httpsPort;
+    }
 
-        if(this.currentSslSettings.configurationType == this.getSslConfigurationTypeName(SslConfigurationType.ANTMEDIA_SUBDOMAIN)){
-            return "https://"+this.currentSslSettings.antMediaSubDomain+":"+this.httpsPort;
-        }else if(this.currentSslSettings.configurationType == this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_DOMAIN)){
-            return "https://"+this.currentSslSettings.customDomain+":"+this.httpsPort
+    certificateFilesReady() {
+
+        if (this.fullChainFile != null && this.chainFile != null && this.privateKeyFile != null) {
+            return true;
         }
-        return ""
-
+        return false;
     }
 
     configureSsl(){
-        if ((this.newSslSettings.configurationType == this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_DOMAIN) 
-            || this.newSslSettings.configurationType == this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_CERTIFICATE))
-            && !this.isValidDomain(this.newSslSettings.customDomain)) {
+        if ((this.sslConfType == this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_DOMAIN) 
+            || this.sslConfType == this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_CERTIFICATE))
+            && !this.isValidDomain(this.fqdn)) 
+        {
+            //TODO: It's not good to give alert. Give inline warnings
             alert("Please enter a valid domain.")
             return
-
         }
+        else if (this.sslConfType == this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_CERTIFICATE) 
+                && !this.certificateFilesReady()){
 
-        $.notify({
-            icon: "ti-info",
-            message: "SSL configuration has started. Please wait a minute..."
-        }, {
-            type: "info",
-            delay: 5000,
-            placement: {
-                from: 'top',
-                align: 'right'
-            }
-        });
-       
-        this.configureSslEnabled = false
-        
-        this.restService.changeSslSettings(this.newSslSettings).subscribe(configurationResponse => {
-            console.log(configurationResponse["message"])
-            if(configurationResponse["success"] == true){
-                if(this.newSslSettings.configurationType == this.getSslConfigurationTypeName(SslConfigurationType.NO_SSL)){
-                    $.notify({
-                        icon: "ti-save",
-                        message: "SSL removed succesfully. Please restart the server for the changes to take effect."
-                    }, {
-                        type: "success",
-                        delay: 2500,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
-
-                }else{
-                    var successMessage = ""
-                    if(this.newSslSettings.configurationType == this.getSslConfigurationTypeName(SslConfigurationType.ANTMEDIA_SUBDOMAIN)){
-                        successMessage = "SSL configuration success."
-                    }else if(this.newSslSettings.configurationType == this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_DOMAIN)){
-                        successMessage = "SSL configuration success. Please restart server for changes to take effect."
-
-                    }
-                    $.notify({
-                        icon: "ti-save",
-                        message: successMessage,
-                    }, {
-                        type: "success",
-                        delay: 3500,
-                        placement: {
-                            from: 'top',
-                            align: 'right'
-                        }
-                    });
-
-                }
-              
-                this.currentSslSettings = this.newSslSettings
-                if(configurationResponse["amsCloudDomain"]){
-                    this.currentSslSettings.antMediaSubDomain = configurationResponse["amsCloudDomain"]
-
-                }
-
-
-            }else{
+            //TODO: It's not good to give alert. Give inline warnings
+            alert("Please enter certificate files")
+            return;
+        }
+        else {
+            swal({
+                title: "Confirmation",
+                text: "Server will be restarted automatically after this operaiton",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Proceed'
+            }).then(() => {
+    
                 $.notify({
-                    icon: "ti-alert",
-                    message: "SSL configuration failed."
+                    icon: "ti-info",
+                    message: "SSL configuration has started. Please wait a minute..."
                 }, {
-                    type: "danger",
-                    delay: 2500,
+                    type: "info",
+                    delay: 5000,
                     placement: {
                         from: 'top',
                         align: 'right'
                     }
                 });
-
-                let sslConfigurationErrorDialogRef = this.dialog.open(SslErrorComponent, {
-                    data: {
-                        errorMessage : configurationResponse["message"]
-                        
-                    },
-                    height: "60%",
-                });
-
-            }
-      
-
-            this.configureSslEnabled = true
-
-        })
-
-
+               
+                this.configureSslEnabled = false
+                let formData = new FormData();
+                formData.append('fullChainFile', this.fullChainFile);
+                formData.append('privateKeyFile', this.privateKeyFile);
+                formData.append('chainFile', this.chainFile);
+                
+                this.restService.changeSslSettings(this.fqdn, this.sslConfType, formData).subscribe(configurationResponse => {
+                    console.log(configurationResponse["message"])
+                    if(configurationResponse["success"] == true){
+                        {
+                            var successMessage = "SSL configuration is successful"
+                           
+                            $.notify({
+                                icon: "ti-save",
+                                message: successMessage,
+                            }, {
+                                type: "success",
+                                delay: 3500,
+                                placement: {
+                                    from: 'top',
+                                    align: 'right'
+                                }
+                            });
+        
+                        }
+                    }else{
+                        $.notify({
+                            icon: "ti-alert",
+                            message: "SSL configuration is failed."
+                        }, {
+                            type: "danger",
+                            delay: 2500,
+                            placement: {
+                                from: 'top',
+                                align: 'right'
+                            }
+                        });
+                    }
+              
+                    this.configureSslEnabled = true
+        
+                }, error => {
+                    console.log("SSL problem");
+                    console.log(error);
+                    this.configureSslEnabled = true;
+                })
+    
+            }).catch(function () {
+    
+            });
+        }
     }
 
     cancelNewUser(): void {
@@ -706,9 +639,11 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     }
 
-    get sslConfigurationType():typeof SslConfigurationType{
+    
+    get ConfigurationTypes():typeof SslConfigurationType{
         return SslConfigurationType;
     }
+
 
     createUser(isValid: boolean): void {
         console.log("create user called");
@@ -770,8 +705,8 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             this.serverSettings = <ServerSettings>data;
             console.log(this.serverSettings)
             this.settingsReceived = true;
-            this.currentSslSettings = this.serverSettings.sslSettings;
-            this.newSslSettings.configurationType = this.currentSslSettings.configurationType
+            this.sslFormActive = !this.serverSettings.SSLEnabled;
+            //this.currentSslSettings = this.serverSettings.sslSettings;
 
             if(!this.serverSettings.buildForMarket){
                 this.getLastLicenseStatus()
