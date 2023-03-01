@@ -176,7 +176,7 @@ export class ServerSettings {
                 public licenceKey: string,
                 public buildForMarket: boolean,
                 public logLevel: string,
-                public SSLEnabled: boolean,
+                public sslEnabled: boolean,
     ) {}
 }
 

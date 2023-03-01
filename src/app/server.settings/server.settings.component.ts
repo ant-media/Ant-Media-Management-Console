@@ -705,7 +705,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             this.serverSettings = <ServerSettings>data;
             console.log(this.serverSettings)
             this.settingsReceived = true;
-            this.sslFormActive = !this.serverSettings.SSLEnabled;
+            this.sslFormActive = !this.serverSettings.sslEnabled;
             //this.currentSslSettings = this.serverSettings.sslSettings;
 
             if(!this.serverSettings.buildForMarket){
