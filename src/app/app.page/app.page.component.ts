@@ -41,6 +41,8 @@ import { BroadcastEditComponent } from './dialog/broadcast.edit.dialog.component
 import { SocialMediaStatsComponent } from './dialog/social.media.stats.component';
 import { WebRTCClientStatsComponent } from './dialog/webrtcstats/webrtc.client.stats.component';
 import { RtmpEndpointEditDialogComponent } from './dialog/rtmp.endpoint.edit.dialog.component';
+import { ConfigureAutoStartStopDialogComponent } from './dialog/configure.auto.start.stop.dialog.component';
+
 import { PlaylistEditComponent } from './dialog/playlist.edit.dialog.component';
 import { Observable } from "rxjs";
 import "rxjs/add/observable/of";
@@ -2323,6 +2325,28 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
         }
+    }
+    openConfigureAutoStartStopDialog(stream: BroadcastInfo):void{
+            let dialogRef = this.dialog.open(ConfigureAutoStartStopDialogComponent, {
+
+                height: '600px',
+                maxHeight: '600px',
+                width: '800px',
+                maxWidth: '800px',
+
+                data: {
+                   stream:stream,
+                   appName:this.appName
+                }
+
+            });
+            dialogRef.afterClosed().subscribe(result => {
+                console.log('The dialog was closed');
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                this.getAppLiveStreamsNumber();
+    
+            });
+
     }
 
     stopStreams(streamId: string): void {

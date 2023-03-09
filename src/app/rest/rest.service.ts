@@ -688,4 +688,8 @@ export class RestService {
         return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/recording/'+recordingStatus+'&recordType='+recordingType,
             {});
     }
+    public configureAutoStartStop(appName:string,streamId:string, enabled:boolean, timeElapseToStop:number){
+        return this.http.put(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/auto-start-stop/'+enabled+'?timeElapseToStop='+timeElapseToStop,
+        {});
+    }
 }

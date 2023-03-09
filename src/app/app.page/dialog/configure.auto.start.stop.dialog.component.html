@@ -1,0 +1,52 @@
+<div>
+<h4 class="card-title text-left">
+    Configure Auto Start on Viewer Detected and Auto Stop on No Viewer Detected
+</h4>
+
+<div class="col-xs-12">
+    <span>Stream Id: {{stream.streamId}}</span>
+<br>
+    <span>Stream Name: {{stream.name}}</span>
+<br>
+    <span>Stream Type: {{stream.type}}</span>
+
+    <div class="checkbox">
+        <input 
+        (change)="autoStartStopEnabled = !autoStartStopEnabled"
+        [checked]="autoStartStopEnabled"
+            type="checkbox">
+        <label>
+            Enable
+        </label>
+    </div> 
+    <p >If this feature is enabled, the stream will stop automatically after a specified amount of time has elapsed without any viewer being detected. Additionally, if this feature is enabled and the stream type is an IP Camera, Stream Source, VOD or playlist, the stream will automatically start when a viewer begins to play it.</p>
+    <p >This setting can be particularly useful for IP cameras, as it can help save bandwidth by automatically stopping the stream when there are no viewers, and starting it again when someone begins to watch. Please remember that recording will also stop when stream is stopped.</p>
+
+    <div *ngIf="autoStartStopEnabled" class="form-group">
+        <div >
+
+            <label class="col-sm-12 col-md-3 control-label"
+                style="min-width: 200px; "
+                >Time Elapse Required To Stop the Stream (In Seconds)</label>
+
+            <div class="col-sm-12 text-left col-md-3">
+                <input #timeElapseInput style="min-width: 125px;" 
+                    value="{{stopOnNoViewerTimeElapseSeconds}}"
+                    class="form-control" required
+                    type="number">
+            </div>
+
+        </div>
+    </div>
+
+</div>   
+
+<div class="col-sm-12 col-md-12">
+    <div class="text-center">                                        
+        <button (click)="save()" class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
+            type="submit">Save
+        </button>
+    </div>
+</div>
+
+</div>

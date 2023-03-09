@@ -45,6 +45,7 @@ import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
 import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialog.component';
 import {PlaylistEditComponent} from "./dialog/playlist.edit.dialog.component";
+import {ConfigureAutoStartStopDialogComponent} from "./dialog/configure.auto.start.stop.dialog.component";
 
 export const AppPageRoutes: Routes = [
     {
@@ -69,6 +70,7 @@ export const AppPageRoutes: Routes = [
                     WebRTCClientStatsComponent,
                     RtmpEndpointEditDialogComponent,
                     PlaylistEditComponent,
+                    ConfigureAutoStartStopDialogComponent
                 ],
 
     entryComponents: [
@@ -79,7 +81,8 @@ export const AppPageRoutes: Routes = [
                         SocialMediaStatsComponent,
                         WebRTCClientStatsComponent,
                         RtmpEndpointEditDialogComponent,
-                        PlaylistEditComponent
+                        PlaylistEditComponent,
+                        ConfigureAutoStartStopDialogComponent
                     ],
     bootstrap: [AppPageComponent],
 

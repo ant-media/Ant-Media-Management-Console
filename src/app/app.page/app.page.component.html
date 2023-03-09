@@ -562,6 +562,10 @@
                                                             <i class="fa fa-circle text-muted"
                                                                 *ngSwitchCase="'finished'">&nbsp;</i>Offline
                                                         </ng-container>
+                                                        <ng-container *ngSwitchCase="'stopped'">
+                                                            <i class="fa fa-circle text-muted"
+                                                                *ngSwitchCase="'stopped'">&nbsp;</i>Offline
+                                                        </ng-container>
                                                         <ng-container *ngSwitchCase="'preparing'">
                                                             <i class="fa fa-circle " style="color:#ffc107"
                                                                 *ngSwitchCase="'preparing'">&nbsp;</i>Preparing
@@ -697,6 +701,15 @@
                                                                            (click)="setRecordingStatus(row.streamId, false, 'mp4')">
                                                                             <ng-container i18n="@@disableMp4Recording">
                                                                                 <span *ngIf="row.status=='broadcasting'">Stop</span><span *ngIf="row.status!='broadcasting'">Disable</span> MP4 Recording</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <li>
+                                                                        <a class="dropdown-link"
+                                                                           (click)="openConfigureAutoStartStopDialog(row)">
+                                                                            <ng-container i18n="@@configureAutoStartStop">
+                                                                                <span >Configure Auto Start/Stop</span>
+                                                                            </ng-container>
                                                                         </a>
                                                                     </li>
 
