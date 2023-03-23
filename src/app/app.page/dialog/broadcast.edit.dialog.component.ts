@@ -29,6 +29,7 @@ export class BroadcastEditComponent {
     public genericRTMPEndpointCount = 0;
     public endpoint:Endpoint;
     public streamUrlDialogValid = true;
+    public onvifPort:string;
 
     constructor(
         public dialogRef: MatDialogRef<BroadcastEditComponent>, public restService: RestService,
@@ -62,10 +63,20 @@ export class BroadcastEditComponent {
             }
         });
 
-    }
+        this.onvifPort =  data.url.slice(data.url.lastIndexOf(':')+1)
+    }   
 
     onNoClick(): void {
         this.dialogRef.close();
+    }
+
+    getIpFromStreamUrl(streamUrl):string{
+        var extractIpv4Regex = "((1?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\.){3}(1?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])"
+        var extractedIpv4 = streamUrl.match(extractIpv4Regex)[0];
+        if(extractedIpv4 != undefined){
+           return extractedIpv4+":"+this.onvifPort
+        }
+        return ""
     }
 
     updateLiveStream(isValid: boolean): void {
@@ -81,14 +92,13 @@ export class BroadcastEditComponent {
         this.liveStreamEditing.dashViewerLimit = this.dialogRef.componentInstance.data.dashViewerLimit;
         this.liveStreamEditing.type = this.dialogRef.componentInstance.data.type;
 
-
         if(this.liveStreamEditing.type == "streamSource") {
             this.liveStreamEditing.ipAddr = this.dialogRef.componentInstance.data.url;
             this.liveStreamEditing.status = this.dialogRef.componentInstance.data.status;
             this.liveStreamEditing.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
         }
         else if(this.liveStreamEditing.type == "ipCamera") {
-            this.liveStreamEditing.ipAddr = this.dialogRef.componentInstance.data.url;
+            this.liveStreamEditing.ipAddr = this.getIpFromStreamUrl(this.dialogRef.componentInstance.data.streamUrl);
             this.liveStreamEditing.username = this.dialogRef.componentInstance.data.username;
             this.liveStreamEditing.password = this.dialogRef.componentInstance.data.pass;
             this.liveStreamEditing.status = this.dialogRef.componentInstance.data.status;
@@ -112,6 +122,7 @@ export class BroadcastEditComponent {
                 this.streamUrlDialogValid = false;
             }
         }
+        console.log(this.liveStreamEditing)
 
 
         this.liveStreamUpdating = true;
@@ -119,7 +130,6 @@ export class BroadcastEditComponent {
         this.restService.updateLiveStream(this.dialogRef.componentInstance.data.appName, this.liveStreamEditing,
             socialNetworks).subscribe(data => {
             this.liveStreamUpdating = false;
-
             if (data["success"]) {
 
                 if (this.genericRTMPEndpointCount != 0) {
