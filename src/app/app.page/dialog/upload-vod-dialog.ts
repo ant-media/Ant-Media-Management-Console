@@ -44,7 +44,7 @@ export class UploadVodDialogComponent {
 
 
         if (this.fileToUpload) {
-            console.log("this.fileToUpload.type", this.fileToUpload)
+
             if (this.fileToUpload.type !== 'video/mp4') {
                 swal({
                     type: "error",
