@@ -73,7 +73,7 @@ export class UploadVodDialogComponent {
             }
 
             this.fileName = this.fileName.replace(/\s/g, '_');
-
+            this.fileName = encodeURIComponent(this.fileName);
 
             this.uploadSub = this.restService.uploadVod(this.fileName, formData, this.dialogRef.componentInstance.data.appName).subscribe(data => {
 
