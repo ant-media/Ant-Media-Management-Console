@@ -714,6 +714,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log("vodOrderBy->" + this.vodOrderBy);
     }
 
+    getBroadcastByStreamId(streamId):BroadcastInfo{
+        for(var i=0;i<this.dataSource.data.length;i++){
+            var broadcast = this.dataSource.data[i]
+            if(broadcast.streamId == streamId){
+                return broadcast
+            }
+        }
+        return null
+    }
+
     sortBroadcastList(e) {
         //This sort function need for the e.direction null value
         this.broadcastOrderBy = this.sortOrderBy(e.direction, this.broadcastOrderBy);
@@ -798,10 +808,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    getIFrameSrc(streamId: string, autoplay: string, token: string): string {
-        return HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&autoplay=" + autoplay +
-            (token != null ? "&token=" + token : "");
-    }
+     getIFrameSrc(streamId: string, autoplay: string, token: string): string {
+        const broadcast = this.getBroadcastByStreamId(streamId);
+        const typePlayList = broadcast.type === "playlist";
+        const baseSrc = `${HTTP_SERVER_ROOT}${this.appName}/play.html?name=${streamId}&autoplay=${autoplay}`;
+        const tokenParam = token != null ? `&token=${token}` : "";
+        const playOrderParam = typePlayList ? "&playOrder=hls" : "";
+        return `${baseSrc}${tokenParam}${playOrderParam}`;
+      }
 
     getIFrameEmbedCode(streamId: string): string {
         return '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:480px"  ></iframe>';
