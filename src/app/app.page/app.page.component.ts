@@ -714,6 +714,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log("vodOrderBy->" + this.vodOrderBy);
     }
 
+    getBroadcastByStreamId(streamId):BroadcastInfo{
+        for(var i=0;i<this.dataSource.data.length;i++){
+            var broadcast = this.dataSource.data[i]
+            if(broadcast.streamId == streamId){
+                return broadcast
+            }
+        }
+        return null
+    }
+
     sortBroadcastList(e) {
         //This sort function need for the e.direction null value
         this.broadcastOrderBy = this.sortOrderBy(e.direction, this.broadcastOrderBy);
@@ -798,9 +808,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    getIFrameSrc(streamId: string, autoplay: string, token: string, vodName:string, playOrder : string): string {
-        return HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + (vodName != null ? "/" + vodName : "") + "&autoplay=" + autoplay +
-        (token != null ? "&token=" + token : "") + (playOrder != null ? "&playOrder=" + playOrder : "");
+    getIFrameSrc(streamId: string, autoplay: string, token: string, vodName: string, playOrder: string): string {
+        const broadcast = this.getBroadcastByStreamId(streamId);
+        const typePlayList = broadcast.type === "playlist";
+        const vodNameParam = vodName != null ? `/${vodName}` : "";
+        const tokenParam = token != null ? `&token=${token}` : "";
+        const playOrderParam = playOrder != null ? `&playOrder=${playOrder}` : (typePlayList ? "&playOrder=hls" : "");
+        return `${HTTP_SERVER_ROOT}${this.appName}/play.html?name=${streamId}${vodNameParam}&autoplay=${autoplay}${tokenParam}${playOrderParam}`;
     }
 
     getIFrameEmbedCode(streamId: string): string {
@@ -1155,12 +1169,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.encoderSettings[i].audioBitrate = 256;
         }
         if (event == 1080) {
-            this.encoderSettings[i].videoBitrate = 2000;
+            this.encoderSettings[i].videoBitrate = 2500;
             this.encoderSettings[i].audioBitrate = 256;
         }
         if (event == 720) {
-            this.encoderSettings[i].videoBitrate = 1500;
+            this.encoderSettings[i].videoBitrate = 2000;
             this.encoderSettings[i].audioBitrate = 128;
+        }
+        if (event == 640) {
+            this.encoderSettings[i].videoBitrate = 1800;
+            this.encoderSettings[i].audioBitrate = 96;
+        }
+        if (event == 540) {
+            this.encoderSettings[i].videoBitrate = 1500;
+            this.encoderSettings[i].audioBitrate = 96;
         }
         if (event == 480) {
             this.encoderSettings[i].videoBitrate = 1000;
