@@ -527,39 +527,19 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
                 formData.append('chainFile', this.chainFile);
                 
                 this.restService.changeSslSettings(this.fqdn, this.sslConfType, formData).subscribe(configurationResponse => {
-                    console.log(configurationResponse["message"])
-                    if(configurationResponse["success"] == true){
-                        {
-                            var successMessage = "SSL configuration is successful"
+                    var completedMessage = "SSL configuration completed. Please refresh the page and login again."
                            
-                            $.notify({
-                                icon: "ti-save",
-                                message: successMessage,
-                            }, {
-                                type: "success",
-                                delay: 3500,
-                                placement: {
-                                    from: 'top',
-                                    align: 'right'
-                                }
-                            });
-        
+                    $.notify({
+                        icon: "ti-info",
+                        message: completedMessage,
+                    }, {
+                        type: "success",
+                        delay: 3500,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
                         }
-                    }else{
-                        $.notify({
-                            icon: "ti-alert",
-                            message: "SSL configuration is failed."
-                        }, {
-                            type: "danger",
-                            delay: 2500,
-                            placement: {
-                                from: 'top',
-                                align: 'right'
-                            }
-                        });
-                    }
-              
-                    this.configureSslEnabled = true
+                    });
         
                 }, error => {
                     console.log("SSL problem");

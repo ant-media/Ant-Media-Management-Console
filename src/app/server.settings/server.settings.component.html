@@ -353,9 +353,9 @@
                                                     <p *ngIf="!serverSettings.sslEnabled" class="form-control-static text-left">  <i class="fa fa-times" style="color: #98000d"></i> Inactive</p>
                                                     <p *ngIf="serverSettings.sslEnabled" class="form-control-static text-left">  <i class="fa fa-check" style="color: #199826"></i> Active
 
-                                                        <ng-container  *ngIf="serverSettings.sslEnabled && !serverSettings.serverName != ''">
-                                                            <a href="{{getDomainAsHttpsLink()}}">{{getDomainAsHttpsLink()}}</a>
-                                                        </ng-container>
+                                                        <ng-container *ngIf="serverSettings.sslEnabled && serverSettings.serverName !== ''">
+                                                            | <a [href]="getDomainAsHttpsLink()">{{getDomainAsHttpsLink()}}</a>
+                                                          </ng-container>
                                                         
                                                         <ng-container  *ngIf="serverSettings.sslEnabled"> |
                                                          <button type="button" class="btn btn-simple" style="padding-left:3px"
