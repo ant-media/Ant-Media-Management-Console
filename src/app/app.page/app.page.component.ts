@@ -714,6 +714,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log("vodOrderBy->" + this.vodOrderBy);
     }
 
+    getBroadcastByStreamId(streamId):BroadcastInfo{
+        for(var i=0;i<this.dataSource.data.length;i++){
+            var broadcast = this.dataSource.data[i]
+            if(broadcast.streamId == streamId){
+                return broadcast
+            }
+        }
+        return null
+    }
+
     sortBroadcastList(e) {
         //This sort function need for the e.direction null value
         this.broadcastOrderBy = this.sortOrderBy(e.direction, this.broadcastOrderBy);
@@ -798,9 +808,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    getIFrameSrc(streamId: string, autoplay: string, token: string): string {
-        return HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&autoplay=" + autoplay +
-            (token != null ? "&token=" + token : "");
+    getIFrameSrc(streamId: string, autoplay: string, token: string, vodName: string, playOrder: string): string {
+        const broadcast = this.getBroadcastByStreamId(streamId);
+        const typePlayList = broadcast.type === "playlist";
+        const vodNameParam = vodName != null ? `/${vodName}` : "";
+        const tokenParam = token != null ? `&token=${token}` : "";
+        const playOrderParam = playOrder != null ? `&playOrder=${playOrder}` : (typePlayList ? "&playOrder=hls" : "");
+        return `${HTTP_SERVER_ROOT}${this.appName}/play.html?name=${streamId}${vodNameParam}&autoplay=${autoplay}${tokenParam}${playOrderParam}`;
     }
 
     getIFrameEmbedCode(streamId: string): string {
@@ -815,12 +829,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.openPlayerWithJWTToken(streamId, streamId, "640px", streamId);
         }
         else {
-            this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null);
+            this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null, null, null);
         }
     }
 
-    openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string): void {
-
+    openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string, vodName:string, playOrder:string): void {
         swal({
             html: htmlCode,
             showConfirmButton: false,
@@ -831,7 +844,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             onOpen: () => {
                 //the error in this callback does not show up in browser console.
                 var iframe = $('#' + objectId);
-                iframe.prop('src', this.getIFrameSrc(streamId, "true", tokenId));
+                iframe.prop('src', this.getIFrameSrc(streamId, "true", tokenId, vodName, playOrder));
             },
             onClose: function () {
                 var ifr = document.getElementById(objectId);
@@ -867,7 +880,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             for (var i in this.broadcastGridTableData.dataRows) {
                 id = this.broadcastGridTableData.dataRows[i]['streamId'];
                 var $iframe = $('#' + id);
-                $iframe.prop('src', this.getIFrameSrc(id, "true", null));
+                $iframe.prop('src', this.getIFrameSrc(id, "true", null,null,null));
             }
 
         }, 1500);
@@ -906,7 +919,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.playVoDToken(vodName, type, vodId, streamId, filePath);
         }
         else {
-            this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", null);
+            this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", null, vodName, "vod");
         }
     }
 
@@ -951,7 +964,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.restService.getOneTimeToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
-            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
+            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId, null, null)
         }, error => { show403Error(error); });
     }
 
@@ -961,7 +974,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.restService.getJWTToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
-            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
+            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId, null, null)
         }, error => { show403Error(error); });
     }
 
@@ -1156,12 +1169,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.encoderSettings[i].audioBitrate = 256;
         }
         if (event == 1080) {
-            this.encoderSettings[i].videoBitrate = 2000;
+            this.encoderSettings[i].videoBitrate = 2500;
             this.encoderSettings[i].audioBitrate = 256;
         }
         if (event == 720) {
-            this.encoderSettings[i].videoBitrate = 1500;
+            this.encoderSettings[i].videoBitrate = 2000;
             this.encoderSettings[i].audioBitrate = 128;
+        }
+        if (event == 640) {
+            this.encoderSettings[i].videoBitrate = 1800;
+            this.encoderSettings[i].audioBitrate = 96;
+        }
+        if (event == 540) {
+            this.encoderSettings[i].videoBitrate = 1500;
+            this.encoderSettings[i].audioBitrate = 96;
         }
         if (event == 480) {
             this.encoderSettings[i].videoBitrate = 1000;
