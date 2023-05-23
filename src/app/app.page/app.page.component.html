@@ -962,7 +962,7 @@
                                                         </span>
                                                     </button>
 
-                                                    <button (click)="copyVoDEmbedCode(row.vodName, row.type, row.vodId)"
+                                                    <button (click)="copyVoDEmbedCode(row.vodName, row.type, row.vodId, row.filePath)"
                                                         data-toggle="tooltip" i18n-title
                                                         title="Copy Live Embed Code to Clipboard"
                                                         class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -973,7 +973,7 @@
                                                     </button>
 
 
-                                                    <a (click)="downloadFile(row.vodName ,row.type,row.vodId, row.streamId)"
+                                                    <a (click)="downloadFile(row.vodName ,row.type,row.vodId, row.streamId, row.filePath)"
                                                         download>
                                                         <button data-toggle="tooltip" i18n-title title="VoD Downloading"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"

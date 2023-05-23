@@ -810,11 +810,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     getIFrameSrc(streamId: string, autoplay: string, token: string, vodName: string, playOrder: string): string {
         const broadcast = this.getBroadcastByStreamId(streamId);
-        const typePlayList = broadcast.type === "playlist";
+        const typePlayList = broadcast != null && broadcast.type === "playlist";
         const vodNameParam = vodName != null ? `/${vodName}` : "";
         const tokenParam = token != null ? `&token=${token}` : "";
         const playOrderParam = playOrder != null ? `&playOrder=${playOrder}` : (typePlayList ? "&playOrder=hls" : "");
-        return `${HTTP_SERVER_ROOT}${this.appName}/play.html?name=${streamId}${vodNameParam}&autoplay=${autoplay}${tokenParam}${playOrderParam}`;
+        return `${HTTP_SERVER_ROOT}${this.appName}/play.html?name=${streamId}&autoplay=${autoplay}${tokenParam}${playOrderParam}`;
     }
 
     getIFrameEmbedCode(streamId: string): string {
@@ -833,6 +833,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
+    /**
+     * It supports playing streams if streamId has the relative path such as streams/stream1.mp4
+     * @param htmlCode 
+     * @param objectId 
+     * @param streamId 
+     * @param width 
+     * @param tokenId 
+     * @param vodName 
+     * @param playOrder 
+     */
     openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string, vodName:string, playOrder:string): void {
         swal({
             html: htmlCode,
@@ -886,23 +896,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }, 1500);
     }
 
-    downloadFile(vodName: string, type: string, vodId: string, streamId: string): void {
+    downloadFile(vodName: string, type: string, vodId: string, streamId: string, filePath: string): void {
 
-        var srcFile = null;
-        var vodUrlName = null;
-
-        if (type == "uploadedVod") {
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4';
-            vodUrlName = vodId;
-        } else if (type == "streamVod") {
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName;
-            vodUrlName = vodName;
-        } else if (type == "userVod") {
-            var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
-            var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams' + folderName + '/' + vodName;
-            vodUrlName = vodName;
-        }
+        var srcFile = HTTP_SERVER_ROOT + this.appName + "/" + filePath;;
+        var vodUrlName = vodName;
 
         const link = document.createElement("a");
         link.download = vodUrlName;
@@ -919,6 +916,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.playVoDToken(vodName, type, vodId, streamId, filePath);
         }
         else {
+            //if filePath has extension, in the new version file path has the full relative path
+            //putting the below check to support old versions
+            if (filePath.lastIndexOf(".") == -1) {
+                filePath += "/" + vodName;
+            }
             this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", null, vodName, "vod");
         }
     }
@@ -2159,7 +2161,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         //}
 
         let embedCode = '<iframe width="560" height="315" src="'
-            + HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamUrl
+            + HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + streamUrl
             + '" frameborder="0" allowfullscreen></iframe>';
 
         this.clipBoardService.copyFromContent(embedCode);
@@ -2176,23 +2178,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-    copyVoDEmbedCode(name: string, type: string, vodId: string): void {
+    copyVoDEmbedCode(name: string, type: string, vodId: string, filePath: string): void {
 
-        var Index = this.appSettings.vodFolder.lastIndexOf("/");
-        var folderName = this.appSettings.vodFolder.substring(Index);
-
-        var VoDName = name;
-
-        if (type == "uploadedVod") {
-            VoDName = vodId;
+        //if filePath has extension, in the new version file path has the full relative path
+        //putting the below check to support old versions
+         if (filePath.lastIndexOf(".") == -1) {
+            filePath += "/" + name;
         }
-        else if (type == "userVod") {
-            VoDName = folderName + "/" + VoDName;
-        }
-
 
         let embedCode = '<iframe width="560" height="315" src="'
-            + HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + VoDName + "&playOrder=vod"
+            + HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + filePath + "&playOrder=vod"
             + '" frameborder="0" allowfullscreen></iframe>';
 
         this.clipBoardService.copyFromContent(embedCode);
