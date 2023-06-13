@@ -962,7 +962,7 @@
                                                         </span>
                                                     </button>
 
-                                                    <button (click)="copyVoDEmbedCode(row.vodName, row.type, row.vodId)"
+                                                    <button (click)="copyVoDEmbedCode(row.vodName, row.type, row.vodId, row.filePath)"
                                                         data-toggle="tooltip" i18n-title
                                                         title="Copy Live Embed Code to Clipboard"
                                                         class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -973,7 +973,7 @@
                                                     </button>
 
 
-                                                    <a (click)="downloadFile(row.vodName ,row.type,row.vodId, row.streamId)"
+                                                    <a (click)="downloadFile(row.vodName ,row.type,row.vodId, row.streamId, row.filePath)"
                                                         download>
                                                         <button data-toggle="tooltip" i18n-title title="VoD Downloading"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -1099,7 +1099,7 @@
 
                                                         <div class="col-sm-12 col-md-10 text-left">
 
-                                                            <div *ngIf="encoderSettings.length!=0" class="form-group">
+                                                            <div *ngIf="encoderSettings != null && encoderSettings.length!=0" class="form-group">
 
                                                                 <label class="col-sm-5 control-label">Frame Rate(fps)</label>
                                                                     <div class="col-sm-4">
@@ -1113,7 +1113,7 @@
                                                                     
                                                             </div>
 
-                                                            <div *ngIf="encoderSettings.length==0">
+                                                            <div *ngIf="encoderSettings != null && encoderSettings.length==0">
                                                 
                                                                     <label>
                                                                         <i style="font-size: 20px;color:#DD0330"
@@ -1128,7 +1128,7 @@
 
                                                     <div *ngIf="isEnterpriseEdition" class="form-group text-left">
 
-                                                        <div *ngIf="encoderSettings.length!=0">
+                                                        <div *ngIf="encoderSettings != null && encoderSettings.length!=0">
                                                                 <div class="col-xs-4 col-sm-4 text-left">
                                                                     <span class="help-block"
                                                                         i18n="@@ResolutionHeight">Resolution</span>
@@ -1161,6 +1161,8 @@
                                                                                 <option value="2160">2160p</option>
                                                                                 <option value="1080">1080p</option>
                                                                                 <option value="720">720p</option>
+                                                                                <option value="640">640p</option>
+                                                                                <option value="540">540p</option>
                                                                                 <option value="480">480p</option>
                                                                                 <option value="360">360p</option>
                                                                                 <option value="240">240p</option>
@@ -1493,7 +1495,7 @@
                                                                             <div class="checkbox">
 
                                                                                 <input
-                                                                                    [disabled]="encoderSettings.length==0"
+                                                                                    [disabled]="encoderSettings != null && encoderSettings.length==0"
                                                                                     [(ngModel)]="appSettings.objectDetectionEnabled"
                                                                                     id="objectDetection"
                                                                                     name="objectDetection"
@@ -1518,7 +1520,7 @@
                                                                             <div class="checkbox">
 
                                                                                 <input
-                                                                                    [disabled]="encoderSettings.length==0"
+                                                                                    [disabled]="encoderSettings != null && encoderSettings.length==0"
                                                                                     [(ngModel)]="appSettings.generatePreview"
                                                                                     id="generatePreview"
                                                                                     name="generatePreview"
@@ -1699,7 +1701,8 @@
     
                                                                         <label for="s3RecordingEnabled">
                                                                             Enable S3 Recording <a
-                                                                            href="https://antmedia.io/docs/s3"
+                                                                            href="https://antmedia.io/docs/guides/recording-live-streams/s3-integration-http-forwarding/"
+                                                                            target="_blank"
                                                                             matTooltip="This feature uploads recorded files(MP4, WebM, HLS) to the S3. Click to learn more...">
                                                                             <i class="fa fa-info-circle"></i></a>
                                                                     </label>
@@ -1868,7 +1871,7 @@
 
                                                                 <label for="publishTokenControlEnabled">
                                                                     Publish with One-time Tokens <a
-                                                                        href="https://github.com/ant-media/Ant-Media-Server/wiki/Stream-Security-Documentation"
+                                                                        href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#2-one-time-token-control"
                                                                         target="_blank"
                                                                         matTooltip="By enabling this option, one time tokens are required for publishing. Publish request without tokens will not be streamed. Click for more information."><i
                                                                             style="font-size: 20px;"
@@ -1884,7 +1887,7 @@
 
                                                                 <label for="playTokenControlEnabled">
                                                                     Play with One-time Tokens <a
-                                                                        href="https://github.com/ant-media/Ant-Media-Server/wiki/Stream-Security-Documentation"
+                                                                        href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#2-one-time-token-control"
                                                                         target="_blank"
                                                                         matTooltip="By enabling this option, one time tokens are required for playing. Play request without tokens will not be streamed. Click for more information."><i
                                                                             style="font-size: 20px;"
@@ -1903,7 +1906,7 @@
 
                                                                 <label for="enableTimeTokenForPublish">
                                                                     Enable TOTP for Publishing <a
-                                                                        href=""
+                                                                        href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#7-time-based-one-time-password"
                                                                         target="_blank"
                                                                         matTooltip="After enabling this option, publishing can be done with TOTP"><i
                                                                             style="font-size: 20px;"
@@ -1920,7 +1923,7 @@
 
                                                                 <label for="enableTimeTokenForPlay">
                                                                     Enable TOTP for Playing <a
-                                                                        href=""
+                                                                        href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#7-time-based-one-time-password"
                                                                         target="_blank"
                                                                         matTooltip="After enabling this option, playing can be done with TOTP"><i
                                                                             style="font-size: 20px;"
@@ -1978,7 +1981,7 @@
 
                                                                 <label for="publishJwtControlEnabled">
                                                                     Publish with JWT Filter for Stream <a
-                                                                        href="https://github.com/ant-media/Ant-Media-Server/wiki/Stream-Security-Documentation"
+                                                                        href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#6-jwt-stream-security-filter"
                                                                         target="_blank"
                                                                         matTooltip="By enabling this option, jwt tokens are required for publishing. Publish request without tokens will not be streamed. Click for more information."><i
                                                                         style="font-size: 20px;"
@@ -1995,7 +1998,7 @@
 
                                                                 <label for="playJwtControlEnabled">
                                                                     Play with JWT Filter for Stream <a
-                                                                        href="https://github.com/ant-media/Ant-Media-Server/wiki/Stream-Security-Documentation"
+                                                                        href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#6-jwt-stream-security-filter"
                                                                         target="_blank"
                                                                         matTooltip="By enabling this option, jwt tokens are required for playing. Play request without tokens will not be streamed. Click for more information."><i
                                                                         style="font-size: 20px;"
@@ -2050,6 +2053,8 @@
                                                                 <label for="ipFilter"
                                                                        i18n="@@ipFilter">
                                                                     Enable IP Filter for RESTful API <a
+                                                                        href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/jwt-rest-api-filter/"
+                                                                        target="_blank"
                                                                         matTooltip="If you disable IP Filter, we are strongly recommending enable JWT Filter"><i
                                                                         class="fa fa-info-circle"></i></a>
                                                                 </label>
@@ -2081,7 +2086,10 @@
 
                                                                 <label for="jwtFilter"
                                                                        i18n="@@jwtFilter">
+
                                                                     Enable JWT Filter for RESTful API <a
+                                                                        href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/securing-rest-apis/#ip-filter-for-the-rest-api"
+                                                                        target="_blank"
                                                                         matTooltip="If you disable JWT Filter, we are strongly recommending enable IP Filter."><i
                                                                         class="fa fa-info-circle"></i></a>
                                                                 </label>
