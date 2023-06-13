@@ -318,8 +318,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.getInitParams();
 
-        this.callTimer();
-
     }
 
     contextDropdownClicked() {
@@ -335,20 +333,24 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }, 8000);
     }
 
-    callTimer() {
+    getAllStreamData(){
+        if (this.authService.isAuthenticated) {
+            if (typeof this.appName != "undefined") {
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                this.getVoDStreams();
+                this.getAppLiveStreamsNumber();
+            }
+        }
+    }
 
+
+    callTimer() {
         this.clearTimer();
 
         //this timer gets the related information according to active application
         //so that it checks appname whether it is undefined
         this.timerId = window.setInterval(() => {
-            if (this.authService.isAuthenticated) {
-                if (typeof this.appName != "undefined") {
-                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-                    this.getVoDStreams();
-                    this.getAppLiveStreamsNumber();
-                }
-            }
+           this.getAllStreamData()
 
         }, 5000);
     }
@@ -466,9 +468,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }, error => { show403Error(error); });
             }
 
-            this.getAppLiveStreamsNumber();
-            this.getVoDStreams();
-            this.getAppLiveStreams(0, this.pageSize);
+          
         });
 
     }
@@ -1209,7 +1209,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     getSettings(): void {
         this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
-
             if (this.appSettings.jwtControlEnabled) {
                 let jwt = require('jsonwebtoken');
                 let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
@@ -1234,9 +1233,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
             this.acceptAllStreams = !this.appSettings.acceptOnlyStreamsInDataStore;
+            this.getAllStreamData()
+            this.callTimer()
 
-
-        }, error => { show403Error(error); });
+        }, error => { 
+            this.callTimer()
+            show403Error(error); 
+        });
     }
 
 
