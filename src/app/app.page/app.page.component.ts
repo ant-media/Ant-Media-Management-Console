@@ -191,6 +191,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
+    public settingsJson: string;
+    public settingsObject: any;
     public token: Token;
     public serverSettings: ServerSettings;
     public listTypes = [
@@ -233,6 +235,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private broadcastSortBy = "";
     private broadcastOrderBy = "";
+
+    public isJsonUpdate = false;
 
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatPaginator, { static: false }) paginatorVod: MatPaginator;
@@ -678,7 +682,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
-            console.log(this.dataSource)
+            //console.log(this.dataSource)
             this.cdr.detectChanges();
 
         }, error => { show403Error(error); });
@@ -1209,6 +1213,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     getSettings(): void {
         this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
+            this.settingsJson = JSON.stringify(data, null, 2); //JSON.stringify(data);
             if (this.appSettings.jwtControlEnabled) {
                 let jwt = require('jsonwebtoken');
                 let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
@@ -1243,9 +1248,58 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
+    updateSettingsByJson() : void {
+        try {
+            this.settingsObject = JSON.parse(this.settingsJson);
+        } catch (err) {
+            console.error('Invalid JSON:', err);
+            // Handle error if the JSON string is invalid
+        }
+        this.restService.changeSettingsByJson(this.appName, this.settingsObject).subscribe(data => {
+            if (data["success"] == true) {
+                this.getSettings();
+                $.notify({
+                    icon: "ti-save",
+                    message: Locale.getLocaleInterface().settings_saved
+                }, {
+                    type: "success",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else {
+                $.notify({
+                    icon: "ti-alert",
+                    message: Locale.getLocaleInterface().settings_not_saved
+                }, {
+                    type: 'warning',
+                    delay: 1900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+                this.getSettings();
+            }
+        },
+        error => 
+        {
+           show403Error(error);
+           this.getSettings();
+        });
+
+    }
+
     changeSettings(valid: boolean): void {
 
         if (!valid) {
+            return;
+        }
+
+        if(this.isJsonUpdate) {
+            this.updateSettingsByJson();
             return;
         }
 
@@ -1308,6 +1362,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         align: 'right'
                     }
                 });
+                this.getSettings();
             } else {
                 $.notify({
                     icon: "ti-alert",
@@ -1320,6 +1375,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         align: 'right'
                     }
                 });
+                this.getSettings();
             }
 
             this.appSettings.encoderSettings.forEach((value, index) => {
@@ -1333,6 +1389,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         error => 
         {
            show403Error(error);
+           this.getSettings();
         });
 
 
