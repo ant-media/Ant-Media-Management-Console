@@ -1022,7 +1022,13 @@
                             </div>
 
                             <div *ngIf="appSettings" class="tab-pane" id="settings">
-                                <form #f="ngForm" validate class="form-horizontal"
+                                <div class="col-sm-12">
+                                    <select type="button" (change)="settingModeChanged($event.target.value)"  i18n="@@settingMode" class="btn btn-success" data-size="2">
+                                        <option value="setByForm">Basic (by Form)</option>
+                                        <option value="setByJson">Advanced (by Json)</option>
+                                    </select>
+                                </div>
+                                <form #f="ngForm" *ngIf="!isJsonUpdate" (ngSubmit)="changeSettings(f.valid)" validate class="form-horizontal"
                                     method="post">
                                     <div class="row">
 
@@ -1537,30 +1543,6 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
-                                                                <div class="form-group">
-                                                                    <div class="text-left" *ngIf=isEnterpriseEdition>
-                                                                        <div class="col-sm-12 col-md-12">
-                                                                            <div class="checkbox">
-
-                                                                                <input
-                                                                                    [(ngModel)]="isJsonUpdate"
-                                                                                    id="setByJson"
-                                                                                    name="setByJson"
-                                                                                    type="checkbox">
-
-                                                                                <label for="setByJson">
-                                                                                    Update Seetings by Json <a
-                                                                                        matTooltip="Enable this, if you want to update settings by Json.">
-                                                                                        <i
-                                                                                            class="fa fa-info-circle"></i></a>
-                                                                                </label>
-
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
                                                                 <div class="form-group">
 
                                                                     <label
@@ -2146,37 +2128,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <div *ngIf=isJsonUpdate class="card-header">
-                                                    <legend class="text-left" i18n="@@settingsJson">
-                                                        Settings Json
-                                                    </legend>
-                                                </div>
-
-                                                <div *ngIf=isJsonUpdate class="card-content text-left">
-                                                    <div class="form-group">
-                                                        <div class="col-xs-12" style="margin-top:12px">
-                                                            <label>
-                                                                Check <a target="_blank" href="https://antmedia.io/javadoc/io/antmedia/AppSettings.html"> docs</a> for details.
-                                                            </label>
-                                                            <div style="margin-top:20px" class="col-sm-12">
-                                                                <fieldset>
-                                                                    <div class="form-group">
-                                                                        <textarea class="form-control" name="jsonSettings" 
-                                                                        [(ngModel)]="settingsJson" #jsonSettings="ngModel" 
-                                                                         rows="12" >{{settingsJson | json}}</textarea>
-                                                                    </div>
-                                                                </fieldset>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
 
                                             <div class="col-sm-12 col-md-12">
                                                 <div class="text-center">
                                                                                                      
-                                                    <button (click)="changeSettings(f.valid)" class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
+                                                    <button class="btn btn-info" i18n="@@saveForm" style="margin: 15px"
                                                         type="submit">Save
                                                     </button>
                                                     <!--
@@ -2190,6 +2147,42 @@
                                         </div>
                                     </div>
                                 </form>
+
+                                <div *ngIf=isJsonUpdate class="row">
+                                    <div class="col-sm-12 col-md-12">
+                                        <div class="card-header">
+                                            <legend class="text-left" i18n="@@settingsJson">
+                                                Settings Json
+                                            </legend>
+                                        </div>
+
+                                        <div class="card-content text-left">
+                                            <div class="form-group">
+                                                <div class="col-xs-12" style="margin-top:12px">
+                                                    <label>
+                                                        Check <a target="_blank" href="https://antmedia.io/javadoc/io/antmedia/AppSettings.html"> docs</a> for details.
+                                                    </label>
+                                                    <div style="margin-top:20px" class="col-sm-12">
+                                                        <fieldset>
+                                                            <div class="form-group">
+                                                                <textarea class="form-control" name="jsonSettings" 
+                                                                [(ngModel)]="settingsJson" #jsonSettings="ngModel" 
+                                                                rows="12" >{{settingsJson | json}}</textarea>
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-12">
+                                            <div class="text-center">                                           
+                                                <button (click)="updateSettingsByJson()" class="btn btn-info" style="margin: 15px">Save
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
 

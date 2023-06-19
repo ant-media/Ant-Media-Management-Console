@@ -1298,12 +1298,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        if(this.isJsonUpdate) {
-            this.updateSettingsByJson();
-            return;
-        }
-
-
         if (this.appSettings.jwtControlEnabled) {
             let jwt = require('jsonwebtoken');
             let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
@@ -1393,6 +1387,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
 
+    }
+
+    settingModeChanged(event:any){
+        console.log("event:"+event);
+        if(event == "setByForm") {
+            this.isJsonUpdate = false;
+        }
+        else if(event == "setByJson") {
+            this.isJsonUpdate = true;
+        }
     }
 
     newLiveStream(): void {
