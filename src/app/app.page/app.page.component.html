@@ -1022,11 +1022,12 @@
                             </div>
 
                             <div *ngIf="appSettings" class="tab-pane" id="settings">
-                                <div class="col-sm-12">
-                                    <select type="button" (change)="settingModeChanged($event.target.value)"  i18n="@@settingMode" class="btn btn-success" data-size="2">
-                                        <option value="setByForm">Basic (by Form)</option>
-                                        <option value="setByJson">Advanced (by Json)</option>
+                                <div class="col-sm-12"  style="text-align: right">
+                                    <select type="button" (change)="settingModeChanged($event.target.value)"  i18n="@@settingMode" class="btn dropdown-toggle" data-size="2">
+                                        <option value="setByForm">Basic</option>
+                                        <option value="setByJson">Advanced</option>
                                     </select>
+                                   
                                 </div>
                                 <form #f="ngForm" *ngIf="!isJsonUpdate" (ngSubmit)="changeSettings(f.valid)" validate class="form-horizontal"
                                     method="post">
@@ -2152,27 +2153,19 @@
                                     <div class="col-sm-12 col-md-12">
                                         <div class="card-header">
                                             <legend class="text-left" i18n="@@settingsJson">
-                                                Settings Json
+                                                AppSettings - <a target="_blank" style="font-size:20px" href="https://antmedia.io/javadoc/io/antmedia/AppSettings.html">Documentation</a>
                                             </legend>
                                         </div>
 
                                         <div class="card-content text-left">
-                                            <div class="form-group">
-                                                <div class="col-xs-12" style="margin-top:12px">
-                                                    <label>
-                                                        Check <a target="_blank" href="https://antmedia.io/javadoc/io/antmedia/AppSettings.html"> docs</a> for details.
-                                                    </label>
-                                                    <div style="margin-top:20px" class="col-sm-12">
-                                                        <fieldset>
-                                                            <div class="form-group">
-                                                                <textarea class="form-control" name="jsonSettings" 
-                                                                [(ngModel)]="settingsJson" #jsonSettings="ngModel" 
-                                                                rows="12" >{{settingsJson | json}}</textarea>
-                                                            </div>
-                                                        </fieldset>
+                                          
+                                                <fieldset>
+                                                    <div class="form-group">
+                                                        <textarea class="form-control" name="jsonSettings" 
+                                                        [(ngModel)]="settingsJson" #jsonSettings="ngModel" 
+                                                        rows="60" >{{settingsJson | json}}</textarea>
                                                     </div>
-                                                </div>
-                                            </div>
+                                                </fieldset>
                                         </div>
 
                                         <div class="col-sm-12 col-md-12">
