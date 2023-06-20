@@ -427,6 +427,10 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + '/applications/settings/' + appName, appSettings);
     }
 
+    public changeSettingsByJson(appName: string, object: any ): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + '/applications/settings/' + appName, object);
+    }
+
     public changeServerSettings(serverSettings: ServerSettings ): Observable<Object> 
     {
         return this.http.post(REST_SERVICE_ROOT + '/server-settings', serverSettings);
