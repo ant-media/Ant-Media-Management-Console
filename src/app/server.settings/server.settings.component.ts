@@ -1,28 +1,25 @@
-
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {HTTP_SERVER_ROOT, LiveBroadcast} from '../rest/rest.service';
 import {ClipboardService} from 'ngx-clipboard';
 import {MatDialog } from '@angular/material/dialog';
-
-
-
-import {AfterViewInit, Component, Injectable, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, Input, Output} from '@angular/core';
-import {ServerSettings, UserInfoTable, UserInf, Licence} from "../app.page/app.definitions";
+import {AfterViewInit, Component, Injectable, OnInit, OnDestroy, ChangeDetectorRef, ElementRef, ViewChild, Input, Output} from '@angular/core';
+import {ServerSettings, UserInfoTable, UserInf, Licence, SslConfigurationType} from "../app.page/app.definitions";
 import {Locale} from "../locale/locale";
 import {AuthService} from "../rest/auth.service";
 import {RestService, User, show403Error} from "../rest/rest.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {DataService} from "../rest/data.service";
 import {MatPaginator, MatPaginatorIntl, PageEvent} from "@angular/material/paginator"
 import {MatTableDataSource} from "@angular/material/table"
 import {MatSort} from "@angular/material/sort"
 import {UserEditComponent} from './dialog/user.edit.dialog.component';
+import {SslErrorComponent} from './dialog/server.settings.ssl.error.dialog.component';
+
 import {LOCAL_STORAGE_EMAIL_KEY, LOCAL_STORAGE_ROLE_KEY} from '../rest/auth.service';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-
 
 declare var $:any;
 declare var swal: any;
@@ -33,8 +30,10 @@ declare var swal: any;
     templateUrl: './server.settings.component.html'
 })
 
+
 @Injectable()
 export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewInit{
+    @ViewChild('sslConfigurationSelect') sslConfigurationSelect: ElementRef;
 
     get messageReceived(): string {
         return this._messageReceived;
@@ -44,10 +43,18 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this._messageReceived = value;
     }
     public serverSettings: ServerSettings;
+    public sslConfType: string;
+    public fqdn:string;
+    public sslConfigurationResultDialog: MatDialog;
+    private httpsPort = 5443;
+    public crtFileExtension = "crt"
+    public keyFileExtension = "key"
+    public pemFileExtension = "pem"
     public settingsReceived = false;
     public licenseStatus = "Getting license status";
     public licenseStatusExplaination: string;
     public licenseStatusReceiving = false;
+    public configureSslEnabled = true;
     public currentLicence : Licence;
     private _messageReceived : string;
     public timerId: any;
@@ -94,6 +101,11 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     public userRole: string = localStorage.getItem(LOCAL_STORAGE_ROLE_KEY).toUpperCase();
 
+    public fullChainFile: File;
+    public privateKeyFile: File;
+    public chainFile: File;
+    public sslFormActive: boolean = false;
+
     constructor(private http: HttpClient, private route: ActivatedRoute,
                 private restService: RestService,
                 public dialog: MatDialog,
@@ -102,7 +114,8 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     }
 
     ngOnInit(){
-        this.serverSettings = new ServerSettings(null,null, false, this.logLevelInfo);
+        this.sslConfType = this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_DOMAIN);
+        this.serverSettings = new ServerSettings('',null, false, this.logLevelInfo, false);
         this.currentLicence = new Licence(null,null,null,null,null,null,null);
 
         this.callTimer();
@@ -129,6 +142,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     ngOnDestroy() {
         this.clearTimer();
     }
+    
 
     logLevelChanged(event:any){
 
@@ -143,6 +157,37 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         }
         if(event == this.logLevelOff) {
             this.serverSettings.logLevel = this.logLevelOff;
+        }
+    }
+
+    getSslConfigurationTypeName(sslConfigurationType:SslConfigurationType):string{
+        return Object.keys(SslConfigurationType).find(key => SslConfigurationType[key] === sslConfigurationType);
+    }
+
+    sslConfigurationChanged(event:any){
+        this.sslConfType = event
+    }
+    openSSLForm() {
+        this.sslFormActive = true;
+    }
+    
+    async handleSslCertificateFileInput(event: any) {
+        var certificateFile = event.target.files[0]
+        var inputId = event.target["id"].toString()
+        switch(inputId){
+            case "fullChainFileInput":
+                this.fullChainFile = certificateFile;
+                break
+
+            case "keyFileInput":
+                this.privateKeyFile = certificateFile;
+                break
+
+            case "chainFileInput":
+                this.chainFile = certificateFile;
+                break
+
+
         }
     }
 
@@ -367,8 +412,9 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
         // this.licenseStatusReceiving = true;
         if(!this.serverSettings.buildForMarket && this.isEnterpriseEdition) 
-        {
-            this.restService.changeServerSettings( this.serverSettings).subscribe(data => {
+        {   
+            console.log(this.serverSettings)
+            this.restService.changeServerSettings(this.serverSettings).subscribe(data => {
                 if (data["success"] == true) {
                     $.notify({
                         icon: "ti-save",
@@ -409,6 +455,102 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this.newUserActive = true;
         this.userNameEmpty = false;
         this.User = new User("","")
+    }
+     isValidDomain(domain):boolean {
+        let regex = new RegExp(/^(?!-)[A-Za-z0-9-]+([\-\.]{1}[a-z0-9]+)*\.[A-Za-z]{2,6}$/);
+
+        if (domain == null) {
+            return false
+        }
+
+        if (regex.test(domain)) {
+            return true
+        }
+        return false
+    }
+
+    getDomainAsHttpsLink(){
+        return "https://"+this.serverSettings.serverName+":"+this.httpsPort;
+    }
+
+    certificateFilesReady() {
+
+        if (this.fullChainFile != null && this.chainFile != null && this.privateKeyFile != null) {
+            return true;
+        }
+        return false;
+    }
+
+    configureSsl(){
+        if ((this.sslConfType == this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_DOMAIN) 
+            || this.sslConfType == this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_CERTIFICATE))
+            && !this.isValidDomain(this.fqdn)) 
+        {
+            //TODO: It's not good to give alert. Give inline warnings
+            alert("Please enter a valid domain.")
+            return
+        }
+        else if (this.sslConfType == this.getSslConfigurationTypeName(SslConfigurationType.CUSTOM_CERTIFICATE) 
+                && !this.certificateFilesReady()){
+
+            //TODO: It's not good to give alert. Give inline warnings
+            alert("Please enter certificate files")
+            return;
+        }
+        else {
+            swal({
+                title: "Confirmation",
+                text: "Server will be restarted automatically after this operaiton",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Proceed'
+            }).then(() => {
+    
+                $.notify({
+                    icon: "ti-info",
+                    message: "SSL configuration has started. Please wait a minute..."
+                }, {
+                    type: "info",
+                    delay: 5000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+               
+                this.configureSslEnabled = false
+                let formData = new FormData();
+                formData.append('fullChainFile', this.fullChainFile);
+                formData.append('privateKeyFile', this.privateKeyFile);
+                formData.append('chainFile', this.chainFile);
+                
+                this.restService.changeSslSettings(this.fqdn, this.sslConfType, formData).subscribe(configurationResponse => {
+                    var completedMessage = "SSL configuration completed. Please refresh the page and login again."
+                           
+                    $.notify({
+                        icon: "ti-info",
+                        message: completedMessage,
+                    }, {
+                        type: "success",
+                        delay: 3500,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+        
+                }, error => {
+                    console.log("SSL problem");
+                    console.log(error);
+                    this.configureSslEnabled = true;
+                })
+    
+            }).catch(function () {
+    
+            });
+        }
     }
 
     cancelNewUser(): void {
@@ -477,6 +619,12 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     }
 
+    
+    get ConfigurationTypes():typeof SslConfigurationType{
+        return SslConfigurationType;
+    }
+
+
     createUser(isValid: boolean): void {
         console.log("create user called");
         this.userNameEmpty = false;
@@ -531,10 +679,14 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             }, error => { show403Error(error); });
             this.newUserCreating = false;
         }
+        
     getServerSettings(): void {
         this.restService.getServerSettings().subscribe(data => {
             this.serverSettings = <ServerSettings>data;
+            console.log(this.serverSettings)
             this.settingsReceived = true;
+            this.sslFormActive = !this.serverSettings.sslEnabled;
+            //this.currentSslSettings = this.serverSettings.sslSettings;
 
             if(!this.serverSettings.buildForMarket){
                 this.getLastLicenseStatus()

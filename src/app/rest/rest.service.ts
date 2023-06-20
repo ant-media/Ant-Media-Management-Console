@@ -419,6 +419,9 @@ export class RestService {
     public getServerSettings(): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/server-settings/" );
     }
+    public getSslSettings(): Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + "/ssl-settings/" );
+    }
 
     public changeSettings(appName: string, appSettings: AppSettings ): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + '/applications/settings/' + appName, appSettings);
@@ -427,6 +430,11 @@ export class RestService {
     public changeServerSettings(serverSettings: ServerSettings ): Observable<Object> 
     {
         return this.http.post(REST_SERVICE_ROOT + '/server-settings', serverSettings);
+    }
+
+    public changeSslSettings(domain: string, type:string , formData:any): Observable<Object> 
+    {
+        return this.http.post(REST_SERVICE_ROOT + '/ssl-settings?domain='+domain+'&type='+type, formData);
     }
 
     public getDeviceAuthParameters(appName: string, networkName: string): Observable<Object> {
