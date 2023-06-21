@@ -1,41 +1,41 @@
 <div >
-        <form method="post" #f="ngForm" validate (ngSubmit)="updatePlaylistItemEditing(f.valid)">
+    <form method="post" #f="ngForm" validate (ngSubmit)="updatePlaylistItemEditing(f.valid)">
 
-            <div class="card-content" style="padding-top:0px">
-                <h4 class="card-title text-left" i18n="@@editLiveStreamCardTitle">
-                    Edit Playlist
-                </h4>
-                <div class="form-group text-left">
-                    <label i18n="@@newLiveStreamName">Playlist Name</label>
-                    <input type="text" required minlength="4" name="playlistName"
-                           i18n-placeholder="@@stream_name_place_holder"
-                           placeholder="Stream name"
-                           class="form-control" [(ngModel)]="playlistEditing.name"
-                           #playlistName="ngModel" >
-                    <small [hidden]="playlistName.valid || (!f.submitted)"
-                           class="text-danger" i18n="@@playlistNameIsRequired">
-                           Playlist name should be at least 4 characters.
-                     </small>
+        <div class="card-content" style="padding-top:0px">
+            <h4 class="card-title text-left" i18n="@@editLiveStreamCardTitle">
+                Edit Playlist
+            </h4>
+            <div class="form-group text-left">
+                <label i18n="@@newLiveStreamName">Playlist Name</label>
+                <input type="text" required minlength="4" name="playlistName"
+                       i18n-placeholder="@@stream_name_place_holder"
+                       placeholder="Stream name"
+                       class="form-control" [(ngModel)]="playlistEditing.name"
+                       #playlistName="ngModel" >
+                <small [hidden]="playlistName.valid || (!f.submitted)"
+                       class="text-danger" i18n="@@playlistNameIsRequired">
+                       Playlist name should be at least 4 characters.
+                 </small>
 
-                </div>
+            </div>
 
-                <div class="form-group">
+            <div class="form-group">
 
-                   
+               
 
-                    <div class="row">
+                <div >
 
-                        <div class="col-sm-12 col-md-12">
-
+                    <div>
+                         <div style="overflow-x: hidden;overflow-y:auto;height: 250px;padding-right:10px;">
                             <div *ngIf="playlistEditing.playListItemList.length!=0" >
-                                <div class="col-xs-12 col-sm-12 text-left">
+                                <div >
                                     <span class="help-block" i18n="@@ResolutionHeight">Playlist URL</span>
                                 </div>
                             </div>
 
                             <div *ngIf="playlistEditing.playListItemList.length!=0" class="row">
                                 <ng-container>
-                                    <div *ngFor="let playlistItem of playlistEditing.playListItemList; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px" >
+                                    <div *ngFor="let playlistItem of playlistEditing.playListItemList; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px; padding-left: 0px;" >
 
                                         <div class="col-xs-11 col-sm-11 text-left">
                                             <input  type="text" class="form-control" [name]="'streamUrl'+i"  [(ngModel)]="playlistItem.streamUrl" />
@@ -51,35 +51,36 @@
                                 </ng-container>
                             </div>
 
-                            <div class="row">
-                                <button type="button" class="btn btn-default" (click)="addPlaylistItemEditing()" i18n="@@newPlaylistCreateButton">
-                                    Add Playlist Item</button>
-                            </div>
+                         </div>   
+                      
 
-                            <div>
-                                <div class="col-xs-12">
-                                    <div class="checkbox">
-                                        <input
-                                                [(ngModel)]="playlistEditing.playlistLoopEnabled"
-                                                id="playlistLoopEnabled"
-                                                name="playlistLoopEnabled" type="checkbox">
+                        <div class="row" style="margin-top: 25px;">
+                            <button type="button" style="margin-left: 15px;" class="btn btn-default" (click)="addPlaylistItemEditing()" i18n="@@newPlaylistCreateButton">
+                                Add Playlist Item</button>
+                        </div>
 
-                                        <label for="playlistLoopEnabled"
-                                               i18n="@@playlistLoopEnabled">
-                                            Loop Playlist
-                                        </label>
-                                    </div>
+                        <div>
+                            <div class="col-xs-12">
+                                <div class="checkbox" style="padding-left:10px">
+                                    <input
+                                            [(ngModel)]="playlistEditing.playlistLoopEnabled"
+                                            id="playlistLoopEnabled"
+                                            name="playlistLoopEnabled" type="checkbox">
+
+                                    <label for="playlistLoopEnabled"
+                                           i18n="@@playlistLoopEnabled">
+                                        Loop Playlist
+                                    </label>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="row text-center" style="padding-top: 20px">
+                        <div class="row text-center" style="padding-top: 20px">
 
-                                <button  type="submit" class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
-                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newPlaylistAdding"   aria-hidden="true"></i>Save</button>
+                            <button  type="submit" class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
+                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newPlaylistAdding"   aria-hidden="true"></i>Save</button>
 
-                                <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelEditPlaylist()">Cancel</button>
-                            </div>
-
+                            <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelEditPlaylist()">Cancel</button>
                         </div>
 
                     </div>
@@ -88,6 +89,8 @@
 
             </div>
 
-        </form>
+        </div>
+
+    </form>
 </div>
 

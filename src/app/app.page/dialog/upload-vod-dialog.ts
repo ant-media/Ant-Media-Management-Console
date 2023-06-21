@@ -36,7 +36,6 @@ export class UploadVodDialogComponent {
         this.fileToUpload = files.item(0);
         this.fileselected = true;
         this.fileName = this.fileToUpload.name.replace(/\s/g, '_');
-        console.log(this.fileName);
 
     }
 
@@ -45,6 +44,18 @@ export class UploadVodDialogComponent {
 
 
         if (this.fileToUpload) {
+
+            if (this.fileToUpload.type !== 'video/mp4') {
+                swal({
+                    type: "error",
+                    title: "Only Mp4 files are accepted!",
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-error"
+                });
+                
+                return false;   
+            }
+
             this.uploading = true;
 
             let formData: FormData = new FormData();
@@ -58,11 +69,11 @@ export class UploadVodDialogComponent {
             if (!this.fileName || this.fileName.length == 0) {
 
                 this.fileName = this.fileToUpload.name.substring(0, this.fileToUpload.name.lastIndexOf("."));
-                ;
+
             }
 
             this.fileName = this.fileName.replace(/\s/g, '_');
-
+            this.fileName = encodeURIComponent(this.fileName);
 
             this.uploadSub = this.restService.uploadVod(this.fileName, formData, this.dialogRef.componentInstance.data.appName).subscribe(data => {
 
