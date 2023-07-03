@@ -1,0 +1,54 @@
+<div class="main-content p-2">
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+
+
+      <div class="card">              
+        <div class="card-header">
+          <legend class="text-left">Documentation</legend>
+        </div>
+        <div class="card-content">
+
+          <div class="form-group text-left">
+            <div><label for="docs"><strong>Search Documentation</strong></label></div>
+            <input type="text" [(ngModel)]="keywords" (keyup)="search($event)" placeholder="Enter keywords" class="w-100 form-control" />
+          </div>
+
+          <div class="bg-secondary p-3">
+            <div *ngFor="let result of searchResults">
+              <h5><a (click)="showIframe(result.url)" href="javascript:void()">{{ result.title }}</a></h5>
+              <!--<p>{{ result.content }}</p>-->
+              <a href="https://antmedia.io{{ result.url }}" target="_blank">https://antmedia.io/docs/{{ result.url }}</a>
+              <hr />
+              <div *ngIf="result.showIframe">
+                <iframe [src]="result.url" width="100%" height="400px"></iframe>
+              </div>
+            </div>
+            <div *ngIf="searchResults.length === 0">
+              <p>
+                Try searching our extensive documentation and Github discussions before reaching out. You may find the answer to your issues more quickly. 
+              </p>
+              <ul>
+                <li>
+                  <a class="d-block" href="https://antmedia.io/docs/">Ant Media Server Documentation</a>
+                </li>
+                <li>
+                  <a class="d-block" href="https://github.com/orgs/ant-media/discussions">Github Discussions</a>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
+
+        </div>
+      
+    </div>
+
+    </div>
+  </div>
+</div>
+
+</div>

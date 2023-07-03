@@ -38,6 +38,10 @@ export const AppRoutes: Routes = [{
             loadChildren: './support/support.module#SupportModule',
             canActivate: [AuthService]
         },{
+          path: 'search',
+          loadChildren: './search/search.module#SearchModule',
+          canActivate: [AuthService]
+        },{
             path: 'forms',
             loadChildren: './forms/forms.module#Forms',
             canActivate: [AuthService]

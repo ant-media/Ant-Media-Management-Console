@@ -23,6 +23,8 @@ import {ClipboardModule} from 'ngx-clipboard';
 import {Locale} from './locale/locale';
 import {AppPageComponent} from "./app.page/app.page.component";
 import {DataService} from "./rest/data.service";
+import { HttpClientModule } from '@angular/common/http';
+import { SearchModule } from './search/search.module';
 
 
 @NgModule({
@@ -33,7 +35,9 @@ import {DataService} from "./rest/data.service";
         SidebarModule,
         NavbarModule,
         FooterModule,
-        ClipboardModule
+        ClipboardModule,
+        HttpClientModule,
+        SearchModule
     ],
     declarations: [
         AppComponent,

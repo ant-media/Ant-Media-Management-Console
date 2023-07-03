@@ -52,8 +52,12 @@ export const ROUTES: RouteInfo[] = [{
     title: 'Support',
     type: 'link',
     icontype: 'ti-support',
-}
-];
+}, {
+    path: '/search',
+    title: 'Documentation',
+    type: 'link',
+    icontype: 'ti-tablet',
+}];
 
 
 @Component({
