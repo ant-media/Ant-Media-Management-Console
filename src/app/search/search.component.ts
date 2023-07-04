@@ -1,5 +1,8 @@
 import { Component, AfterViewInit, OnInit, OnDestroy, } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 
 interface SearchResult {
   content: string;
@@ -7,21 +10,38 @@ interface SearchResult {
   title: string;
 }
 
+interface RSSFeed {
+  rss: {
+    channel: {
+      item: {
+        title: string[];
+        link: string[];
+        description: string[];
+      }[];
+    }[];
+  };
+}
+
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css']
 })
+
 export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
+
   keywords: string = '';
   searchResults: SearchResult[] = [];
   documentationJson: SearchResult[] = [];
+  feedItems: any = {};
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private sanitizer: DomSanitizer) {}
+
 
   ngOnInit() {
     // Fetch the JSON data on component initialization
     this.fetchDocumentation();
+    this.parseRssFeed();
   }
 
   ngAfterViewInit() 
@@ -30,10 +50,11 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
+
   }
 
   fetchDocumentation(): void {
-    this.http.get<SearchResult[]>('http://localhost:3000/documentation').subscribe(
+    this.http.get<SearchResult[]>('http://localhost:5080/docs.jsp').subscribe(
       (response: SearchResult[]) => {
         this.documentationJson = response;
       },
@@ -43,9 +64,63 @@ export class SearchComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
+  log(text){
+    console.log(text);
+  }
+
+
+  parseRssFeed() {
+    const feedUrl = 'http://localhost:5080/blogs.jsp';
+
+    this.http.get(feedUrl, { responseType: 'text' }).subscribe(
+      (response: string) => {
+
+        const responseData = response.trim().replace(/^\s+|\s+$/g, '');
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(responseData, 'text/xml');
+        this.feedItems = this.convertXmlToJson(xmlDoc);
+      },
+      (error: any) => {
+        console.error('Error fetching XML feed:', error);
+      }
+    );
+  }
+
+
+  convertXmlToJson(xmlString) {
+
+    const items = xmlString.getElementsByTagName("item");
+
+    this.log(items);
+  
+    const jsonItems = [];
+  
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      const jsonItem = {};
+  
+      const childNodes = item.childNodes;
+      for (let j = 0; j < childNodes.length; j++) {
+        const childNode = childNodes[j];
+        if (childNode.nodeType === Node.ELEMENT_NODE) {
+          jsonItem[childNode.nodeName] = childNode.textContent.trim();
+        }
+      }
+  
+      jsonItems.push(jsonItem);
+    }
+  
+    return jsonItems;
+  }
+
+  
+getObjectKeys(obj: any): string[] {
+  return Object.keys(obj);
+}
+
   search(): void {
-    console.log('Keywords:', this.keywords);
-    console.log(this.documentationJson);
+    //console.log('Keywords:', this.keywords);
+    //console.log(this.documentationJson);
 
     if (!this.keywords.trim()) {
       this.searchResults = [];

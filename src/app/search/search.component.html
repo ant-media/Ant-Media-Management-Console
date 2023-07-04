@@ -5,28 +5,36 @@
     <div class="col">
 
 
-      <div class="card">              
+      <div class="card"> 
+
         <div class="card-header">
-          <legend class="text-left">Documentation</legend>
+          <legend class="text-left">Search Documentation</legend>
         </div>
+
+
         <div class="card-content">
 
           <div class="form-group text-left">
-            <div><label for="docs"><strong>Search Documentation</strong></label></div>
             <input type="text" [(ngModel)]="keywords" (keyup)="search($event)" placeholder="Enter keywords" class="w-100 form-control" />
           </div>
 
+
           <div class="bg-secondary p-3">
-            <div *ngFor="let result of searchResults">
-              <h5><a (click)="showIframe(result.url)" href="javascript:void()">{{ result.title }}</a></h5>
-              <!--<p>{{ result.content }}</p>-->
-              <a href="https://antmedia.io{{ result.url }}" target="_blank">https://antmedia.io/docs/{{ result.url }}</a>
-              <hr />
-              <div *ngIf="result.showIframe">
-                <iframe [src]="result.url" width="100%" height="400px"></iframe>
-              </div>
+
+            <div *ngIf="searchResults.length > 0">
+              <ul>
+                <div *ngFor="let result of searchResults">
+                  <li>
+                    <a (click)="showIframe(result.url)" href="javascript:void()">{{ result.title }}</a>
+                  </li>
+                </div>
+              </ul>
             </div>
-            <div *ngIf="searchResults.length === 0">
+
+            <div *ngIf="keywords.length == 0">
+              <h5><i>Enter a search term</i></h5>
+
+              <h4>Useful Links</h4>
               <p>
                 Try searching our extensive documentation and Github discussions before reaching out. You may find the answer to your issues more quickly. 
               </p>
@@ -38,7 +46,23 @@
                   <a class="d-block" href="https://github.com/orgs/ant-media/discussions">Github Discussions</a>
                 </li>
               </ul>
+
+              <h4>Latest Blog Posts</h4>
+              <ul>
+              <div *ngFor="let item of getObjectKeys(feedItems)">
+                 <li>
+                  <a target="_blank" href="{{ feedItems[item].link }}">{{ feedItems[item].title }}</a>
+                 </li> 
+              </div>
+              </ul>
+
+
             </div>
+
+            <div *ngIf="searchResults.length === 0 && keywords.length > 0">
+              <h5><i>No results found</i></h5>
+            </div>
+
 
           </div>
 
@@ -49,6 +73,7 @@
 
     </div>
   </div>
+  
 </div>
 
 </div>

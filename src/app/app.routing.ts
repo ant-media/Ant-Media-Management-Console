@@ -12,66 +12,67 @@ export const AppRoutes: Routes = [{
     },{
         path: '',
         component: AdminLayoutComponent,
-        children: [{
-            path: 'dashboard',
-            loadChildren: './dashboard/dashboard.module#DashboardModule',
-            canActivate: [AuthService]
-        },{
-            path: 'serverSettings',
-            loadChildren: './server.settings/server.settings.module#ServerSettingsModule',
-            canActivate: [AuthService]
-        },{
-            path: 'logs',
-            loadChildren: './logs/logs.module#LogsModule',
-            canActivate: [AuthService]
-        }
-        ,{
-            path: 'applications',
-            loadChildren: './app.page/app.page.module#AppPageModule',
-            canActivate: [AuthService]
-        },{
-            path: 'cluster',
-            loadChildren: './cluster/cluster.module#ClusterModule',
-            canActivate: [AuthService]
-        },{
-            path: 'support',
-            loadChildren: './support/support.module#SupportModule',
-            canActivate: [AuthService]
-        },{
-          path: 'search',
-          loadChildren: './search/search.module#SearchModule',
-          canActivate: [AuthService]
-        },{
-            path: 'forms',
-            loadChildren: './forms/forms.module#Forms',
-            canActivate: [AuthService]
-        },{
-            path: 'tables',
-            loadChildren: './tables/tables.module#TablesModule',
-            canActivate: [AuthService]
-        },{
-            path: 'maps',
-            loadChildren: './maps/maps.module#MapsModule',
-            canActivate: [AuthService]
-        },{
-            path: 'charts',
-            loadChildren: './charts/charts.module#ChartsModule',
-            canActivate: [AuthService]
-        },{
-            path: 'calendar',
-            loadChildren: './calendar/calendar.module#CalendarModule',
-            canActivate: [AuthService]
-        },
-        {
-            path: '',
-            loadChildren: './userpage/user.module#UserModule',
-            canActivate: [AuthService]
-        },
-        {
-            path: '',
-            loadChildren: './timeline/timeline.module#TimelineModule',
-            canActivate: [AuthService]
-        }]
+        children: [
+          {
+              path: 'dashboard',
+              loadChildren: './dashboard/dashboard.module#DashboardModule',
+              canActivate: [AuthService]
+          },{
+              path: 'serverSettings',
+              loadChildren: './server.settings/server.settings.module#ServerSettingsModule',
+              canActivate: [AuthService]
+          },{
+              path: 'logs',
+              loadChildren: './logs/logs.module#LogsModule',
+              canActivate: [AuthService]
+          }
+          ,{
+              path: 'applications',
+              loadChildren: './app.page/app.page.module#AppPageModule',
+              canActivate: [AuthService]
+          },{
+              path: 'cluster',
+              loadChildren: './cluster/cluster.module#ClusterModule',
+              canActivate: [AuthService]
+          },{
+              path: 'support',
+              loadChildren: './support/support.module#SupportModule',
+              canActivate: [AuthService]
+          },{
+              path: 'search',
+              loadChildren: './search/search.module#SearchModule',
+              canActivate: [AuthService]
+          },{
+              path: 'forms',
+              loadChildren: './forms/forms.module#Forms',
+              canActivate: [AuthService]
+          },{
+              path: 'tables',
+              loadChildren: './tables/tables.module#TablesModule',
+              canActivate: [AuthService]
+          },{
+              path: 'maps',
+              loadChildren: './maps/maps.module#MapsModule',
+              canActivate: [AuthService]
+          },{
+              path: 'charts',
+              loadChildren: './charts/charts.module#ChartsModule',
+              canActivate: [AuthService]
+          },{
+              path: 'calendar',
+              loadChildren: './calendar/calendar.module#CalendarModule',
+              canActivate: [AuthService]
+          },
+          {
+              path: '',
+              loadChildren: './userpage/user.module#UserModule',
+              canActivate: [AuthService]
+          },
+          {
+              path: '',
+              loadChildren: './timeline/timeline.module#TimelineModule',
+              canActivate: [AuthService]
+          }]
         },{
             path: '',
             component: AuthLayoutComponent,

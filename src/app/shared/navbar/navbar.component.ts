@@ -132,6 +132,9 @@ export class NavbarComponent implements OnInit{
                 if (first_child == "support") {
                     return Locale.getLocaleInterface().support;
                 }
+                if (first_child == "search") {
+                  return "Documentation";
+              }
                 /*
                 var children_from_url = titlee.split("/")[1];
                 
