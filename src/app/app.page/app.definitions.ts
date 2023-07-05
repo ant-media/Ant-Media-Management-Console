@@ -175,9 +175,19 @@ export class ServerSettings {
     constructor(public serverName: string,
                 public licenceKey: string,
                 public buildForMarket: boolean,
-                public logLevel: string
+                public logLevel: string,
+                public sslEnabled: boolean,
     ) {}
 }
+
+export enum SslConfigurationType {
+    NO_SSL = "No SSL",
+    CUSTOM_DOMAIN ="Use Your Domain",
+    ANTMEDIA_SUBDOMAIN ="Subdomain of antmedia.cloud",
+    CUSTOM_CERTIFICATE = "Import Your Certificate"
+    
+  }
+
 
 export class AppSettings {
 

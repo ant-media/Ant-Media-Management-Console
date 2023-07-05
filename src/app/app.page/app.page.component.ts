@@ -193,6 +193,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
+    public settingsJson: string;
+    public settingsObject: any;
     public token: Token;
     public serverSettings: ServerSettings;
     public listTypes = [
@@ -235,6 +237,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private broadcastSortBy = "";
     private broadcastOrderBy = "";
+
+    public isJsonUpdate = false;
 
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatPaginator, { static: false }) paginatorVod: MatPaginator;
@@ -320,8 +324,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.getInitParams();
 
-        this.callTimer();
-
     }
 
     contextDropdownClicked() {
@@ -337,20 +339,24 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }, 8000);
     }
 
-    callTimer() {
+    getAllStreamData(){
+        if (this.authService.isAuthenticated) {
+            if (typeof this.appName != "undefined") {
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                this.getVoDStreams();
+                this.getAppLiveStreamsNumber();
+            }
+        }
+    }
 
+
+    callTimer() {
         this.clearTimer();
 
         //this timer gets the related information according to active application
         //so that it checks appname whether it is undefined
         this.timerId = window.setInterval(() => {
-            if (this.authService.isAuthenticated) {
-                if (typeof this.appName != "undefined") {
-                    this.getAppLiveStreams(this.streamListOffset, this.pageSize);
-                    this.getVoDStreams();
-                    this.getAppLiveStreamsNumber();
-                }
-            }
+           this.getAllStreamData()
 
         }, 5000);
     }
@@ -468,9 +474,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }, error => { show403Error(error); });
             }
 
-            this.getAppLiveStreamsNumber();
-            this.getVoDStreams();
-            this.getAppLiveStreams(0, this.pageSize);
+          
         });
 
     }
@@ -680,7 +684,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             this.dataSource = new MatTableDataSource(this.broadcastTableData.dataRows);
-            console.log(this.dataSource)
+            //console.log(this.dataSource)
             this.cdr.detectChanges();
 
         }, error => { show403Error(error); });
@@ -714,6 +718,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.getVoDStreams();
         console.log("vodSortBy->" + this.vodSortBy);
         console.log("vodOrderBy->" + this.vodOrderBy);
+    }
+
+    getBroadcastByStreamId(streamId):BroadcastInfo{
+        for(var i=0;i<this.dataSource.data.length;i++){
+            var broadcast = this.dataSource.data[i]
+            if(broadcast.streamId == streamId){
+                return broadcast
+            }
+        }
+        return null
     }
 
     sortBroadcastList(e) {
@@ -800,9 +814,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    getIFrameSrc(streamId: string, autoplay: string, token: string): string {
-        return HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamId + "&autoplay=" + autoplay +
-            (token != null ? "&token=" + token : "");
+    getIFrameSrc(streamId: string, autoplay: string, token: string, vodName: string, playOrder: string): string {
+        const broadcast = this.getBroadcastByStreamId(streamId);
+        const typePlayList = broadcast != null && broadcast.type === "playlist";
+        const vodNameParam = vodName != null ? `/${vodName}` : "";
+        const tokenParam = token != null ? `&token=${token}` : "";
+        const playOrderParam = playOrder != null ? `&playOrder=${playOrder}` : (typePlayList ? "&playOrder=hls" : "");
+        return `${HTTP_SERVER_ROOT}${this.appName}/play.html?name=${streamId}&autoplay=${autoplay}${tokenParam}${playOrderParam}`;
     }
 
     getIFrameEmbedCode(streamId: string): string {
@@ -817,12 +835,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.openPlayerWithJWTToken(streamId, streamId, "640px", streamId);
         }
         else {
-            this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null);
+            this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null, null, null);
         }
     }
 
-    openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string): void {
-
+    /**
+     * It supports playing streams if streamId has the relative path such as streams/stream1.mp4
+     * @param htmlCode 
+     * @param objectId 
+     * @param streamId 
+     * @param width 
+     * @param tokenId 
+     * @param vodName 
+     * @param playOrder 
+     */
+    openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string, vodName:string, playOrder:string): void {
         swal({
             html: htmlCode,
             showConfirmButton: false,
@@ -833,7 +860,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             onOpen: () => {
                 //the error in this callback does not show up in browser console.
                 var iframe = $('#' + objectId);
-                iframe.prop('src', this.getIFrameSrc(streamId, "true", tokenId));
+                iframe.prop('src', this.getIFrameSrc(streamId, "true", tokenId, vodName, playOrder));
             },
             onClose: function () {
                 var ifr = document.getElementById(objectId);
@@ -869,29 +896,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             for (var i in this.broadcastGridTableData.dataRows) {
                 id = this.broadcastGridTableData.dataRows[i]['streamId'];
                 var $iframe = $('#' + id);
-                $iframe.prop('src', this.getIFrameSrc(id, "true", null));
+                $iframe.prop('src', this.getIFrameSrc(id, "true", null,null,null));
             }
 
         }, 1500);
     }
 
-    downloadFile(vodName: string, type: string, vodId: string, streamId: string): void {
+    downloadFile(vodName: string, type: string, vodId: string, streamId: string, filePath: string): void {
 
-        var srcFile = null;
-        var vodUrlName = null;
-
-        if (type == "uploadedVod") {
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodId + '.mp4';
-            vodUrlName = vodId;
-        } else if (type == "streamVod") {
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams/' + vodName;
-            vodUrlName = vodName;
-        } else if (type == "userVod") {
-            var lastSlashIndex = this.appSettings.vodFolder.lastIndexOf("/");
-            var folderName = this.appSettings.vodFolder.substring(lastSlashIndex);
-            srcFile = HTTP_SERVER_ROOT + this.appName + '/streams' + folderName + '/' + vodName;
-            vodUrlName = vodName;
-        }
+        var srcFile = HTTP_SERVER_ROOT + this.appName + "/" + filePath;;
+        var vodUrlName = vodName;
 
         const link = document.createElement("a");
         link.download = vodUrlName;
@@ -908,7 +922,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.playVoDToken(vodName, type, vodId, streamId, filePath);
         }
         else {
-            this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", null);
+            //if filePath has extension, in the new version file path has the full relative path
+            //putting the below check to support old versions
+            if (filePath.lastIndexOf(".") == -1) {
+                filePath += "/" + vodName;
+            }
+            this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", null, vodName, "vod");
         }
     }
 
@@ -953,7 +972,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.restService.getOneTimeToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
-            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
+            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId, null, null)
         }, error => { show403Error(error); });
     }
 
@@ -963,7 +982,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.restService.getJWTToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
-            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId)
+            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId, null, null)
         }, error => { show403Error(error); });
     }
 
@@ -1158,12 +1177,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.encoderSettings[i].audioBitrate = 256;
         }
         if (event == 1080) {
-            this.encoderSettings[i].videoBitrate = 2000;
+            this.encoderSettings[i].videoBitrate = 2500;
             this.encoderSettings[i].audioBitrate = 256;
         }
         if (event == 720) {
-            this.encoderSettings[i].videoBitrate = 1500;
+            this.encoderSettings[i].videoBitrate = 2000;
             this.encoderSettings[i].audioBitrate = 128;
+        }
+        if (event == 640) {
+            this.encoderSettings[i].videoBitrate = 1800;
+            this.encoderSettings[i].audioBitrate = 96;
+        }
+        if (event == 540) {
+            this.encoderSettings[i].videoBitrate = 1500;
+            this.encoderSettings[i].audioBitrate = 96;
         }
         if (event == 480) {
             this.encoderSettings[i].videoBitrate = 1000;
@@ -1188,7 +1215,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     getSettings(): void {
         this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
-
+            this.settingsJson = JSON.stringify(data, null, 2); //JSON.stringify(data);
             if (this.appSettings.jwtControlEnabled) {
                 let jwt = require('jsonwebtoken');
                 let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
@@ -1213,18 +1240,65 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
             this.acceptAllStreams = !this.appSettings.acceptOnlyStreamsInDataStore;
+            this.getAllStreamData()
+            this.callTimer()
 
-
-        }, error => { show403Error(error); });
+        }, error => { 
+            this.callTimer()
+            show403Error(error); 
+        });
     }
 
+
+    updateSettingsByJson() : void {
+        try {
+            this.settingsObject = JSON.parse(this.settingsJson);
+        } catch (err) {
+            console.error('Invalid JSON:', err);
+            // Handle error if the JSON string is invalid
+        }
+        this.restService.changeSettingsByJson(this.appName, this.settingsObject).subscribe(data => {
+            if (data["success"] == true) {
+                this.getSettings();
+                $.notify({
+                    icon: "ti-save",
+                    message: Locale.getLocaleInterface().settings_saved
+                }, {
+                    type: "success",
+                    delay: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else {
+                $.notify({
+                    icon: "ti-alert",
+                    message: Locale.getLocaleInterface().settings_not_saved
+                }, {
+                    type: 'warning',
+                    delay: 1900,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+                this.getSettings();
+            }
+        },
+        error => 
+        {
+           show403Error(error);
+           this.getSettings();
+        });
+
+    }
 
     changeSettings(valid: boolean): void {
 
         if (!valid) {
             return;
         }
-
 
         if (this.appSettings.jwtControlEnabled) {
             let jwt = require('jsonwebtoken');
@@ -1284,6 +1358,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         align: 'right'
                     }
                 });
+                this.getSettings();
             } else {
                 $.notify({
                     icon: "ti-alert",
@@ -1296,6 +1371,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         align: 'right'
                     }
                 });
+                this.getSettings();
             }
 
             this.appSettings.encoderSettings.forEach((value, index) => {
@@ -1309,9 +1385,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         error => 
         {
            show403Error(error);
+           this.getSettings();
         });
 
 
+    }
+
+    settingModeChanged(event:any){
+        console.log("event:"+event);
+        if(event == "setByForm") {
+            this.isJsonUpdate = false;
+        }
+        else if(event == "setByJson") {
+            this.isJsonUpdate = true;
+        }
     }
 
     newLiveStream(): void {
@@ -2140,7 +2227,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         //}
 
         let embedCode = '<iframe width="560" height="315" src="'
-            + HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + streamUrl
+            + HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + streamUrl
             + '" frameborder="0" allowfullscreen></iframe>';
 
         this.clipBoardService.copyFromContent(embedCode);
@@ -2157,23 +2244,16 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-    copyVoDEmbedCode(name: string, type: string, vodId: string): void {
+    copyVoDEmbedCode(name: string, type: string, vodId: string, filePath: string): void {
 
-        var Index = this.appSettings.vodFolder.lastIndexOf("/");
-        var folderName = this.appSettings.vodFolder.substring(Index);
-
-        var VoDName = name;
-
-        if (type == "uploadedVod") {
-            VoDName = vodId;
+        //if filePath has extension, in the new version file path has the full relative path
+        //putting the below check to support old versions
+         if (filePath.lastIndexOf(".") == -1) {
+            filePath += "/" + name;
         }
-        else if (type == "userVod") {
-            VoDName = folderName + "/" + VoDName;
-        }
-
 
         let embedCode = '<iframe width="560" height="315" src="'
-            + HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + VoDName + "&playOrder=vod"
+            + HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + filePath + "&playOrder=vod"
             + '" frameborder="0" allowfullscreen></iframe>';
 
         this.clipBoardService.copyFromContent(embedCode);
