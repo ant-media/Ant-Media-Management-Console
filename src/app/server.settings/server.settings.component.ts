@@ -457,7 +457,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this.User = new User("","")
     }
      isValidDomain(domain):boolean {
-        let regex = new RegExp(/^(?!-)[A-Za-z0-9-]+([\-\.]{1}[a-z0-9]+)*\.[A-Za-z]{2,6}$/);
+        let regex = new RegExp(/^(?!-)[A-Za-z0-9-]+([\-\.]{1}[a-z0-9]+)*\.[A-Za-z]{2,}$/);
 
         if (domain == null) {
             return false
