@@ -73,7 +73,7 @@
                     <div>
                         <select name="selectedType" id="selectedType" [(ngModel)]="selectedType" class="form-control" required>
                           <option value="" disabled selected>Select an item...</option>  
-                          <option *ngFor="let type of types" [value]="item">{{ type }}</option>
+                          <option *ngFor="let type of types" [value]="type">{{ type }}</option>
                         </select>
                     </div>
                 </div>

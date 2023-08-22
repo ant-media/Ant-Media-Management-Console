@@ -111,8 +111,7 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
         
         request.name = this.userName;
         request.email = this.userEmail;
-        request.title = this.title;
-        request.selectedType = this.selectedType;
+        request.title = this.title + "\n\n Type: " + this.selectedType;
         request.description = this.description;
         request.sendSystemInfo = this.sendSystemInfo;
 
