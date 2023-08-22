@@ -57,6 +57,19 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
     public sentSuccess = false;
     public processing = false;
 
+    selectedType: string = '';
+
+    types: string[] = [
+      "Installation",
+      "Publishing Live Streams",
+      "Playing Live Streams",
+      "Recording Live Streams",
+      "Adaptive Bitrate",
+      "Clustering and Scaling",
+      "Developer API and SDK",
+      "Webhooks"
+  ];
+
     constructor(private http: HttpClient, 
     			private route: ActivatedRoute,
                 private supportRestService: SupportRestService,
@@ -99,6 +112,7 @@ export class SupportComponent implements OnInit, OnDestroy, AfterViewInit {
         request.name = this.userName;
         request.email = this.userEmail;
         request.title = this.title;
+        request.selectedType = this.selectedType;
         request.description = this.description;
         request.sendSystemInfo = this.sendSystemInfo;
 

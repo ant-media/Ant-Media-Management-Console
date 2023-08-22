@@ -142,7 +142,6 @@ export class RestService {
         if (!location.protocol.startsWith("https"))
         {
             HTTP_SERVER_ROOT = "http://" + location.hostname + ":" + location.port + "/";
-            //protocol is not https, check that https is available
             let url = "https://" + location.hostname + ":5443/";
             this.http.head(url).subscribe(data => {
                 HTTP_SERVER_ROOT = url;
@@ -155,13 +154,13 @@ export class RestService {
         }
         if (location.port == "4200")
         {
-            //if it is angular development
             HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/";
         }
         else if (location.protocol.startsWith("https")){
             HTTP_SERVER_ROOT = "https://" + location.hostname + ":" + location.port + "/";
         }
         REST_SERVICE_ROOT = HTTP_SERVER_ROOT + "rest/v2";
+        
     }
 
     public getBlockedStatus(usermail: string): Observable<Object> {

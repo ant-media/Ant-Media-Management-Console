@@ -3,6 +3,7 @@ export class SupportRequest {
     email: string;
     title: string;
     description: string;
+    selectedType: string;
     sendSystemInfo : boolean;
 }
 

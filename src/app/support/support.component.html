@@ -67,6 +67,17 @@
 													placeholder="Please write title of your request">
 											</div>
 									</div>
+
+                  <div class="form-group">
+                    <label>Type:</label>
+                    <div>
+                        <select name="selectedType" id="selectedType" [(ngModel)]="selectedType" class="form-control" required>
+                          <option value="" disabled selected>Select an item...</option>  
+                          <option *ngFor="let type of types" [value]="item">{{ type }}</option>
+                        </select>
+                    </div>
+                </div>
+                
 									<div class="form-group">
 											<label> Description* 
 											</label>
