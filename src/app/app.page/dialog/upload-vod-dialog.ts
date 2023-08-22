@@ -45,10 +45,10 @@ export class UploadVodDialogComponent {
 
         if (this.fileToUpload) {
 
-            if (this.fileToUpload.type !== 'video/mp4') {
+            if (this.fileToUpload.type !== 'video/mp4' && this.fileToUpload.type !== 'video/webm') {
                 swal({
                     type: "error",
-                    title: "Only Mp4 files are accepted!",
+                    title: "Only MP4 and WebM files are accepted!",
                     buttonsStyling: false,
                     confirmButtonClass: "btn btn-error"
                 });
