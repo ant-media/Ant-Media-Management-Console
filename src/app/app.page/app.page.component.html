@@ -1911,13 +1911,32 @@
                                                                     type="checkbox">
 
                                                                 <label for="enableTimeTokenForPublish">
-                                                                    Enable TOTP for Publishing <a
+                                                                    Enable Time-based One-time Password(TOTP) for Publishing <a
                                                                         href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#7-time-based-one-time-password"
                                                                         target="_blank"
                                                                         matTooltip="After enabling this option, publishing can be done with TOTP"><i
                                                                             style="font-size: 20px;"
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>                                                                
+                                                            </div>
+                                                            <div *ngIf="appSettings.enableTimeTokenForPublish && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                                <label i18n="@@jwtFilter">
+                                                                    Secret for TOTP Publishing
+                                                                </label>
+    
+                                                                <div>
+                                                                    <textarea name="timeTokenSecretForPublish" minlength="6"  #timeTokenSecretForPlay="ngModel" [disabled]="!appSettings.timeTokenSecretForPublish"
+                                                                              [(ngModel)]="appSettings.timeTokenSecretForPublish"
+                                                                              type="textarea" class="form-control"
+                                                                              placeholder="Please write at least 6 character"
+                                                                              rows="1">{{appSettings.timeTokenSecretForPublish}}
+                                                                    </textarea>
+                                                                    <button
+                                                                            (click)="setTOTPSecretForPublishing(6)" class="btn pull-right btn-default" style="margin:5px"
+                                                                            type="button">
+                                                                        Generate
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </div>
 
@@ -1928,7 +1947,7 @@
                                                                     type="checkbox">
 
                                                                 <label for="enableTimeTokenForPlay">
-                                                                    Enable TOTP for Playing <a
+                                                                    Enable Time-based One-time Password(TOTP) for Playing <a
                                                                         href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#7-time-based-one-time-password"
                                                                         target="_blank"
                                                                         matTooltip="After enabling this option, playing can be done with TOTP"><i
@@ -1936,6 +1955,27 @@
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>                                                                
                                                             </div>
+
+                                                            <div *ngIf="appSettings.enableTimeTokenForPlay && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                                <label i18n="@@jwtFilter">
+                                                                    Secret for TOTP Playing
+                                                                </label>
+    
+                                                                <div>
+                                                                    <textarea name="timeTokenSecretForPlay" minlength="6"  #timeTokenSecretForPlay="ngModel" [disabled]="!appSettings.timeTokenSecretForPlay"
+                                                                              [(ngModel)]="appSettings.timeTokenSecretForPlay"
+                                                                              type="textarea" class="form-control"
+                                                                              placeholder="Please write at least 6 character"
+                                                                              rows="1">{{appSettings.timeTokenSecretForPlay}}
+                                                                    </textarea>
+                                                                    <button
+                                                                            (click)="setTOTPSecretForPlaying(6)" class="btn pull-right btn-default" style="margin:5px"
+                                                                            type="button">
+                                                                        Generate
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
                                                         </div>
 
 

@@ -243,7 +243,9 @@ export class AppSettings {
                 public dashFragmentDuration: number,
                 public lLDashEnabled: boolean, 
                 public lLHLSEnabled: boolean,
-                public deleteDASHFilesOnEnded: boolean
+                public deleteDASHFilesOnEnded: boolean,
+                public timeTokenSecretForPlay: string,
+                public timeTokenSecretForPublish: string
 
     ) {}
 }
