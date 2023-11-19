@@ -472,7 +472,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }, error => { show403Error(error); });
             }
 
-          
+
         });
 
     }
@@ -839,13 +839,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     /**
      * It supports playing streams if streamId has the relative path such as streams/stream1.mp4
-     * @param htmlCode 
-     * @param objectId 
-     * @param streamId 
-     * @param width 
-     * @param tokenId 
-     * @param vodName 
-     * @param playOrder 
+     * @param htmlCode
+     * @param objectId
+     * @param streamId
+     * @param width
+     * @param tokenId
+     * @param vodName
+     * @param playOrder
      */
     openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string, vodName:string, playOrder:string): void {
         swal({
@@ -1241,9 +1241,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.getAllStreamData()
             this.callTimer()
 
-        }, error => { 
+        }, error => {
             this.callTimer()
-            show403Error(error); 
+            show403Error(error);
         });
     }
 
@@ -1284,7 +1284,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.getSettings();
             }
         },
-        error => 
+        error =>
         {
            show403Error(error);
            this.getSettings();
@@ -1295,6 +1295,22 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     changeSettings(valid: boolean): void {
 
         if (!valid) {
+            return;
+        }
+
+        if (this.appSettings.h264Enabled && this.appSettings.vp8Enabled && this.appSettings.encoderSettings.length == 0) {
+            swal({
+                title: "Settings Cannot Saved",
+                text: "If you want to have both VP8 and H.264 streaming, you should add at least one adaptive bitrate below.",
+                type: 'error',
+
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            }).then(() => {
+
+            }).catch(function () {
+
+            });
             return;
         }
 
@@ -1380,7 +1396,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
         },
-        error => 
+        error =>
         {
            show403Error(error);
            this.getSettings();
@@ -1600,11 +1616,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
                 error => {
                     this.newIPCameraAdding = false;
-                    
+
                     if (show403Error(error) == false) {
                         $.notify({
                             icon: "ti-save",
-                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)"
                         }, {
                             type: "warning",
                             delay: 2000,
@@ -1720,11 +1736,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
                 error => {
                     this.newStreamSourceAdding = false;
-                    
+
                     if (show403Error(error) == false) {
                         $.notify({
                             icon: "ti-save",
-                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)"
                         }, {
                             type: "warning",
                             delay: 2000,
@@ -1838,11 +1854,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
                 error => {
                     this.newPlaylistAdding = false;
-                
+
                     if (show403Error(error) == false) {
                         $.notify({
                             icon: "ti-save",
-                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)"
                         }, {
                             type: "warning",
                             delay: 2000,
@@ -1911,7 +1927,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         return str;
     }
 
-    
+
 
     startDiscover() {
         this.discoveryStarted = true;
@@ -2081,7 +2097,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     if (show403Error(error) == false) {
                         $.notify({
                             icon: "ti-save",
-                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)"
                         }, {
                             type: "warning",
                             delay: 2000,
@@ -2091,7 +2107,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                             }
                         });
                      }
-                   
+
                 });
 
     }
