@@ -630,7 +630,7 @@
                                                                     <!-- Start button IP Camera & Stream Source -->
 
                                                                     <li
-                                                                        *ngIf="(row.type=='streamSource' || row.type=='ipCamera' || row.type=='playlist') && row.status!='broadcasting'">
+                                                                        *ngIf="(row.type=='streamSource' || row.type=='ipCamera' || row.type=='playlist') && row.status!='broadcasting' && row.status!='preparing'">
                                                                         <a class="dropdown-link"
                                                                             (click)="startStreams(row.streamId)">
                                                                             <ng-container i18n="@@startBroadcast">Start
@@ -641,7 +641,7 @@
                                                                     <!-- Stop button IP Camera & Stream Source-->
 
                                                                     <li
-                                                                        *ngIf="(row.type=='streamSource' || row.type=='ipCamera' || row.type=='playlist') && row.status=='broadcasting'">
+                                                                        *ngIf="(row.type=='streamSource' || row.type=='ipCamera' || row.type=='playlist') && (row.status=='broadcasting' || row.status=='preparing')">
                                                                         <a class="dropdown-link"
                                                                             (click)="stopStreams(row.streamId)">
                                                                             <ng-container i18n="@@stopBroadcast">Stop
