@@ -902,7 +902,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     downloadFile(vodName: string, type: string, vodId: string, streamId: string, filePath: string): void {
 
-        var srcFile = HTTP_SERVER_ROOT + this.appName + "/" + filePath;;
+        var srcFile = HTTP_SERVER_ROOT + this.appName + "/" + filePath;
         var vodUrlName = vodName;
 
         const link = document.createElement("a");
@@ -911,6 +911,24 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         link.href = srcFile;
         link.target = '_blank';
         link.click();
+    }
+
+    copyVoDUrl(filePath: string) {
+        var srcFile = location.protocol + HTTP_SERVER_ROOT + this.appName + "/" + filePath;
+
+        this.clipBoardService.copyFromContent(srcFile);
+        $.notify({
+            message: "File URL copied to clipboard"
+        }, {
+            type: "success",
+            delay: 400,
+            timer: 500,
+            placement: {
+                from: 'top',
+                align: 'right'
+            }
+        });
+
     }
 
 
@@ -2295,6 +2313,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
     }
+
 
     getRtmpUrl(streamUrl: string): string {
         return this.restService.getRtmpUrl(this.appName, streamUrl);

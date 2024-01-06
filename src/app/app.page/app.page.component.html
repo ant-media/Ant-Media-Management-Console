@@ -949,10 +949,64 @@
                                             </ng-container>
 
                                             <ng-container matColumnDef="actions" >
-                                                <mat-header-cell *matHeaderCellDef class="justify-flex-end"> Actions
+                                                <mat-header-cell  [ngClass]="'action-column'" *matHeaderCellDef class="text-right"> Actions
                                                 </mat-header-cell>
 
-                                                <mat-cell *matCellDef="let row" class="justify-flex-end">
+                                                <mat-cell style="overflow: visible !important; "
+                                                    [ngClass]="'action-column'" *matCellDef="let row"
+                                                    class="text-right">
+
+                                                <div style="font-size: 1.1em">
+                                                    <ul class="nav navbar-right" >
+                                                        <li (click)="contextDropdownClicked()" class="dropdown">
+                                                            <a href="#" class="dropdown-toggle btn-magnify"
+                                                                data-toggle="dropdown">
+                                                                <i class="ti-menu-alt"></i>
+                                                                <span class="notification"></span>
+                                                                <b class="caret"></b>
+                                                                <p class="hidden-md hidden-lg">
+                                                                </p>
+                                                            </a>
+                                                            <ul class="dropdown-menu">
+
+                                                                <!-- Copy Embed Code -->
+                                                                <li>
+                                                                    <a (click)="copyVoDEmbedCode(row.vodName, row.type, row.vodId, row.filePath)"
+                                                                        class="dropdown-link">
+                                                                        <ng-container>Copy Embed code</ng-container>
+                                                                    </a>
+                                                                </li>
+
+                                                                <li>
+                                                                    <a (click)="copyVoDUrl(row.filePath)"
+                                                                        class="dropdown-link">
+                                                                        <ng-container>Copy VoD URL</ng-container>
+                                                                    </a>
+                                                                </li>
+
+                                                                <!-- Download -->
+
+                                                                <li>
+                                                                    <a class="dropdown-link"
+                                                                        (click)="downloadFile(row.vodName ,row.type,row.vodId, row.streamId, row.filePath)">
+                                                                        <ng-container>Download</ng-container>
+                                                                    </a>
+                                                                </li>
+
+                                                                <!-- Delete VoD -->
+
+                                                                <li>
+                                                                    <a class="dropdown-link"
+                                                                        (click)="deleteVoD(row.vodName, row.vodId, row.type)">
+                                                                        <ng-container>Delete</ng-container>
+                                                                    </a>
+                                                                </li>
+
+                                                            </ul>
+                                                        </li>
+
+                                                    </ul>
+
                                                     <button
                                                         (click)="playVoD(row.vodName ,row.type,row.vodId, row.streamId, row.filePath)"
                                                         class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
@@ -962,35 +1016,7 @@
                                                         </span>
                                                     </button>
 
-                                                    <button (click)="copyVoDEmbedCode(row.vodName, row.type, row.vodId, row.filePath)"
-                                                        data-toggle="tooltip" i18n-title
-                                                        title="Copy Live Embed Code to Clipboard"
-                                                        class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
-                                                        type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-share"></i>
-                                                        </span>
-                                                    </button>
-
-
-                                                    <a (click)="downloadFile(row.vodName ,row.type,row.vodId, row.streamId, row.filePath)"
-                                                        download>
-                                                        <button data-toggle="tooltip" i18n-title title="VoD Downloading"
-                                                            class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
-                                                            type="button">
-                                                            <span class="btn-label">
-                                                                <i class="ti-download"></i>
-                                                            </span>
-                                                        </button>
-                                                    </a>
-
-                                                    <button (click)="deleteVoD(row.vodName, row.vodId, row.type)"
-                                                        class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
-                                                        type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-close"></i>
-                                                        </span>
-                                                    </button>
+                                                </div>
 
                                                 </mat-cell>
                                             </ng-container>
