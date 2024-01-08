@@ -886,7 +886,7 @@
                                     <br>
                                     <div class="mat-container mat-elevation-z0">
 
-                                        <mat-table [dataSource]="dataSourceVod" matSort
+                                        <mat-table [dataSource]="dataSourceVod" matSort style="overflow: visible !important;"
                                             (matSortChange)="sortVodList($event)">
 
                                              <!-- Checkbox Column -->
@@ -952,12 +952,13 @@
                                                 <mat-header-cell  [ngClass]="'action-column'" *matHeaderCellDef class="text-right"> Actions
                                                 </mat-header-cell>
 
+
                                                 <mat-cell style="overflow: visible !important; "
                                                     [ngClass]="'action-column'" *matCellDef="let row"
                                                     class="text-right">
 
                                                 <div style="font-size: 1.1em">
-                                                    <ul class="nav navbar-right" >
+                                                    <ul class="nav navbar-right"  >
                                                         <li (click)="contextDropdownClicked()" class="dropdown">
                                                             <a href="#" class="dropdown-toggle btn-magnify"
                                                                 data-toggle="dropdown">
