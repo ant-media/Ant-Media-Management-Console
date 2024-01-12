@@ -914,7 +914,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     copyVoDUrl(filePath: string) {
-        var srcFile = location.protocol + HTTP_SERVER_ROOT + this.appName + "/" + filePath;
+        var srcFile = HTTP_SERVER_ROOT + this.appName + "/" + filePath;
 
         this.clipBoardService.copyFromContent(srcFile);
         $.notify({
