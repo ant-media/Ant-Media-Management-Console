@@ -1,5 +1,5 @@
 language: node_js
-node_js: "14.8.0"
+node_js: "16.20.2"
 sudo: required
 cache:
   directories:
