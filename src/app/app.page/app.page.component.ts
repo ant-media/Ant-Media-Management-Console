@@ -51,7 +51,7 @@ import {
     ClusterNodeInfo
 } from '../cluster/cluster.definitions';
 import { LOCAL_STORAGE_SCOPE_KEY } from 'app/rest/auth.service';
-import { EmbeddedPlayer } from '@antmedia/webrtc_adaptor';
+import { WebPlayer } from '@antmedia/web_player';
  
 
 declare var $: any;
@@ -894,7 +894,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 if (httpBaseUrlForStream.startsWith("//")) {
                     httpBaseUrlForStream = location.protocol + httpBaseUrlForStream;
                 }
-                embeddedPlayer = new EmbeddedPlayer({
+                embeddedPlayer = new WebPlayer({
                     streamId: streamId,
                     httpBaseURL: httpBaseUrlForStream,
                     token: tokenId,
