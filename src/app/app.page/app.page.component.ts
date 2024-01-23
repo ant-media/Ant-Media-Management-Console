@@ -268,6 +268,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         private cdr: ChangeDetectorRef,
         private matpage: MatPaginatorIntl,
         private authService: AuthService,
+        
 
 
     ) {
@@ -2681,6 +2682,107 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
             this.dataSource.data.forEach(row => this.selectionStreams.select(row.streamId));
         }
+    }
+
+    showInvalidTokenSettingsDialog(){
+        swal({
+            title: "Invalid Security Token Settings",
+            text: "A single token security setting can be activated for both publishing and playing, with a maximum limit of two settings—one for each.",
+            type: 'error',
+
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+        })
+    }
+
+    isTokenSettingsValid(){
+        var publishTokenSecurityEnabledCount = 0;
+		var playTokenSecurityEnabledCount = 0;
+
+		if (this.appSettings.publishTokenControlEnabled) {
+			publishTokenSecurityEnabledCount++;
+		}
+		if (this.appSettings.publishJwtControlEnabled) {
+			publishTokenSecurityEnabledCount++;
+		}
+		if (this.appSettings.enableTimeTokenForPublish) {
+			publishTokenSecurityEnabledCount++;
+		}
+		if (this.appSettings.enableTimeTokenForPlay) {
+			playTokenSecurityEnabledCount++;
+		}
+
+		if (this.appSettings.playTokenControlEnabled) {
+			playTokenSecurityEnabledCount++;
+		}
+		if (this.appSettings.playJwtControlEnabled) {
+			playTokenSecurityEnabledCount++;
+		}
+
+		// Only one type of token control should be enabled for publish and play
+		return publishTokenSecurityEnabledCount <= 1 && playTokenSecurityEnabledCount <= 1;
+
+    }
+
+    onPublishTokenControlChange(){
+        this.cdr.detectChanges();
+
+        if(!this.isTokenSettingsValid() && this.appSettings.publishTokenControlEnabled){
+            this.showInvalidTokenSettingsDialog()
+            this.appSettings.publishTokenControlEnabled = false
+        }
+
+    }
+
+    onPlayTokenControlChange(){
+        this.cdr.detectChanges();
+
+        if(!this.isTokenSettingsValid() && this.appSettings.playTokenControlEnabled){
+            this.showInvalidTokenSettingsDialog()
+            this.appSettings.playTokenControlEnabled = false
+        }
+
+    }
+
+    onEnableTimeTokenForPublishChange(){
+
+        this.cdr.detectChanges();
+
+        if(!this.isTokenSettingsValid() && this.appSettings.enableTimeTokenForPublish){
+            this.showInvalidTokenSettingsDialog()
+            this.appSettings.enableTimeTokenForPublish = false
+        }
+
+    }
+
+    onEnableTimeTokenForPlayChange(){
+        this.cdr.detectChanges();
+
+        if(!this.isTokenSettingsValid() && this.appSettings.enableTimeTokenForPlay){
+            this.showInvalidTokenSettingsDialog()
+            this.appSettings.enableTimeTokenForPlay = false
+        }
+
+    }
+    
+    onPublishJwtControlEnabledChange(){
+        this.cdr.detectChanges();
+
+        if(!this.isTokenSettingsValid() && this.appSettings.publishJwtControlEnabled){
+            this.showInvalidTokenSettingsDialog()
+            this.appSettings.publishJwtControlEnabled = false
+        }
+
+    }
+
+    onPlayJwtControlEnabledChange(){
+        this.cdr.detectChanges();
+
+        if(!this.isTokenSettingsValid() && this.appSettings.playJwtControlEnabled){
+            this.showInvalidTokenSettingsDialog()
+            this.appSettings.playJwtControlEnabled = false
+        }
+
     }
 
 

@@ -1898,8 +1898,8 @@
 
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
-                                                                <input [(ngModel)]="appSettings.publishTokenControlEnabled"
-                                                                    id="publishTokenControlEnabled" name="publishTokenControlEnabled"
+                                                                <input [(ngModel)]="appSettings.publishTokenControlEnabled" 
+                                                                    id="publishTokenControlEnabled" (ngModelChange)="onPublishTokenControlChange()" name="publishTokenControlEnabled"
                                                                     type="checkbox">
 
                                                                 <label for="publishTokenControlEnabled">
@@ -1915,7 +1915,7 @@
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.playTokenControlEnabled"
-                                                                    id="playTokenControlEnabled" name="playTokenControlEnabled"
+                                                                    id="playTokenControlEnabled" (ngModelChange)="onPlayTokenControlChange()" name="playTokenControlEnabled"
                                                                     type="checkbox">
 
                                                                 <label for="playTokenControlEnabled">
@@ -1934,7 +1934,7 @@
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.enableTimeTokenForPublish"
-                                                                    id="enableTimeTokenForPublish" name="enableTimeTokenForPublish"
+                                                                    id="enableTimeTokenForPublish" (ngModelChange)="onEnableTimeTokenForPublishChange()"  name="enableTimeTokenForPublish"
                                                                     type="checkbox">
 
                                                                 <label for="enableTimeTokenForPublish">
@@ -1970,7 +1970,7 @@
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.enableTimeTokenForPlay"
-                                                                    id="enableTimeTokenForPlay" name="enableTimeTokenForPlay"
+                                                                    id="enableTimeTokenForPlay" (ngModelChange)="onEnableTimeTokenForPlayChange()" name="enableTimeTokenForPlay"
                                                                     type="checkbox">
 
                                                                 <label for="enableTimeTokenForPlay">
@@ -2049,6 +2049,7 @@
                                                         <div *ngIf="isEnterpriseEdition" class="col-xs-12 ">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.publishJwtControlEnabled"
+                                                                (ngModelChange)="onPublishJwtControlEnabledChange()"
                                                                        id="publishJwtControlEnabled" name="publishJwtControlEnabled"
                                                                        type="checkbox">
 
@@ -2067,6 +2068,8 @@
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="appSettings.playJwtControlEnabled"
                                                                        id="playJwtControlEnabled" name="playJwtControlEnabled"
+                                                                       (ngModelChange)="onPlayJwtControlEnabledChange()"
+
                                                                        type="checkbox">
 
                                                                 <label for="playJwtControlEnabled">
