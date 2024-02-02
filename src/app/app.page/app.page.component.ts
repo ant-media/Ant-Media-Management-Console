@@ -861,14 +861,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
      * @param playOrder 
      */
     openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string, vodName:string, playOrder:string[]): void {
-        htmlCode = '<div id="video_container" style="height:360px;overflow:hidden">' 
-	     + '</div>';
+        htmlCode =  '<div id="video_container" style="height:360px;overflow:hidden">' 
+	                + '</div>'
+                    + '<div id="place_holder" style="height:360px;overflow:hidden;display:flex;align-items: center;justify-content: center;">The streaming will begin shortly...</div>'
 
  		const broadcast = this.getBroadcastByStreamId(streamId);
         const typePlayList = broadcast != null && broadcast.type === "playlist";
-        
+
         var playOrderLocal = ["webrtc", "hls", "dash"];
 
+        if (!this.isEnterpriseEdition)  {
+            //if it's not enterprise edition, only hls is supported
+            playOrderLocal = ["hls"];
+        }
+        
         if (typePlayList) {
           playOrderLocal = ["hls"];
         }
@@ -902,12 +908,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     videoHTMLContent: '<video id="video-player" class="video-js vjs-default-skin vjs-big-play-centered" controls playsinline style="width:100%;height:100%"></video>',
                  }, 
                  document.getElementById("video_container"), 
-                 null);
+                 document.getElementById("place_holder"));
+                 
                  embeddedPlayer.initialize().then(() => {
                     embeddedPlayer.play();
                  }).catch((error) => {
                     console.error("Error while initializing embedded player: " + error);
                  });
+                 
+                 
             },
             onClose: function () {
                 //var ifr = document.getElementById(objectId);
