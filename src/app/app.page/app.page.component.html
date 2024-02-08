@@ -2196,6 +2196,40 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <div class="card-header">
+                                                    <legend class="text-left" i18n="@@Security">
+                                                        Push Notification
+                                                    </legend>
+                                                </div>
+                                                <div class="card-content text-left">
+                                                    <div class="form-group">
+                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                            <div >
+                                                                
+
+                                                                <label for="fcmPrivateKeyJSON">
+                                                                    Firebase Cloud Messaging Private Key JSON
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xs-12">
+                                                           
+                                                            <div>
+                                                                <textarea name="fcmPrivateKeyJSON"
+                                                                          (keydown.enter)="false"
+                                                                          [(ngModel)]="appSettings.firebaseAccountKeyJSON"
+                                                                          type="textarea" class="form-control"
+                                                                          placeholder="Copy and paste your Private Key JSON content"
+                                                                          rows="3">{{appSettings.firebaseAccountKeyJSON}}
+                                                            </textarea>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
                                             </div>
 
                                             <div class="col-sm-12 col-md-12">

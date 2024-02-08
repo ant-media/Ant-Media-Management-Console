@@ -245,7 +245,8 @@ export class AppSettings {
                 public lLHLSEnabled: boolean,
                 public deleteDASHFilesOnEnded: boolean,
                 public timeTokenSecretForPlay: string,
-                public timeTokenSecretForPublish: string
+                public timeTokenSecretForPublish: string,
+                public firebaseAccountKeyJSON: string,
 
     ) {}
 }
