@@ -634,7 +634,7 @@
                                                                     <!-- Start button IP Camera & Stream Source -->
 
                                                                     <li
-                                                                        *ngIf="(row.type=='streamSource' || row.type=='ipCamera' || row.type=='playlist') && row.status!='broadcasting'">
+                                                                        *ngIf="(row.type=='streamSource' || row.type=='ipCamera' || row.type=='playlist') && row.status!='broadcasting' && row.status!='preparing'">
                                                                         <a class="dropdown-link"
                                                                             (click)="startStreams(row.streamId)">
                                                                             <ng-container i18n="@@startBroadcast">Start
@@ -645,7 +645,7 @@
                                                                     <!-- Stop button IP Camera & Stream Source-->
 
                                                                     <li
-                                                                        *ngIf="(row.type=='streamSource' || row.type=='ipCamera' || row.type=='playlist') && row.status=='broadcasting'">
+                                                                        *ngIf="(row.type=='streamSource' || row.type=='ipCamera' || row.type=='playlist') && (row.status=='broadcasting' || row.status=='preparing')">
                                                                         <a class="dropdown-link"
                                                                             (click)="stopStreams(row.streamId)">
                                                                             <ng-container i18n="@@stopBroadcast">Stop
@@ -899,7 +899,7 @@
                                     <br>
                                     <div class="mat-container mat-elevation-z0">
 
-                                        <mat-table [dataSource]="dataSourceVod" matSort
+                                        <mat-table [dataSource]="dataSourceVod" matSort style="overflow: visible !important;"
                                             (matSortChange)="sortVodList($event)">
 
                                              <!-- Checkbox Column -->
@@ -962,10 +962,65 @@
                                             </ng-container>
 
                                             <ng-container matColumnDef="actions" >
-                                                <mat-header-cell *matHeaderCellDef class="justify-flex-end"> Actions
+                                                <mat-header-cell  [ngClass]="'action-column'" *matHeaderCellDef class="text-right"> Actions
                                                 </mat-header-cell>
 
-                                                <mat-cell *matCellDef="let row" class="justify-flex-end">
+
+                                                <mat-cell style="overflow: visible !important; "
+                                                    [ngClass]="'action-column'" *matCellDef="let row"
+                                                    class="text-right">
+
+                                                <div style="font-size: 1.1em">
+                                                    <ul class="nav navbar-right"  >
+                                                        <li (click)="contextDropdownClicked()" class="dropdown">
+                                                            <a href="#" class="dropdown-toggle btn-magnify"
+                                                                data-toggle="dropdown">
+                                                                <i class="ti-menu-alt"></i>
+                                                                <span class="notification"></span>
+                                                                <b class="caret"></b>
+                                                                <p class="hidden-md hidden-lg">
+                                                                </p>
+                                                            </a>
+                                                            <ul class="dropdown-menu">
+
+                                                                <!-- Copy Embed Code -->
+                                                                <li>
+                                                                    <a (click)="copyVoDEmbedCode(row.vodName, row.type, row.vodId, row.filePath)"
+                                                                        class="dropdown-link">
+                                                                        <ng-container>Copy Embed code</ng-container>
+                                                                    </a>
+                                                                </li>
+
+                                                                <li>
+                                                                    <a (click)="copyVoDUrl(row.filePath)"
+                                                                        class="dropdown-link">
+                                                                        <ng-container>Copy VoD URL</ng-container>
+                                                                    </a>
+                                                                </li>
+
+                                                                <!-- Download -->
+
+                                                                <li>
+                                                                    <a class="dropdown-link"
+                                                                        (click)="downloadFile(row.vodName ,row.type,row.vodId, row.streamId, row.filePath)">
+                                                                        <ng-container>Download</ng-container>
+                                                                    </a>
+                                                                </li>
+
+                                                                <!-- Delete VoD -->
+
+                                                                <li>
+                                                                    <a class="dropdown-link"
+                                                                        (click)="deleteVoD(row.vodName, row.vodId, row.type)">
+                                                                        <ng-container>Delete</ng-container>
+                                                                    </a>
+                                                                </li>
+
+                                                            </ul>
+                                                        </li>
+
+                                                    </ul>
+
                                                     <button
                                                         (click)="playVoD(row.vodName ,row.type,row.vodId, row.streamId, row.filePath)"
                                                         class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
@@ -975,35 +1030,7 @@
                                                         </span>
                                                     </button>
 
-                                                    <button (click)="copyVoDEmbedCode(row.vodName, row.type, row.vodId, row.filePath)"
-                                                        data-toggle="tooltip" i18n-title
-                                                        title="Copy Live Embed Code to Clipboard"
-                                                        class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
-                                                        type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-share"></i>
-                                                        </span>
-                                                    </button>
-
-
-                                                    <a (click)="downloadFile(row.vodName ,row.type,row.vodId, row.streamId, row.filePath)"
-                                                        download>
-                                                        <button data-toggle="tooltip" i18n-title title="VoD Downloading"
-                                                            class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
-                                                            type="button">
-                                                            <span class="btn-label">
-                                                                <i class="ti-download"></i>
-                                                            </span>
-                                                        </button>
-                                                    </a>
-
-                                                    <button (click)="deleteVoD(row.vodName, row.vodId, row.type)"
-                                                        class="btn btn-simple btn-magnify btn-danger btn-xs big-icons"
-                                                        type="button">
-                                                        <span class="btn-label">
-                                                            <i class="ti-close"></i>
-                                                        </span>
-                                                    </button>
+                                                </div>
 
                                                 </mat-cell>
                                             </ng-container>
@@ -1924,13 +1951,32 @@
                                                                     type="checkbox">
 
                                                                 <label for="enableTimeTokenForPublish">
-                                                                    Enable TOTP for Publishing <a
+                                                                    Enable Time-based One-time Password(TOTP) for Publishing <a
                                                                         href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#7-time-based-one-time-password"
                                                                         target="_blank"
                                                                         matTooltip="After enabling this option, publishing can be done with TOTP"><i
                                                                             style="font-size: 20px;"
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>                                                                
+                                                            </div>
+                                                            <div *ngIf="appSettings.enableTimeTokenForPublish && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                                <label i18n="@@jwtFilter">
+                                                                    Secret for TOTP Publishing
+                                                                </label>
+    
+                                                                <div>
+                                                                    <textarea name="timeTokenSecretForPublish" minlength="6"  #timeTokenSecretForPlay="ngModel" [disabled]="!appSettings.timeTokenSecretForPublish"
+                                                                              [(ngModel)]="appSettings.timeTokenSecretForPublish"
+                                                                              type="textarea" class="form-control"
+                                                                              placeholder="Please write at least 6 character"
+                                                                              rows="1">{{appSettings.timeTokenSecretForPublish}}
+                                                                    </textarea>
+                                                                    <button
+                                                                            (click)="setTOTPSecretForPublishing(6)" class="btn pull-right btn-default" style="margin:5px"
+                                                                            type="button">
+                                                                        Generate
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </div>
 
@@ -1941,7 +1987,7 @@
                                                                     type="checkbox">
 
                                                                 <label for="enableTimeTokenForPlay">
-                                                                    Enable TOTP for Playing <a
+                                                                    Enable Time-based One-time Password(TOTP) for Playing <a
                                                                         href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#7-time-based-one-time-password"
                                                                         target="_blank"
                                                                         matTooltip="After enabling this option, playing can be done with TOTP"><i
@@ -1949,6 +1995,27 @@
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>                                                                
                                                             </div>
+
+                                                            <div *ngIf="appSettings.enableTimeTokenForPlay && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                                <label i18n="@@jwtFilter">
+                                                                    Secret for TOTP Playing
+                                                                </label>
+    
+                                                                <div>
+                                                                    <textarea name="timeTokenSecretForPlay" minlength="6"  #timeTokenSecretForPlay="ngModel" [disabled]="!appSettings.timeTokenSecretForPlay"
+                                                                              [(ngModel)]="appSettings.timeTokenSecretForPlay"
+                                                                              type="textarea" class="form-control"
+                                                                              placeholder="Please write at least 6 character"
+                                                                              rows="1">{{appSettings.timeTokenSecretForPlay}}
+                                                                    </textarea>
+                                                                    <button
+                                                                            (click)="setTOTPSecretForPlaying(6)" class="btn pull-right btn-default" style="margin:5px"
+                                                                            type="button">
+                                                                        Generate
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
                                                         </div>
 
 
@@ -2142,6 +2209,40 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <div class="card-header">
+                                                    <legend class="text-left" i18n="@@Security">
+                                                        Push Notification
+                                                    </legend>
+                                                </div>
+                                                <div class="card-content text-left">
+                                                    <div class="form-group">
+                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                            <div >
+                                                                
+
+                                                                <label for="fcmPrivateKeyJSON">
+                                                                    Firebase Cloud Messaging Private Key JSON
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xs-12">
+                                                           
+                                                            <div>
+                                                                <textarea name="fcmPrivateKeyJSON"
+                                                                          (keydown.enter)="false"
+                                                                          [(ngModel)]="appSettings.firebaseAccountKeyJSON"
+                                                                          type="textarea" class="form-control"
+                                                                          placeholder="Copy and paste your Private Key JSON content"
+                                                                          rows="3">{{appSettings.firebaseAccountKeyJSON}}
+                                                            </textarea>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
                                             </div>
 
                                             <div class="col-sm-12 col-md-12">

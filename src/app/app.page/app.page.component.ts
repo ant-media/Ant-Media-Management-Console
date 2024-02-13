@@ -53,6 +53,8 @@ import {
     ClusterNodeInfo
 } from '../cluster/cluster.definitions';
 import { LOCAL_STORAGE_SCOPE_KEY } from 'app/rest/auth.service';
+import { WebPlayer } from '@antmedia/web_player';
+ 
 
 declare var $: any;
 declare var Chartist: any;
@@ -679,7 +681,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
                 this.broadcastTableData.dataRows.push(data[i]);
 
-                this.broadcastTableData.dataRows[i].iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?name=" + this.broadcastTableData.dataRows[i].streamId + "&autoplay=true";
+                this.broadcastTableData.dataRows[i].iframeSource = HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + this.broadcastTableData.dataRows[i].streamId + "&autoplay=true";
 
             }
 
@@ -831,8 +833,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.appSettings.playTokenControlEnabled) {
             this.openPlayerWithOneTimeToken(streamId, streamId, "640px", streamId);
         }
-        if (this.appSettings.playJwtControlEnabled) {
+        else if (this.appSettings.playJwtControlEnabled) {
             this.openPlayerWithJWTToken(streamId, streamId, "640px", streamId);
+        }
+        else if (this.appSettings.enableTimeTokenForPlay) {
+            swal({
+                title: "TOTP Playback ",
+                text: "TOTP Playback is not currently supported through web panel",
+                type: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            }).then(() => {
+            }).catch(function () {
+            });
         }
         else {
             this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null, null, null);
@@ -849,7 +862,30 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
      * @param vodName 
      * @param playOrder 
      */
-    openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string, vodName:string, playOrder:string): void {
+    openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string, vodName:string, playOrder:string[]): void {
+        htmlCode =  '<div id="video_container" style="height:360px;overflow:hidden">' 
+	                + '</div>'
+                    + '<div id="place_holder" style="height:360px;overflow:hidden;display:flex;align-items: center;justify-content: center;">The streaming will begin shortly...</div>'
+
+ 		const broadcast = this.getBroadcastByStreamId(streamId);
+        const typePlayList = broadcast != null && broadcast.type === "playlist";
+
+        var playOrderLocal = ["webrtc", "hls", "dash"];
+
+        if (!this.isEnterpriseEdition)  {
+            //if it's not enterprise edition, only hls is supported
+            playOrderLocal = ["hls"];
+        }
+        
+        if (typePlayList) {
+          playOrderLocal = ["hls"];
+        }
+        else if (playOrder) {
+            playOrderLocal = playOrder;
+        }
+       
+
+        var embeddedPlayer;
         swal({
             html: htmlCode,
             showConfirmButton: false,
@@ -859,12 +895,35 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             showCloseButton: true,
             onOpen: () => {
                 //the error in this callback does not show up in browser console.
-                var iframe = $('#' + objectId);
-                iframe.prop('src', this.getIFrameSrc(streamId, "true", tokenId, vodName, playOrder));
+                //var iframe = $('#' + objectId);
+             //   iframe.prop('src', this.getIFrameSrc(streamId, "true", tokenId, vodName, playOrder));
+                var httpBaseUrlForStream = HTTP_SERVER_ROOT + this.appName;
+
+                if (httpBaseUrlForStream.startsWith("//")) {
+                    httpBaseUrlForStream = location.protocol + httpBaseUrlForStream;
+                }
+                embeddedPlayer = new WebPlayer({
+                    streamId: streamId,
+                    httpBaseURL: httpBaseUrlForStream,
+                    token: tokenId,
+                    playOrder:playOrderLocal,
+                    videoHTMLContent: '<video id="video-player" class="video-js vjs-default-skin vjs-big-play-centered" controls playsinline style="width:100%;height:100%"></video>',
+                 }, 
+                 document.getElementById("video_container"), 
+                 document.getElementById("place_holder"));
+                 
+                 embeddedPlayer.initialize().then(() => {
+                    embeddedPlayer.play();
+                 }).catch((error) => {
+                    console.error("Error while initializing embedded player: " + error);
+                 });
+                 
+                 
             },
             onClose: function () {
-                var ifr = document.getElementById(objectId);
-                ifr.parentNode.removeChild(ifr);
+                //var ifr = document.getElementById(objectId);
+                //ifr.parentNode.removeChild(ifr);
+                embeddedPlayer.destroy();
             }
         })
             .then(function () { }, function () { })
@@ -904,7 +963,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     downloadFile(vodName: string, type: string, vodId: string, streamId: string, filePath: string): void {
 
-        var srcFile = HTTP_SERVER_ROOT + this.appName + "/" + filePath;;
+        var srcFile = HTTP_SERVER_ROOT + this.appName + "/" + filePath;
         var vodUrlName = vodName;
 
         const link = document.createElement("a");
@@ -913,6 +972,24 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         link.href = srcFile;
         link.target = '_blank';
         link.click();
+    }
+
+    copyVoDUrl(filePath: string) {
+        var srcFile = HTTP_SERVER_ROOT + this.appName + "/" + filePath;
+
+        this.clipBoardService.copyFromContent(srcFile);
+        $.notify({
+            message: "File URL copied to clipboard"
+        }, {
+            type: "success",
+            delay: 400,
+            timer: 500,
+            placement: {
+                from: 'top',
+                align: 'right'
+            }
+        });
+
     }
 
 
@@ -927,7 +1004,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             if (filePath.lastIndexOf(".") == -1) {
                 filePath += "/" + vodName;
             }
-            this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", null, vodName, "vod");
+            this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", null, vodName, ["vod"]);
         }
     }
 
@@ -945,7 +1022,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             tokenParam = name.substring(0, extensionIndex);
         }
 
-        if (tokenParam != null && this.appSettings.playTokenControlEnabled) {
+        if (this.appSettings.enableTimeTokenForPlay) {
+            swal({
+                title: "TOTP Playback ",
+                text: "TOTP Playback is not currently supported through web panel",
+                type: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            }).then(() => {
+            }).catch(function () {
+            });
+        }
+        else if (tokenParam != null && this.appSettings.playTokenControlEnabled) {
             this.openPlayerWithOneTimeToken(vodId, filePath, "640px", tokenParam);
         }
         else if (tokenParam != null && this.appSettings.playJwtControlEnabled) {
@@ -1887,6 +1975,34 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         return str;
     };
 
+    setTOTPSecretForPlaying(length:number) {
+        let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+        // Pick characers randomly
+        let str = '';
+        for (let i = 0; i < length; i++) {
+            str += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        this.appSettings.timeTokenSecretForPlay = str;
+        return str;
+    }
+
+    setTOTPSecretForPublishing(length:number) {
+        let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+        // Pick characers randomly
+        let str = '';
+        for (let i = 0; i < length; i++) {
+            str += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        this.appSettings.timeTokenSecretForPublish = str;
+        return str;
+    }
+
+    
+
     startDiscover() {
         this.discoveryStarted = true;
         this.onvifURLs = this.getDiscoveryList();
@@ -2269,6 +2385,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
     }
+
 
     getRtmpUrl(streamUrl: string): string {
         return this.restService.getRtmpUrl(this.appName, streamUrl);
