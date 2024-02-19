@@ -247,6 +247,10 @@ export class AppSettings {
                 public timeTokenSecretForPlay: string,
                 public timeTokenSecretForPublish: string,
                 public firebaseAccountKeyJSON: string,
+                public apnTeamId: string,
+                public apnKeyId: string,
+                public apnPrivateKey: string,
+                public apnsServer: string,
 
     ) {}
 }

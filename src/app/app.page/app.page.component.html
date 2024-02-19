@@ -2204,18 +2204,15 @@
                                                 </div>
                                                 <div class="card-content text-left">
                                                     <div class="form-group">
-                                                        <div class="col-xs-12" style="margin-top:12px">
-                                                            <div >
-                                                                
-
-                                                                <label for="fcmPrivateKeyJSON">
-                                                                    Firebase Cloud Messaging Private Key JSON
-                                                                </label>
-                                                            </div>
-                                                        </div>
-
                                                         <div class="col-xs-12">
-                                                           
+                                                            <label style="font-size: 18px">
+                                                                Firebase Cloud Messaging
+                                                            </label>
+                                                        </div>
+                                                        <div class="col-xs-12">
+                                                            <label for="fcmPrivateKeyJSON">
+                                                                Private Key JSON
+                                                            </label>
                                                             <div>
                                                                 <textarea name="fcmPrivateKeyJSON"
                                                                           (keydown.enter)="false"
@@ -2228,6 +2225,69 @@
                                                         </div>
 
                                                     </div>
+
+                                                    <div class="form-group">
+                                                        <div class="col-xs-12">
+                                                            <label style="font-size: 18px;margin-top: 25px;">
+                                                                Apple Push Notification
+                                                            </label>
+                                                        </div>
+                                                        <div class="col-xs-12">
+                                                            <label>
+                                                                Team ID
+                                                            </label>
+                                                            <div>
+                                                                <input name="appTeamId"
+                                                                        type="text"  (keydown.enter)="false"
+                                                                        [(ngModel)]="appSettings.apnTeamId"  class="form-control"
+                                                                        placeholder="Team ID in Apple Developer Account"
+                                                                        #appTeamId="ngModel"
+                                                                          />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-12">
+                                                            <label>
+                                                                Key ID
+                                                            </label>
+                                                            <div>
+                                                                <input name="apnKeyId"
+                                                                        type="text"  (keydown.enter)="false"
+                                                                        [(ngModel)]="appSettings.apnKeyId"  class="form-control"
+                                                                        placeholder="Key ID of Your Private Key in Apple Developer Account"
+                                                                        #apnKeyId="ngModel"
+                                                                          />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-12">
+                                                            <label>
+                                                                Private Key                                                            
+                                                            </label>
+                                                            <div>
+                                                                <textarea name="apnPrivateKey"
+                                                                    (keydown.enter)="false"
+                                                                    [(ngModel)]="appSettings.apnPrivateKey"
+                                                                    type="textarea" class="form-control"
+                                                                    placeholder="Copy and paste your APN Private Key"
+                                                                    rows="3">{{appSettings.apnPrivateKey}}
+                                                                </textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-12">
+                                                            <label>
+                                                                APN Server
+                                                            </label>
+                                                            <div>
+                                                                <input name="apnsServer"
+                                                                        type="text"  (keydown.enter)="false"
+                                                                        [(ngModel)]="appSettings.apnsServer"  class="form-control"
+                                                                        placeholder="APN Server"
+                                                                        #apnsServer="ngModel"
+                                                                          />
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
                                                 </div>
 
                                             </div>
