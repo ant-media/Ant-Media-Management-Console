@@ -80,6 +80,7 @@ export class LiveBroadcast {
     dashViewerLimit: number;
     currentPlayIndex: number;
     playlistLoopEnabled: boolean = true;
+    autoStartStopEnabled: boolean = false;
 
     constructor() {
         this.playListItemList = [];
@@ -227,7 +228,8 @@ export class RestService {
         let REST_SERVICE_ADDRESS;
 
         if (liveBroadcast.type == "ipCamera" || liveBroadcast.type == "streamSource") {
-            autoStart = true;
+            //if auto start/stop is enabled, dont auto start
+            autoStart = !liveBroadcast.autoStartStopEnabled;
         }
         if(REMOTE_REST_SERVICE_ROOT == null){
             REST_SERVICE_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/create&autoStart="+autoStart+"&socialNetworks="+socialNetworks;

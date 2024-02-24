@@ -523,6 +523,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 dashViewerLimit: this.selectedBroadcast.dashViewerLimit,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
+                autoStartStopEnabled: this.selectedBroadcast.autoStartStopEnabled,
             }
         });
 
@@ -568,6 +569,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 streamUrl: this.selectedBroadcast.streamUrl,
                 endpointList: selected.endPointList,
                 videoServiceEndpoints: this.videoServiceEndpoints,
+                autoStartStopEnabled: this.selectedBroadcast.autoStartStopEnabled,
             }
         });
 
@@ -632,6 +634,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     dashViewerLimit: this.liveStreamEditing.dashViewerLimit,
                     endpointList: stream.endPointList,
                     videoServiceEndpoints: this.videoServiceEndpoints,
+                    autoStartStopEnabled: this.selectedBroadcast.autoStartStopEnabled,
                     // ************** TODO: open it *************************
                     //socialMediaAuthStatus:this.socialMediaAuthStatus
                 }
@@ -1601,7 +1604,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             .subscribe(data => {
                 //console.log("data :" + JSON.stringify(data));
                 this.newIPCameraAdding = false;
-                if (data["success"] == true) {
+                if (data["success"] == true || data["streamId"] != null) {
 
                     console.log("success: " + data["success"]);
                     console.log("error: " + data["message"]);
@@ -1741,7 +1744,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.restService.createLiveStream(this.appName, this.liveBroadcast, REMOTE_HOST_ADDRESS, socialNetworks.join(","))
             .subscribe(data => {
-                if (data["success"] == true) {
+               
+                if (data["success"] == true || data["streamId"] != null) {
                     this.jwtTokenValid = true;
                     this.newStreamSourceAdding = false;
 

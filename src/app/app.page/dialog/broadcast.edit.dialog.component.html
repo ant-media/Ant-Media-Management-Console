@@ -59,8 +59,18 @@
                         Please write a valid stream URL
                     </small>
                 </div>
-                
-                
+
+                <div class="form-group checkbox text-left " *ngIf="data.type=='streamSource' || data.type=='ipCamera'">
+                        <input type="checkbox" name="autoStartStopEnabled"  
+                         [(ngModel)]="data.autoStartStopEnabled"  class="form-control" #autoStartStopEnabled="ngModel" style="width: 400px">
+                         <label for="autoStartStopEnabled">Auto Start/Stop Streaming</label>
+                         <br/>
+                         <small style="font-size: 12px;padding-left: 10px;display:block">
+                             Start streaming when there is a viewer, Stops streaming when there is no viewer
+                         </small>
+                </div>
+
+      
                 <div class="form-group text-left" *ngIf="data.type=='ipCamera'">
                     <label i18n="@@newOnvifUrl">Onvif Url</label>
                     <input type="text" name="onvifUrl" i18n-placeholder="@@onvif_url_place_holder" placeholder="Onvif url"
