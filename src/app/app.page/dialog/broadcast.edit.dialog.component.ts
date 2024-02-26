@@ -94,6 +94,10 @@ export class BroadcastEditComponent {
             this.liveStreamEditing.status = this.dialogRef.componentInstance.data.status;
             this.liveStreamEditing.streamUrl = this.dialogRef.componentInstance.data.streamUrl;
         }
+        
+
+        this.liveStreamEditing.autoStartStopEnabled = this.dialogRef.componentInstance.data.autoStartStopEnabled;
+
 
         var socialNetworks = [];
         this.shareEndpoint.forEach((value, index) => {
