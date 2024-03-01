@@ -410,9 +410,13 @@
                                                         </div>
 
                                                         <div *ngIf="liveBroadcast.playListItemList.length!=0">
-                                                            <div class="col-xs-12 col-sm-12 text-left">
+                                                            <div class="col-xs-9 col-sm-9 text-left">
                                                                 <span class="help-block"
                                                                     i18n="@@ResolutionHeight">Playlist URL</span>
+                                                            </div>
+                                                            <div class="col-xs-3 col-sm-3 text-left">
+                                                                <span class="help-block"> Start Time
+                                                                <small style="font-size: 12px;">(HH:MM:SS)</small></span>
                                                             </div>
                                                         </div>
 
@@ -422,11 +426,19 @@
                                                                     class="col-md-12 col-sm-12 col-xs-12"
                                                                     style="margin-bottom: 20px">
 
-                                                                    <div class="col-xs-11 col-sm-11 text-left">
+                                                                    <div class="col-xs-9 col-sm-9 text-left">
                                                                         <input minlength="4" type="text"
                                                                             class="form-control" [name]="'streamUrl'+i"
                                                                             [(ngModel)]="playlistItem.streamUrl"
                                                                              />
+                                                                    </div>
+
+                                                                    <div class="col-xs-2 col-sm-2 text-left">
+                                                                        <input  type="text" class="form-control" [name]="'streamUrlSeekTimeMs'+i" value="00:00:00" (change)="seekTimeChanged($event.target.value, i)" />
+                                                    
+                                                                        <small *ngIf="!isTimeFormatCorrect(i)" class="text-danger">
+                                                                            Time format is not correct.
+                                                                        </small>
                                                                     </div>
 
                                                                     <div class="col-xs-1 col-sm-1 text-left">

@@ -165,9 +165,10 @@ export declare interface WebRTCClientStat {
     audioThreadCheckInterval: number;
 }
 
-export declare interface PlaylistItem {
+export class PlaylistItem {
         streamUrl: string;
         type: string;
+        seekTimeInMs: number;
 }
 
 export class ServerSettings {
