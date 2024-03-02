@@ -2684,63 +2684,25 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    showInvalidTokenSettingsDialog(){
-        swal({
-            title: "Invalid Security Token Settings",
-            text: "A single token security setting can be activated for both publishing and playing, with a maximum limit of two settings—one for each.",
-            type: 'error',
-
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'OK',
-        })
-    }
-
-    isTokenSettingsValid(){
-        var publishTokenSecurityEnabledCount = 0;
-		var playTokenSecurityEnabledCount = 0;
-
-		if (this.appSettings.publishTokenControlEnabled) {
-			publishTokenSecurityEnabledCount++;
-		}
-		if (this.appSettings.publishJwtControlEnabled) {
-			publishTokenSecurityEnabledCount++;
-		}
-		if (this.appSettings.enableTimeTokenForPublish) {
-			publishTokenSecurityEnabledCount++;
-		}
-		if (this.appSettings.enableTimeTokenForPlay) {
-			playTokenSecurityEnabledCount++;
-		}
-
-		if (this.appSettings.playTokenControlEnabled) {
-			playTokenSecurityEnabledCount++;
-		}
-		if (this.appSettings.playJwtControlEnabled) {
-			playTokenSecurityEnabledCount++;
-		}
-
-		// Only one type of token control should be enabled for publish and play
-		return publishTokenSecurityEnabledCount <= 1 && playTokenSecurityEnabledCount <= 1;
-
-    }
-
     onPublishTokenControlChange(){
         this.cdr.detectChanges();
 
-        if(!this.isTokenSettingsValid() && this.appSettings.publishTokenControlEnabled){
-            this.showInvalidTokenSettingsDialog()
-            this.appSettings.publishTokenControlEnabled = false
+        if (this.appSettings.publishTokenControlEnabled) {
+            this.appSettings.publishJwtControlEnabled = false;
+            this.appSettings.enableTimeTokenForPublish = false;
         }
+        
 
     }
 
     onPlayTokenControlChange(){
         this.cdr.detectChanges();
 
-        if(!this.isTokenSettingsValid() && this.appSettings.playTokenControlEnabled){
-            this.showInvalidTokenSettingsDialog()
-            this.appSettings.playTokenControlEnabled = false
+        if(this.appSettings.playTokenControlEnabled){
+            this.appSettings.playJwtControlEnabled = false;
+            this.appSettings.enableTimeTokenForPlay = false
         }
+
 
     }
 
@@ -2748,9 +2710,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.cdr.detectChanges();
 
-        if(!this.isTokenSettingsValid() && this.appSettings.enableTimeTokenForPublish){
-            this.showInvalidTokenSettingsDialog()
-            this.appSettings.enableTimeTokenForPublish = false
+   
+
+        if (this.appSettings.enableTimeTokenForPublish) {
+            this.appSettings.publishJwtControlEnabled = false;
+            this.appSettings.publishTokenControlEnabled = false;
         }
 
     }
@@ -2758,9 +2722,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     onEnableTimeTokenForPlayChange(){
         this.cdr.detectChanges();
 
-        if(!this.isTokenSettingsValid() && this.appSettings.enableTimeTokenForPlay){
-            this.showInvalidTokenSettingsDialog()
-            this.appSettings.enableTimeTokenForPlay = false
+        if(this.appSettings.enableTimeTokenForPlay){
+            this.appSettings.playJwtControlEnabled = false;
+            this.appSettings.playTokenControlEnabled = false
         }
 
     }
@@ -2768,9 +2732,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     onPublishJwtControlEnabledChange(){
         this.cdr.detectChanges();
 
-        if(!this.isTokenSettingsValid() && this.appSettings.publishJwtControlEnabled){
-            this.showInvalidTokenSettingsDialog()
-            this.appSettings.publishJwtControlEnabled = false
+        if (this.appSettings.publishJwtControlEnabled) {
+            this.appSettings.enableTimeTokenForPublish = false;
+            this.appSettings.publishTokenControlEnabled = false;
         }
 
     }
@@ -2778,9 +2742,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     onPlayJwtControlEnabledChange(){
         this.cdr.detectChanges();
 
-        if(!this.isTokenSettingsValid() && this.appSettings.playJwtControlEnabled){
-            this.showInvalidTokenSettingsDialog()
-            this.appSettings.playJwtControlEnabled = false
+        if(this.appSettings.playJwtControlEnabled){
+            this.appSettings.enableTimeTokenForPlay = false;
+            this.appSettings.playTokenControlEnabled = false
         }
 
     }

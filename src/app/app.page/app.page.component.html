@@ -1880,6 +1880,7 @@
                                                     <legend class="text-left" i18n="@@Security">
                                                         Stream Security
                                                     </legend>
+                                                    <small>Apply One Token Type at a time for Play or Publish</small>
                                                 </div>
 
                                                 <div class="card-content text-left">
@@ -1896,8 +1897,9 @@
                                                             </div>
                                                         </div>
 
-                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
-                                                            <div class="checkbox">
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12">
+                                                            <label>One-time Tokens</label>
+                                                            <div class="checkbox" style="margin-left: 20px;">
                                                                 <input [(ngModel)]="appSettings.publishTokenControlEnabled" 
                                                                     id="publishTokenControlEnabled" (ngModelChange)="onPublishTokenControlChange()" name="publishTokenControlEnabled"
                                                                     type="checkbox">
@@ -1911,9 +1913,7 @@
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>
                                                             </div>
-                                                        </div>
-                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
-                                                            <div class="checkbox">
+                                                            <div class="checkbox" style="margin-left: 20px;">
                                                                 <input [(ngModel)]="appSettings.playTokenControlEnabled"
                                                                     id="playTokenControlEnabled" (ngModelChange)="onPlayTokenControlChange()" name="playTokenControlEnabled"
                                                                     type="checkbox">
@@ -1928,17 +1928,17 @@
                                                                 </label>                                                                
                                                             </div>
                                                         </div>
+                                        
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 " style="margin-top:20px">
+                                                            <label>Time-based One-time Password(TOTP)</label>
 
-                                                        
-
-                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
-                                                            <div class="checkbox">
+                                                            <div class="checkbox" style="margin-left: 20px;" >
                                                                 <input [(ngModel)]="appSettings.enableTimeTokenForPublish"
                                                                     id="enableTimeTokenForPublish" (ngModelChange)="onEnableTimeTokenForPublishChange()"  name="enableTimeTokenForPublish"
                                                                     type="checkbox">
 
                                                                 <label for="enableTimeTokenForPublish">
-                                                                    Enable Time-based One-time Password(TOTP) for Publishing <a
+                                                                    Publish with TOTP <a
                                                                         href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#7-time-based-one-time-password"
                                                                         target="_blank"
                                                                         matTooltip="After enabling this option, publishing can be done with TOTP"><i
@@ -1965,16 +1965,13 @@
                                                                     </button>
                                                                 </div>
                                                             </div>
-                                                        </div>
-
-                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
-                                                            <div class="checkbox">
+                                                            <div class="checkbox" style="margin-left: 20px;" >
                                                                 <input [(ngModel)]="appSettings.enableTimeTokenForPlay"
                                                                     id="enableTimeTokenForPlay" (ngModelChange)="onEnableTimeTokenForPlayChange()" name="enableTimeTokenForPlay"
                                                                     type="checkbox">
 
                                                                 <label for="enableTimeTokenForPlay">
-                                                                    Enable Time-based One-time Password(TOTP) for Playing <a
+                                                                    Play with TOTP <a
                                                                         href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#7-time-based-one-time-password"
                                                                         target="_blank"
                                                                         matTooltip="After enabling this option, playing can be done with TOTP"><i
@@ -2002,10 +1999,7 @@
                                                                     </button>
                                                                 </div>
                                                             </div>
-
                                                         </div>
-
-
 
                                                         <div *ngIf=!isEnterpriseEdition class="text-left">
                                                             <div class="col-xs-12">
@@ -2019,8 +2013,78 @@
                                                         </div>
 
 
+                                                        <div *ngIf=!isEnterpriseEdition class="text-left">
+                                                            <div class="col-xs-12">
+                                                                <label
+                                                                        i18n="not Enterprise@@notEnterpriseEditionMessage">
+                                                                    Get <a
+                                                                        href="https://antmedia.io/#products">Enterprise
+                                                                    Edition</a> to use JWT Stream for Filter feature.
+                                                                </label>
+                                                            </div>
+                                                        </div>
 
-                                                        <div class="col-xs-12">
+                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 " style="margin-top:20px">
+                                                            <label>JWT Tokens</label>
+                                                            <div class="checkbox" style="margin-left: 20px;" >
+                                                                <input [(ngModel)]="appSettings.publishJwtControlEnabled"
+                                                                (ngModelChange)="onPublishJwtControlEnabledChange()"
+                                                                       id="publishJwtControlEnabled" name="publishJwtControlEnabled"
+                                                                       type="checkbox">
+
+                                                                <label for="publishJwtControlEnabled">
+                                                                    Publish with JWT Tokens <a
+                                                                        href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#6-jwt-stream-security-filter"
+                                                                        target="_blank"
+                                                                        matTooltip="By enabling this option, jwt tokens are required for publishing. Publish request without tokens will not be streamed. Click for more information."><i
+                                                                        style="font-size: 20px;"
+                                                                        class="fa fa-info-circle"></i></a>
+                                                                </label>
+                                                            </div>
+                                                            <div class="checkbox" style="margin-left: 20px;" >
+                                                                <input [(ngModel)]="appSettings.playJwtControlEnabled"
+                                                                       id="playJwtControlEnabled" name="playJwtControlEnabled"
+                                                                       (ngModelChange)="onPlayJwtControlEnabledChange()"
+
+                                                                       type="checkbox">
+
+                                                                <label for="playJwtControlEnabled">
+                                                                    Play with JWT Tokens <a
+                                                                        href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#6-jwt-stream-security-filter"
+                                                                        target="_blank"
+                                                                        matTooltip="By enabling this option, jwt tokens are required for playing. Play request without tokens will not be streamed. Click for more information."><i
+                                                                        style="font-size: 20px;"
+                                                                        class="fa fa-info-circle"></i></a>
+                                                                </label>
+                                                            </div>
+                                                            <div *ngIf="appSettings.publishJwtControlEnabled || appSettings.playJwtControlEnabled && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                                <label i18n="@@jwtFilter">
+                                                                    Secret key for JWT Tokens<a
+                                                                        matTooltip="Please enter at least 32 character"><i
+                                                                        class="fa fa-info-circle"></i></a>
+                                                                </label>
+    
+                                                                <div>
+                                                                    <textarea name="jwtStreamSecretKey" minlength="32"  #jwtStreamSecretKey="ngModel" [disabled]="!appSettings.publishJwtControlEnabled && !appSettings.playJwtControlEnabled"
+                                                                              [(ngModel)]="appSettings.jwtStreamSecretKey"
+                                                                              type="textarea" class="form-control"
+                                                                              placeholder="Please write at least 32 character"
+                                                                              rows="1">{{appSettings.jwtStreamSecretKey}}
+                                                                    </textarea>
+                                                                    <small [hidden]="(jwtStreamSecretKey.valid || !appSettings.publishJwtControlEnabled || !appSettings.playJwtControlEnabled) || (!f.submitted)"
+                                                                           class="text-danger">
+                                                                        JWT Stream Secret Key should at least 32 character
+                                                                    </small>
+                                                                    <button
+                                                                            (click)="setJwtStreamFilterString(32)" class="btn pull-right btn-default" style="margin:5px"
+                                                                            type="button">
+                                                                        Generate
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xs-12" style="margin-top:20px">
                                                             <div class="checkbox">
                                                                 <input [(ngModel)]="acceptAllStreams"
                                                                     id="acceptOnlyStreamsInDataStore"
@@ -2035,79 +2099,6 @@
                                                             </div>
                                                         </div>
 
-                                                        <div *ngIf=!isEnterpriseEdition class="text-left">
-                                                            <div class="col-xs-12">
-                                                                <label
-                                                                        i18n="not Enterprise@@notEnterpriseEditionMessage">
-                                                                    Get <a
-                                                                        href="https://antmedia.io/#products">Enterprise
-                                                                    Edition</a> to use JWT Stream for Filter feature.
-                                                                </label>
-                                                            </div>
-                                                        </div>
-
-                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 ">
-                                                            <div class="checkbox">
-                                                                <input [(ngModel)]="appSettings.publishJwtControlEnabled"
-                                                                (ngModelChange)="onPublishJwtControlEnabledChange()"
-                                                                       id="publishJwtControlEnabled" name="publishJwtControlEnabled"
-                                                                       type="checkbox">
-
-                                                                <label for="publishJwtControlEnabled">
-                                                                    Publish with JWT Filter for Stream <a
-                                                                        href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#6-jwt-stream-security-filter"
-                                                                        target="_blank"
-                                                                        matTooltip="By enabling this option, jwt tokens are required for publishing. Publish request without tokens will not be streamed. Click for more information."><i
-                                                                        style="font-size: 20px;"
-                                                                        class="fa fa-info-circle"></i></a>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-
-                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 ">
-                                                            <div class="checkbox">
-                                                                <input [(ngModel)]="appSettings.playJwtControlEnabled"
-                                                                       id="playJwtControlEnabled" name="playJwtControlEnabled"
-                                                                       (ngModelChange)="onPlayJwtControlEnabledChange()"
-
-                                                                       type="checkbox">
-
-                                                                <label for="playJwtControlEnabled">
-                                                                    Play with JWT Filter for Stream <a
-                                                                        href="https://antmedia.io/docs/guides/developer-sdk-and-api/rest-api-guide/stream-security/#6-jwt-stream-security-filter"
-                                                                        target="_blank"
-                                                                        matTooltip="By enabling this option, jwt tokens are required for playing. Play request without tokens will not be streamed. Click for more information."><i
-                                                                        style="font-size: 20px;"
-                                                                        class="fa fa-info-circle"></i></a>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-
-                                                        <div *ngIf="appSettings.publishJwtControlEnabled || appSettings.playJwtControlEnabled && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
-                                                            <label i18n="@@jwtFilter">
-                                                                Secret key for JWT Stream Filter<a
-                                                                    matTooltip="Please enter at least 32 character"><i
-                                                                    class="fa fa-info-circle"></i></a>
-                                                            </label>
-
-                                                            <div>
-                                                                <textarea name="jwtStreamSecretKey" minlength="32"  #jwtStreamSecretKey="ngModel" [disabled]="!appSettings.publishJwtControlEnabled && !appSettings.playJwtControlEnabled"
-                                                                          [(ngModel)]="appSettings.jwtStreamSecretKey"
-                                                                          type="textarea" class="form-control"
-                                                                          placeholder="Please write at least 32 character"
-                                                                          rows="1">{{appSettings.jwtStreamSecretKey}}
-                                                                </textarea>
-                                                                <small [hidden]="(jwtStreamSecretKey.valid || !appSettings.publishJwtControlEnabled || !appSettings.playJwtControlEnabled) || (!f.submitted)"
-                                                                       class="text-danger">
-                                                                    JWT Stream Secret Key should at least 32 character
-                                                                </small>
-                                                                <button
-                                                                        (click)="setJwtStreamFilterString(32)" class="btn pull-right btn-default" style="margin:5px"
-                                                                        type="button">
-                                                                    Generate
-                                                                </button>
-                                                            </div>
-                                                        </div>
 
                                                     </div>
                                                 </div>
