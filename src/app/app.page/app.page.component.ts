@@ -271,6 +271,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         private cdr: ChangeDetectorRef,
         private matpage: MatPaginatorIntl,
         private authService: AuthService,
+        
 
 
     ) {
@@ -2720,6 +2721,71 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
             this.dataSource.data.forEach(row => this.selectionStreams.select(row.streamId));
         }
+    }
+
+    onPublishTokenControlChange(){
+        this.cdr.detectChanges();
+
+        if (this.appSettings.publishTokenControlEnabled) {
+            this.appSettings.publishJwtControlEnabled = false;
+            this.appSettings.enableTimeTokenForPublish = false;
+        }
+        
+
+    }
+
+    onPlayTokenControlChange(){
+        this.cdr.detectChanges();
+
+        if(this.appSettings.playTokenControlEnabled){
+            this.appSettings.playJwtControlEnabled = false;
+            this.appSettings.enableTimeTokenForPlay = false
+        }
+
+
+    }
+
+    onEnableTimeTokenForPublishChange(){
+
+        this.cdr.detectChanges();
+
+   
+
+        if (this.appSettings.enableTimeTokenForPublish) {
+            this.appSettings.publishJwtControlEnabled = false;
+            this.appSettings.publishTokenControlEnabled = false;
+        }
+
+    }
+
+    onEnableTimeTokenForPlayChange(){
+        this.cdr.detectChanges();
+
+        if(this.appSettings.enableTimeTokenForPlay){
+            this.appSettings.playJwtControlEnabled = false;
+            this.appSettings.playTokenControlEnabled = false
+        }
+
+    }
+    
+    onPublishJwtControlEnabledChange(){
+        this.cdr.detectChanges();
+
+        if (this.appSettings.publishJwtControlEnabled) {
+            this.appSettings.enableTimeTokenForPublish = false;
+            this.appSettings.publishTokenControlEnabled = false;
+        }
+
+    }
+
+    onPlayJwtControlEnabledChange(){
+        this.cdr.detectChanges();
+
+        if(this.appSettings.playJwtControlEnabled){
+            this.appSettings.enableTimeTokenForPlay = false;
+            this.appSettings.playTokenControlEnabled = false
+        }
+
     }
 
 
