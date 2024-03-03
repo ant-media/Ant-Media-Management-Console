@@ -1905,19 +1905,13 @@
                                                             </div>
                                                         </div>
 
-                                                        
-                                                        
-                                                        
-                                                            
-                                                            
-
                                                     </div>
                                                 </div>
                                                 <div class="card-header">
                                                     <legend class="text-left" i18n="@@Security">
                                                         Stream Security
                                                     </legend>
-                                                    <small>Apply One Token Type at a time for Play or Publish</small>
+                                                   
                                                 </div>
 
                                                 <div class="card-content text-left">
@@ -1935,8 +1929,8 @@
                                                         </div>
 
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12">
-                                                            <label>One-time Tokens</label>
-                                                            <div class="checkbox" style="margin-left: 20px;">
+                                                            <label>One-time Tokens*</label>
+                                                            <div class="checkbox" style="margin-left: 10px;">
                                                                 <input [(ngModel)]="appSettings.publishTokenControlEnabled" 
                                                                     id="publishTokenControlEnabled" (ngModelChange)="onPublishTokenControlChange()" name="publishTokenControlEnabled"
                                                                     type="checkbox">
@@ -1950,7 +1944,7 @@
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>
                                                             </div>
-                                                            <div class="checkbox" style="margin-left: 20px;">
+                                                            <div class="checkbox" style="margin-left: 10px;">
                                                                 <input [(ngModel)]="appSettings.playTokenControlEnabled"
                                                                     id="playTokenControlEnabled" (ngModelChange)="onPlayTokenControlChange()" name="playTokenControlEnabled"
                                                                     type="checkbox">
@@ -1966,10 +1960,10 @@
                                                             </div>
                                                         </div>
                                         
-                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 " style="margin-top:20px">
-                                                            <label>Time-based One-time Password(TOTP)</label>
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 " style="margin-top:10px">
+                                                            <label>Time-based One-time Password(TOTP)*</label>
 
-                                                            <div class="checkbox" style="margin-left: 20px;" >
+                                                            <div class="checkbox" style="margin-left: 1dvb;" >
                                                                 <input [(ngModel)]="appSettings.enableTimeTokenForPublish"
                                                                     id="enableTimeTokenForPublish" (ngModelChange)="onEnableTimeTokenForPublishChange()"  name="enableTimeTokenForPublish"
                                                                     type="checkbox">
@@ -1983,7 +1977,8 @@
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>                                                                
                                                             </div>
-                                                            <div *ngIf="appSettings.enableTimeTokenForPublish && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                            <div *ngIf="appSettings.enableTimeTokenForPublish && isEnterpriseEdition"
+                                                                 class="col-xs-12" style="margin-top:10px">
                                                                 <label i18n="@@jwtFilter">
                                                                     Secret for TOTP Publishing
                                                                 </label>
@@ -2002,7 +1997,7 @@
                                                                     </button>
                                                                 </div>
                                                             </div>
-                                                            <div class="checkbox" style="margin-left: 20px;" >
+                                                            <div class="checkbox" style="margin-left: 10px;" >
                                                                 <input [(ngModel)]="appSettings.enableTimeTokenForPlay"
                                                                     id="enableTimeTokenForPlay" (ngModelChange)="onEnableTimeTokenForPlayChange()" name="enableTimeTokenForPlay"
                                                                     type="checkbox">
@@ -2061,9 +2056,9 @@
                                                             </div>
                                                         </div>
 
-                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 " style="margin-top:20px">
-                                                            <label>JWT Tokens</label>
-                                                            <div class="checkbox" style="margin-left: 20px;" >
+                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 " style="margin-top:10px">
+                                                            <label>JWT Tokens*</label>
+                                                            <div class="checkbox" style="margin-left: 10px;" >
                                                                 <input [(ngModel)]="appSettings.publishJwtControlEnabled"
                                                                 (ngModelChange)="onPublishJwtControlEnabledChange()"
                                                                        id="publishJwtControlEnabled" name="publishJwtControlEnabled"
@@ -2078,7 +2073,7 @@
                                                                         class="fa fa-info-circle"></i></a>
                                                                 </label>
                                                             </div>
-                                                            <div class="checkbox" style="margin-left: 20px;" >
+                                                            <div class="checkbox" style="margin-left: 10px;" >
                                                                 <input [(ngModel)]="appSettings.playJwtControlEnabled"
                                                                        id="playJwtControlEnabled" name="playJwtControlEnabled"
                                                                        (ngModelChange)="onPlayJwtControlEnabledChange()"
@@ -2093,6 +2088,7 @@
                                                                         style="font-size: 20px;"
                                                                         class="fa fa-info-circle"></i></a>
                                                                 </label>
+                                                               
                                                             </div>
                                                             <div *ngIf="appSettings.publishJwtControlEnabled || appSettings.playJwtControlEnabled && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
                                                                 <label i18n="@@jwtFilter">
@@ -2121,8 +2117,15 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-xs-12" style="margin-top:20px">
-                                                            <div class="checkbox">
+                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 " style="margin-top:10px;margin-bottom: 10px;">
+                                                            <small>*One Token Type at a Time for Publish or Play</small>
+                                                        </div>
+
+                                                        <div class="col-xs-12" style="margin-top:10px">
+                                                            <label>
+                                                               Generic
+                                                            </label>
+                                                            <div class="checkbox" style="margin-left: 10px;">
                                                                 <input [(ngModel)]="acceptAllStreams"
                                                                     id="acceptOnlyStreamsInDataStore"
                                                                     name="acceptOnlyStreamsInDataStore" type="checkbox">
