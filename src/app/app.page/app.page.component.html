@@ -410,9 +410,13 @@
                                                         </div>
 
                                                         <div *ngIf="liveBroadcast.playListItemList.length!=0">
-                                                            <div class="col-xs-12 col-sm-12 text-left">
+                                                            <div class="col-xs-9 col-sm-9 text-left">
                                                                 <span class="help-block"
                                                                     i18n="@@ResolutionHeight">Playlist URL</span>
+                                                            </div>
+                                                            <div class="col-xs-3 col-sm-3 text-left">
+                                                                <span class="help-block"> Start Time
+                                                                <small style="font-size: 12px;">(HH:MM:SS)</small></span>
                                                             </div>
                                                         </div>
 
@@ -422,11 +426,19 @@
                                                                     class="col-md-12 col-sm-12 col-xs-12"
                                                                     style="margin-bottom: 20px">
 
-                                                                    <div class="col-xs-11 col-sm-11 text-left">
+                                                                    <div class="col-xs-9 col-sm-9 text-left">
                                                                         <input minlength="4" type="text"
                                                                             class="form-control" [name]="'streamUrl'+i"
                                                                             [(ngModel)]="playlistItem.streamUrl"
                                                                              />
+                                                                    </div>
+
+                                                                    <div class="col-xs-2 col-sm-2 text-left">
+                                                                        <input  type="text" class="form-control" [name]="'streamUrlSeekTimeMs'+i" value="00:00:00" (change)="seekTimeChanged($event.target.value, i)" />
+                                                    
+                                                                        <small *ngIf="!isTimeFormatCorrect(i)" class="text-danger">
+                                                                            Time format is not correct.
+                                                                        </small>
                                                                     </div>
 
                                                                     <div class="col-xs-1 col-sm-1 text-left">
@@ -1893,19 +1905,13 @@
                                                             </div>
                                                         </div>
 
-                                                        
-                                                        
-                                                        
-                                                            
-                                                            
-
                                                     </div>
                                                 </div>
                                                 <div class="card-header">
                                                     <legend class="text-left" i18n="@@Security">
                                                         Stream Security
                                                     </legend>
-                                                    <small>Apply One Token Type at a time for Play or Publish</small>
+                                                   
                                                 </div>
 
                                                 <div class="card-content text-left">
@@ -1923,8 +1929,8 @@
                                                         </div>
 
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12">
-                                                            <label>One-time Tokens</label>
-                                                            <div class="checkbox" style="margin-left: 20px;">
+                                                            <label>One-time Tokens*</label>
+                                                            <div class="checkbox" style="margin-left: 10px;">
                                                                 <input [(ngModel)]="appSettings.publishTokenControlEnabled" 
                                                                     id="publishTokenControlEnabled" (ngModelChange)="onPublishTokenControlChange()" name="publishTokenControlEnabled"
                                                                     type="checkbox">
@@ -1938,7 +1944,7 @@
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>
                                                             </div>
-                                                            <div class="checkbox" style="margin-left: 20px;">
+                                                            <div class="checkbox" style="margin-left: 10px;">
                                                                 <input [(ngModel)]="appSettings.playTokenControlEnabled"
                                                                     id="playTokenControlEnabled" (ngModelChange)="onPlayTokenControlChange()" name="playTokenControlEnabled"
                                                                     type="checkbox">
@@ -1954,10 +1960,10 @@
                                                             </div>
                                                         </div>
                                         
-                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 " style="margin-top:20px">
-                                                            <label>Time-based One-time Password(TOTP)</label>
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 " style="margin-top:12px">
+                                                            <label>Time-based One-time Password(TOTP)*</label>
 
-                                                            <div class="checkbox" style="margin-left: 20px;" >
+                                                            <div class="checkbox" style="margin-left: 1dvb;" >
                                                                 <input [(ngModel)]="appSettings.enableTimeTokenForPublish"
                                                                     id="enableTimeTokenForPublish" (ngModelChange)="onEnableTimeTokenForPublishChange()"  name="enableTimeTokenForPublish"
                                                                     type="checkbox">
@@ -1971,7 +1977,8 @@
                                                                             class="fa fa-info-circle"></i></a>
                                                                 </label>                                                                
                                                             </div>
-                                                            <div *ngIf="appSettings.enableTimeTokenForPublish && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
+                                                            <div *ngIf="appSettings.enableTimeTokenForPublish && isEnterpriseEdition"
+                                                                 class="col-xs-12" style="margin-top:12px">
                                                                 <label i18n="@@jwtFilter">
                                                                     Secret for TOTP Publishing
                                                                 </label>
@@ -1990,7 +1997,7 @@
                                                                     </button>
                                                                 </div>
                                                             </div>
-                                                            <div class="checkbox" style="margin-left: 20px;" >
+                                                            <div class="checkbox" style="margin-left: 10px;" >
                                                                 <input [(ngModel)]="appSettings.enableTimeTokenForPlay"
                                                                     id="enableTimeTokenForPlay" (ngModelChange)="onEnableTimeTokenForPlayChange()" name="enableTimeTokenForPlay"
                                                                     type="checkbox">
@@ -2049,9 +2056,9 @@
                                                             </div>
                                                         </div>
 
-                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 " style="margin-top:20px">
-                                                            <label>JWT Tokens</label>
-                                                            <div class="checkbox" style="margin-left: 20px;" >
+                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 " style="margin-top:12px">
+                                                            <label>JWT Tokens*</label>
+                                                            <div class="checkbox" style="margin-left: 12px;" >
                                                                 <input [(ngModel)]="appSettings.publishJwtControlEnabled"
                                                                 (ngModelChange)="onPublishJwtControlEnabledChange()"
                                                                        id="publishJwtControlEnabled" name="publishJwtControlEnabled"
@@ -2066,7 +2073,7 @@
                                                                         class="fa fa-info-circle"></i></a>
                                                                 </label>
                                                             </div>
-                                                            <div class="checkbox" style="margin-left: 20px;" >
+                                                            <div class="checkbox" style="margin-left: 12px;" >
                                                                 <input [(ngModel)]="appSettings.playJwtControlEnabled"
                                                                        id="playJwtControlEnabled" name="playJwtControlEnabled"
                                                                        (ngModelChange)="onPlayJwtControlEnabledChange()"
@@ -2081,6 +2088,7 @@
                                                                         style="font-size: 20px;"
                                                                         class="fa fa-info-circle"></i></a>
                                                                 </label>
+                                                               
                                                             </div>
                                                             <div *ngIf="appSettings.publishJwtControlEnabled || appSettings.playJwtControlEnabled && isEnterpriseEdition" class="col-xs-12" style="margin-top:12px">
                                                                 <label i18n="@@jwtFilter">
@@ -2109,8 +2117,15 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-xs-12" style="margin-top:20px">
-                                                            <div class="checkbox">
+                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 " style="margin-top:12px;margin-bottom: 12px;">
+                                                            <small>*One Token Type at a Time for Publish or Play</small>
+                                                        </div>
+
+                                                        <div class="col-xs-12" style="margin-top:12px">
+                                                            <label>
+                                                               General
+                                                            </label>
+                                                            <div class="checkbox" style="margin-left: 12px;">
                                                                 <input [(ngModel)]="acceptAllStreams"
                                                                     id="acceptOnlyStreamsInDataStore"
                                                                     name="acceptOnlyStreamsInDataStore" type="checkbox">

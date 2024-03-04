@@ -22,6 +22,13 @@ export class PlaylistEditComponent {
     public newPlaylistAdding = false;
 
 
+    timeFormatValidity: { [index: number]: boolean } = {};
+
+    allTimeFormatsAreValid(): boolean {
+        // Assuming timeFormatValidity is an object where keys are indices and values are boolean validity flags
+        return Object.values(this.timeFormatValidity).every(isValid => isValid !== false);
+    }
+
     constructor(
         public dialogRef: MatDialogRef<PlaylistEditComponent>, public restService: RestService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
@@ -48,11 +55,52 @@ export class PlaylistEditComponent {
         this.dialogRef.close();
     }
 
+    // Convert HH:MM:SS to milliseconds
+    convertToMilliseconds(time) {
+        const [hours, minutes, seconds] = time.split(':').map(Number);
+        return ((hours * 60 + minutes) * 60 + seconds) * 1000;
+    }
+
+    seekTimeChanged(newValue, index) {
+        var value = this.convertToMilliseconds(newValue);
+        if (!isNaN(value)) {
+            this.playlistEditing.playListItemList[index].seekTimeInMs = value;
+            this.timeFormatValidity[index] = true;
+        }
+        else {
+            this.timeFormatValidity[index] = false;
+        }
+    }
+
+    isTimeFormatCorrect(index: number): boolean {
+        // Undefined means not yet checked, which we treat as valid until checked
+        return this.timeFormatValidity[index] !== false;
+      }
+
+    // Convert milliseconds to HH:MM:SS
+    getFormattedTime(milliseconds) {
+        if (milliseconds) {
+            let seconds = Math.floor(milliseconds / 1000);
+            let minutes = Math.floor(seconds / 60);
+            let hours = Math.floor(minutes / 60);
+            seconds = seconds % 60;
+            minutes = minutes % 60;
+            // Formatting to HH:MM:SS
+            return [hours, minutes, seconds].map(val => val.toString().padStart(2, '0')).join(':');
+        }
+        else {
+            return "00:00:00";
+        }
+    }
+
     updatePlaylistItemEditing(isValid: boolean): void {
         if (!isValid) {
             return;
         }
-
+        if (!this.allTimeFormatsAreValid()) {
+            console.log('Prevented form submission due to invalid time format.');
+            return;
+        }
         this.playlistUpdating = true;
         this.newPlaylistAdding = true;
 
@@ -100,6 +148,7 @@ export class PlaylistEditComponent {
         this.playlistEditing.playListItemList.push({
             type: "VoD",
             streamUrl: "",
+            seekTimeInMs:0,
         });
     }
 

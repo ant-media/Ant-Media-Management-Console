@@ -256,6 +256,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @ViewChild(MatSort) sort: MatSort;
 
+    timeFormatValidity: { [index: number]: boolean } = {};
+
+
     constructor(private route: ActivatedRoute,
         private restService: RestService,
         private clusterRestService: ClusterRestService,
@@ -1835,8 +1838,31 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.liveBroadcast.playListItemList.push({
             streamUrl: "",
             type: "VoD",
+            seekTimeInMs: 0,
         });
 
+    }
+
+    isTimeFormatCorrect(index: number): boolean {
+        // Undefined means not yet checked, which we treat as valid until checked
+        return this.timeFormatValidity[index] !== false;
+      }
+      
+    // Convert HH:MM:SS to milliseconds
+    convertToMilliseconds(time) {
+        const [hours, minutes, seconds] = time.split(':').map(Number);
+        return ((hours * 60 + minutes) * 60 + seconds) * 1000;
+    }
+
+    seekTimeChanged(newValue, index) {
+        var value = this.convertToMilliseconds(newValue);
+        if (!isNaN(value)) {
+            this.liveBroadcast.playListItemList[index].seekTimeInMs = value;
+            this.timeFormatValidity[index] = true;
+        }
+        else {
+            this.timeFormatValidity[index] = false;
+        }
     }
 
     deletePlaylistItem(index: number): void {
