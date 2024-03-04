@@ -1960,7 +1960,7 @@
                                                             </div>
                                                         </div>
                                         
-                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 " style="margin-top:10px">
+                                                        <div *ngIf=isEnterpriseEdition class="col-xs-12 " style="margin-top:12px">
                                                             <label>Time-based One-time Password(TOTP)*</label>
 
                                                             <div class="checkbox" style="margin-left: 1dvb;" >
@@ -1978,7 +1978,7 @@
                                                                 </label>                                                                
                                                             </div>
                                                             <div *ngIf="appSettings.enableTimeTokenForPublish && isEnterpriseEdition"
-                                                                 class="col-xs-12" style="margin-top:10px">
+                                                                 class="col-xs-12" style="margin-top:12px">
                                                                 <label i18n="@@jwtFilter">
                                                                     Secret for TOTP Publishing
                                                                 </label>
@@ -2056,9 +2056,9 @@
                                                             </div>
                                                         </div>
 
-                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 " style="margin-top:10px">
+                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 " style="margin-top:12px">
                                                             <label>JWT Tokens*</label>
-                                                            <div class="checkbox" style="margin-left: 10px;" >
+                                                            <div class="checkbox" style="margin-left: 12px;" >
                                                                 <input [(ngModel)]="appSettings.publishJwtControlEnabled"
                                                                 (ngModelChange)="onPublishJwtControlEnabledChange()"
                                                                        id="publishJwtControlEnabled" name="publishJwtControlEnabled"
@@ -2073,7 +2073,7 @@
                                                                         class="fa fa-info-circle"></i></a>
                                                                 </label>
                                                             </div>
-                                                            <div class="checkbox" style="margin-left: 10px;" >
+                                                            <div class="checkbox" style="margin-left: 12px;" >
                                                                 <input [(ngModel)]="appSettings.playJwtControlEnabled"
                                                                        id="playJwtControlEnabled" name="playJwtControlEnabled"
                                                                        (ngModelChange)="onPlayJwtControlEnabledChange()"
@@ -2117,15 +2117,15 @@
                                                             </div>
                                                         </div>
 
-                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 " style="margin-top:10px;margin-bottom: 10px;">
+                                                        <div *ngIf="isEnterpriseEdition" class="col-xs-12 " style="margin-top:12px;margin-bottom: 12px;">
                                                             <small>*One Token Type at a Time for Publish or Play</small>
                                                         </div>
 
-                                                        <div class="col-xs-12" style="margin-top:10px">
+                                                        <div class="col-xs-12" style="margin-top:12px">
                                                             <label>
-                                                               Generic
+                                                               General
                                                             </label>
-                                                            <div class="checkbox" style="margin-left: 10px;">
+                                                            <div class="checkbox" style="margin-left: 12px;">
                                                                 <input [(ngModel)]="acceptAllStreams"
                                                                     id="acceptOnlyStreamsInDataStore"
                                                                     name="acceptOnlyStreamsInDataStore" type="checkbox">
