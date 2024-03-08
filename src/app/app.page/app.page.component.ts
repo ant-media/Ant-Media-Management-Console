@@ -190,6 +190,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public clusterNodes: ClusterNode[];
     public user: User;
     public currentClusterNode: string;
+    public keepAllHlsFilesOnEnded = false;
 
 
     public appSettings: AppSettings; // = new AppSettings(false, true, true, 5, 2, "event", "no clientid", "no fb secret", "no youtube cid", "no youtube secre", "no pers cid", "no pers sec");
@@ -1309,6 +1310,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.restService.getSettings(this.appName).subscribe(data => {
             this.appSettings = <AppSettings>data;
             this.settingsJson = JSON.stringify(data, null, 2); //JSON.stringify(data);
+
+            if(!this.appSettings.deleteHLSFilesOnEnded &&
+                this.appSettings.hlsPlayListType == "event" &&
+                this.appSettings.hlsflags.includes("append_list")
+
+                ){
+                    this.keepAllHlsFilesOnEnded = true;
+
+                }
+
+
+
             if (this.appSettings.jwtControlEnabled) {
                 let jwt = require('jsonwebtoken');
                 let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
@@ -2788,6 +2801,42 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
+    setKeepAllHlsFilesOnEnded(enabled:boolean){
+        this.keepAllHlsFilesOnEnded = enabled;
+
+        if(enabled){
+            this.appSettings.deleteHLSFilesOnEnded = false;
+            this.appSettings.hlsPlayListType = "event"
+            this.appSettings.hlsflags="+append_list"
+            this.appSettings.hlsHttpEndpoint=""
+            this.appSettings.addDateTimeToHlsFileName = false
+
+        }else{
+            this.appSettings.hlsflags="+delete_segments"
+            this.appSettings.hlsPlayListType = ""
+        }
+    }
+
+    onKeepAllHlsFilesOnEndedChange(){
+        if(this.keepAllHlsFilesOnEnded){
+            this.setKeepAllHlsFilesOnEnded(true)
+        }else{
+            this.setKeepAllHlsFilesOnEnded(false)
+        }
+    }
+
+    onDeleteHLSFilesOnEndedChange(){
+        if(this.appSettings.deleteHLSFilesOnEnded){
+            this.setKeepAllHlsFilesOnEnded(false)
+        }
+    }
+
+    onHlsHttpEndpointChange(){
+        if(this.appSettings.hlsHttpEndpoint){
+            this.appSettings.addDateTimeToHlsFileName = true
+            this.setKeepAllHlsFilesOnEnded(false)
+        }
+    }
 
     deleteSelectedStreams(): void {
 

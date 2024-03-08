@@ -1383,17 +1383,69 @@
                                                                 <div class="checkbox">
 
                                                                     <input [(ngModel)]="appSettings.deleteHLSFilesOnEnded"
+                                                                    (ngModelChange)="onDeleteHLSFilesOnEndedChange()"
+
                                                                         id="deleteHLSFilesOnEnded" name="deleteHLSFilesOnEnded"
                                                                         type="checkbox">
 
                                                                     <label for="deleteHLSFilesOnEnded"
                                                                         i18n="@@deleteHLSFilesOnEnded"> 
-                                                                        Delete HLS files after the stream is finished
+                                                                        Delete HLS Segment Files After The Stream Is Finished
+                                                                        <a
+                                                                                        matTooltip="When enabled, deletes HLS segment files after the stream ends; otherwise, the server retains the specified segment list size number of files.">
+                                                                                        <i
+                                                                                            class="fa fa-info-circle"></i></a>
                                                                     </label>
 
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        <div class="form-group">
+                                                            <div class="col-sm-12 col-md-12 text-left">
+                                                                <div class="checkbox">
+
+                                                                    <input 
+                                                                    [(ngModel)]="keepAllHlsFilesOnEnded"
+                                                                        (ngModelChange)="onKeepAllHlsFilesOnEndedChange()"
+                                                                        id="keepAllHlsFilesOnEnded" name="keepAllHlsFilesOnEnded"
+                                                                        type="checkbox">
+
+                                                                    <label for="keepAllHlsFilesOnEnded"
+                                                                        i18n="@@keepAllHlsFilesOnEnded"> 
+                                                                        Keep All HLS Files After Stream Is Finished
+                                                                        <a
+                                                                                        matTooltip="When enabled, all generated HLS files (.m3u8 and .ts) are retained on the server after the stream ends.">
+                                                                                        <i
+                                                                                            class="fa fa-info-circle"></i></a>
+                                                                    </label>
+
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-sm-12 col-md-12 text-left">
+                                                                <label>
+                                                                    HLS HTTP Endpoint<a
+                                                                        matTooltip="If this URL is specified, the server will upload HLS files with date time added to file names to the provided HTTP endpoint using a PUT request. Server wont generate any HLS files locally thus HLS wont be watchable through ant media server."><i
+                                                                        class="fa fa-info-circle"></i></a>
+                                                                </label>
+    
+                                                                <div>
+                                                                    <textarea name="hlsHttpEndpoint" 
+                                                                              [(ngModel)]="appSettings.hlsHttpEndpoint"
+                                                                              (ngModelChange)="onHlsHttpEndpointChange()"
+                                                                              type="textarea" class="form-control"
+                                                                              placeholder="https://example.com/hls-stream"
+                                                                              rows="1">{{appSettings.hlsHttpEndpoint}}
+                                                                    </textarea>
+                                                                   
+                                                                </div>
+                                                            
+                                                            </div>
+                                                        </div>    
+                                                      
+
 
                                                 </div>
 
@@ -1576,7 +1628,7 @@
                                                                                     Use Object Detection <a
                                                                                         matTooltip="If you want to use this feature, you should first install necessary libraries by running install_tensorflow_plugin.sh script in the installation directory. 
                                                                                         Also you should add Adaptive Streaming. 
-                                                                                        If you still have a problem, review FAQ page in docs.antmedia.io">
+                                                                                        If you still have a problem, review FAQ page in antmedia.io/docs">
                                                                                         <i
                                                                                             class="fa fa-info-circle"></i></a>
                                                                                 </label>
@@ -1963,7 +2015,7 @@
                                                         <div *ngIf=isEnterpriseEdition class="col-xs-12 " style="margin-top:12px">
                                                             <label>Time-based One-time Password(TOTP)*</label>
 
-                                                            <div class="checkbox" style="margin-left: 1dvb;" >
+                                                            <div class="checkbox" style="margin-left: 10px;" >
                                                                 <input [(ngModel)]="appSettings.enableTimeTokenForPublish"
                                                                     id="enableTimeTokenForPublish" (ngModelChange)="onEnableTimeTokenForPublishChange()"  name="enableTimeTokenForPublish"
                                                                     type="checkbox">
@@ -2058,7 +2110,7 @@
 
                                                         <div *ngIf="isEnterpriseEdition" class="col-xs-12 " style="margin-top:12px">
                                                             <label>JWT Tokens*</label>
-                                                            <div class="checkbox" style="margin-left: 12px;" >
+                                                            <div class="checkbox" style="margin-left: 10px;" >
                                                                 <input [(ngModel)]="appSettings.publishJwtControlEnabled"
                                                                 (ngModelChange)="onPublishJwtControlEnabledChange()"
                                                                        id="publishJwtControlEnabled" name="publishJwtControlEnabled"
@@ -2073,7 +2125,7 @@
                                                                         class="fa fa-info-circle"></i></a>
                                                                 </label>
                                                             </div>
-                                                            <div class="checkbox" style="margin-left: 12px;" >
+                                                            <div class="checkbox" style="margin-left: 10px;" >
                                                                 <input [(ngModel)]="appSettings.playJwtControlEnabled"
                                                                        id="playJwtControlEnabled" name="playJwtControlEnabled"
                                                                        (ngModelChange)="onPlayJwtControlEnabledChange()"
