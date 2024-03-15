@@ -149,6 +149,7 @@ export class PlaylistEditComponent {
             type: "VoD",
             streamUrl: "",
             seekTimeInMs:0,
+            durationInMs:0
         });
     }
 

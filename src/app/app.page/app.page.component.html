@@ -642,6 +642,24 @@
 
                                             </ng-container>
 
+                                            <ng-container matColumnDef="extradata">
+                                                <mat-header-cell [ngClass]="'extradata-column'" *matHeaderCellDef
+                                                > Extradata</mat-header-cell>
+                                                <mat-cell [ngClass]="'extradata-column'" *matCellDef="let row" style="font-size: 12px;">
+
+                                                    <ng-container [ngSwitch]="row.type" >
+                                                        <ng-container *ngSwitchCase="'playlist'">
+                                                            <ng-container *ngIf="row.status=='broadcasting'">
+                                                                Playing Index: {{row.currentPlayIndex}}<br/>
+                                                                Playing Time: {{getPlayListCurrentTime(row)}} <br/>
+                                                            </ng-container>
+                                                           Total Time: {{getPlayListDuration(row)}}
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </mat-cell>
+                                            </ng-container>
+                                       
+
 
                                             <ng-container matColumnDef="actions">
                                                 <mat-header-cell [ngClass]="'action-column'" *matHeaderCellDef

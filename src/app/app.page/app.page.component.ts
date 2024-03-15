@@ -202,7 +202,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         new HLSListType('Event', 'event'),
     ];
 
-    public displayedColumnsStreams = ['select', 'name', 'status', 'viewerCount', 'actions'];
+    public displayedColumnsStreams = ['select', 'name', 'status', 'viewerCount', 'extradata', 'actions'];
     public displayedColumnsVod = ['select', 'name', 'type', 'date', 'actions'];
     public displayedColumnsUserVod = ['name', 'date', 'actions'];
 
@@ -1839,6 +1839,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             streamUrl: "",
             type: "VoD",
             seekTimeInMs: 0,
+            durationInMs: 0
         });
 
     }
@@ -2418,6 +2419,47 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     getRtmpUrl(streamUrl: string): string {
         return this.restService.getRtmpUrl(this.appName, streamUrl);
+    }
+
+    getFormattedTime(milliseconds) {
+        if (milliseconds) {
+            let seconds = Math.floor(milliseconds / 1000);
+            let minutes = Math.floor(seconds / 60);
+            let hours = Math.floor(minutes / 60);
+            seconds = seconds % 60;
+            minutes = minutes % 60;
+            // Formatting to HH:MM:SS
+            return [hours, minutes, seconds].map(val => val.toString().padStart(2, '0')).join(':');
+        }
+        else {
+            return "00:00:00";
+        }
+    }
+
+    getPlayListCurrentTime(playListBroadcast: LiveBroadcast): string {
+        //we know the each file duration and current play index and current status of the playing index
+        var i;
+        var previousPassedTimeInMs = 0;
+        for (i = 0; i < playListBroadcast.currentPlayIndex; i++) {
+            previousPassedTimeInMs += playListBroadcast.playListItemList[i].durationInMs;
+        }
+
+        //add current duration
+        console.log("current duration:" + playListBroadcast.duration + " playlistbroadcast.time:" + playListBroadcast.streamId);
+        previousPassedTimeInMs += playListBroadcast.duration;
+        return this.getFormattedTime(previousPassedTimeInMs);
+
+    }
+
+    getPlayListDuration(playlistBroadcast: LiveBroadcast): string {
+
+        var totalDurationInMs = 0;
+        playlistBroadcast.playListItemList.forEach((item) => {
+            totalDurationInMs += item.durationInMs;
+        });
+        console.log("getPlayListDuration duration:");
+
+        return this.getFormattedTime(totalDurationInMs);
     }
 
 

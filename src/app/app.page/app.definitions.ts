@@ -169,6 +169,7 @@ export class PlaylistItem {
         streamUrl: string;
         type: string;
         seekTimeInMs: number;
+        durationInMs: number;
 }
 
 export class ServerSettings {
