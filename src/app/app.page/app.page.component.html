@@ -415,7 +415,7 @@
                                                                     i18n="@@ResolutionHeight">Playlist URL</span>
                                                             </div>
                                                             <div class="col-xs-3 col-sm-3 text-left">
-                                                                <span class="help-block"> Start Time
+                                                                <span class="help-block"> Start Offset
                                                                 <small style="font-size: 12px;">(HH:MM:SS)</small></span>
                                                             </div>
                                                         </div>
@@ -514,7 +514,7 @@
                                              <!-- Checkbox Column -->
                                             <ng-container matColumnDef="select" >
                                                 
-                                                <mat-header-cell *matHeaderCellDef>
+                                                <mat-header-cell *matHeaderCellDef >
                                                     <mat-checkbox (change)="$event ? masterToggleStreams() : null"
                                                                   [checked]="selectionStreams.hasValue() && isAllStreamsSelected()"
                                                                   [indeterminate]="selectionStreams.hasValue() && !isAllStreamsSelected()">
@@ -576,7 +576,6 @@
                                                     mat-sort-header>Status </mat-header-cell>
                                                 <mat-cell [ngClass]="'status-column'" *matCellDef="let row">
 
-
                                                     <ng-container [ngSwitch]="row.status">
                                                         <ng-container *ngSwitchCase="'created'">
                                                             <i class="fa fa-circle text-muted">&nbsp;</i>Offline
@@ -587,12 +586,10 @@
                                                             <i class="fa fa-circle " style="color:#28a745"
                                                                 *ngSwitchCase="'broadcasting'">&nbsp;</i>
                                                                 Broadcasting
-
                                                             <ng-container *ngIf="row.speed > 0">
                                                                 <i data-toggle="tooltip" i18n-title title="Speed">
                                                                     {{row.speed| number : '1.2-2'}}x</i>
                                                             </ng-container>
-
 
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'finished'">
@@ -653,7 +650,7 @@
                                                                 Playing Index: {{row.currentPlayIndex}}<br/>
                                                                 Playing Time: {{getPlayListCurrentTime(row)}} <br/>
                                                             </ng-container>
-                                                           Total Time: {{getPlayListDuration(row)}}
+                                                           Playlist Length: {{getPlayListDuration(row)}}
                                                         </ng-container>
                                                     </ng-container>
                                                 </mat-cell>
@@ -877,7 +874,7 @@
 
                                                         <!-- Edit Playlist Button -->
 
-                                                        <button *ngIf="row.status!='broadcasting'&& row.type=='playlist'"
+                                                        <button *ngIf="row.type=='playlist'"
                                                             (click)="openPlaylistEditDialog(row)" title="Edit"
                                                             data-toggle="tooltip"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -893,7 +890,6 @@
                                                 </mat-cell>
 
                                             </ng-container>
-
                                             <mat-header-row *matHeaderRowDef="displayedColumnsStreams"></mat-header-row>
                                             <mat-row *matRowDef="let row; columns: displayedColumnsStreams;">
                                             </mat-row>

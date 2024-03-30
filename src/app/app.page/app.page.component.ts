@@ -655,7 +655,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     openPlaylistEditDialog(stream: BroadcastInfo): void {
 
         let dialogRef = this.dialog.open(PlaylistEditComponent, {
-            width: '640px',
+            width: '960px',
             data: {
                 streamId: stream.streamId,
                 appName: this.appName,
@@ -2422,7 +2422,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getFormattedTime(milliseconds) {
-        if (milliseconds) {
+        if (milliseconds && Number(milliseconds) > 0) {
             let seconds = Math.floor(milliseconds / 1000);
             let minutes = Math.floor(seconds / 60);
             let hours = Math.floor(minutes / 60);
@@ -2455,10 +2455,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         var totalDurationInMs = 0;
         playlistBroadcast.playListItemList.forEach((item) => {
-            totalDurationInMs += item.durationInMs;
+            totalDurationInMs += item.durationInMs - item.seekTimeInMs;
         });
-        console.log("getPlayListDuration duration:");
-
         return this.getFormattedTime(totalDurationInMs);
     }
 

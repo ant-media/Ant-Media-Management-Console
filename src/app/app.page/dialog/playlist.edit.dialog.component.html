@@ -16,40 +16,76 @@
                        class="text-danger" i18n="@@playlistNameIsRequired">
                        Playlist name should be at least 4 characters.
                  </small>
-
             </div>
 
+            <div class="form-group text-left">
+                <div class="checkbox" style="padding-left:10px">
+                    <input [(ngModel)]="scheduleToStart"
+                        id="scheduleToStart" name="scheduleToStart" (change)="scheduleToStartChanged($event.target.checked)" 
+                        type="checkbox">
+
+                    <label for="scheduleToStart" >
+                        Schedule to Start Automatically
+                    </label>
+                </div>
+                
+                <input type="text" class="form-control datetimepicker" name="plannedStartDate" placeholder="No Set"  />
+            </div>
+
+            <div class="form-group text-left">
+                    <div class="checkbox" style="padding-left:10px">
+                        <input
+                                [(ngModel)]="playlistEditing.playlistLoopEnabled"
+                                id="playlistLoopEnabled"
+                                name="playlistLoopEnabled" type="checkbox">
+
+                        <label for="playlistLoopEnabled"
+                               i18n="@@playlistLoopEnabled">
+                            Loop Playlist
+                        </label>
+                    </div>
+            </div>
+           
+           
+
             <div class="form-group">
-
-               
-
                 <div >
-
                     <div>
                          <div style="overflow-x: hidden;overflow-y:auto;height: 250px;padding-right:10px;">
-                            <div *ngIf="playlistEditing.playListItemList.length!=0" >
-                                <div class="col-xs-6 col-sm-6 text-left">
-                                    <span class="help-block" i18n="@@ResolutionHeight">Playlist URL</span>
-                                </div>
-                                <div class="col-xs-3 col-sm-3 text-left">
-                                    <span class="help-block"> Start Offset
-                                    <small style="font-size: 12px;">(HH:MM:SS)</small></span>
+                            <div *ngIf="playlistEditing.playListItemList.length!=0" class="row" >
+                                <ng-container>
+                                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px; padding-left: 0px;" >
+                                <div class="col-xs-4 col-sm-5 text-left">
+                                    <span class="help-block">Playlist URL</span>
                                 </div>
                                 <div class="col-xs-2 col-sm-2 text-left">
-                                    <span class="help-block"> Duration
-                                    <small style="font-size: 12px;">(HH:MM:SS)</small></span>
+                                    <span class="help-block"> Start Time
+                                </span>
                                 </div>
+                                <div class="col-xs-3 col-sm-2 text-left">
+                                    <span class="help-block"> Start Offset
+                                </span>
+                                </div>
+                                <div class="col-xs-2 col-sm-2 text-left">
+                                    <span class="help-block"> Run Time
+                                </span>
+                                </div>
+                                <div class="col-xs-1 col-sm-1 text-left">&nbsp;</div>
+                            </div>
+                                </ng-container>
                             </div>
 
                             <div *ngIf="playlistEditing.playListItemList.length!=0" class="row">
                                 <ng-container>
                                     <div *ngFor="let playlistItem of playlistEditing.playListItemList; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px; padding-left: 0px;" >
 
-                                        <div class="col-xs-6 col-sm-6 text-left">
+                                        <div class="col-xs-4 col-sm-5 text-left">
                                             <input  type="text" class="form-control" [name]="'streamUrl'+i"  [(ngModel)]="playlistItem.streamUrl" />
                                         </div>
-
-                                        <div class="col-xs-3 col-sm-3 text-left">
+                                        <div class="col-xs-2 col-sm-2 text-left">
+                                            {{getStartTime(i)}}
+                                        </div>
+                                        <div class="col-xs-3 col-sm-2 text-left">
                                             <input  type="text" class="form-control" [name]="'streamUrlSeekTimeMs'+i" [value]="getFormattedTime(playlistItem.seekTimeInMs)" (change)="seekTimeChanged($event.target.value, i)" />
                         
                                             <small *ngIf="!isTimeFormatCorrect(i)" class="text-danger">
@@ -57,7 +93,7 @@
                                             </small>
                                         </div>
                                         <div class="col-xs-2 col-sm-2 text-left">
-                                            {{getFormattedTime(playlistItem.durationInMs)}}
+                                            {{getFormattedTime(playlistItem.durationInMs-playlistItem.seekTimeInMs)}}
                                         </div>
 
                                         <div class="col-xs-1 col-sm-1 text-left">
@@ -72,26 +108,14 @@
 
                          </div>   
                       
-
+                         <div class="form-group text-left">
+                            <label>Playlist Length:</label>
+                           {{getPlayListDuration()}}
+                        </div>
+            
                         <div class="row" style="margin-top: 25px;">
                             <button type="button" style="margin-left: 15px;" class="btn btn-default" (click)="addPlaylistItemEditing()" i18n="@@newPlaylistCreateButton">
                                 Add Playlist Item</button>
-                        </div>
-
-                        <div>
-                            <div class="col-xs-12">
-                                <div class="checkbox" style="padding-left:10px">
-                                    <input
-                                            [(ngModel)]="playlistEditing.playlistLoopEnabled"
-                                            id="playlistLoopEnabled"
-                                            name="playlistLoopEnabled" type="checkbox">
-
-                                    <label for="playlistLoopEnabled"
-                                           i18n="@@playlistLoopEnabled">
-                                        Loop Playlist
-                                    </label>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="row text-center" style="padding-top: 20px">

@@ -81,6 +81,7 @@ export class LiveBroadcast {
     currentPlayIndex: number;
     playlistLoopEnabled: boolean = true;
     autoStartStopEnabled: boolean = false;
+    plannedStartDate: number = 0;
 
     constructor() {
         this.playListItemList = [];
