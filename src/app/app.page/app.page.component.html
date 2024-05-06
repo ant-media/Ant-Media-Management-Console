@@ -410,12 +410,16 @@
                                                         </div>
 
                                                         <div *ngIf="liveBroadcast.playListItemList.length!=0">
-                                                            <div class="col-xs-9 col-sm-9 text-left">
+                                                            <div class="col-xs-3 col-sm-3 text-left">
                                                                 <span class="help-block"
-                                                                    i18n="@@ResolutionHeight">Playlist URL</span>
+                                                                    >Name</span>
+                                                            </div>
+                                                            <div class="col-xs-6 col-sm-6 text-left">
+                                                                <span class="help-block"
+                                                                    >URL</span>
                                                             </div>
                                                             <div class="col-xs-3 col-sm-3 text-left">
-                                                                <span class="help-block"> Start Time
+                                                                <span class="help-block"> Start Offset
                                                                 <small style="font-size: 12px;">(HH:MM:SS)</small></span>
                                                             </div>
                                                         </div>
@@ -426,7 +430,14 @@
                                                                     class="col-md-12 col-sm-12 col-xs-12"
                                                                     style="margin-bottom: 20px">
 
-                                                                    <div class="col-xs-9 col-sm-9 text-left">
+                                                                    <div class="col-xs-3 col-sm-3 text-left">
+                                                                        <input minlength="4" type="text"
+                                                                        class="form-control" [name]="'streamName'+i"
+                                                                        [(ngModel)]="playlistItem.name"
+                                                                         />
+                                                                    </div>
+
+                                                                    <div class="col-xs-6 col-sm-6 text-left">
                                                                         <input minlength="4" type="text"
                                                                             class="form-control" [name]="'streamUrl'+i"
                                                                             [(ngModel)]="playlistItem.streamUrl"
@@ -454,9 +465,126 @@
                                                         </div>
 
                                                         <div class="text-left" style="margin-top: 10px;">
-                                                            <button type="button" class="btn btn-default"
-                                                                (click)="addPlaylistItem()" i18n="@@newLiveStreamCreateButton">
-                                                                Add Playlist Item</button>
+                                                          
+                                                                <button type="button" data-toggle="dropdown" class="btn btn-default" i18n="@@newPlaylistCreateButton">
+                                                                    Add Playlist Item <span class="caret"></span></button>
+                                                                <ul class="dropdown-menu dropdown-menu-left">
+                                                                    <li>
+                                                                        <a (click)="addPlaylistItemDirectly()" role="button">Add URL Directly</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a (click)="addPlaylistItemFromVoDs()" role="button">Add From VoDs</a>
+                                                                    </li>
+                                                                </ul>
+                                                
+                                                                <div class="row card" *ngIf="directUrlAdding">
+                                                                    
+                                                                    <div class="card-content">
+                                                                        <div class="form-group text-left">
+                                                                            <label>Name</label>
+                                                                            <input type="text" class="form-control" [name]="'streamUrl'"
+                                                                                [(ngModel)]="playListItemAdding.name" />
+                                                                        </div>
+                                                                        <div class="form-group text-left">
+                                                                            <label>Item URL</label>
+                                                                            <input type="text" class="form-control" [name]="'streamUrl'"
+                                                                                [(ngModel)]="playListItemAdding.streamUrl" />
+                                                                        </div>
+                                                                        <div class="form-group text-center">
+                                                
+                                                                            <button type="button" class="btn btn-fill btn-success"
+                                                                                (click)="addPlaylistItemDirectlyClicked()">
+                                                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="playlistItemAddingActive"
+                                                                                    aria-hidden="true"></i>Add</button>
+                                                
+                                                                            <button type="button" class="btn btn-simple"
+                                                                                (click)="cancelAddingPlayListItem()">Cancel</button>
+                                                                        </div>
+                                                                    </div>
+                                                
+                                                
+                                                                </div>
+                                                
+                                                                <div class="row card" *ngIf="vodAdding">
+                                                                    
+                                                                    <div class="card-content">
+                                                                        <div class="form-group text-left">
+                                                                            <label>Search VoDs</label>
+                                                                            <input type="text" required minlength="4" name="vodName"
+                                                                                (keyup)="applyFilterPlaylistVod($event.target.value)" placeholder="Type vod name or vod id"
+                                                                                class="form-control">
+                                                                        </div>
+                                                
+                                                                        <div class="form-group text-left">
+                                                
+                                                                            <div *ngIf="filterValuePlaylistVoD.length == 0 "
+                                                                                style="margin-top: 20px;margin-bottom: 20px;text-align: center;">
+                                                                                VoD search results will appear here
+                                                                            </div>
+                                                                            <div *ngIf="vodTableDataForPlaylist.dataRows.length == 0 && filterValuePlaylistVoD.length > 3"
+                                                                                style="margin-top: 20px;margin-bottom: 20px;text-align: center;">
+                                                                                No VoD found with your search query
+                                                                            </div>
+                                                
+                                                                            <div *ngIf="vodTableDataForPlaylist.dataRows.length > 0">
+                                                                                <mat-table style="overflow: visible !important;" [dataSource]="dataSourcePlaylistVod">
+                                                                                    <ng-container matColumnDef="select">
+                                                                                        <mat-header-cell *matHeaderCellDef>#
+                                                                                        </mat-header-cell>
+                                                                                        <mat-cell *matCellDef="let row">
+                                                                                            <mat-checkbox (click)="$event.stopPropagation()" 
+                                                                                                (change)="$event ? selectHandlerStreamsPlayListVoD(row.vodId) : null"
+                                                                                                [checked]="selectionPlaylistVoDs.isSelected(row.vodId)">
+                                                                                            </mat-checkbox>
+                                                                                        </mat-cell>
+                                                
+                                                                                    </ng-container>
+                                                
+                                                                                    <ng-container matColumnDef="name">
+                                                                                        <mat-header-cell *matHeaderCellDef [ngClass]="'playlist-name-column'"> VoD Name
+                                                                                        </mat-header-cell>
+                                                                                        <mat-cell [ngClass]="'playlist-name-column'" *matCellDef="let row">
+                                                                                            <div style="padding-left: 12px;">
+                                                                                                {{row.vodName}}
+                                                                                                <div style="font-size: 10px">VoD Id: {{row.vodId}}</div>
+                                                                                            </div>
+                                                                                        </mat-cell>
+                                                
+                                                                                    </ng-container>
+                                                
+                                                                                    <mat-header-row *matHeaderRowDef="['select','name']"></mat-header-row>
+                                                                                    <mat-row *matRowDef="let row; columns: ['select','name'];">
+                                                                                    </mat-row>
+                                                                                </mat-table>
+                                                                            </div>
+                                                
+                                                                        </div>
+                                                
+                                                                        <div class="form-group text-center">
+                                                                            <button type="button" [disabled]='playlistItemAdding' class="btn btn-fill btn-success"
+                                                                                (click)="addPlaylistItemFromVoDsClicked()">
+                                                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="playlistItemAdding"
+                                                                                    aria-hidden="true"></i>Add</button>
+                                                
+                                                                            <button type="button" class="btn btn-simple"
+                                                                                (click)="cancelAddingPlayListItem()">Cancel</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                        </div>
+
+                                                        <div class="col-xs-12">
+                                                            <div class="checkbox">
+                                                                <input [(ngModel)]="scheduleToStart" id="scheduleToStart" name="scheduleToStart"
+                                                                    (change)="scheduleToStartChanged($event.target.checked)" type="checkbox">
+                                            
+                                                                <label for="scheduleToStart">
+                                                                    Schedule to Start Automatically
+                                                                </label>
+                                                            </div>
+                                            
+                                                            <input type="text" class="form-control datetimepickerAddPlaylist" name="plannedStartDate" placeholder="No Set" />
                                                         </div>
 
                                                         <div>
@@ -514,7 +642,7 @@
                                              <!-- Checkbox Column -->
                                             <ng-container matColumnDef="select" >
                                                 
-                                                <mat-header-cell *matHeaderCellDef>
+                                                <mat-header-cell *matHeaderCellDef >
                                                     <mat-checkbox (change)="$event ? masterToggleStreams() : null"
                                                                   [checked]="selectionStreams.hasValue() && isAllStreamsSelected()"
                                                                   [indeterminate]="selectionStreams.hasValue() && !isAllStreamsSelected()">
@@ -576,7 +704,6 @@
                                                     mat-sort-header>Status </mat-header-cell>
                                                 <mat-cell [ngClass]="'status-column'" *matCellDef="let row">
 
-
                                                     <ng-container [ngSwitch]="row.status">
                                                         <ng-container *ngSwitchCase="'created'">
                                                             <i class="fa fa-circle text-muted">&nbsp;</i>Offline
@@ -587,12 +714,10 @@
                                                             <i class="fa fa-circle " style="color:#28a745"
                                                                 *ngSwitchCase="'broadcasting'">&nbsp;</i>
                                                                 Broadcasting
-
                                                             <ng-container *ngIf="row.speed > 0">
                                                                 <i data-toggle="tooltip" i18n-title title="Speed">
                                                                     {{row.speed| number : '1.2-2'}}x</i>
                                                             </ng-container>
-
 
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'finished'">
@@ -653,7 +778,7 @@
                                                                 Playing Index: {{row.currentPlayIndex}}<br/>
                                                                 Playing Time: {{getPlayListCurrentTime(row)}} <br/>
                                                             </ng-container>
-                                                           Total Time: {{getPlayListDuration(row)}}
+                                                           Playlist Length: {{getPlayListDuration(row)}}
                                                         </ng-container>
                                                     </ng-container>
                                                 </mat-cell>
@@ -877,7 +1002,7 @@
 
                                                         <!-- Edit Playlist Button -->
 
-                                                        <button *ngIf="row.status!='broadcasting'&& row.type=='playlist'"
+                                                        <button *ngIf="row.type=='playlist'"
                                                             (click)="openPlaylistEditDialog(row)" title="Edit"
                                                             data-toggle="tooltip"
                                                             class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
@@ -893,7 +1018,6 @@
                                                 </mat-cell>
 
                                             </ng-container>
-
                                             <mat-header-row *matHeaderRowDef="displayedColumnsStreams"></mat-header-row>
                                             <mat-row *matRowDef="let row; columns: displayedColumnsStreams;">
                                             </mat-row>

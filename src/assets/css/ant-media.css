@@ -122,6 +122,9 @@ select.selectpicker {
 .mat-tooltip {
     font-size: 14px !important;
 }
+.playlist-name-column {
+    flex: 0 1 90%!important;
+}
 .stream-name-column{
     flex: 0 1 20%!important;
 }

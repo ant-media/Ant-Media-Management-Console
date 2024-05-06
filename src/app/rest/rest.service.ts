@@ -81,6 +81,7 @@ export class LiveBroadcast {
     currentPlayIndex: number;
     playlistLoopEnabled: boolean = true;
     autoStartStopEnabled: boolean = false;
+    plannedStartDate: number = 0;
 
     constructor() {
         this.playListItemList = [];
@@ -157,7 +158,7 @@ export class RestService {
         if (location.port == "4200")
         {
             //if it is angular development
-            HTTP_SERVER_ROOT = "//" + location.hostname + ":5080/";
+            HTTP_SERVER_ROOT = "http://" + location.hostname + ":5080/";
         }
         else if (location.protocol.startsWith("https")){
             HTTP_SERVER_ROOT = "https://" + location.hostname + ":" + location.port + "/";
@@ -210,15 +211,20 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/' + streamId + '/detections/count');
     }
 
-    public getAppLiveStreams(appName:string, offset:Number, size:Number, sortBy:string, orderBy:string, filterValue:string): Observable<Object> {
+    public getAppLiveStreamsWithType(appName:string, offset:Number, size:Number, sortBy:string, orderBy:string, filterValue:string, type:string): Observable<Object> {
         if(filterValue == null){
             return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/list/'+offset+"/"+size
-            +"&sort_by="+sortBy+"&order_by="+orderBy,{});
+            +"&sort_by="+sortBy+"&order_by="+orderBy+"&type_by="+type,{});
         }else{
             return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/list/'+offset+"/"+size
-                +"&sort_by="+sortBy+"&order_by="+orderBy+"&search="+filterValue,{});
+                +"&sort_by="+sortBy+"&order_by="+orderBy+"&search="+filterValue+"&type_by="+type,{});
         }
     }
+
+    public getAppLiveStreams(appName:string, offset:Number, size:Number, sortBy:string, orderBy:string, filterValue:string): Observable<Object> {
+       return this.getAppLiveStreamsWithType(appName, offset, size, sortBy, orderBy, filterValue, "");
+    }
+
     public getBroadcast(appName: string, id: string): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + id);
     }
@@ -400,6 +406,10 @@ export class RestService {
 
     public get(url: string, options:any): Observable<Object> {
         return this.http.get(url, options);
+    }
+
+    public getDurationInMilliseconds(appName: string, url:string): Observable<Object>{
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path="+ appName + "/rest/v2/broadcasts/duration?url="+url);
     }
 
     public getSocialEndpoints(appName: string): Observable<Object> {

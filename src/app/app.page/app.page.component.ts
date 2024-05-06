@@ -212,6 +212,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public selectionVods = new SelectionModel<string>(true, []);
     public selectionStreams = new SelectionModel<string>(true, []);
 
+    public selectionPlaylistVoDs = new SelectionModel<string>(true, []);
 
     public streamsPageSize = 10;
     public vodPageSize = 10;
@@ -259,6 +260,23 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     timeFormatValidity: { [index: number]: boolean } = {};
 
 
+    public directUrlAdding = false;
+    public vodAdding = false;
+    public playListItemAdding = new PlaylistItem();
+
+    public playlistItemAddingActive = false;
+
+    public filterValuePlaylistVoD:string;
+
+    public vodTableDataForPlaylist: VodInfoTable;
+
+    public dataSourcePlaylistVod: MatTableDataSource<VodInfo>;
+
+    scheduleToStart = false;
+
+
+
+
     constructor(private route: ActivatedRoute,
         private restService: RestService,
         private clusterRestService: ClusterRestService,
@@ -278,7 +296,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.dataSource = new MatTableDataSource<BroadcastInfo>();
         this.dataSourceVod = new MatTableDataSource<VodInfo>();
         this.dataSourceNode = new MatTableDataSource<ClusterNodeInfo>();
+        this.dataSourcePlaylistVod = new MatTableDataSource<VodInfo>();
         this.videoServiceEndpoints = [];
+        this.filterValuePlaylistVoD = "";
     }
 
     setPageSizeOptions(setPageSizeOptionsInput: string) {
@@ -312,6 +332,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.clusterNodeTableData = {
             dataRows: [],
+        };
+
+        this.vodTableDataForPlaylist = {
+            dataRows: []
         };
 
 
@@ -412,6 +436,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngAfterViewInit() {
         this.cdr.detectChanges();
+
+      
 
     }
 
@@ -655,7 +681,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     openPlaylistEditDialog(stream: BroadcastInfo): void {
 
         let dialogRef = this.dialog.open(PlaylistEditComponent, {
-            width: '640px',
+            width: '720px',
             data: {
                 streamId: stream.streamId,
                 appName: this.appName,
@@ -977,6 +1003,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         link.href = srcFile;
         link.target = '_blank';
         link.click();
+    }
+
+    getVoDUrl(filePath: string) {
+        return HTTP_SERVER_ROOT + this.appName + "/" + filePath;
     }
 
     copyVoDUrl(filePath: string) {
@@ -1531,6 +1561,37 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newPlaylistActive = true;
         this.streamNameEmpty = false;
         this.liveBroadcast = new LiveBroadcast();
+
+        //we need to call it after it's visible
+        this.initDateTimePicker();
+    }
+
+    initDateTimePicker() {
+        setTimeout(() => {
+            if ($('.datetimepickerAddPlaylist').length) 
+            {
+                $('.datetimepickerAddPlaylist').datetimepicker({
+                    icons: {
+                        time: "fa fa-clock-o",
+                        date: "fa fa-calendar",
+                        up: "fa fa-chevron-up",
+                        down: "fa fa-chevron-down",
+                        previous: 'fa fa-chevron-left',
+                        next: 'fa fa-chevron-right',
+                        today: 'fa fa-screenshot',
+                        clear: 'fa fa-trash',
+                        close: 'fa fa-remove'
+                    },
+                    format: "MMM DD YYYY hh:mm A",
+                    date: ""
+                });
+
+                $('.datetimepickerAddPlaylist').hide();
+            }
+            else {
+                this.initDateTimePicker();
+            }
+        }, 250);
     }
 
 
@@ -1839,9 +1900,161 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             streamUrl: "",
             type: "VoD",
             seekTimeInMs: 0,
-            durationInMs: 0
+            durationInMs: 0,
+            name:""
         });
 
+    }
+
+    scheduleToStartChanged(value) {
+        console.log("scheduleToStartChanged " , value);
+
+        if (this.scheduleToStart) {
+            $('.datetimepickerAddPlaylist').show();
+        } 
+        else {
+            $('.datetimepickerAddPlaylist').hide();
+        }
+        
+    }
+
+    addPlaylistItemDirectly() {
+        this.directUrlAdding = true;
+        this.vodAdding = false;
+        this.playListItemAdding = new PlaylistItem();
+
+    }
+
+    addPlaylistItemDirectlyClicked() {
+        this.playlistItemAddingActive = true;
+
+        this.restService.getDurationInMilliseconds(this.appName,this.playListItemAdding.streamUrl).subscribe(data => {
+
+            this.playlistItemAddingActive = false;
+            if (data["success"]) {
+                this.liveBroadcast.playListItemList.push({
+                    type:"VoD",
+                    streamUrl: this.playListItemAdding.streamUrl,
+                    name: this.playListItemAdding.name,
+                    seekTimeInMs:0,
+                    durationInMs: Number(data["dataId"])
+        
+                });
+                this.directUrlAdding = false;
+            }
+            else {
+                if (data["errorId"] == -1) 
+                {
+                    //duration cannot be found, it may happen
+                    this.liveBroadcast.playListItemList.push({
+                        type:"VoD",
+                        streamUrl: this.playListItemAdding.streamUrl,
+                        name: this.playListItemAdding.name,
+                        seekTimeInMs:0,
+                        durationInMs: Number(data["dataId"])
+            
+                    });
+                }
+                else {
+                    if (data["errorId"] == -2) {
+                        swal({
+                            title: "Warning",
+                            text: "URL cannot be accessible",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                    else {
+                        swal({
+                            title: "Warning",
+                            text: "Stream format cannot be found in this url",
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                }
+
+            }
+        }, error => {
+            this.playlistItemAddingActive = false;
+            this.directUrlAdding = false;
+        });
+    }
+
+    addPlaylistItemFromVoDs() {
+        this.directUrlAdding = false;
+        this.vodAdding = true;
+        this.playListItemAdding = new PlaylistItem();
+
+    }
+
+    applyFilterPlaylistVod(filterValue) {
+        if (this.filterValuePlaylistVoD != filterValue && filterValue.length>3) {
+            this.filterValuePlaylistVoD = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+            
+            this.restService.getVodList(this.appName, 0, 20, "", "", this.filterValuePlaylistVoD).subscribe(data => {
+                this.vodTableDataForPlaylist.dataRows = [];
+                for (var i in data) {
+                    this.vodTableDataForPlaylist.dataRows.push(data[i]);
+                    console.log(data[i]);
+                }
+                this.dataSourcePlaylistVod = new MatTableDataSource(this.vodTableDataForPlaylist.dataRows);
+            }, error => { show403Error(error); });
+            
+
+        }
+    }
+
+    selectHandlerStreamsPlayListVoD(vodId: string) {
+        this.selectionPlaylistVoDs.toggle(vodId);
+    }
+    addPlaylistItemFromVoDsClicked() {
+        if (this.selectionPlaylistVoDs.isEmpty()) {
+
+            swal({
+                title: "Warning",
+                text: "Please Select VoD to Add the Playlist",
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            })
+            return;
+        }
+
+        for (let i of Object.keys(this.dataSourcePlaylistVod.data)) {
+
+            if (this.selectionPlaylistVoDs.isSelected(this.dataSourcePlaylistVod.data[i].vodId)) {
+
+                var url = HTTP_SERVER_ROOT + this.appName + "/" + this.dataSourcePlaylistVod.data[i].filePath;
+                this.liveBroadcast.playListItemList.push({
+                    type: "VoD",
+                    streamUrl: url,
+                    name: this.dataSourcePlaylistVod.data[i].vodName,
+                    seekTimeInMs:0,
+                    durationInMs:this.dataSourcePlaylistVod.data[i].duration
+                });
+
+                
+            }
+        }
+
+        this.vodAdding = false;
+        this.selectionPlaylistVoDs.clear();
+        this.vodTableDataForPlaylist.dataRows = [];
+        this.dataSourcePlaylistVod = new MatTableDataSource(this.vodTableDataForPlaylist.dataRows);
+    
+    }
+
+    cancelAddingPlayListItem() {
+        this.directUrlAdding = false;
+        this.vodAdding = false;
+        this.vodTableDataForPlaylist.dataRows = [];
+        this.dataSourcePlaylistVod = new MatTableDataSource(this.vodTableDataForPlaylist.dataRows);
     }
 
     isTimeFormatCorrect(index: number): boolean {
@@ -1887,6 +2100,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.playlistNameEmpty = false;
         this.newPlaylistAdding = true;
+
+        if (this.scheduleToStart && $('.datetimepickerAddPlaylist').val() != "") {
+            this.liveBroadcast.plannedStartDate = new Date($('.datetimepickerAddPlaylist').data("DateTimePicker").viewDate()).getTime()/1000;
+        }
+        else {
+            this.liveBroadcast.plannedStartDate = 0;
+        }
 
         this.restService.createLiveStream(this.appName, this.liveBroadcast, null, "")
             .subscribe(data => {
@@ -2422,7 +2642,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getFormattedTime(milliseconds) {
-        if (milliseconds) {
+        if (milliseconds && Number(milliseconds) > 0) {
             let seconds = Math.floor(milliseconds / 1000);
             let minutes = Math.floor(seconds / 60);
             let hours = Math.floor(minutes / 60);
@@ -2455,10 +2675,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         var totalDurationInMs = 0;
         playlistBroadcast.playListItemList.forEach((item) => {
-            totalDurationInMs += item.durationInMs;
+            totalDurationInMs += item.durationInMs - item.seekTimeInMs;
         });
-        console.log("getPlayListDuration duration:");
-
         return this.getFormattedTime(totalDurationInMs);
     }
 
@@ -2747,9 +2965,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     selectHandlerStreams(streamId: string) {
-
         this.selectionStreams.toggle(streamId);
-
     }
 
     isAllStreamsSelected() {

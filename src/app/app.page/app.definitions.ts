@@ -170,6 +170,7 @@ export class PlaylistItem {
         type: string;
         seekTimeInMs: number;
         durationInMs: number;
+        name:string;
 }
 
 export class ServerSettings {

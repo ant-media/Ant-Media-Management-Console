@@ -1,4 +1,4 @@
-<div >
+<div>
     <form method="post" #f="ngForm" validate (ngSubmit)="updatePlaylistItemEditing(f.valid)">
 
         <div class="card-content" style="padding-top:0px">
@@ -8,108 +8,267 @@
             <div class="form-group text-left">
                 <label i18n="@@newLiveStreamName">Playlist Name</label>
                 <input type="text" required minlength="4" name="playlistName"
-                       i18n-placeholder="@@stream_name_place_holder"
-                       placeholder="Stream name"
-                       class="form-control" [(ngModel)]="playlistEditing.name"
-                       #playlistName="ngModel" >
-                <small [hidden]="playlistName.valid || (!f.submitted)"
-                       class="text-danger" i18n="@@playlistNameIsRequired">
-                       Playlist name should be at least 4 characters.
-                 </small>
+                    i18n-placeholder="@@stream_name_place_holder" placeholder="Stream name" class="form-control"
+                    [(ngModel)]="playlistEditing.name" #playlistName="ngModel">
+                <small [hidden]="playlistName.valid || (!f.submitted)" class="text-danger"
+                    i18n="@@playlistNameIsRequired">
+                    Playlist name should be at least 4 characters.
+                </small>
+            </div>
 
+
+            <div class="form-group text-left" style="margin-top: 25px;" class="">
+                <button type="button" data-toggle="dropdown" class="btn btn-default" i18n="@@newPlaylistCreateButton">
+                    Add Playlist Item <span class="caret"></span></button>
+                <ul class="dropdown-menu dropdown-menu-left">
+                    <li>
+                        <a (click)="addPlaylistItemDirectly()" role="button">Add URL Directly</a>
+                    </li>
+                    <li>
+                        <a (click)="addPlaylistItemFromVoDs()" role="button">Add From VoDs</a>
+                    </li>
+                </ul>
+
+                <div class="row card" *ngIf="directUrlAdding">
+                    
+                    <div class="card-content">
+                        <div class="form-group text-left">
+                            <label>Name</label>
+                            <input type="text" class="form-control" [name]="'streamUrl'"
+                                [(ngModel)]="playListItemAdding.name" />
+                        </div>
+                        <div class="form-group text-left">
+                            <label>Item URL</label>
+                            <input type="text" class="form-control" [name]="'streamUrl'"
+                                [(ngModel)]="playListItemAdding.streamUrl" />
+                        </div>
+                        <div class="form-group text-center">
+
+                            <button type="button" class="btn btn-fill btn-success"
+                                (click)="addPlaylistItemDirectlyClicked()">
+                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="playlistItemAddingActive"
+                                    aria-hidden="true"></i>Add</button>
+
+                            <button type="button" class="btn btn-simple"
+                                (click)="cancelAddingPlayListItem()">Cancel</button>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="row card" *ngIf="vodAdding">
+                    
+                    <div class="card-content">
+                        <div class="form-group text-left">
+                            <label>Search VoDs</label>
+                            <input type="text" required minlength="4" name="vodName"
+                                (keyup)="applyFilter($event.target.value)" placeholder="Type vod name or vod id"
+                                class="form-control">
+                        </div>
+
+                        <div class="form-group text-left">
+
+                            <div *ngIf="filterValue.length == 0 "
+                                style="margin-top: 20px;margin-bottom: 20px;text-align: center;">
+                                VoD search results will appear here
+                            </div>
+                            <div *ngIf="vodTableDataForPlaylist.dataRows.length == 0 && filterValue.length > 3"
+                                style="margin-top: 20px;margin-bottom: 20px;text-align: center;">
+                                No VoD found with your search query
+                            </div>
+
+                            <div *ngIf="vodTableDataForPlaylist.dataRows.length > 0">
+                                <mat-table style="overflow: visible !important;" [dataSource]="dataSourceVod">
+                                    <ng-container matColumnDef="select">
+                                        <mat-header-cell *matHeaderCellDef>#
+                                        </mat-header-cell>
+                                        <mat-cell *matCellDef="let row">
+                                            <mat-checkbox (click)="$event.stopPropagation()" 
+                                                (change)="$event ? selectHandlerStreams(row.vodId) : null"
+                                                [checked]="selectionStreams.isSelected(row.vodId)">
+                                            </mat-checkbox>
+                                        </mat-cell>
+
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="name">
+                                        <mat-header-cell *matHeaderCellDef [ngClass]="'playlist-name-column'"> VoD Name
+                                        </mat-header-cell>
+                                        <mat-cell [ngClass]="'playlist-name-column'" *matCellDef="let row">
+                                            <div style="padding-left: 12px;">
+                                                {{row.vodName}}
+                                                <div style="font-size: 10px">VoD Id: {{row.vodId}}</div>
+                                            </div>
+                                        </mat-cell>
+
+                                    </ng-container>
+
+                                    <mat-header-row *matHeaderRowDef="displayedColumnsStreams"></mat-header-row>
+                                    <mat-row *matRowDef="let row; columns: displayedColumnsStreams;">
+                                    </mat-row>
+                                </mat-table>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group text-center">
+                            <button type="button" [disabled]='playlistItemAdding' class="btn btn-fill btn-success"
+                                (click)="addPlaylistItemFromVoDsClicked()">
+                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="playlistItemAdding"
+                                    aria-hidden="true"></i>Add</button>
+
+                            <button type="button" class="btn btn-simple"
+                                (click)="cancelAddingPlayListItem()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
-
-               
-
-                <div >
-
+                <div>
                     <div>
-                         <div style="overflow-x: hidden;overflow-y:auto;height: 250px;padding-right:10px;">
-                            <div *ngIf="playlistEditing.playListItemList.length!=0" >
-                                <div class="col-xs-6 col-sm-6 text-left">
-                                    <span class="help-block" i18n="@@ResolutionHeight">Playlist URL</span>
-                                </div>
-                                <div class="col-xs-3 col-sm-3 text-left">
-                                    <span class="help-block"> Start Offset
-                                    <small style="font-size: 12px;">(HH:MM:SS)</small></span>
-                                </div>
-                                <div class="col-xs-2 col-sm-2 text-left">
-                                    <span class="help-block"> Duration
-                                    <small style="font-size: 12px;">(HH:MM:SS)</small></span>
-                                </div>
-                            </div>
-
+                        <div style="overflow-x: hidden;overflow-y:auto;min-height: 250px;max-height:500px; padding-right:10px;">
                             <div *ngIf="playlistEditing.playListItemList.length!=0" class="row">
                                 <ng-container>
-                                    <div *ngFor="let playlistItem of playlistEditing.playListItemList; let i = index" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px; padding-left: 0px;" >
-
-                                        <div class="col-xs-6 col-sm-6 text-left">
-                                            <input  type="text" class="form-control" [name]="'streamUrl'+i"  [(ngModel)]="playlistItem.streamUrl" />
+                                    <div class="col-md-12 col-sm-12 col-xs-12"
+                                        style="margin-top: 10px; padding-left: 0px;display:flex;align-items: center;">
+                                        <div class="col-xs-6 col-sm-4 text-left">
+                                            <span class="help-block">Name</span>
                                         </div>
-
-                                        <div class="col-xs-3 col-sm-3 text-left">
-                                            <input  type="text" class="form-control" [name]="'streamUrlSeekTimeMs'+i" [value]="getFormattedTime(playlistItem.seekTimeInMs)" (change)="seekTimeChanged($event.target.value, i)" />
-                        
-                                            <small *ngIf="!isTimeFormatCorrect(i)" class="text-danger">
-                                                Time format is not correct.
-                                            </small>
+                                        <div class="col-xs-2 col-sm-3 text-left">
+                                            <span class="help-block"> Start Time
+                                            </span>
                                         </div>
-                                        <div class="col-xs-2 col-sm-2 text-left">
-                                            {{getFormattedTime(playlistItem.durationInMs)}}
+                                        <div class="col-xs-2 col-sm-3 text-left">
+                                            <span class="help-block"> Run Time
+                                            </span>
                                         </div>
-
-                                        <div class="col-xs-1 col-sm-1 text-left">
-                                            <button (click)="deletePlaylistItemEditing(i)" class="btn btn-icon btn-simple btn-danger btn-minus" type="button">
-                                                <i class="ti-close"></i>
-                                            </button>
-                                        </div>
-                                        
+                                        <div class="col-xs-2 col-sm-2 text-left">Actions</div>
                                     </div>
                                 </ng-container>
                             </div>
 
-                         </div>   
-                      
+                            <div *ngIf="playlistEditing.playListItemList.length!=0" class="row">
+                                <ng-container>
+                                    <div *ngFor="let playlistItem of playlistEditing.playListItemList; let i = index"
+                                     
+                                        style="margin-bottom: 20px; padding-left: 0px;">
+                                        <div class=" col-md-12 col-sm-12 col-xs-12" style="display:flex;align-items: center;">
+                                            <div class="col-xs-6 col-sm-4 text-left">
+                                                {{playlistItem.name}}
+                                              
+                                            </div>
+                                            <div class="col-xs-2 col-sm-3 text-left">
+                                                {{getStartTime(i)}}
+                                            </div>
+                                            <div class="col-xs-2 col-sm-3 text-left">
+                                                {{getFormattedTime(playlistItem.durationInMs-playlistItem.seekTimeInMs)}}
+                                            </div>
 
-                        <div class="row" style="margin-top: 25px;">
-                            <button type="button" style="margin-left: 15px;" class="btn btn-default" (click)="addPlaylistItemEditing()" i18n="@@newPlaylistCreateButton">
-                                Add Playlist Item</button>
-                        </div>
+                                            <div class="col-xs-2 col-sm-2 text-left">
+                                            
+                                                <button
+                                                    (click)="editPlayListItem(i)" title="Edit"
+                                                    data-toggle="tooltip"
+                                                    class="btn btn-simple btn-magnify btn-info btn-xs big-icons"
+                                                    type="button">
+                                                        <i class="ti-pencil"></i>
+                                                </button>
 
-                        <div>
-                            <div class="col-xs-12">
-                                <div class="checkbox" style="padding-left:10px">
-                                    <input
-                                            [(ngModel)]="playlistEditing.playlistLoopEnabled"
-                                            id="playlistLoopEnabled"
-                                            name="playlistLoopEnabled" type="checkbox">
+                                                <button (click)="deletePlaylistItemEditing(i)"
+                                                    class="btn btn-icon btn-simple btn-danger btn-minus" type="button">
+                                                    <i class="ti-close"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 card " *ngIf="editItemIndex == i">
+                                            <div class="card-content">
+                                                <div class="form-group text-left">
+                                                    <label>Name:</label>
+                                                    <input type="text" class="form-control" [name]="'name'+i" 
+                                                    [(ngModel)]="playListItemEditing.name" />
+                                                </div>
+                                                <div class="form-group text-left">
+                                                    <label>URL:</label>
+                                                    <input type="text" class="form-control" [name]="'streamUrl'+i"
+                                                        [(ngModel)]="playListItemEditing.streamUrl" />
+                                                </div>
+                                                <div class="form-group text-left">
+                                                    <label>Start Offset:</label>
+                                                   
+                                                    <input type="text" class="form-control" [name]="'streamUrlSeekTimeMs'+i"
+                                                        [value]="getFormattedTime(playListItemEditing.seekTimeInMs)"
+                                                        (change)="seekTimeChanged($event.target.value, i)" />
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <button type="button" [disabled]='playlistItemUpdating' class="btn btn-fill btn-success"
+                                                        (click)="updateEditPlaylistItem()">
+                                                        <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="playlistItemUpdating"
+                                                            aria-hidden="true"></i>OK</button>
+                                                    
+                                                    <button type="button" class="btn btn-simple" (click)="cancelEditPlaylistItem()">Cancel</button>
 
-                                    <label for="playlistLoopEnabled"
-                                           i18n="@@playlistLoopEnabled">
-                                        Loop Playlist
-                                    </label>
-                                </div>
+                    
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                       
+                                       
+
+
+                                    </div>
+                                 
+                                </ng-container>
                             </div>
+
                         </div>
 
-                        <div class="row text-center" style="padding-top: 20px">
-
-                            <button  type="submit" class="btn btn-fill btn-success" i18n="@@newLiveStreamCreateButton">
-                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newPlaylistAdding"   aria-hidden="true"></i>Save</button>
-
-                            <button type="button" class="btn btn-simple" i18n="@@newLiveStreamCancelButton" (click)="cancelEditPlaylist()">Cancel</button>
+                        <div class="form-group text-left" style="margin-top: 20px;">
+                            <label>Playlist Length:</label>
+                            {{getPlayListDuration()}}
                         </div>
-
                     </div>
 
                 </div>
 
             </div>
 
+            <div class="form-group text-left">
+                <div class="checkbox">
+                    <input [(ngModel)]="scheduleToStart" id="scheduleToStart" name="scheduleToStart"
+                        (change)="scheduleToStartChanged($event.target.checked)" type="checkbox">
+
+                    <label for="scheduleToStart">
+                        Schedule to Start Automatically
+                    </label>
+                </div>
+
+                <input type="text" class="form-control datetimepicker" name="plannedStartDate" placeholder="No Set" />
+            </div>
+
+            <div class="form-group text-left">
+                <div class="checkbox">
+                    <input [(ngModel)]="playlistEditing.playlistLoopEnabled" id="playlistLoopEnabled"
+                        name="playlistLoopEnabled" type="checkbox">
+
+                    <label for="playlistLoopEnabled" i18n="@@playlistLoopEnabled">
+                        Loop Playlist
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group text-center" style="padding-top: 20px">
+
+                <button type="submit" class="btn btn-fill btn-success">
+                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newPlaylistAdding"
+                        aria-hidden="true"></i>Save</button>
+
+                <button type="button" class="btn btn-simple" (click)="cancelEditPlaylist()">Cancel</button>
+            </div>
+
         </div>
 
     </form>
 </div>
-
