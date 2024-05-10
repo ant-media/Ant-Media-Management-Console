@@ -4464,9 +4464,10 @@ select.selectpicker {
     width: 38em;
   }
 }
-.bootstrap-datetimepicker-widget.dropdown-menu.bottom {
-  visibility: visible;
-  opacity: 1;
+
+.bootstrap-datetimepicker-widget.dropdown-menu.bottom , .bootstrap-datetimepicker-widget.dropdown-menu.top{
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 .bootstrap-datetimepicker-widget.dropdown-menu.bottom:before, .bootstrap-datetimepicker-widget.dropdown-menu.bottom:after {
   right: auto;
