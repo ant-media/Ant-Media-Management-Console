@@ -79,7 +79,7 @@
                             </div>
 
                             <div *ngIf="vodTableDataForPlaylist.dataRows.length > 0">
-                                <mat-table style="overflow: visible !important;" [dataSource]="dataSourceVod">
+                                <mat-table style="max-height: 300px;" [dataSource]="dataSourceVod">
                                     <ng-container matColumnDef="select">
                                         <mat-header-cell *matHeaderCellDef>#
                                         </mat-header-cell>
@@ -144,7 +144,7 @@
                                             <span class="help-block"> Run Time
                                             </span>
                                         </div>
-                                        <div class="col-xs-2 col-sm-2 text-left">Actions</div>
+                                        <div class="col-xs-2 col-sm-2 text-left"><span class="help-block">Actions</span></div>
                                     </div>
                                 </ng-container>
                             </div>

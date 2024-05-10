@@ -527,7 +527,7 @@
                                                                             </div>
                                                 
                                                                             <div *ngIf="vodTableDataForPlaylist.dataRows.length > 0">
-                                                                                <mat-table style="overflow: visible !important;" [dataSource]="dataSourcePlaylistVod">
+                                                                                <mat-table style="max-height: 300px;" [dataSource]="dataSourcePlaylistVod">
                                                                                     <ng-container matColumnDef="select">
                                                                                         <mat-header-cell *matHeaderCellDef>#
                                                                                         </mat-header-cell>
