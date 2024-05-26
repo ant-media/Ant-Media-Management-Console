@@ -408,6 +408,14 @@ export class RestService {
         return this.http.get(url, options);
     }
 
+    public callGet(appName: string, apiEndpoint: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/" + apiEndpoint);
+    }
+
+    public callPost(appName: string, apiEndpoint: string, data: any): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" + appName + "/" + apiEndpoint, data ? data : {});
+    }
+
     public getDurationInMilliseconds(appName: string, url:string): Observable<Object>{
         return this.http.get(REST_SERVICE_ROOT + "/request?_path="+ appName + "/rest/v2/broadcasts/duration?url="+url);
     }
