@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HTTP_SERVER_ROOT, LiveBroadcast, RestService , show403Error} from '../rest/rest.service';
+import { HTTP_SERVER_ROOT, LiveBroadcast, RestService , show403Error, REST_SERVICE_ROOT} from '../rest/rest.service';
 import { AuthService } from '../rest/auth.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
@@ -52,6 +52,7 @@ import {
 } from '../cluster/cluster.definitions';
 import { LOCAL_STORAGE_SCOPE_KEY } from 'app/rest/auth.service';
 import { WebPlayer } from '@antmedia/web_player';
+import { isIP } from 'net';
  
 
 declare var $: any;
@@ -860,12 +861,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         return '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:480px"  ></iframe>';
     }
 
-    playLive(streamId: string): void {
+    playLive(streamId: string, type:string): void {
         if (this.appSettings.playTokenControlEnabled) {
-            this.openPlayerWithOneTimeToken(streamId, streamId, "640px", streamId);
+            this.openPlayerWithOneTimeToken(streamId, streamId, "640px", streamId, type);
         }
         else if (this.appSettings.playJwtControlEnabled) {
-            this.openPlayerWithJWTToken(streamId, streamId, "640px", streamId);
+            this.openPlayerWithJWTToken(streamId, streamId, "640px", streamId, type);
         }
         else if (this.appSettings.enableTimeTokenForPlay) {
             swal({
@@ -879,7 +880,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
         }
         else {
-            this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null, null, null);
+            this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null, null, null, type);
         }
     }
 
@@ -893,7 +894,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
      * @param vodName 
      * @param playOrder 
      */
-    openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string, vodName:string, playOrder:string[]): void {
+    openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string, vodName:string, playOrder:string[], type:string): void {
         htmlCode =  '<div id="video_container" style="height:360px;overflow:hidden">' 
 	                + '</div>'
                     + '<div id="place_holder" style="height:360px;overflow:hidden;display:flex;align-items: center;justify-content: center;">The streaming will begin shortly...</div>'
@@ -933,11 +934,42 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 if (httpBaseUrlForStream.startsWith("//")) {
                     httpBaseUrlForStream = location.protocol + httpBaseUrlForStream;
                 }
+
                 embeddedPlayer = new WebPlayer({
                     streamId: streamId,
                     httpBaseURL: httpBaseUrlForStream,
                     token: tokenId,
                     playOrder:playOrderLocal,
+                    restAPIPromise: (endpoint, requestOptions) =>{
+
+                        if (requestOptions.method === "GET") 
+                            {
+                            var promise = new Promise((resolve, reject) => {
+                                endpoint = endpoint.replace("?", "&");
+                                this.restService.callGet(this.appName, endpoint).subscribe(data => {
+                                  resolve(data);
+
+                                }, error => {
+                                    reject(error);
+                                });
+                            });
+                            return promise;
+                        }
+                        else if (requestOptions.method === "POST") {
+                            endpoint = endpoint.replace("?", "&");
+
+                            var promise = new Promise((resolve, reject) => {
+                                return this.restService.callPost(this.appName, endpoint, requestOptions.body).subscribe(data => {
+                                    resolve(data);
+                                }, error => {
+                                    reject(error);
+                                });
+
+                            });
+                            return promise;
+                        }
+                    },
+                    isIPCamera: type == "ipCamera",
                     videoHTMLContent: '<video id="video-player" class="video-js vjs-default-skin vjs-big-play-centered" controls playsinline style="width:100%;height:100%"></video>',
                  }, 
                  document.getElementById("video_container"), 
@@ -1039,7 +1071,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             if (filePath.lastIndexOf(".") == -1) {
                 filePath += "/" + vodName;
             }
-            this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", null, vodName, ["vod"]);
+            this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", null, vodName, ["vod"], null);
         }
     }
 
@@ -1069,10 +1101,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
         }
         else if (tokenParam != null && this.appSettings.playTokenControlEnabled) {
-            this.openPlayerWithOneTimeToken(vodId, filePath, "640px", tokenParam);
+            this.openPlayerWithOneTimeToken(vodId, filePath, "640px", tokenParam, null);
         }
         else if (tokenParam != null && this.appSettings.playJwtControlEnabled) {
-            this.openPlayerWithJWTToken(vodId, filePath, "640px", tokenParam);
+            this.openPlayerWithJWTToken(vodId, filePath, "640px", tokenParam, null);
         }
         else {
             swal({
@@ -1089,23 +1121,23 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    openPlayerWithOneTimeToken(id: string, path: string, width: string, tokenParam: string) {
+    openPlayerWithOneTimeToken(id: string, path: string, width: string, tokenParam: string, type:string) {
         let currentUnixTime: number = Math.floor(Date.now() / 1000)
         let expireDate: number = currentUnixTime + 100;
 
         this.restService.getOneTimeToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
-            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId, null, null)
+            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId, null, null, type)
         }, error => { show403Error(error); });
     }
 
-    openPlayerWithJWTToken(id: string, path: string, width: string, tokenParam: string) {
+    openPlayerWithJWTToken(id: string, path: string, width: string, tokenParam: string, type:string) {
         let currentUnixTime: number = Math.floor(Date.now() / 1000)
         let expireDate: number = currentUnixTime + 100;
 
         this.restService.getJWTToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
-            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId, null, null)
+            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId, null, null, type)
         }, error => { show403Error(error); });
     }
 

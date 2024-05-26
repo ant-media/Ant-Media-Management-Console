@@ -933,7 +933,7 @@
                                                         <button
                                                             *ngIf="row.status=='broadcasting' && (appSettings.webRTCEnabled == true|| appSettings.hlsMuxingEnabled == true) "
                                                             data-toggle="tooltip" i18n-title title="Play Stream"
-                                                            (click)="playLive(row.streamId)"
+                                                            (click)="playLive(row.streamId, row.type)"
                                                             class="btn btn-success btn-simple btn-magnify btn-xs big-icons"
                                                             type="button">
                                                             <span class="btn-label">
