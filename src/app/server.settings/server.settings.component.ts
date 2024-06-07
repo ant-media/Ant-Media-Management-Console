@@ -74,8 +74,10 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     public SYSTEM_SCOPE_OF_ACCESS : string = "system";
 
     public applications : any;
+    public applicationsForUserScope = []
+    public selectableApplications = []
 
-    public displayedColumnsStreams = ['email', 'type', 'permissions', 'actions'];
+    public displayedColumnsStreams = ['email', 'permissions', 'actions'];
 
     public dataSource: MatTableDataSource<UserInf>; 
 
@@ -106,6 +108,8 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     public chainFile: File;
     public sslFormActive: boolean = false;
 
+    public addMoreApplicationAccessButtonVisible:boolean = true;
+
     constructor(private http: HttpClient, private route: ActivatedRoute,
                 private restService: RestService,
                 public dialog: MatDialog,
@@ -126,7 +130,15 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
         this.restService.getApplications().subscribe(data => {
             this.applications = data;
-            console.debug(data);
+            var appDataForApplicationSelect = {
+                "selectableApplications": [],
+                "selectedApplication": "",
+                "userType":""
+            }
+            appDataForApplicationSelect.selectableApplications.push(...this.applications.applications)
+
+            this.applicationsForUserScope.push(appDataForApplicationSelect)
+           // this.selectableApplications.push(...this.applications.applications);
         }, error => { show403Error(error); });
     }
 
@@ -216,11 +228,9 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         
         let dialogRef = this.dialog.open(UserEditComponent, {
             data: {
-                email : user.email,
-                type: user.userType,
-                scope: user.scope
+                user
             },
-            width: "400px",
+            width: "600px",
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -238,12 +248,14 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
             this.userDataTable.dataRows = [];
 
+
+
+            console.log(data)
+
             for (var i in data) {
 
-                var endpoint = [];
-                for (var j in data[i].endPointList) {
-                    endpoint.push(data[i].endPointList[j]);
-                }
+                var scopeOfAccessStr = this.getScopeOfAccessStr(data[i])
+                data[i].scopeOfAccessStr = scopeOfAccessStr
                 this.userDataTable.dataRows.push(data[i]);
             }
 
@@ -256,6 +268,34 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         }, error => { show403Error(error); });
 
     }
+
+
+    getScopeOfAccessStr(data:any){
+        var str = ""
+        if(data.userType != null && data.scope != null){
+            var tempStr = ""
+            if(data.scope == this.SYSTEM_SCOPE_OF_ACCESS){
+                tempStr = "Everything"
+            }else{
+                tempStr = data.scope
+            }
+            str =  tempStr +":" + data.userType
+
+        }else if(data.appNameUserType){
+            var str = ""
+            Object.entries(data.appNameUserType).forEach(([key, value]) => {
+                if(key == this.SYSTEM_SCOPE_OF_ACCESS){
+                    key = "Everything"
+                }
+                str+= key +":"+ value+",\n"
+               
+            });
+
+        }
+
+        return str;
+    }
+
     callTimer(){
 
         console.log("Timer Started");
@@ -269,13 +309,13 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
             }, 15000);
     }
+    
     clearTimer() {
 
         clearInterval(this.timerId);
         this.timerId = null ;
 
     }
-
 
     public getLastLicenseStatus()
     {
@@ -641,8 +681,29 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             return;
         }
 
+        var appNameUserType = {}
+
+        for(var i=0;i<this.applicationsForUserScope.length;i++){
+
+            var row = this.applicationsForUserScope[i]
+            if(row.selectedApplication && row.userType){
+                appNameUserType[row.selectedApplication] = row.userType
+
+            }else{
+                alert("Choose scope of access and user type.")
+                return;
+            }
+
+        }
+        
+     
+        this.User.appNameUserType = appNameUserType
+        console.log(this.User)
+
+
         console.log("create user called 3");
         this.newUserCreating = true;
+        
         this.restService.createUser(this.User)
             .subscribe(data => {
                 console.log("data :" + JSON.stringify(data));
@@ -698,4 +759,40 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
     differenceInDays(firstDate: number, secondDate: number) {
         return Math.round((secondDate-firstDate)/(1000*60*60*24));
     }
+
+    addMoreApplicationAccess():void {
+        console.log(this.applicationsForUserScope)
+        if(this.applicationsForUserScope.length < this.applications.applications.length){
+            var appDataForApplicationSelect = {
+                "selectableApplications":[],
+                "selectedApplication":"",
+                "userType":""
+            }
+            appDataForApplicationSelect.selectableApplications.push(...this.applications.applications)
+            this.applicationsForUserScope.push(appDataForApplicationSelect)
+
+        } 
+    
+    }
+
+    onScopeChange(e: any, index: number) {
+        const selectedApp = e.target.value;
+
+        console.log("scope changed!");
+        if (selectedApp === this.SYSTEM_SCOPE_OF_ACCESS) { // Everything selected.
+            this.applicationsForUserScope = this.applicationsForUserScope.filter((_, i) => i === index);
+            this.addMoreApplicationAccessButtonVisible = false;
+        } else {
+            for (let i = 0; i < this.applicationsForUserScope.length; i++) {
+                if (i !== index && this.applicationsForUserScope[i].selectedApplication === selectedApp) {
+                  console.log("resetting!");
+                  this.applicationsForUserScope[i].selectedApplication = "";
+                }
+              }
+            this.addMoreApplicationAccessButtonVisible = true;
+        }
+    
+        
+    }
+
 }

@@ -33,31 +33,81 @@
                         Passwords should match
                 </small>
             </div>
-
-            <fieldset >
-                <div class="form-group text-left" >
-                    <label>User type</label>
-
-                    <select  type="text"  [name]="'UserType'" [(ngModel)]="userEditing.userType" 
-                            class="dropdown-toggle form-control" required>
-                            <option value="{{AdminUserType}}" >{{AdminUserType}}</option>
-                            <option value="{{BasicUserType}}" >{{BasicUserType}}</option>
-                            <option value="{{ReadOnlyUserType}}">{{ReadOnlyUserType}}</option>
-                    </select>
-                </div>
-            </fieldset>
-
-
-                <div class="form-group text-left" >
-                    <label>Scope of Access</label>
-                    <select type="text"  [name]="'ApplicationPermission'" [(ngModel)]="userEditing.scope"
-                    class="dropdown-toggle form-control"*ngIf="applications" required>
-                        <option value="{{SYSTEM_SCOPE_OF_ACCESS}}" >Everything</option>
-                        <option *ngFor="let eachVal of applications['applications']"  [value]="eachVal" >
-                                {{eachVal}}
-                        </option>
+            <div *ngIf="!userEditing.appNameUserType"> 
+                <fieldset >
+                    <div class="form-group text-left" >
+                        <label>User type</label>
+    
+                        <select  type="text"  [name]="'UserType'" [(ngModel)]="userEditing.userType" 
+                                class="dropdown-toggle form-control" required>
+                                <option value="{{AdminUserType}}" >{{AdminUserType}}</option>
+                                <option value="{{BasicUserType}}" >{{BasicUserType}}</option>
+                                <option value="{{ReadOnlyUserType}}">{{ReadOnlyUserType}}</option>
                         </select>
+                    </div>
+                </fieldset>
+                
+    
+    
+                    <div class="form-group text-left" >
+                        <label>Scope of Access</label>
+                        <select type="text"  [name]="'ApplicationPermission'" [(ngModel)]="userEditing.scope"
+                        class="dropdown-toggle form-control"*ngIf="applications" required>
+                            <option value="{{SYSTEM_SCOPE_OF_ACCESS}}" >Everything</option>
+                            <option *ngFor="let eachVal of applications['applications']"  [value]="eachVal" >
+                                    {{eachVal}}
+                            </option>
+                            </select>
+                    </div>
+
+
+            </div>
+          
+
+                <div *ngIf="userEditing.appNameUserType">
+                    <label style="font-size:22px;">Application Access</label>
+
+                    <div style="max-height: 250px; overflow-y: scroll;">
+                        <div *ngFor="let row of userEditing.appNameUserType | keyvalue;let i=index" style="display: flex;  width: 350px; align-items: center;">
+                            <div class="form-group text-left">
+                                <label>Scope of Access
+                                </label>
+                                <select type="text" [name]="'ApplicationPermission_' + i" [(ngModel)]="row.key"
+                                        (change)="onScopeChange($event, i, row.key)" class="dropdown-toggle form-control">
+                                    <option [value]="SYSTEM_SCOPE_OF_ACCESS">Everything</option>
+                                    <option *ngFor="let eachVal of applications.applications" [value]="eachVal">
+                                        {{eachVal}}
+                                    </option>
+                                </select>
+                            </div>
+    
+                            <div style="margin-left: 20px;" class="form-group text-left" >
+                                <label>User type
+                                </label>    
+    
+                                <select (change)="onUserTypeChange($event, row.key)"  type="text"  [name]="'UserType_' + i"  [(ngModel)]="row.value"
+                                            class="dropdown-toggle form-control">
+                                    <option value="{{AdminUserType}}" >{{AdminUserType}}</option>
+                                    <option value="{{BasicUserType}}" >{{BasicUserType}}</option>
+                                    <option value="{{ReadOnlyUserType}}">{{ReadOnlyUserType}}</option>
+                                </select>
+    
+                            </div>
+                         
+                        <button style="margin-left: 20px;"  *ngIf="hasMoreThanOneAppScope()" (click)="deleteScope(i)"
+                            class="btn btn-icon btn-simple btn-danger btn-minus" type="button">
+                            <i class="ti-close"></i>
+                        </button>
+    
+    
+    
+                        </div>
+                        <button *ngIf="addMoreApplicationAccessButtonVisible" type="button" id="addMoreApplicationAccessButton" (click)="addMoreApplicationAccess()">Add More</button>
+
+                    </div>
+
                 </div>
+            
 
             <div class="form-group text-center">
 

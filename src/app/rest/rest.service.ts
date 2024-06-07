@@ -16,8 +16,9 @@ export class User {
 
     public newPassword: string;
     public fullName: string;
-    public userType: string;
-    public scope: string;
+    public scope:string //backwards comp
+    public userType:string //backwards comp
+    public appNameUserType: any; // Map to hold the key-value pairs of scope
     public firstName: string;
     public lastName: string;
 

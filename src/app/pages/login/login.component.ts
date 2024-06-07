@@ -96,45 +96,73 @@ export class LoginComponent implements OnInit{
     }
 
     loginUser() {
-
-        this.auth.login(this.email, this.password).subscribe(data =>{
-
-            if (data["success"] == true) 
-            {
+        this.auth.login(this.email, this.password).subscribe(data => {
+            if (data["success"] === true) {
+                console.log("qweqweasd");
+                console.log(data);
+    
                 this.auth.isAuthenticated = data["success"];
                 localStorage.setItem("authenticated", "true");
                 localStorage.setItem(LOCAL_STORAGE_EMAIL_KEY, this.email);
-
-                var messageData = data["message"].split("/");
-                let scope = messageData[0];
-                if (isScopeSystem(scope)) {
-                    scope = "system";
+    
+                const message = data["message"];
+                let scope = "";
+    
+                console.log(message);
+    
+                if (message.includes("/")) { // for backwards compatibility
+                    const messageData = data["message"].split("/");
+                    scope = messageData[0];
+                    
+                    if (isScopeSystem(scope)) {
+                        scope = "system";
+                    }
+    
+                    localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
+                    if (messageData.length > 1) {
+                        localStorage.setItem(LOCAL_STORAGE_ROLE_KEY, messageData[1]);
+                    }
+    
+                    if (isScopeSystem(scope)) {
+                        this.router.navigateByUrl("/dashboard");
+                    } else {
+                        this.router.navigateByUrl("/applications/" + scope);
+                    }
+    
+                } else { // it should be a user which has multi app access
+                    const appNameUserTypeJson = JSON.parse(message);
+    
+                    Object.keys(appNameUserTypeJson).forEach((key) => {
+                        if (key === "system") {
+                            scope = "system";
+                            localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
+                            localStorage.setItem(LOCAL_STORAGE_ROLE_KEY, appNameUserTypeJson[key]);
+                        }
+                    });
+    
+                    console.log(Object.keys(appNameUserTypeJson)[0]);
+    
+                    if (scope === "system") {
+                        this.router.navigateByUrl("/dashboard");
+                    } else {
+                        
+                        this.router.navigateByUrl("/applications/" + Object.keys(appNameUserTypeJson)[0]);
+                    }
                 }
-                localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
-                if (messageData.length > 1) {
-                    localStorage.setItem(LOCAL_STORAGE_ROLE_KEY, messageData[1]);
-                }
-                if (isScopeSystem(scope)) 
-                {
-                    this.router.navigateByUrl("/dashboard");
-                }
-                else 
-                {
-                    this.router.navigateByUrl("/applications/" + scope);
-                }
-            }
-            else {
+            } else {
                 this.showIncorrectCredentials = true;
             }
-
-        }, error => { show403Error(error); });
-        
+        }, error => {
+            show403Error(error);
+        });
+    
         this.restService.getBlockedStatus(this.email).subscribe(data => {
-            this.blockLoginAttempt = data["success"];           
-        }, error => { show403Error(error); });
-        
+            this.blockLoginAttempt = data["success"];
+        }, error => {
+            show403Error(error);
+        });
     }
-
+    
 
     createFirstAccount(isValid:boolean) {
         console.log("is first account");
