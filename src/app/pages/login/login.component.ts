@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AuthService} from '../../rest/auth.service';
+import {APP_NAME_USER_TYPE, AuthService} from '../../rest/auth.service';
 import {User, show403Error} from '../../rest/rest.service';
 import {SupportRestService} from "../../rest/support.service";
 import {RestService} from '../../rest/rest.service';
@@ -117,11 +117,16 @@ export class LoginComponent implements OnInit{
                     if (isScopeSystem(scope)) {
                         scope = "system";
                     }
-    
-                    localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
+                    var appNameUserTypeJson = {}
+
+                    
+                  //  localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
                     if (messageData.length > 1) {
-                        localStorage.setItem(LOCAL_STORAGE_ROLE_KEY, messageData[1]);
+                       // localStorage.setItem(LOCAL_STORAGE_ROLE_KEY, messageData[1]);
+                        appNameUserTypeJson[scope] = messageData[1]
                     }
+
+                    localStorage.setItem(APP_NAME_USER_TYPE, JSON.stringify(appNameUserTypeJson))
     
                     if (isScopeSystem(scope)) {
                         this.router.navigateByUrl("/dashboard");
@@ -131,18 +136,20 @@ export class LoginComponent implements OnInit{
     
                 } else { // it should be a user which has multi app access
                     const appNameUserTypeJson = JSON.parse(message);
-    
-                    Object.keys(appNameUserTypeJson).forEach((key) => {
+
+                 /*    Object.keys(appNameUserTypeJson).forEach((key) => {
                         if (key === "system") {
                             scope = "system";
                             localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
                             localStorage.setItem(LOCAL_STORAGE_ROLE_KEY, appNameUserTypeJson[key]);
                         }
-                    });
+                    }); */
+                    localStorage.setItem(APP_NAME_USER_TYPE, JSON.stringify(appNameUserTypeJson))
+
     
                     console.log(Object.keys(appNameUserTypeJson)[0]);
     
-                    if (scope === "system") {
+                    if ("system" in appNameUserTypeJson) {
                         this.router.navigateByUrl("/dashboard");
                     } else {
                         

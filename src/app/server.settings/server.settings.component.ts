@@ -16,7 +16,7 @@ import {MatSort} from "@angular/material/sort"
 import {UserEditComponent} from './dialog/user.edit.dialog.component';
 import {SslErrorComponent} from './dialog/server.settings.ssl.error.dialog.component';
 
-import {LOCAL_STORAGE_EMAIL_KEY, LOCAL_STORAGE_ROLE_KEY} from '../rest/auth.service';
+import {LOCAL_STORAGE_EMAIL_KEY, LOCAL_STORAGE_ROLE_KEY, APP_NAME_USER_TYPE} from '../rest/auth.service';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -101,14 +101,13 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
     public TRIAL_PERIOD_ENDED: string = "TRIAL_PERIOD_ENDED";
 
-    public userRole: string = localStorage.getItem(LOCAL_STORAGE_ROLE_KEY).toUpperCase();
-
     public fullChainFile: File;
     public privateKeyFile: File;
     public chainFile: File;
     public sslFormActive: boolean = false;
 
     public addMoreApplicationAccessButtonVisible:boolean = true;
+    public system:boolean = false;
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
                 private restService: RestService,
@@ -140,6 +139,16 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
             this.applicationsForUserScope.push(appDataForApplicationSelect)
            // this.selectableApplications.push(...this.applications.applications);
         }, error => { show403Error(error); });
+
+        var appNameUserTypeJsonStr = localStorage.getItem(APP_NAME_USER_TYPE)
+     
+        var appNameUserTypeJson = JSON.parse(appNameUserTypeJsonStr)
+        console.log(appNameUserTypeJson)
+        if("system" in appNameUserTypeJson && appNameUserTypeJson["system"] == "admin" || appNameUserTypeJson["system"] == this.AdminUserType ){
+            this.system = true;
+        }
+
+
     }
 
     ngAfterViewInit() {
@@ -271,30 +280,31 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
 
     getScopeOfAccessStr(data:any){
-        var str = ""
+        let str = "";
         if(data.userType != null && data.scope != null){
-            var tempStr = ""
+            let tempStr = "";
             if(data.scope == this.SYSTEM_SCOPE_OF_ACCESS){
-                tempStr = "Everything"
+                tempStr = "Everything";
             }else{
-                tempStr = data.scope
+                tempStr = data.scope;
             }
-            str =  tempStr +":" + data.userType
-
+            str = tempStr + ":" + data.userType;
         }else if(data.appNameUserType){
-            var str = ""
-            Object.entries(data.appNameUserType).forEach(([key, value]) => {
+            let entries = Object.entries(data.appNameUserType);
+            entries.forEach(([key, value], index) => {
                 if(key == this.SYSTEM_SCOPE_OF_ACCESS){
-                    key = "Everything"
+                    key = "Everything";
                 }
-                str+= key +":"+ value+",\n"
-               
+                str += key + ":" + value;
+                if(index < entries.length - 1) {
+                    str += ",\n";
+                }
             });
-
         }
-
+    
         return str;
     }
+    
 
     callTimer(){
 

@@ -55,8 +55,16 @@ export class AuthService implements CanActivate {
     }
 
     public checkLicense() {
-        let scope  = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
-        if (this.isAuthenticated && scope == "system") 
+        //let scope  = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
+        var appNameUserTypeStr = localStorage.getItem(APP_NAME_USER_TYPE);
+        if(appNameUserTypeStr == null || appNameUserTypeStr == ""){
+            console.log("Cant check license because user app permissions are empty/null.")
+            return;
+        }
+
+        var appNameUserTypeJson = JSON.parse(appNameUserTypeStr)
+
+        if (this.isAuthenticated && "system" in appNameUserTypeJson) 
         {
             if (this.serverSettings != null) 
             {
@@ -119,13 +127,20 @@ export class AuthService implements CanActivate {
                         this.router.navigateByUrl('/pages/login');
                     }
                     if(this.router.url=="/pages/login"){
-                        let scope = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
+                        //let scope = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
+                        var appNameUserTypeStr = localStorage.getItem(APP_NAME_USER_TYPE);
+                        if(appNameUserTypeStr == null || appNameUserTypeStr == ""){
+                            return;
+                        }
+                        var appNameUserTypeJson = JSON.parse(appNameUserTypeStr)
 
-                        if (isScopeSystem(scope)) {
+
+
+                        if ("system" in appNameUserTypeJson) {
                             this.router.navigateByUrl('/dashboard/overview');
                         }
                         else {
-                            this.router.navigateByUrl('/applications/' + scope);
+                            this.router.navigateByUrl('/applications/' + Object.keys(appNameUserTypeJson)[0]);
                         }
                     }
                 },
@@ -265,3 +280,5 @@ export class AuthService implements CanActivate {
 export const LOCAL_STORAGE_EMAIL_KEY = "email";
 export const LOCAL_STORAGE_SCOPE_KEY = "scope";
 export const LOCAL_STORAGE_ROLE_KEY = "role";
+export const APP_NAME_USER_TYPE = "appNameUserType";
+
