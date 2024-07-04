@@ -938,7 +938,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 if (hasSubTracks) {
                     //play with multirack player
                     var iframe = $('#' + objectId);
+                   
                     iframe.prop('src', HTTP_SERVER_ROOT  + 'multitrack-play.html?id=' + streamId + '&app='+this.appName);
+                     //multitrack-play.html is deployed in the solution in the enterprise edition CI pipeline
+                     //Even if it's not a good solution, it helps us play the multitrack streams.  
 
                 }
                 else {
