@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HTTP_SERVER_ROOT, LiveBroadcast, RestService , show403Error, REST_SERVICE_ROOT} from '../rest/rest.service';
+import { HTTP_SERVER_ROOT, LiveBroadcast, RestService, show403Error, REST_SERVICE_ROOT } from '../rest/rest.service';
 import { AuthService } from '../rest/auth.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
@@ -53,7 +53,7 @@ import {
 import { LOCAL_STORAGE_SCOPE_KEY } from 'app/rest/auth.service';
 import { WebPlayer } from '@antmedia/web_player';
 import { isIP } from 'net';
- 
+
 
 declare var $: any;
 declare var Chartist: any;
@@ -267,7 +267,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     public playlistItemAddingActive = false;
 
-    public filterValuePlaylistVoD:string;
+    public filterValuePlaylistVoD: string;
 
     public vodTableDataForPlaylist: VodInfoTable;
 
@@ -290,7 +290,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         private cdr: ChangeDetectorRef,
         private matpage: MatPaginatorIntl,
         private authService: AuthService,
-        
+
 
 
     ) {
@@ -368,7 +368,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }, 8000);
     }
 
-    getAllStreamData(){
+    getAllStreamData() {
         if (this.authService.isAuthenticated) {
             if (typeof this.appName != "undefined") {
                 this.getAppLiveStreams(this.streamListOffset, this.pageSize);
@@ -385,7 +385,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         //this timer gets the related information according to active application
         //so that it checks appname whether it is undefined
         this.timerId = window.setInterval(() => {
-           this.getAllStreamData()
+            this.getAllStreamData()
 
         }, 5000);
     }
@@ -438,7 +438,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     ngAfterViewInit() {
         this.cdr.detectChanges();
 
-      
+
 
     }
 
@@ -505,7 +505,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }, error => { show403Error(error); });
             }
 
-          
+
         });
 
     }
@@ -754,10 +754,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log("vodOrderBy->" + this.vodOrderBy);
     }
 
-    getBroadcastByStreamId(streamId):BroadcastInfo{
-        for(var i=0;i<this.dataSource.data.length;i++){
+    getBroadcastByStreamId(streamId): BroadcastInfo {
+        for (var i = 0; i < this.dataSource.data.length; i++) {
             var broadcast = this.dataSource.data[i]
-            if(broadcast.streamId == streamId){
+            if (broadcast.streamId == streamId) {
                 return broadcast
             }
         }
@@ -861,12 +861,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         return '<iframe id="' + streamId + '" frameborder="0" allowfullscreen="true" class = "frame" seamless="seamless" style="display:block; width:100%; height:480px"  ></iframe>';
     }
 
-    playLive(streamId: string, type:string): void {
+    playLive(streamId: string, type: string, subtracks: string[]): void {
+
+        let hasSubTracks = subtracks != null && subtracks.length > 0;
         if (this.appSettings.playTokenControlEnabled) {
-            this.openPlayerWithOneTimeToken(streamId, streamId, "640px", streamId, type);
+            this.openPlayerWithOneTimeToken(streamId, streamId, "640px", streamId, type, hasSubTracks);
         }
         else if (this.appSettings.playJwtControlEnabled) {
-            this.openPlayerWithJWTToken(streamId, streamId, "640px", streamId, type);
+            this.openPlayerWithJWTToken(streamId, streamId, "640px", streamId, type, hasSubTracks);
         }
         else if (this.appSettings.enableTimeTokenForPlay) {
             swal({
@@ -880,7 +882,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
         }
         else {
-            this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null, null, null, type);
+            this.openPlayer(this.getIFrameEmbedCode(streamId), streamId, streamId, "640px", null, null, null, type, hasSubTracks);
         }
     }
 
@@ -894,99 +896,114 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
      * @param vodName 
      * @param playOrder 
      */
-    openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string, vodName:string, playOrder:string[], type:string): void {
-        htmlCode =  '<div id="video_container" style="height:360px;overflow:hidden">' 
-	                + '</div>'
-                    + '<div id="place_holder" style="height:360px;overflow:hidden;display:flex;align-items: center;justify-content: center;">The streaming will begin shortly...</div>'
+    openPlayer(htmlCode: string, objectId: string, streamId: string, width: string, tokenId: string, vodName: string, playOrder: string[], type: string, hasSubTracks: boolean): void {
 
- 		const broadcast = this.getBroadcastByStreamId(streamId);
-        const typePlayList = broadcast != null && broadcast.type === "playlist";
+        if (!hasSubTracks) {
+            htmlCode = '<div id="video_container" style="height:360px;overflow:hidden">'
+            + '</div>'
+            + '<div id="place_holder" style="height:360px;overflow:hidden;display:flex;align-items: center;justify-content: center;">The streaming will begin shortly...</div>'
 
-        var playOrderLocal = ["webrtc", "hls", "dash"];
+            const broadcast = this.getBroadcastByStreamId(streamId);
+            const typePlayList = broadcast != null && broadcast.type === "playlist";
 
-        if (!this.isEnterpriseEdition)  {
-            //if it's not enterprise edition, only hls is supported
-            playOrderLocal = ["hls"];
+            var playOrderLocal = ["webrtc", "hls", "dash"];
+
+            if (!this.isEnterpriseEdition) {
+                //if it's not enterprise edition, only hls is supported
+                playOrderLocal = ["hls"];
+            }
+
+            if (typePlayList) {
+                playOrderLocal = ["hls"];
+            }
+            else if (playOrder) {
+                playOrderLocal = playOrder;
+            }
         }
-        
-        if (typePlayList) {
-          playOrderLocal = ["hls"];
-        }
-        else if (playOrder) {
-            playOrderLocal = playOrder;
-        }
+
+
        
+
 
         var embeddedPlayer;
         swal({
             html: htmlCode,
             showConfirmButton: false,
             width: width,
-            padding: "10px",
+            padding: "0px",
             animation: false,
             showCloseButton: true,
             onOpen: () => {
                 //the error in this callback does not show up in browser console.
-                //var iframe = $('#' + objectId);
-             //   iframe.prop('src', this.getIFrameSrc(streamId, "true", tokenId, vodName, playOrder));
-                var httpBaseUrlForStream = HTTP_SERVER_ROOT + this.appName;
+                if (hasSubTracks) {
+                    //play with multirack player
+                    var iframe = $('#' + objectId);
+                    iframe.prop('src', HTTP_SERVER_ROOT  + 'multitrack-play.html?id=' + streamId + '&app='+this.appName);
 
-                if (httpBaseUrlForStream.startsWith("//")) {
-                    httpBaseUrlForStream = location.protocol + httpBaseUrlForStream;
                 }
+                else {
+                    //play with web player
+                    var httpBaseUrlForStream = HTTP_SERVER_ROOT + this.appName;
 
-                embeddedPlayer = new WebPlayer({
-                    streamId: streamId,
-                    httpBaseURL: httpBaseUrlForStream,
-                    token: tokenId,
-                    playOrder:playOrderLocal,
-                    restAPIPromise: (endpoint, requestOptions) =>{
+                    if (httpBaseUrlForStream.startsWith("//")) {
+                        httpBaseUrlForStream = location.protocol + httpBaseUrlForStream;
+                    }
 
-                        if (requestOptions.method === "GET") 
-                            {
-                            var promise = new Promise((resolve, reject) => {
+                    embeddedPlayer = new WebPlayer({
+                        streamId: streamId,
+                        httpBaseURL: httpBaseUrlForStream,
+                        token: tokenId,
+                        playOrder: playOrderLocal,
+                        restAPIPromise: (endpoint, requestOptions) => {
+
+                            if (requestOptions.method === "GET") {
+                                var promise = new Promise((resolve, reject) => {
+                                    endpoint = endpoint.replace("?", "&");
+                                    this.restService.callGet(this.appName, endpoint).subscribe(data => {
+                                        resolve(data);
+
+                                    }, error => {
+                                        reject(error);
+                                    });
+                                });
+                                return promise;
+                            }
+                            else if (requestOptions.method === "POST") {
                                 endpoint = endpoint.replace("?", "&");
-                                this.restService.callGet(this.appName, endpoint).subscribe(data => {
-                                  resolve(data);
 
-                                }, error => {
-                                    reject(error);
+                                var promise = new Promise((resolve, reject) => {
+                                    return this.restService.callPost(this.appName, endpoint, requestOptions.body).subscribe(data => {
+                                        resolve(data);
+                                    }, error => {
+                                        reject(error);
+                                    });
+
                                 });
-                            });
-                            return promise;
-                        }
-                        else if (requestOptions.method === "POST") {
-                            endpoint = endpoint.replace("?", "&");
-
-                            var promise = new Promise((resolve, reject) => {
-                                return this.restService.callPost(this.appName, endpoint, requestOptions.body).subscribe(data => {
-                                    resolve(data);
-                                }, error => {
-                                    reject(error);
-                                });
-
-                            });
-                            return promise;
-                        }
+                                return promise;
+                            }
+                        },
+                        isIPCamera: type == "ipCamera",
+                        videoHTMLContent: '<video id="video-player" class="video-js vjs-default-skin vjs-big-play-centered" controls playsinline style="width:100%;height:100%"></video>',
                     },
-                    isIPCamera: type == "ipCamera",
-                    videoHTMLContent: '<video id="video-player" class="video-js vjs-default-skin vjs-big-play-centered" controls playsinline style="width:100%;height:100%"></video>',
-                 }, 
-                 document.getElementById("video_container"), 
-                 document.getElementById("place_holder"));
-                 
-                 embeddedPlayer.initialize().then(() => {
-                    embeddedPlayer.play();
-                 }).catch((error) => {
-                    console.error("Error while initializing embedded player: " + error);
-                 });
-                 
-                 
+                        document.getElementById("video_container"),
+                        document.getElementById("place_holder"));
+
+                    embeddedPlayer.initialize().then(() => {
+                        embeddedPlayer.play();
+                    }).catch((error) => {
+                        console.error("Error while initializing embedded player: " + error);
+                    });
+
+                }
             },
             onClose: function () {
-                //var ifr = document.getElementById(objectId);
-                //ifr.parentNode.removeChild(ifr);
-                embeddedPlayer.destroy();
+                if (hasSubTracks) {
+                    var ifr = document.getElementById(objectId);
+                    ifr.parentNode.removeChild(ifr);
+                }
+                if (embeddedPlayer) {
+                    embeddedPlayer.destroy();
+                }
             }
         })
             .then(function () { }, function () { })
@@ -1018,7 +1035,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             for (var i in this.broadcastGridTableData.dataRows) {
                 id = this.broadcastGridTableData.dataRows[i]['streamId'];
                 var $iframe = $('#' + id);
-                $iframe.prop('src', this.getIFrameSrc(id, "true", null,null,null));
+                $iframe.prop('src', this.getIFrameSrc(id, "true", null, null, null));
             }
 
         }, 1500);
@@ -1071,7 +1088,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             if (filePath.lastIndexOf(".") == -1) {
                 filePath += "/" + vodName;
             }
-            this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", null, vodName, ["vod"], null);
+            this.openPlayer(this.getIFrameEmbedCode(vodId), vodId, filePath, "640px", null, vodName, ["vod"], null, null);
         }
     }
 
@@ -1101,10 +1118,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
         }
         else if (tokenParam != null && this.appSettings.playTokenControlEnabled) {
-            this.openPlayerWithOneTimeToken(vodId, filePath, "640px", tokenParam, null);
+            this.openPlayerWithOneTimeToken(vodId, filePath, "640px", tokenParam, null, null);
         }
         else if (tokenParam != null && this.appSettings.playJwtControlEnabled) {
-            this.openPlayerWithJWTToken(vodId, filePath, "640px", tokenParam, null);
+            this.openPlayerWithJWTToken(vodId, filePath, "640px", tokenParam, null, null);
         }
         else {
             swal({
@@ -1121,23 +1138,23 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    openPlayerWithOneTimeToken(id: string, path: string, width: string, tokenParam: string, type:string) {
+    openPlayerWithOneTimeToken(id: string, path: string, width: string, tokenParam: string, type: string, hasSubTracks: boolean) {
         let currentUnixTime: number = Math.floor(Date.now() / 1000)
         let expireDate: number = currentUnixTime + 100;
 
         this.restService.getOneTimeToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
-            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId, null, null, type)
+            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId, null, null, type, hasSubTracks)
         }, error => { show403Error(error); });
     }
 
-    openPlayerWithJWTToken(id: string, path: string, width: string, tokenParam: string, type:string) {
+    openPlayerWithJWTToken(id: string, path: string, width: string, tokenParam: string, type: string, hasSubTracks: boolean) {
         let currentUnixTime: number = Math.floor(Date.now() / 1000)
         let expireDate: number = currentUnixTime + 100;
 
         this.restService.getJWTToken(this.appName, tokenParam, expireDate).subscribe(data => {
             this.token = <Token>data;
-            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId, null, null, type)
+            this.openPlayer(this.getIFrameEmbedCode(id), id, path, "640px", this.token.tokenId, null, null, type, hasSubTracks)
         }, error => { show403Error(error); });
     }
 
@@ -1398,14 +1415,14 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.getAllStreamData()
             this.callTimer()
 
-        }, error => { 
+        }, error => {
             this.callTimer()
-            show403Error(error); 
+            show403Error(error);
         });
     }
 
 
-    updateSettingsByJson() : void {
+    updateSettingsByJson(): void {
         try {
             this.settingsObject = JSON.parse(this.settingsJson);
         } catch (err) {
@@ -1441,11 +1458,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.getSettings();
             }
         },
-        error => 
-        {
-           show403Error(error);
-           this.getSettings();
-        });
+            error => {
+                show403Error(error);
+                this.getSettings();
+            });
 
     }
 
@@ -1537,21 +1553,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
 
         },
-        error => 
-        {
-           show403Error(error);
-           this.getSettings();
-        });
+            error => {
+                show403Error(error);
+                this.getSettings();
+            });
 
 
     }
 
-    settingModeChanged(event:any){
-        console.log("event:"+event);
-        if(event == "setByForm") {
+    settingModeChanged(event: any) {
+        console.log("event:" + event);
+        if (event == "setByForm") {
             this.isJsonUpdate = false;
         }
-        else if(event == "setByJson") {
+        else if (event == "setByJson") {
             this.isJsonUpdate = true;
         }
     }
@@ -1600,8 +1615,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     initDateTimePicker() {
         setTimeout(() => {
-            if ($('.datetimepickerAddPlaylist').length) 
-            {
+            if ($('.datetimepickerAddPlaylist').length) {
                 $('.datetimepickerAddPlaylist').datetimepicker({
                     icons: {
                         time: "fa fa-clock-o",
@@ -1788,11 +1802,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
                 error => {
                     this.newIPCameraAdding = false;
-                    
+
                     if (show403Error(error) == false) {
                         $.notify({
                             icon: "ti-save",
-                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)"
                         }, {
                             type: "warning",
                             delay: 2000,
@@ -1801,7 +1815,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 align: 'right'
                             }
                         });
-                     }
+                    }
                 });
     }
 
@@ -1841,7 +1855,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.restService.createLiveStream(this.appName, this.liveBroadcast, REMOTE_HOST_ADDRESS, socialNetworks.join(","))
             .subscribe(data => {
-               
+
                 if (data["success"] == true || data["streamId"] != null) {
                     this.jwtTokenValid = true;
                     this.newStreamSourceAdding = false;
@@ -1909,11 +1923,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
                 error => {
                     this.newStreamSourceAdding = false;
-                    
+
                     if (show403Error(error) == false) {
                         $.notify({
                             icon: "ti-save",
-                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)"
                         }, {
                             type: "warning",
                             delay: 2000,
@@ -1922,7 +1936,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 align: 'right'
                             }
                         });
-                     }
+                    }
                 }
             );
     }
@@ -1933,21 +1947,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             type: "VoD",
             seekTimeInMs: 0,
             durationInMs: 0,
-            name:""
+            name: ""
         });
 
     }
 
     scheduleToStartChanged(value) {
-        console.log("scheduleToStartChanged " , value);
+        console.log("scheduleToStartChanged ", value);
 
         if (this.scheduleToStart) {
             $('.datetimepickerAddPlaylist').show();
-        } 
+        }
         else {
             $('.datetimepickerAddPlaylist').hide();
         }
-        
+
     }
 
     addPlaylistItemDirectly() {
@@ -1960,31 +1974,30 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     addPlaylistItemDirectlyClicked() {
         this.playlistItemAddingActive = true;
 
-        this.restService.getDurationInMilliseconds(this.appName,this.playListItemAdding.streamUrl).subscribe(data => {
+        this.restService.getDurationInMilliseconds(this.appName, this.playListItemAdding.streamUrl).subscribe(data => {
 
             this.playlistItemAddingActive = false;
             if (data["success"]) {
                 this.liveBroadcast.playListItemList.push({
-                    type:"VoD",
+                    type: "VoD",
                     streamUrl: this.playListItemAdding.streamUrl,
                     name: this.playListItemAdding.name,
-                    seekTimeInMs:0,
+                    seekTimeInMs: 0,
                     durationInMs: Number(data["dataId"])
-        
+
                 });
                 this.directUrlAdding = false;
             }
             else {
-                if (data["errorId"] == -1) 
-                {
+                if (data["errorId"] == -1) {
                     //duration cannot be found, it may happen
                     this.liveBroadcast.playListItemList.push({
-                        type:"VoD",
+                        type: "VoD",
                         streamUrl: this.playListItemAdding.streamUrl,
                         name: this.playListItemAdding.name,
-                        seekTimeInMs:0,
+                        seekTimeInMs: 0,
                         durationInMs: Number(data["dataId"])
-            
+
                     });
                 }
                 else {
@@ -2025,9 +2038,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     applyFilterPlaylistVod(filterValue) {
-        if (this.filterValuePlaylistVoD != filterValue && filterValue.length>3) {
+        if (this.filterValuePlaylistVoD != filterValue && filterValue.length > 3) {
             this.filterValuePlaylistVoD = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-            
+
             this.restService.getVodList(this.appName, 0, 20, "", "", this.filterValuePlaylistVoD).subscribe(data => {
                 this.vodTableDataForPlaylist.dataRows = [];
                 for (var i in data) {
@@ -2036,7 +2049,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
                 this.dataSourcePlaylistVod = new MatTableDataSource(this.vodTableDataForPlaylist.dataRows);
             }, error => { show403Error(error); });
-            
+
 
         }
     }
@@ -2067,11 +2080,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     type: "VoD",
                     streamUrl: url,
                     name: this.dataSourcePlaylistVod.data[i].vodName,
-                    seekTimeInMs:0,
-                    durationInMs:this.dataSourcePlaylistVod.data[i].duration
+                    seekTimeInMs: 0,
+                    durationInMs: this.dataSourcePlaylistVod.data[i].duration
                 });
 
-                
+
             }
         }
 
@@ -2079,7 +2092,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectionPlaylistVoDs.clear();
         this.vodTableDataForPlaylist.dataRows = [];
         this.dataSourcePlaylistVod = new MatTableDataSource(this.vodTableDataForPlaylist.dataRows);
-    
+
     }
 
     cancelAddingPlayListItem() {
@@ -2092,8 +2105,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     isTimeFormatCorrect(index: number): boolean {
         // Undefined means not yet checked, which we treat as valid until checked
         return this.timeFormatValidity[index] !== false;
-      }
-      
+    }
+
     // Convert HH:MM:SS to milliseconds
     convertToMilliseconds(time) {
         const [hours, minutes, seconds] = time.split(':').map(Number);
@@ -2134,7 +2147,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newPlaylistAdding = true;
 
         if (this.scheduleToStart && $('.datetimepickerAddPlaylist').val() != "") {
-            this.liveBroadcast.plannedStartDate = new Date($('.datetimepickerAddPlaylist').data("DateTimePicker").viewDate()).getTime()/1000;
+            this.liveBroadcast.plannedStartDate = new Date($('.datetimepickerAddPlaylist').data("DateTimePicker").viewDate()).getTime() / 1000;
         }
         else {
             this.liveBroadcast.plannedStartDate = 0;
@@ -2210,11 +2223,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
                 error => {
                     this.newPlaylistAdding = false;
-                
+
                     if (show403Error(error) == false) {
                         $.notify({
                             icon: "ti-save",
-                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)"
                         }, {
                             type: "warning",
                             delay: 2000,
@@ -2223,7 +2236,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 align: 'right'
                             }
                         });
-                     }
+                    }
                 });
 
     }
@@ -2257,7 +2270,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         return str;
     };
 
-    setTOTPSecretForPlaying(length:number) {
+    setTOTPSecretForPlaying(length: number) {
         let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
         // Pick characers randomly
@@ -2270,7 +2283,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         return str;
     }
 
-    setTOTPSecretForPublishing(length:number) {
+    setTOTPSecretForPublishing(length: number) {
         let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
         // Pick characers randomly
@@ -2283,7 +2296,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         return str;
     }
 
-    
+
 
     startDiscover() {
         this.discoveryStarted = true;
@@ -2453,7 +2466,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     if (show403Error(error) == false) {
                         $.notify({
                             icon: "ti-save",
-                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)" 
+                            message: typeof error.error["message"] != "undefined" ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)"
                         }, {
                             type: "warning",
                             delay: 2000,
@@ -2462,8 +2475,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 align: 'right'
                             }
                         });
-                     }
-                   
+                    }
+
                 });
 
     }
@@ -2646,7 +2659,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         //if filePath has extension, in the new version file path has the full relative path
         //putting the below check to support old versions
-         if (filePath.lastIndexOf(".") == -1) {
+        if (filePath.lastIndexOf(".") == -1) {
             filePath += "/" + name;
         }
 
@@ -3013,21 +3026,21 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    onPublishTokenControlChange(){
+    onPublishTokenControlChange() {
         this.cdr.detectChanges();
 
         if (this.appSettings.publishTokenControlEnabled) {
             this.appSettings.publishJwtControlEnabled = false;
             this.appSettings.enableTimeTokenForPublish = false;
         }
-        
+
 
     }
 
-    onPlayTokenControlChange(){
+    onPlayTokenControlChange() {
         this.cdr.detectChanges();
 
-        if(this.appSettings.playTokenControlEnabled){
+        if (this.appSettings.playTokenControlEnabled) {
             this.appSettings.playJwtControlEnabled = false;
             this.appSettings.enableTimeTokenForPlay = false
         }
@@ -3035,11 +3048,11 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    onEnableTimeTokenForPublishChange(){
+    onEnableTimeTokenForPublishChange() {
 
         this.cdr.detectChanges();
 
-   
+
 
         if (this.appSettings.enableTimeTokenForPublish) {
             this.appSettings.publishJwtControlEnabled = false;
@@ -3048,17 +3061,17 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    onEnableTimeTokenForPlayChange(){
+    onEnableTimeTokenForPlayChange() {
         this.cdr.detectChanges();
 
-        if(this.appSettings.enableTimeTokenForPlay){
+        if (this.appSettings.enableTimeTokenForPlay) {
             this.appSettings.playJwtControlEnabled = false;
             this.appSettings.playTokenControlEnabled = false
         }
 
     }
-    
-    onPublishJwtControlEnabledChange(){
+
+    onPublishJwtControlEnabledChange() {
         this.cdr.detectChanges();
 
         if (this.appSettings.publishJwtControlEnabled) {
@@ -3068,10 +3081,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-    onPlayJwtControlEnabledChange(){
+    onPlayJwtControlEnabledChange() {
         this.cdr.detectChanges();
 
-        if(this.appSettings.playJwtControlEnabled){
+        if (this.appSettings.playJwtControlEnabled) {
             this.appSettings.enableTimeTokenForPlay = false;
             this.appSettings.playTokenControlEnabled = false
         }
