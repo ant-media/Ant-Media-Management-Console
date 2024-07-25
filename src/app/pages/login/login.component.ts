@@ -75,7 +75,14 @@ export class LoginComponent implements OnInit{
     logout() {
         // localStorage.setItem("authenticated", null);
         localStorage.clear();
-        //this.router.navigateByUrl("/pages/login");
+        this.restService.logout().subscribe(data  => {
+            if (data["success"] == true) {
+                console.log("logout success");
+            }
+        }, 
+        error => { 
+            console.log("logout failed");
+         });
     }
 
     sidebarToggle(){
@@ -96,11 +103,9 @@ export class LoginComponent implements OnInit{
     }
 
     loginUser() {
-        this.auth.login(this.email, this.password).subscribe(data => {
-            if (data["success"] === true) {
-                console.log("qweqweasd");
-                console.log(data);
-    
+        this.auth.login(this.email, this.password).subscribe(data =>{
+            if (data["success"] === true) 
+            {
                 this.auth.isAuthenticated = data["success"];
                 localStorage.setItem("authenticated", "true");
                 localStorage.setItem(LOCAL_STORAGE_EMAIL_KEY, this.email);

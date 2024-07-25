@@ -376,6 +376,10 @@ export class RestService {
         return this.http.post(REST_SERVICE_ROOT + "/users/authenticate", user);
     }
 
+    public logout(): Observable<Object> {
+        return this.http.delete(REST_SERVICE_ROOT + "/users/logout");
+    }
+
     public changePassword(user: User): Observable<Object> {
         return this.http.post(REST_SERVICE_ROOT + "/users/password", user);
     }
