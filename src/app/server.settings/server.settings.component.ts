@@ -143,7 +143,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         var appNameUserTypeJsonStr = localStorage.getItem(APP_NAME_USER_TYPE)
      
         var appNameUserTypeJson = JSON.parse(appNameUserTypeJsonStr)
-        console.log(appNameUserTypeJson)
         if("system" in appNameUserTypeJson && appNameUserTypeJson["system"] == "admin" || appNameUserTypeJson["system"] == this.AdminUserType ){
             this.system = true;
         }
@@ -256,10 +255,6 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         this.restService.getUsers().subscribe(data => {
 
             this.userDataTable.dataRows = [];
-
-
-
-            console.log(data)
 
             for (var i in data) {
 

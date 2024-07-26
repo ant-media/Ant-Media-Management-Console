@@ -143,7 +143,6 @@ export class SidebarComponent implements AfterViewInit {
         this.menuItems[1].children = [];
         for (var i in applications) 
         {
-            //console.log(data['applications'][i]);
             this.menuItems[1].children.push({ path: applications[i], title: applications[i], icontype: 'ti-file' });
             SidebarComponent.apps.push(applications[i]); 
         }

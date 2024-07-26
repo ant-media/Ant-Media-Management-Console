@@ -92,7 +92,6 @@ export class UserEditComponent implements OnInit {
                 break;
             }
         }
-    console.log(this.userEditing.appNameUserType)
      this.isShowAddMoreApplicationAccessButton()
     }
 
@@ -184,13 +183,7 @@ export class UserEditComponent implements OnInit {
 
     onUserTypeChange(e:any, appName:string){
         const selectedUserType = e.target.value
-
-        console.log(selectedUserType)
-
         this.userEditing.appNameUserType[appName] = selectedUserType
-
-        console.log(this.userEditing.appNameUserType)
-
     }
 
     onScopeChange(e: any, index: number) {

@@ -463,7 +463,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                         //second element is the Applications. It is not safe to make static binding.
 
                         for (var i in data['applications']) {
-                            //console.log(data['applications'][i]);
                             this.router.navigateByUrl("/applications/" + data['applications'][i]);
                             break;
                         }
@@ -1392,8 +1391,6 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     getSettings(): void {
         this.restService.getSettings(this.appName).subscribe(data => {
-            console.log("GET SETTINGS!")
-            console.log(data)
             this.appSettings = <AppSettings>data;
             this.settingsJson = JSON.stringify(data, null, 2); //JSON.stringify(data);
             if (this.appSettings.jwtControlEnabled) {

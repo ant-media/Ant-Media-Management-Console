@@ -125,9 +125,7 @@ export class LoginComponent implements OnInit{
                     var appNameUserTypeJson = {}
 
                     
-                  //  localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
                     if (messageData.length > 1) {
-                       // localStorage.setItem(LOCAL_STORAGE_ROLE_KEY, messageData[1]);
                         appNameUserTypeJson[scope] = messageData[1]
                     }
 
@@ -142,13 +140,6 @@ export class LoginComponent implements OnInit{
                 } else { // it should be a user which has multi app access
                     const appNameUserTypeJson = JSON.parse(message);
 
-                 /*    Object.keys(appNameUserTypeJson).forEach((key) => {
-                        if (key === "system") {
-                            scope = "system";
-                            localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
-                            localStorage.setItem(LOCAL_STORAGE_ROLE_KEY, appNameUserTypeJson[key]);
-                        }
-                    }); */
                     localStorage.setItem(APP_NAME_USER_TYPE, JSON.stringify(appNameUserTypeJson))
 
     
