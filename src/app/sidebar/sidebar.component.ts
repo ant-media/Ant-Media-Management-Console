@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, AfterViewChecked, AfterContentInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RestService, show403Error } from '../rest/rest.service';
-import { isScopeSystem, LOCAL_STORAGE_SCOPE_KEY } from 'app/rest/auth.service';
+import { isScopeSystem, LOCAL_STORAGE_SCOPE_KEY, APP_NAME_USER_TYPE } from 'app/rest/auth.service';
 
 declare var $: any;
 //Metadata
@@ -94,9 +94,21 @@ export class SidebarComponent implements AfterViewInit {
 
         this.restService.setSidebar(this);
 
-        this.scope = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
+        //this.scope = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
 
-        if (isScopeSystem(this.scope)) {
+        var appNameUserTypeStr = localStorage.getItem(APP_NAME_USER_TYPE);
+        if(appNameUserTypeStr == null || appNameUserTypeStr == ""){
+            return;
+        }
+
+        var appNameUserTypeJson = JSON.parse(appNameUserTypeStr)
+        console.log(appNameUserTypeJson)
+        
+        if("system" in appNameUserTypeJson){
+            this.scope = "system"
+        }
+
+        if ("system" in appNameUserTypeJson) {
             
             //Init applications if the scope is system
             this.initApplications();
@@ -105,7 +117,8 @@ export class SidebarComponent implements AfterViewInit {
             }, error => { show403Error(error); });
         }
         else {
-            this.initMenuApplicationItem([this.scope]);
+            console.log("init menu application items")
+            this.initMenuApplicationItems(Object.keys(appNameUserTypeJson));
         }
         
        
@@ -116,21 +129,20 @@ export class SidebarComponent implements AfterViewInit {
     initApplications() {
         this.restService.getApplications().subscribe(data => 
             {
-                this.initMenuApplicationItem(data["applications"]);
+                this.initMenuApplicationItems(data["applications"]);
         });
     }
     get getApps() {
         return SidebarComponent.apps;
     }
 
-    initMenuApplicationItem(applications:string[]) 
+    initMenuApplicationItems(applications:string[]) 
     {
         SidebarComponent.apps = [];
          //second element is the Applications. It is not safe to make static binding.
         this.menuItems[1].children = [];
         for (var i in applications) 
         {
-            //console.log(data['applications'][i]);
             this.menuItems[1].children.push({ path: applications[i], title: applications[i], icontype: 'ti-file' });
             SidebarComponent.apps.push(applications[i]); 
         }

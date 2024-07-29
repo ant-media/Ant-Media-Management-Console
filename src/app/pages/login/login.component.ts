@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AuthService} from '../../rest/auth.service';
+import {APP_NAME_USER_TYPE, AuthService} from '../../rest/auth.service';
 import {User, show403Error} from '../../rest/rest.service';
 import {SupportRestService} from "../../rest/support.service";
 import {RestService} from '../../rest/rest.service';
@@ -103,44 +103,69 @@ export class LoginComponent implements OnInit{
     }
 
     loginUser() {
-
         this.auth.login(this.email, this.password).subscribe(data =>{
-            if (data["success"] == true) 
+            if (data["success"] === true) 
             {
                 this.auth.isAuthenticated = data["success"];
                 localStorage.setItem("authenticated", "true");
                 localStorage.setItem(LOCAL_STORAGE_EMAIL_KEY, this.email);
+    
+                const message = data["message"];
+                let scope = "";
+    
+                console.log(message);
+    
+                if (message.includes("/")) { // for backwards compatibility
+                    const messageData = data["message"].split("/");
+                    scope = messageData[0];
+                    
+                    if (isScopeSystem(scope)) {
+                        scope = "system";
+                    }
+                    var appNameUserTypeJson = {}
 
-                var messageData = data["message"].split("/");
-                let scope = messageData[0];
-                if (isScopeSystem(scope)) {
-                    scope = "system";
+                    
+                    if (messageData.length > 1) {
+                        appNameUserTypeJson[scope] = messageData[1]
+                    }
+
+                    localStorage.setItem(APP_NAME_USER_TYPE, JSON.stringify(appNameUserTypeJson))
+    
+                    if (isScopeSystem(scope)) {
+                        this.router.navigateByUrl("/dashboard");
+                    } else {
+                        this.router.navigateByUrl("/applications/" + scope);
+                    }
+    
+                } else { // it should be a user which has multi app access
+                    const appNameUserTypeJson = JSON.parse(message);
+
+                    localStorage.setItem(APP_NAME_USER_TYPE, JSON.stringify(appNameUserTypeJson))
+
+    
+                    console.log(Object.keys(appNameUserTypeJson)[0]);
+    
+                    if ("system" in appNameUserTypeJson) {
+                        this.router.navigateByUrl("/dashboard");
+                    } else {
+                        
+                        this.router.navigateByUrl("/applications/" + Object.keys(appNameUserTypeJson)[0]);
+                    }
                 }
-                localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, scope);
-                if (messageData.length > 1) {
-                    localStorage.setItem(LOCAL_STORAGE_ROLE_KEY, messageData[1]);
-                }
-                if (isScopeSystem(scope)) 
-                {
-                    this.router.navigateByUrl("/dashboard");
-                }
-                else 
-                {
-                    this.router.navigateByUrl("/applications/" + scope);
-                }
-            }
-            else {
+            } else {
                 this.showIncorrectCredentials = true;
             }
-
-        }, error => { show403Error(error); });
-        
+        }, error => {
+            show403Error(error);
+        });
+    
         this.restService.getBlockedStatus(this.email).subscribe(data => {
-            this.blockLoginAttempt = data["success"];           
-        }, error => { show403Error(error); });
-        
+            this.blockLoginAttempt = data["success"];
+        }, error => {
+            show403Error(error);
+        });
     }
-
+    
 
     createFirstAccount(isValid:boolean) {
         console.log("is first account");

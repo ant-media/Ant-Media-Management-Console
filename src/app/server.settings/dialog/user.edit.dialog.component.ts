@@ -31,20 +31,68 @@ export class UserEditComponent implements OnInit {
     public SYSTEM_SCOPE_OF_ACCESS : string = "system";
 	public applications : any;
 
+    public addMoreApplicationAccessButtonVisible:boolean = false;
+
+
     constructor(
         public dialogRef: MatDialogRef<UserEditComponent>, public restService: RestService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
-            console.debug(data.email + " - " + data.type)
-            this.userEditing = new User(data.email,"");
-            this.userEditing.scope = data.scope;
-            this.userEditing.userType = data.type;
+            var mUser:User = data.user
+            console.log(mUser)
+
+            console.debug(mUser.email + " - " + mUser.userType)
+            this.userEditing = new User(mUser.email,"");
+            this.userEditing.scope = mUser.scope;
+            this.userEditing.userType = mUser.userType;
+            this.userEditing.appNameUserType = mUser.appNameUserType
+
+
+
     }
 
     ngOnInit(){
         this.restService.getApplications().subscribe(data => {
             this.applications = data;
+            console.log(this.applications.applications)
+            this.isShowAddMoreApplicationAccessButton()
         }, error => { show403Error(error); });
 
+    }
+
+    isShowAddMoreApplicationAccessButton():void{
+        const keys = Object.keys(this.userEditing.appNameUserType);
+        var systemScopeFound = false;
+        
+        for (const key of keys) {
+            if (key === this.SYSTEM_SCOPE_OF_ACCESS) {
+                systemScopeFound = true;
+                break;
+            }
+        }
+
+        if(systemScopeFound){
+            this.addMoreApplicationAccessButtonVisible = false;
+            return;
+        }
+
+        if(this.applications.applications.length > Object.keys(this.userEditing.appNameUserType).length){
+            this.addMoreApplicationAccessButtonVisible = true;
+        }else{
+            this.addMoreApplicationAccessButtonVisible = false;
+        }
+
+    }
+
+    addMoreApplicationAccess(): void {
+        const existingKeys = Object.keys(this.userEditing.appNameUserType);
+            for (const app of this.applications.applications) {
+            if (!existingKeys.includes(app)) {
+                this.userEditing.appNameUserType[app] = this.AdminUserType
+                console.log("Adding", app);
+                break;
+            }
+        }
+     this.isShowAddMoreApplicationAccessButton()
     }
 
     onNoClick(): void {
@@ -111,5 +159,66 @@ export class UserEditComponent implements OnInit {
     cancelEditLiveStream(): void {
         this.dialogRef.close();
     }
+
+    deleteScope(i: number): void {
+        if(Object.keys(this.userEditing.appNameUserType).length == 1){
+            //wont come since i hide delete icon.
+            alert("At least 1 app scope is required.")
+            return
+        }
+
+        Object.keys(this.userEditing.appNameUserType).forEach((key, index) => {
+            if (i === index) {
+                delete this.userEditing.appNameUserType[key];
+            }
+        });
+        this.isShowAddMoreApplicationAccessButton()
+
+    }
+
+    hasMoreThanOneAppScope(): boolean {
+        return Object.keys(this.userEditing.appNameUserType).length > 1;
+    }
+
+
+    onUserTypeChange(e:any, appName:string){
+        const selectedUserType = e.target.value
+        this.userEditing.appNameUserType[appName] = selectedUserType
+    }
+
+    onScopeChange(e: any, index: number) {
+        const selectedApp = e.target.value;
+
+        if (selectedApp === this.SYSTEM_SCOPE_OF_ACCESS) { 
+            const keys = Object.keys(this.userEditing.appNameUserType);
+            keys.forEach((key, idx) => {
+                if (idx !== index) {
+                    delete this.userEditing.appNameUserType[key];
+                } else {
+                    const value = this.userEditing.appNameUserType[key];
+                    delete this.userEditing.appNameUserType[key];
+                    this.userEditing.appNameUserType[this.SYSTEM_SCOPE_OF_ACCESS] = value;
+                }
+            });
+         
+        }else{
+
+            const keys = Object.keys(this.userEditing.appNameUserType);
+            keys.forEach((key, idx) => {
+                if(idx === index){
+                        
+                    const value = this.userEditing.appNameUserType[key];
+                    delete this.userEditing.appNameUserType[key];
+                    this.userEditing.appNameUserType[selectedApp] = value;
+
+                }
+
+            });
+
+        }
+        console.log(this.userEditing.appNameUserType)
+        this.isShowAddMoreApplicationAccessButton()
+    }
+
 
 }

@@ -13,8 +13,8 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HTTP_SERVER_ROOT, LiveBroadcast, RestService, show403Error, REST_SERVICE_ROOT } from '../rest/rest.service';
-import { AuthService } from '../rest/auth.service';
+import { HTTP_SERVER_ROOT, LiveBroadcast, RestService , show403Error, REST_SERVICE_ROOT} from '../rest/rest.service';
+import { APP_NAME_USER_TYPE, AuthService } from '../rest/auth.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
 import { MatDialog } from '@angular/material/dialog';
@@ -448,28 +448,30 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             //this method is called whenever app changes
 
             this.appName = params['appname']; // (+) converts string 'id' to a number
-            let scope = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
+            var appNameUserTypeJsonStr = localStorage.getItem(APP_NAME_USER_TYPE)
+            if(appNameUserTypeJsonStr == null || appNameUserTypeJsonStr == ""){ // shouldnt come
+                this.router.navigateByUrl("/");
+                return;
+            }
+            var appNameUserTypeJson = JSON.parse(appNameUserTypeJsonStr)
+            //let scope = localStorage.getItem(LOCAL_STORAGE_SCOPE_KEY);
             if (typeof this.appName == "undefined") {
 
-                if (scope == "system") {
+                if ("system" in appNameUserTypeJson) {
                     this.restService.getApplications().subscribe(data => {
 
                         //second element is the Applications. It is not safe to make static binding.
 
                         for (var i in data['applications']) {
-                            //console.log(data['applications'][i]);
                             this.router.navigateByUrl("/applications/" + data['applications'][i]);
                             break;
                         }
                     }, error => { show403Error(error); });
                 }
                 else {
-                    if (scope == null) {
-                        this.router.navigateByUrl("/");
-                    }
-                    else {
-                        this.router.navigateByUrl("/applications/" + scope);
-                    }
+                  
+                    this.router.navigateByUrl("/applications/" + Object.keys(appNameUserTypeJson)[0]);
+                    
                 }
                 return;
             }
@@ -484,7 +486,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.isEnterpriseEdition = data["success"];
             }, error => { show403Error(error); });
 
-            if (scope == "system") {
+            if ("system" in appNameUserTypeJson) {
                 this.restService.isInClusterMode().subscribe(data => {
                     this.isClusterMode = data["success"];
                     if (this.isClusterMode) {
@@ -702,7 +704,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         offset = offset * size;
 
         this.restService.getAppLiveStreams(this.appName, offset, size, this.broadcastSortBy, this.broadcastOrderBy, this.filterValue).subscribe(data => {
-
+            console.log(data)
             this.broadcastTableData.dataRows = [];
 
             for (var i in data) {
