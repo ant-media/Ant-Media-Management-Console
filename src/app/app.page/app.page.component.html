@@ -711,13 +711,24 @@
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'broadcasting'">
                                                             
-                                                            <i class="fa fa-circle " style="color:#28a745"
-                                                                *ngSwitchCase="'broadcasting'">&nbsp;</i>
-                                                                Broadcasting
-                                                            <ng-container *ngIf="row.speed > 0">
-                                                                <i data-toggle="tooltip" i18n-title title="Speed">
-                                                                    {{row.speed| number : '1.2-2'}}x</i>
+
+                                                            <ng-container *ngIf="isUpdateTimeValid(row.updateTime); else elseBlock">
+                                                                <i class="fa fa-circle " style="color:#28a745"
+                                                                    >&nbsp;</i>
+                                                                    Broadcasting
+                                                                <ng-container *ngIf="row.speed > 0">
+                                                                    <i data-toggle="tooltip" i18n-title title="Speed">
+                                                                        {{row.speed| number : '1.2-2'}}x</i>
+                                                                </ng-container>
                                                             </ng-container>
+                                                            <ng-template #elseBlock>
+                                                                <i class="fa fa-circle " style="color:#ce2d00"
+                                                                    >&nbsp;</i>
+                                                                    Error
+                                                                    &nbsp;<a matTooltip="It's not ingesting video/audio. Restart broadcasting likely will resolve this issue"><i
+                                                                            
+                                                                            class="fa fa-info-circle"></i></a>
+                                                            </ng-template>
 
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'finished'">
@@ -728,6 +739,9 @@
                                                             <i class="fa fa-circle " style="color:#ffc107"
                                                                 *ngSwitchCase="'preparing'">&nbsp;</i>Preparing
                                                         </ng-container>
+
+                                                        
+                                                       
 
                                                     </ng-container>
 
