@@ -437,12 +437,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngAfterViewInit() {
         this.cdr.detectChanges();
-    }
 
-    isUpdateTimeValid(updateTimeInMs: number): boolean {
-        let now = new Date().getTime();
-        let diff = now - updateTimeInMs;
-        return (diff < 20000);
+
+
     }
 
     getInitParams() {
