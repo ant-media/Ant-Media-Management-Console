@@ -46,11 +46,11 @@ export class UploadVodDialogComponent {
         if (this.fileToUpload) {
 
             if (this.fileToUpload.type !== 'video/mp4' && this.fileToUpload.type !== 'video/webm' && this.fileToUpload.type !== 'video/avi' && 
-                    this.fileToUpload.type != 'video/quicktime') {
+                    this.fileToUpload.type != 'video/quicktime' &&  this.fileToUpload.type != 'video/x-ms-wmv') {
                 swal({
                     type: "error",
                     title: "Unsupported File Type",
-                    text: "MP4, WebM, AVI, MOV files are accepted!",
+                    text: "MP4, WebM, AVI, MOV, WMV files are accepted!",
                     buttonsStyling: false,
                     confirmButtonClass: "btn btn-error"
                 });
@@ -104,7 +104,7 @@ export class UploadVodDialogComponent {
 
                                 });
 
-                            } else if (data["body"]["message"] == "notMp4File") { //this error code has a wrong meaning. 
+                            } else if (data["body"]["message"] == "notSupportedFileType") {  
 
                                 this.uploading = false;
                                 swal({
