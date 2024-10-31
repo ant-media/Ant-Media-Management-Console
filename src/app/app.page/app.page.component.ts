@@ -12,6 +12,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { HTTP_SERVER_ROOT, LiveBroadcast, RestService , show403Error, REST_SERVICE_ROOT} from '../rest/rest.service';
 import { APP_NAME_USER_TYPE, AuthService } from '../rest/auth.service';
@@ -63,6 +64,8 @@ declare var classie: any;
 
 const ERROR_SOCIAL_ENDPOINT_UNDEFINED_CLIENT_ID = -1;
 const ERROR_SOCIAL_ENDPOINT_UNDEFINED_ENDPOINT = -2;
+
+export const INFINITE_JWT_EXPIRE_DATE = 9516239022
 
 declare function require(name: string);
 
@@ -688,6 +691,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             data: {
                 streamId: stream.streamId,
                 appName: this.appName,
+                appSettings: this.appSettings
             }
         });
 
@@ -1983,14 +1987,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.playlistItemAddingActive = false;
             if (data["success"]) {
-                this.liveBroadcast.playListItemList.push({
-                    type: "VoD",
-                    streamUrl: this.playListItemAdding.streamUrl,
-                    name: this.playListItemAdding.name,
-                    seekTimeInMs: 0,
-                    durationInMs: Number(data["dataId"])
 
-                });
+                this.addVodToPlaylistItemList(this.playListItemAdding.streamUrl, this.playListItemAdding.name, Number(data["dataId"]))
+
+
                 this.directUrlAdding = false;
             }
             else {
@@ -2009,7 +2009,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     if (data["errorId"] == -2) {
                         swal({
                             title: "Warning",
-                            text: "URL cannot be accessible",
+                            text: "The URL is inaccessible. If you're adding a local file and token security is enabled for play in the app, ensure to add a play token to the URL.",
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
@@ -2062,7 +2062,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     selectHandlerStreamsPlayListVoD(vodId: string) {
         this.selectionPlaylistVoDs.toggle(vodId);
     }
-    addPlaylistItemFromVoDsClicked() {
+    
+    async addPlaylistItemFromVoDsClicked() {
         if (this.selectionPlaylistVoDs.isEmpty()) {
 
             swal({
@@ -2076,20 +2077,23 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        for (let i of Object.keys(this.dataSourcePlaylistVod.data)) {
+        for (let item of this.dataSourcePlaylistVod.data) {
+            if (this.selectionPlaylistVoDs.isSelected(item.vodId)) {
+                let url = HTTP_SERVER_ROOT + this.appName + "/" + item.filePath;
 
-            if (this.selectionPlaylistVoDs.isSelected(this.dataSourcePlaylistVod.data[i].vodId)) {
-
-                var url = HTTP_SERVER_ROOT + this.appName + "/" + this.dataSourcePlaylistVod.data[i].filePath;
-                this.liveBroadcast.playListItemList.push({
-                    type: "VoD",
-                    streamUrl: url,
-                    name: this.dataSourcePlaylistVod.data[i].vodName,
-                    seekTimeInMs: 0,
-                    durationInMs: this.dataSourcePlaylistVod.data[i].duration
-                });
-
-
+                if (this.appSettings.playJwtControlEnabled) {
+                    try {
+                        const tokenData = await this.restService.getJWTToken(this.appName, item.vodId, INFINITE_JWT_EXPIRE_DATE).toPromise();
+                        const jwt = <Token>tokenData;
+                        
+                        url += `?token=${jwt.tokenId}`;
+                    } catch (error) {
+                        show403Error(error);
+                        continue;
+                    }
+                }
+    
+                this.addVodToPlaylistItemList(url, item.vodName, item.duration);
             }
         }
 
@@ -2097,6 +2101,18 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectionPlaylistVoDs.clear();
         this.vodTableDataForPlaylist.dataRows = [];
         this.dataSourcePlaylistVod = new MatTableDataSource(this.vodTableDataForPlaylist.dataRows);
+
+    }
+
+    addVodToPlaylistItemList(url:string, vodName:string, duration:number){
+
+        this.liveBroadcast.playListItemList.push({
+            type: "VoD",
+            streamUrl: url,
+            name: vodName,
+            seekTimeInMs: 0,
+            durationInMs: duration
+        });
 
     }
 

@@ -11,6 +11,8 @@ import { MatTableDataSource } from "@angular/material/table"
 import { show403Error } from 'app/rest/rest.service';
 import { SelectionModel } from "@angular/cdk/collections";
 
+import { Token } from '../app.page.component';
+import { INFINITE_JWT_EXPIRE_DATE } from '../app.page.component';
 
 declare var $: any;
 declare var swal: any;
@@ -282,38 +284,27 @@ export class PlaylistEditComponent implements AfterViewInit{
     addPlaylistItemDirectlyClicked() {
         this.playlistItemAddingActive = true;
 
-        this.restService.getDurationInMilliseconds(this.data.appName,this.playListItemAdding.streamUrl).subscribe(data => {
-
-            this.playlistItemAddingActive = false;
+        this.restService.getDurationInMilliseconds(this.data.appName, this.playListItemAdding.streamUrl).subscribe(data => {
+            console.log(data)
+            this.playlistItemAddingActive = false;  
             if (data["success"]) {
-                this.playlistEditing.playListItemList.push({
-                    type:"VoD",
-                    streamUrl: this.playListItemAdding.streamUrl,
-                    name: this.playListItemAdding.name,
-                    seekTimeInMs:0,
-                    durationInMs: Number(data["dataId"])
-        
-                });
+            
+                this.addVodToPlaylistItemList(this.playListItemAdding.streamUrl, this.playListItemAdding.name, Number(data["dataId"]))
+
                 this.directUrlAdding = false;
             }
             else {
                 if (data["errorId"] == -1) 
                 {
                     //duration cannot be found, it may happen
-                    this.playlistEditing.playListItemList.push({
-                        type:"VoD",
-                        streamUrl: this.playListItemAdding.streamUrl,
-                        name: this.playListItemAdding.name,
-                        seekTimeInMs:0,
-                        durationInMs: Number(data["dataId"])
-            
-                    });
+                    this.addVodToPlaylistItemList(this.playListItemAdding.streamUrl, this.playListItemAdding.name,  Number(data["dataId"]))
+
                 }
                 else {
                     if (data["errorId"] == -2) {
                         swal({
                             title: "Warning",
-                            text: "URL cannot be accessible",
+                            text: "The URL is inaccessible. If you're adding a local file and token security is enabled for play in the app, ensure to add a play token to the URL.",
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
@@ -343,6 +334,18 @@ export class PlaylistEditComponent implements AfterViewInit{
        
     }
 
+    addVodToPlaylistItemList(url:string, vodName:string, duration:number){
+
+        this.playlistEditing.playListItemList.push({
+            type: "VoD",
+            streamUrl: url,
+            name: vodName,
+            seekTimeInMs: 0,
+            durationInMs: duration
+        });
+
+    }
+
     addPlaylistItemFromVoDs() {
         this.directUrlAdding = false;
         this.vodAdding = true;
@@ -370,7 +373,7 @@ export class PlaylistEditComponent implements AfterViewInit{
         }
     }
 
-    addPlaylistItemFromVoDsClicked() {
+    async addPlaylistItemFromVoDsClicked() {
         if (this.selectionStreams.isEmpty()) {
 
             swal({
@@ -385,21 +388,26 @@ export class PlaylistEditComponent implements AfterViewInit{
         }
 
         for (let i of Object.keys(this.dataSourceVod.data)) {
-
             if (this.selectionStreams.isSelected(this.dataSourceVod.data[i].vodId)) {
-
                 var url = HTTP_SERVER_ROOT + this.data.appName + "/" + this.dataSourceVod.data[i].filePath;
-                this.playlistEditing.playListItemList.push({
-                    type: "VoD",
-                    streamUrl: url,
-                    name: this.dataSourceVod.data[i].vodName,
-                    seekTimeInMs:0,
-                    durationInMs:this.dataSourceVod.data[i].duration
-                });
-
                 
+                if (this.data.appSettings.playJwtControlEnabled) {
+                    try {
+                        const tokenData = await this.restService.getJWTToken(this.data.appName, this.dataSourceVod.data[i].vodId, INFINITE_JWT_EXPIRE_DATE).toPromise();
+                        const jwt = <Token>tokenData;
+                        
+                        url += `?token=${jwt.tokenId}`;
+                    } catch (error) {
+                        show403Error(error);
+                        continue; // Skip this item on error
+                    }
+                }
+    
+                // Add to playlist after URL is complete
+                this.addVodToPlaylistItemList(url, this.dataSourceVod.data[i].vodName, this.dataSourceVod.data[i].duration);
             }
         }
+
 
         this.vodAdding = false;
         this.selectionStreams.clear();
