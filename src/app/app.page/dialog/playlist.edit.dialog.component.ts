@@ -285,7 +285,6 @@ export class PlaylistEditComponent implements AfterViewInit{
         this.playlistItemAddingActive = true;
 
         this.restService.getDurationInMilliseconds(this.data.appName, this.playListItemAdding.streamUrl).subscribe(data => {
-            console.log(data)
             this.playlistItemAddingActive = false;  
             if (data["success"]) {
             
