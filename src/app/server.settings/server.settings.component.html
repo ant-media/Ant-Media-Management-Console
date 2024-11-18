@@ -375,8 +375,8 @@
                                                              class="dropdown-toggle form-control" required>
                                                         <option value="{{getSslConfigurationTypeName(ConfigurationTypes.CUSTOM_DOMAIN)}}">{{ ConfigurationTypes.CUSTOM_DOMAIN }}</option>
                                                        
-                                                        <option *ngIf ="licenseStatus == 'Valid'" value="{{getSslConfigurationTypeName(ConfigurationTypes.ANTMEDIA_SUBDOMAIN)}}">{{ ConfigurationTypes.ANTMEDIA_SUBDOMAIN }}</option>
-                                                        <option disabled="true" *ngIf ="licenseStatus != 'Valid'" value="{{getSslConfigurationTypeName(ConfigurationTypes.ANTMEDIA_SUBDOMAIN)}}">{{ ConfigurationTypes.ANTMEDIA_SUBDOMAIN }} - Enterprise License Required</option>
+                                                        <option *ngIf ="licenseStatus == 'Valid' || serverSettings.buildForMarket" value="{{getSslConfigurationTypeName(ConfigurationTypes.ANTMEDIA_SUBDOMAIN)}}">{{ ConfigurationTypes.ANTMEDIA_SUBDOMAIN }}</option>
+                                                        <option disabled="true" *ngIf ="licenseStatus != 'Valid' && !serverSettings.buildForMarket" value="{{getSslConfigurationTypeName(ConfigurationTypes.ANTMEDIA_SUBDOMAIN)}}">{{ ConfigurationTypes.ANTMEDIA_SUBDOMAIN }} - Enterprise License Required</option>
 
                                                         <option value="{{getSslConfigurationTypeName(ConfigurationTypes.CUSTOM_CERTIFICATE)}}">{{ ConfigurationTypes.CUSTOM_CERTIFICATE }}</option>
                                                         
