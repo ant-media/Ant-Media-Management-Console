@@ -1468,7 +1468,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         },
             error => {
-                show403Error(error);
+                if (!show403Error(error)) {
+                    $.notify({
+                        icon: "ti-alert",
+                        message: Locale.getLocaleInterface().settings_not_saved
+                    }, {
+                        type: 'warning',
+                        delay: 1900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
                 this.getSettings();
             });
 
@@ -1563,7 +1575,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
         },
             error => {
-                show403Error(error);
+                if (!show403Error(error)) {
+                    $.notify({
+                        icon: "ti-alert",
+                        message: Locale.getLocaleInterface().settings_not_saved
+                    }, {
+                        type: 'warning',
+                        delay: 1900,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
                 this.getSettings();
             });
 
