@@ -99,25 +99,36 @@
             <div class="{{gpuUsageClass}}"  *ngFor="let gpuInfo of gpuUsageInfo; let i=index">
                 <div class="card card-circle-chart">
                     <div class="card-header text-center">
+                        <div class="icon-big icon-danger text-center">
+                            <i class="ti-pulse"></i>
+                        </div>
                         <p class="description">{{gpuInfo.deviceName}}</p>
 
                     </div>
                     <div class="card-content">
                         <div class="row">
-                            <div class="col-xs-4">
-                                <div class="icon-big icon-danger text-center">
-                                    <i class="ti-pulse"></i>
-                                </div>
-                            </div>
-                            <div class="col-xs-4">
+                            
+                            <div class="col-xs-3">
                                 <div class="numbers" style="text-align:center">
-                                    <p>GPU-Utilization</p>
+                                    <p>GPU-Util</p>
                                     {{gpuInfo.gpuUtilization}}%
                                 </div>
                             </div>
-                            <div class="col-xs-4">
+                            <div class="col-xs-3">
                                 <div class="numbers" style="text-align:center">
-                                    <p>Memory-Usage</p>
+                                    <p>Encoder-Util</p>
+                                    {{gpuInfo.gpuEncoderUtilization}}%
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="numbers" style="text-align:center">
+                                    <p>Decoder-Util</p>
+                                    {{gpuInfo.gpuDecoderUtilization}}%
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="numbers" style="text-align:center">
+                                    <p>Memory</p>
                                     {{gpuInfo.memoryUtilization}}%
                                 </div>
                             </div>
