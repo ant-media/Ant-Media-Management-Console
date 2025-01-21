@@ -18,9 +18,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <hr />
-                    </div>
                 </div>
             </div>
             <div class="col-lg-4 col-sm-4">
@@ -40,9 +37,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <hr />
-                    </div>
                 </div>
             </div>
             <div class="col-lg-4 col-sm-4">
@@ -51,7 +45,7 @@
                         <div class="row">
                             <div class="col-xs-5">
                                 <div class="icon-big icon-success text-center">
-                                    <i class="ti-wallet"></i>
+                                    <i class="ti-video-camera"></i>
                                 </div>
                             </div>
                             <div class="col-xs-7">
@@ -61,9 +55,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        <hr />
                     </div>
                 </div>
             </div>
@@ -103,28 +94,59 @@
                 </div>
             </div>
         </div>
+        <div class="row" *ngIf="gpuUsageInfo.length > 0">
+           
+            <div class="{{gpuUsageClass}}"  *ngFor="let gpuInfo of gpuUsageInfo; let i=index">
+                <div class="card card-circle-chart">
+                    <div class="card-header text-center">
+                        <p class="description">{{gpuInfo.deviceName}}</p>
+
+                    </div>
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="icon-big icon-danger text-center">
+                                    <i class="ti-pulse"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="numbers" style="text-align:center">
+                                    <p>GPU-Utilization</p>
+                                    {{gpuInfo.gpuUtilization}}%
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="numbers" style="text-align:center">
+                                    <p>Memory-Usage</p>
+                                    {{gpuInfo.memoryUtilization}}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-12">
 
                 <div class="card">
-                <div style="padding-top:15px">
-                    <div class="text-right" style="float:right;margin-right:15px;" >
-                        <button class="btn btn-fill btn-success" i18n="@@applicationsTitle" (click)="newApplication()"
-                           role="button">New Application</button>
-                    </div>
+                    <div style="padding-top:15px">
+                        <div class="text-right" style="float:right;margin-right:15px;">
+                            <button class="btn btn-fill btn-success" i18n="@@applicationsTitle"
+                                (click)="newApplication()" role="button">New Application</button>
+                        </div>
 
-                    <br>
-                    <br>
-                </div>
-                <div *ngIf="newApplicationActive" style="padding:45px">
-                    <form method="post" #f="ngForm" validate (ngSubmit)="createApplication(f.valid)">
+                        <br>
+                        <br>
+                    </div>
+                    <div *ngIf="newApplicationActive" style="padding:45px">
+                        <form method="post" #f="ngForm" validate (ngSubmit)="createApplication(f.valid)">
                             <div class="form-group text-left">
                                 <label>Application Name*</label>
                                 <input type="text" required minlength="4" name="applicationName"
-                                    placeholder="Application name" class="form-control"
-                                    [(ngModel)]="newApplicationName" #applicationName="ngModel">
-                                <small [hidden]="applicationName.valid || (!f.submitted)"
-                                    class="text-danger">
+                                    placeholder="Application name" class="form-control" [(ngModel)]="newApplicationName"
+                                    #applicationName="ngModel">
+                                <small [hidden]="applicationName.valid || (!f.submitted)" class="text-danger">
                                     Applicaton name should be at least 4 characters.
                                 </small>
                                 <small class="text-danger" *ngIf="streamNameEmpty">
@@ -133,16 +155,16 @@
                             </div>
                             <div class="form-group text-left">
                                 <label>WAR File</label>
-                                <input type="file" class="upload" (change)="handleWarFileInput($event.target.files)" accept=".war"/>
-                                <small  class="help-block">This field is optional. If you have a custom app in a .war format, you may install by uploading.</small>
-                                
+                                <input type="file" class="upload" (change)="handleWarFileInput($event.target.files)"
+                                    accept=".war" />
+                                <small class="help-block">This field is optional. If you have a custom app in a .war
+                                    format, you may install by uploading.</small>
+
                             </div>
 
                             <div class="form-group text-center">
-                                <button type="submit" [disabled]='newAppCreating'
-                                    class="btn btn-fill btn-success">
-                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw"
-                                        *ngIf="newAppCreating"
+                                <button type="submit" [disabled]='newAppCreating' class="btn btn-fill btn-success">
+                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" *ngIf="newAppCreating"
                                         aria-hidden="true"></i>Create</button>
 
                                 <button type="button" class="btn btn-simple"
@@ -151,41 +173,41 @@
                             <div class="form-group text-center">
                                 <small class="text-info" *ngIf="deployingApplication">
                                     Deploying the {{newApplicationName}}. Please wait a few seconds.
-                                </small> 
+                                </small>
                             </div>
-                             
-                    </form>
-                </div>     
-                <div class="card-content table-full-width">   
-                               
+
+                        </form>
+                    </div>
+                    <div class="card-content table-full-width">
+
                         <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
                                     <th i18n="@@appName">Name</th>
-                                    <th class="text-center" i18n="@@liveStreamCountLabel" >Live Stream</th>
-                                    <th class="text-center" i18n="@@vodCountLabel"*ngIf="isMobileMenu()">VoD Count</th>
-                                    <th class="text-center" i18n="@@appStorageSizeLabel"*ngIf="isMobileMenu()">Storage</th>
+                                    <th class="text-center" i18n="@@liveStreamCountLabel">Live Stream</th>
+                                    <th class="text-center" i18n="@@vodCountLabel" *ngIf="isMobileMenu()">VoD Count</th>
+                                    <th class="text-center" i18n="@@appStorageSizeLabel" *ngIf="isMobileMenu()">Storage
+                                    </th>
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!---->
-                                <tr *ngFor="let row of appTableData.dataRows; let i=index" >
-    
-                                      <td class="text-center">{{i+1}}</td>
-                                      <td>{{row.name}}</td>
-                                      <td class="text-center">{{row.liveStreamCount}}</td>
-                                      <td class="text-center" *ngIf="isMobileMenu()">{{row.vodCount}}</td>
-                                      <td class="text-center" *ngIf="isMobileMenu()">{{niceBytes(row.storage)}}</td>
-                                      <td class="text-center">  <button (click)="deleteApplication(row.name)"
-                                        class="btn btn-simple btn-danger"
-                                        type="button">
-                                        <span class="btn-label">
-                                            <i class="ti-close"></i>
-                                        </span>
-                                    </button></td>
-                               
+                                <tr *ngFor="let row of appTableData.dataRows; let i=index">
+
+                                    <td class="text-center">{{i+1}}</td>
+                                    <td>{{row.name}}</td>
+                                    <td class="text-center">{{row.liveStreamCount}}</td>
+                                    <td class="text-center" *ngIf="isMobileMenu()">{{row.vodCount}}</td>
+                                    <td class="text-center" *ngIf="isMobileMenu()">{{niceBytes(row.storage)}}</td>
+                                    <td class="text-center"> <button (click)="deleteApplication(row.name)"
+                                            class="btn btn-simple btn-danger" type="button">
+                                            <span class="btn-label">
+                                                <i class="ti-close"></i>
+                                            </span>
+                                        </button></td>
+
                                 </tr>
                             </tbody>
                         </table>

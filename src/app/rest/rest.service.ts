@@ -204,6 +204,12 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/version");
     }
 
+    public getServerTime(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/server-time");
+    }
+
+   
+
     public getDetectionList(appName:string, streamId:string, offset:number, size:Number): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/detections/'+offset+"/"+size);
     }
