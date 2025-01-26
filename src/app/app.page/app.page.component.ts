@@ -3215,4 +3215,135 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
+    formatTime(milliseconds: number): string {
+        const totalSeconds = Math.floor(milliseconds / 1000);
+        const seconds = totalSeconds % 60;
+        const totalMinutes = Math.floor(totalSeconds / 60);
+        const minutes = totalMinutes % 60;
+        const totalHours = Math.floor(totalMinutes / 60);
+        const hours = totalHours % 24;
+        const days = Math.floor(totalHours / 24);
+    
+        const parts = [];
+        if (days > 0) parts.push(`${days}d`);
+        if (hours > 0) parts.push(`${hours}h`);
+        if (minutes > 0) parts.push(`${minutes}m`);
+        if (seconds > 0) parts.push(`${seconds}s`);
+    
+        return parts.join(' ');
+      }
+
+      getBitrateInKbps(bitrate: number): number {
+        return Math.floor(bitrate / 1000); 
+      }
+
+
+      getStreamHealthColor(broadcast:LiveBroadcast) {
+
+         if (broadcast.packetLostRatio > 0.02 || broadcast.rttMs > 100 || broadcast.jitterMs > 50 ||
+            broadcast.pendingPacketSize > 30 || broadcast.encoderQueueSize > 30 || (broadcast.speed > 0 && broadcast.speed < 0.7)) 
+         {
+            return "#FFC107";
+            
+         }
+         else {
+            return "#28a745"
+         }
+
+      }
+
+      getStreamDiagnose(broadcast:LiveBroadcast) {
+        var text = "";
+
+        if (broadcast.packetLostRatio > 0.01) {
+            text += "- Packet loss ratio exceeds %1 percent. This likely indicates an issue with the broadcaster's network."
+                    + "Recommend switching to a network with higher QoS anor using a stable Wireless connection.\n"
+        }
+
+        if (broadcast.rttMs > 100) {
+            text += "- RTT exceeds 100ms, indicating a potential issue with the broadcaster's network."
+                    + "Recommend using a network with better stability and lower latency.\n"
+        }
+
+        if (broadcast.jitterMs > 50) {
+            text += "- Jitter exceeds 50ms, suggesting a potential issue with the broadcaster's network."
+                    + "Recommend using a more stable network to improve performance.\n";
+        }
+
+        if (broadcast.pendingPacketSize > 30) {
+            text += "- Input queue size exceeds 30, indicating that the server may be overloaded and struggling to process packets efficiently."
+                    + "Consider scaling the server horizontally or vertically, or reducing the number of incoming streams to alleviate the load.\n"
+        }
+
+        if (broadcast.encoderQueueSize > 30) {
+            text += "- Encoding queue size exceeds 30, indicating that the encoder(CPU or GPU) may be overloaded and struggling to process tasks efficiently."
+                    + "Consider scaling the server horizontally or vertically, or reducing the number of incoming streams to alleviate the load.\n"
+        }
+
+        if (broadcast.speed > 0 && broadcast.speed < 0.7) {
+            text += "- Speed is below 0.7(should be around 1.0x), which may indicate an issue with the broadcaster's network."
+                    + "Consider troubleshooting the network or switching to a higher-quality connection.\n"
+        }
+
+        return text;
+      }
+
+      getStatInfo(broadcast:LiveBroadcast) {
+
+        var content = "";
+        var diagnoseText = this.getStreamDiagnose(broadcast);
+
+        if (diagnoseText != "") {
+
+            content += "Stream is having some issues. Please check the diagnose information below.\n"
+            content += diagnoseText + "\n\n";
+            content += "Stats:\n";
+        }
+
+       
+
+        if (broadcast.width > 0 && broadcast.height > 0) {
+            content += "Resolution: " + broadcast.width + "x" + broadcast.height + "\n";
+        }
+
+        if (broadcast.bitrate > 0) {
+            content += "Bitrate: " + this.getBitrateInKbps(broadcast.bitrate) + "kbps\n";
+        }
+
+        if (broadcast.duration > 0) {
+            content += "Duration: " + this.formatTime(broadcast.duration) + "\n";
+        }
+
+        if (broadcast.pendingPacketSize > 0) {
+            content += "Input Queue Size: " + broadcast.pendingPacketSize + "\n";
+        }
+
+        if (broadcast.packetsLost > 0) {
+            content += "Packets Lost: " + broadcast.packetsLost + "\n";
+        }
+
+        if (broadcast.encoderQueueSize > 0) {
+            content += "Encoding Queue Size: " + broadcast.encoderQueueSize + "\n";
+        }
+
+        if (broadcast.rttMs > 0) {
+            content += "RTT: " + broadcast.rttMs + " ms\n";
+        }
+
+        if (broadcast.jitterMs > 0) {
+            content += "Jitter: " + broadcast.jitterMs + " ms\n";
+        }
+
+        if (broadcast.dropPacketCountInIngestion > 0) {
+            content += "Dropped Packets: " + broadcast.dropPacketCountInIngestion + "\n";
+        }
+
+        if (broadcast.dropFrameCountInEncoding > 0) {
+            content += "Dropped Frames: " + broadcast.dropFrameCountInEncoding + "\n";
+        }
+
+        return content;
+      }
+
+
 }

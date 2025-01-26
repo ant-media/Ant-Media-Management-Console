@@ -72,6 +72,7 @@ export class OverviewComponent implements OnInit {
     public gpuUsageInfo = Array();;
 
     public gpuUsageClass = "col-sm-offset-4 col-sm-4";
+    public dbAverageQueryTimeMs: number;
 
 
 
@@ -226,6 +227,8 @@ export class OverviewComponent implements OnInit {
 
             this.liveStreamSize = Number(data["totalLiveStreamSize"]);
 
+            this.dbAverageQueryTimeMs = Number(data["dbAverageQueryTimeMs"]);
+
             //getSystemMemoryInfo
             this.systemMemoryTotal  = Number(data["systemMemoryInfo"]["totalMemory"]);
             this.systemMemoryInUse = Number(data["systemMemoryInfo"]["inUseMemory"]);
@@ -272,6 +275,9 @@ export class OverviewComponent implements OnInit {
              else if (this.gpuUsageInfo.length >= 3) {
                 this.gpuUsageClass = "col-sm-4";
              }
+
+
+
            
 
 

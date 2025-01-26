@@ -83,6 +83,17 @@ export class LiveBroadcast {
     playlistLoopEnabled: boolean = true;
     autoStartStopEnabled: boolean = false;
     plannedStartDate: number = 0;
+    width: number;
+    height: number;
+    bitrate: number;
+    pendingPacketSize: number;
+    packetsLost: number;
+    encoderQueueSize: number;
+    rttMs: number;
+    jitterMs: number;
+    packetLostRatio: number;
+    dropPacketCountInIngestion: number;
+    dropFrameCountInEncoding: number;
 
     constructor() {
         this.playListItemList = [];

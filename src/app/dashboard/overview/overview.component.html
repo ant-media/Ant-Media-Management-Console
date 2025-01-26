@@ -5,15 +5,21 @@
                 <div class="card">
                     <div class="card-content">
                         <div class="row">
-                            <div class="col-xs-5">
-                                <div class="icon-big icon-warning text-center">
-                                    <i class="ti-server"></i>
+                            <div class="col-xs-4">
+                                <div class="icon-big icon-danger text-center">
+                                    <i class="ti-dashboard"></i>
                                 </div>
                             </div>
-                            <div class="col-xs-7">
+                            <div class="col-xs-offset-2 col-xs-3" style="padding-right: 0px;">
                                 <div class="numbers">
-                                    <p i18n="@@cpuLoadLabel">System CPU Load</p>
+                                    <p i18n="@@cpuLoadLabel">System CPU</p>
                                     {{systemCpuLoad}}%
+                                </div>
+                            </div>
+                            <div class="col-xs-3" matTooltip="Ant Media Server CPU Load">
+                                <div class="numbers">
+                                    <p i18n="@@cpuLoadLabel">AMS CPU</p>
+                                    {{processCpuLoad}}%
                                 </div>
                             </div>
                         </div>
@@ -25,14 +31,14 @@
                     <div class="card-content">
                         <div class="row">
                             <div class="col-xs-5">
-                                <div class="icon-big icon-danger text-center">
-                                    <i class="ti-dashboard"></i>
+                                <div class="icon-big icon-warning text-center">
+                                    <i class="ti-server"></i>
                                 </div>
                             </div>
-                            <div class="col-xs-7">
-                                <div class="numbers">
-                                    <p i18n="@@cpuLoadLabel">AMS CPU Load</p>
-                                    {{processCpuLoad}}%
+                            <div class="col-xs-7" >
+                                <div class="numbers" >
+                                    <p i18n="@@cpuLoadLabel" matTooltip="Max acceptable value: 100ms">DB Average Query Time</p>
+                                    {{dbAverageQueryTimeMs}}ms
                                 </div>
                             </div>
                         </div>

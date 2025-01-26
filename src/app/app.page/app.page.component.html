@@ -710,23 +710,31 @@
 
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'broadcasting'">
-                                                            
-                                                            <i class="fa fa-circle " style="color:#28a745"
-                                                                *ngSwitchCase="'broadcasting'">&nbsp;</i>
+                                                            <div matTooltip="{{getStatInfo(row)}}">
+                                                                <i class="fa fa-circle " style="color:{{getStreamHealthColor(row)}}"
+                                                                    *ngSwitchCase="'broadcasting'">&nbsp;</i>
                                                                 Broadcasting
-                                                            <ng-container *ngIf="row.speed > 0">
-                                                                <i data-toggle="tooltip" i18n-title title="Speed">
-                                                                    {{row.speed| number : '1.2-2'}}x</i>
-                                                            </ng-container>
+                                                                <ng-container *ngIf="row.speed > 0">
+                                                                    <i data-toggle="tooltip" i18n-title title="Speed">
+                                                                        {{row.speed| number : '1.2-2'}}x</i>
+                                                                </ng-container>
+                                                                <i class="fa fa-info-circle " *ngIf="getStreamDiagnose(row) != ''"></i>
+                                                            </div>
+
 
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'finished'">
                                                             <i class="fa fa-circle text-muted"
-                                                                *ngSwitchCase="'finished'">&nbsp;</i>Offline
+                                                                *ngSwitchCase="'finished'">&nbsp;</i><div>Offline</div>
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'terminated_unexpectedly'">
+                                                            <i class="fa fa-circle text-muted"
+                                                                *ngSwitchCase="'terminated_unexpectedly'">&nbsp;</i><div matTooltip="Terminated unexpectedly">Offline*</div>
+                                                               
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'preparing'">
-                                                            <i class="fa fa-circle " style="color:#ffc107"
-                                                                *ngSwitchCase="'preparing'">&nbsp;</i>Preparing
+                                                            <i class="fa fa-circle " style="color:#ff9800"
+                                                                *ngSwitchCase="'preparing'">&nbsp;</i><div>Preparing</div>
                                                         </ng-container>
 
                                                     </ng-container>
@@ -1282,7 +1290,7 @@
                                                         
                                                         <div class="col-xs-12" style="margin-top:24px">
                                                                 <div *ngIf="appSettings.vp8Enabled && appSettings.h264Enabled" class="category text-left">
-                                                                    <i class="fa fa-info-circle"></i>
+                                                                    <i class="fa fa-info-circle" style="font-size: 20px;color:#DD0330"></i>
                                                                     If you want to have both VP8 and H.264 streaming, you should add at least one adaptive bitrate below.
                                                                 </div>  
                                                                 
