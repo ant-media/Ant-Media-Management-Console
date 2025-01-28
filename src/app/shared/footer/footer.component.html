@@ -2,8 +2,12 @@
     <div class="container-fluid">
         <nav class="pull-left">
             <ul>
-                <li>
+                <li style="padding-right:0px">
                   {{versionType}} {{versionName}} {{buildNumber}}
+                </li>
+                -
+                <li style="padding-left:0px">
+                    Up time: {{formatUpTime(upTime)}}
                 </li>
                 
             </ul>

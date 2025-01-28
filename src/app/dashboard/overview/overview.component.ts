@@ -69,6 +69,12 @@ export class OverviewComponent implements OnInit {
     public deployingApplication = false;
     public warFileToUpload: File = null;
 
+    public gpuUsageInfo = Array();;
+
+    public gpuUsageClass = "col-sm-offset-4 col-sm-4";
+    public dbAverageQueryTimeMs: number;
+
+
 
     constructor(private auth: AuthService, private restService:RestService, private supportRestService:SupportRestService, private router:Router , public dialog: MatDialog) {
 
@@ -221,6 +227,8 @@ export class OverviewComponent implements OnInit {
 
             this.liveStreamSize = Number(data["totalLiveStreamSize"]);
 
+            this.dbAverageQueryTimeMs = Number(data["dbAverageQueryTimeMs"]);
+
             //getSystemMemoryInfo
             this.systemMemoryTotal  = Number(data["systemMemoryInfo"]["totalMemory"]);
             this.systemMemoryInUse = Number(data["systemMemoryInfo"]["inUseMemory"]);
@@ -255,6 +263,23 @@ export class OverviewComponent implements OnInit {
              this.jvmHeapUsagePercent = Math.round(Number(this.jvmHeapInUseSpace * 100 / this.jvmHeapTotalSpace));
 
              $("#chartJvmHeapUsage").data('easyPieChart').update(this.jvmHeapUsagePercent);
+
+             this.gpuUsageInfo = data["gpuUsageInfo"];
+
+             if (this.gpuUsageInfo.length == 1) {
+                this.gpuUsageClass = "col-sm-offset-4 col-sm-4";
+             }
+             else if (this.gpuUsageInfo.length == 2) {
+                this.gpuUsageClass = "col-sm-offset-2 col-sm-4";
+             }
+             else if (this.gpuUsageInfo.length >= 3) {
+                this.gpuUsageClass = "col-sm-4";
+             }
+
+
+
+           
+
 
         },
             this.handleError);

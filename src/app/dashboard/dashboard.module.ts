@@ -9,6 +9,8 @@ import {HttpClientModule} from '@angular/common/http';
 import {DataService} from "../rest/data.service";
 import {ServerSettingsComponent} from "../server.settings/server.settings.component";
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatTooltipModule} from '@angular/material/tooltip'
+
 
 
 @NgModule({
@@ -17,7 +19,8 @@ import {MatDialogModule} from '@angular/material/dialog';
         RouterModule.forChild(DashboardRoutes),
         FormsModule,
         HttpClientModule,
-        MatDialogModule
+        MatDialogModule,
+        MatTooltipModule
     ],
     declarations: [OverviewComponent],
     providers: [DataService,ServerSettingsComponent],

@@ -148,4 +148,10 @@ select.selectpicker {
     justify-content:flex-end;
 }
 
+.mat-tooltip {
+    white-space: pre-line;
+    max-width: 600px !important;
+  
+  }
+
 

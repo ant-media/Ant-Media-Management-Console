@@ -35,6 +35,14 @@
                                 </mat-cell>
                             </ng-container>
 
+                            <ng-container matColumnDef="dbQueryTime" >
+                                <mat-header-cell *matHeaderCellDef> DB Average Query Time <br/> </mat-header-cell>
+
+                                <mat-cell *matCellDef="let row" >
+                                    {{row.dbQueryAveargeTimeMs}}ms
+                                </mat-cell>
+                            </ng-container>
+
                             <ng-container matColumnDef="lastUpdateTime">
                                 <mat-header-cell *matHeaderCellDef> Last Heartbeat </mat-header-cell>
 
@@ -54,9 +62,7 @@
 
                                     <ng-template #showDead>
                                         <span class="dot btn-danger"></span>&nbsp; Inaccessible
-                                    </ng-template>
-                                    
-                                                                                    
+                                    </ng-template>                                            
                                 </mat-cell>
                             </ng-container>
 

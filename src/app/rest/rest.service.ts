@@ -83,6 +83,17 @@ export class LiveBroadcast {
     playlistLoopEnabled: boolean = true;
     autoStartStopEnabled: boolean = false;
     plannedStartDate: number = 0;
+    width: number;
+    height: number;
+    bitrate: number;
+    pendingPacketSize: number;
+    packetsLost: number;
+    encoderQueueSize: number;
+    rttMs: number;
+    jitterMs: number;
+    packetLostRatio: number;
+    dropPacketCountInIngestion: number;
+    dropFrameCountInEncoding: number;
 
     constructor() {
         this.playListItemList = [];
@@ -203,6 +214,12 @@ export class RestService {
     public getVersion(): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/version");
     }
+
+    public getServerTime(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/server-time");
+    }
+
+   
 
     public getDetectionList(appName:string, streamId:string, offset:number, size:Number): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + '/rest/v2/broadcasts/'+streamId+'/detections/'+offset+"/"+size);
