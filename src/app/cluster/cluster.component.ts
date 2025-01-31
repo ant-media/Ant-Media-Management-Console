@@ -48,7 +48,7 @@ export class ClusterComponent implements OnInit, OnDestroy, AfterViewInit {
     public nodeTableData: ClusterInfoTable;
     public timerId: any;
  
-    public nodeColumns = ['nodeIp', 'cpu', 'memory', 'lastUpdateTime', 'inTheCluster', 'actions'];
+    public nodeColumns = ['nodeIp', 'cpu', 'memory', 'dbQueryTime', 'lastUpdateTime', 'inTheCluster', 'actions'];
 
     public dataSourceNode: MatTableDataSource<ClusterNodeInfo>;
 
