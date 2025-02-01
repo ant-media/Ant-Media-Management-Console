@@ -31,7 +31,7 @@
     "@angular/platform-browser-dynamic": "^10.0.8",
     "@angular/platform-server": "^10.0.8",
     "@angular/router": "^10.0.8",
-    "@antmedia/web_player": "3.0.0-SNAPSHOT-2024-Dec-23-04-35",
+    "@antmedia/web_player": "^2.11.11",
     "@ngui/map": "0.30.3",
     "@ngui/ngui": "0.15.2",
     "@types/googlemaps": "3.39.11",
