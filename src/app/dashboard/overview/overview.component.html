@@ -5,18 +5,18 @@
                 <div class="card">
                     <div class="card-content">
                         <div class="row">
-                            <div class="col-xs-4">
+                            <div class="col-xs-2">
                                 <div class="icon-big icon-danger text-center">
                                     <i class="ti-dashboard"></i>
                                 </div>
                             </div>
-                            <div class="col-xs-offset-2 col-xs-3" style="padding-right: 0px;">
+                            <div class="col-xs-5" style="padding-right: 0px;">
                                 <div class="numbers">
                                     <p i18n="@@cpuLoadLabel">System CPU</p>
                                     {{systemCpuLoad}}%
                                 </div>
                             </div>
-                            <div class="col-xs-3" matTooltip="Ant Media Server CPU Load">
+                            <div class="col-xs-5" matTooltip="Ant Media Server CPU Load">
                                 <div class="numbers">
                                     <p i18n="@@cpuLoadLabel">AMS CPU</p>
                                     {{processCpuLoad}}%
@@ -30,12 +30,12 @@
                 <div class="card">
                     <div class="card-content">
                         <div class="row">
-                            <div class="col-xs-5">
+                            <div class="col-xs-2">
                                 <div class="icon-big icon-warning text-center">
                                     <i class="ti-server"></i>
                                 </div>
                             </div>
-                            <div class="col-xs-7" >
+                            <div class="col-xs-10" >
                                 <div class="numbers" >
                                     <p i18n="@@cpuLoadLabel" matTooltip="Max acceptable value: 100ms">DB Average Query Time</p>
                                     {{dbAverageQueryTimeMs}}ms
@@ -49,12 +49,12 @@
                 <div class="card">
                     <div class="card-content">
                         <div class="row">
-                            <div class="col-xs-5">
+                            <div class="col-xs-2">
                                 <div class="icon-big icon-success text-center">
                                     <i class="ti-video-camera"></i>
                                 </div>
                             </div>
-                            <div class="col-xs-7">
+                            <div class="col-xs-10">
                                 <div class="numbers">
                                     <p i18n="@@liveStreamCountLabel">Active Live Streams</p>
                                     {{liveStreamSize}}
@@ -116,19 +116,19 @@
                             
                             <div class="col-xs-3">
                                 <div class="numbers" style="text-align:center">
-                                    <p>GPU-Util</p>
+                                    <p>GPU</p>
                                     {{gpuInfo.gpuUtilization}}%
                                 </div>
                             </div>
                             <div class="col-xs-3">
                                 <div class="numbers" style="text-align:center">
-                                    <p>Encoder-Util</p>
+                                    <p>Encoder</p>
                                     {{gpuInfo.gpuEncoderUtilization}}%
                                 </div>
                             </div>
                             <div class="col-xs-3">
                                 <div class="numbers" style="text-align:center">
-                                    <p>Decoder-Util</p>
+                                    <p>Decoder</p>
                                     {{gpuInfo.gpuDecoderUtilization}}%
                                 </div>
                             </div>
