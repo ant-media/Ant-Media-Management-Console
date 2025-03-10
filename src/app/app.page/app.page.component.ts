@@ -3241,12 +3241,12 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
       getStreamHealthColor(broadcast:LiveBroadcast) {
 
          if (broadcast.packetLostRatio > 0.02 || broadcast.rttMs > 100 || broadcast.jitterMs > 50 ||
-            broadcast.pendingPacketSize > 30 || broadcast.encoderQueueSize > 30 || (broadcast.speed > 0 && broadcast.speed < 0.7)) 
+            broadcast.pendingPacketSize > 15 || broadcast.encoderQueueSize > 15 || (broadcast.speed > 0 && broadcast.speed < 0.7)) 
          {
             return "#FFC107";
-            
          }
-         else {
+         else 
+         {
             return "#28a745"
          }
 
@@ -3270,13 +3270,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     + "Recommend using a more stable network to improve performance.\n";
         }
 
-        if (broadcast.pendingPacketSize > 30) {
-            text += "- Input queue size exceeds 30, indicating that the server may be overloaded and struggling to process packets efficiently."
+        if (broadcast.pendingPacketSize > 15) {
+            text += "- Input queue size exceeds 15, indicating that the server may be overloaded and struggling to process packets efficiently."
                     + "Consider scaling the server horizontally or vertically, or reducing the number of incoming streams to alleviate the load.\n"
         }
 
-        if (broadcast.encoderQueueSize > 30) {
-            text += "- Encoding queue size exceeds 30, indicating that the encoder(CPU or GPU) may be overloaded and struggling to process tasks efficiently."
+        if (broadcast.encoderQueueSize > 15) {
+            text += "- Encoding queue size exceeds 15, indicating that the encoder(CPU or GPU) may be overloaded and struggling to process tasks efficiently."
                     + "Consider scaling the server horizontally or vertically, or reducing the number of incoming streams to alleviate the load.\n"
         }
 
@@ -3294,13 +3294,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         var diagnoseText = this.getStreamDiagnose(broadcast);
 
         if (diagnoseText != "") {
-
             content += "Stream is having some issues. Please check the diagnose information below.\n"
             content += diagnoseText + "\n\n";
             content += "Stats:\n";
         }
-
-       
 
         if (broadcast.width > 0 && broadcast.height > 0) {
             content += "Resolution: " + broadcast.width + "x" + broadcast.height + "\n";
