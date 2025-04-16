@@ -1287,7 +1287,19 @@
                                                                 <p class="category text-left">Explicitly required for WebM Recording</p>  
                                                                 
                                                         </div>
-                                                        
+                                                        <div class="col-xs-12">
+                                                            <div class="checkbox">
+                                                                <input id="av1Encoder" name="av1Encoder"
+                                                                    [(ngModel)]="appSettings.av1Enabled"
+                                                                    type="checkbox">
+
+                                                                <label for="av1Encoder">
+                                                                    AV1 
+                                                                </label>
+                                                            </div>
+                                                            <p class="category text-left">Can be used both WebM and MP4 Recording</p>  
+                                                            
+                                                        </div>
                                                         <div class="col-xs-12" style="margin-top:24px">
                                                                 <div *ngIf="appSettings.vp8Enabled && appSettings.h264Enabled" class="category text-left">
                                                                     <i class="fa fa-info-circle" style="font-size: 20px;color:#DD0330"></i>
