@@ -254,6 +254,7 @@ export class AppSettings {
                 public apnKeyId: string,
                 public apnPrivateKey: string,
                 public apnsServer: string,
+                public subFolder: string,
 
     ) {}
 }
