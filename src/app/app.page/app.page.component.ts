@@ -940,12 +940,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             animation: false,
             showCloseButton: true,
             onOpen: () => {
+
+                // Prepend subfolder to streamId if configured (and not VOD - dose not contain dot)
+                var streamIdForPlayer = streamId;
+                if (this.appSettings && this.appSettings.subFolder && this.appSettings.subFolder.trim() !== '' && !streamId.includes(".")) {
+                    streamIdForPlayer = this.appSettings.subFolder + '/' + streamId;
+                }
+
                 //the error in this callback does not show up in browser console.
                 if (hasSubTracks) {
                     //play with multirack player
                     var iframe = $('#' + objectId);
-                   
-                    iframe.prop('src', HTTP_SERVER_ROOT  + 'multitrack-play.html?id=' + streamId + '&app='+this.appName+'&token='+tokenId);
+
+                    iframe.prop('src', HTTP_SERVER_ROOT  + 'multitrack-play.html?id=' + streamIdForPlayer + '&app='+this.appName+'&token='+tokenId);
                      //multitrack-play.html is deployed in the solution in the enterprise edition CI pipeline
                      //Even if it's not a good solution, it helps us play the multitrack streams.  
 
@@ -959,7 +966,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
 
                     embeddedPlayer = new WebPlayer({
-                        streamId: streamId,
+                        streamId: streamIdForPlayer,
                         httpBaseURL: httpBaseUrlForStream,
                         token: tokenId,
                         playOrder: playOrderLocal,
