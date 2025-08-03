@@ -847,6 +847,26 @@
                                                                         </a>
                                                                     </li>
 
+                                                                    <!-- Play With WebRTC -->
+
+                                                                    <li>
+                                                                        <a class="dropdown-link"
+                                                                            (click)="playWithProtocol(row.streamId,'webrtc')">
+                                                                            <ng-container i18n="@@playWithProtocol">
+                                                                                Play With WebRTC</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <!-- Play With HLS -->
+
+                                                                    <li>
+                                                                        <a class="dropdown-link"
+                                                                            (click)="playWithProtocol(row.streamId,'hls')">
+                                                                            <ng-container i18n="@@playWithProtocol">
+                                                                                Play With HLS</ng-container>
+                                                                        </a>
+                                                                    </li>
+
                                                                     <!-- Copy Live Embed Code -->
 
                                                                     <li>

@@ -2682,7 +2682,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }, error => { show403Error(error); });
 
     }
-
+    playWithProtocol(streamId: string , protocol: string){
+         const playUrl = HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + streamId + "&playOrder=" + protocol;
+         window.open(playUrl);
+    }
     copyLiveEmbedCode(streamUrl: string): void {
 
         //if (this.isEnterpriseEdition) {
