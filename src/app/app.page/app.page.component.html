@@ -1292,6 +1292,15 @@
                                                                         H.264 
                                                                     </label>
                                                                 </div>
+                                                                <div class="checkbox">
+                                                                    <input enabled id="h265Encoder" name="h265Encoder"
+                                                                        [(ngModel)]="appSettings.h265Enabled"
+                                                                        type="checkbox">
+
+                                                                    <label for="h265Encoder">
+                                                                        H.265  
+                                                                    </label>
+                                                                </div>
                                                                 <p class="category text-left">Explicitly required for MP4 Recording and HLS Streaming</p>  
                                                         </div>
                                                         <div class="col-xs-12">
@@ -1306,6 +1315,19 @@
                                                                 </div>
                                                                 <p class="category text-left">Explicitly required for WebM Recording</p>  
                                                                 
+                                                        </div>
+                                                        <div class="col-xs-12">
+                                                            <div class="checkbox">
+                                                                <input id="av1Encoder" name="av1Encoder"
+                                                                    [(ngModel)]="appSettings.av1Enabled"
+                                                                    type="checkbox">
+
+                                                                <label for="av1Encoder">
+                                                                    AV1 
+                                                                </label>
+                                                            </div>
+                                                            <p class="category text-left">Explicitly required for WebM Recording</p>  
+                                                            
                                                         </div>
                                                         
                                                         <div class="col-xs-12" style="margin-top:24px">
@@ -1479,12 +1501,12 @@
                                                     </legend>
                                                 </div>
 
-                                                <div *ngIf="!appSettings.h264Enabled"
+                                                <div *ngIf="!appSettings.h264Enabled && !appSettings.h265Enabled"
                                                     class="card-content text-left">
                                                         <i style="font-size: 20px;color:#DD0330"
-                                                            class="fa fa-exclamation-circle"></i> H.264 is not enabled. Please enable H.264 for HLS Streaming
+                                                            class="fa fa-exclamation-circle"></i> H.264 or H.265 is not enabled. Please enable H.264 or H.265 for HLS Streaming
                                                 </div>
-                                                <div *ngIf="appSettings.h264Enabled" class="card-content text-left">
+                                                <div *ngIf="appSettings.h264Enabled || appSettings.h264Enabled" class="card-content text-left">
 
                                                         <div class="form-group">
                                                             <div class="col-sm-12 col-md-12 text-left">
@@ -1574,10 +1596,10 @@
                                                 </div>
                                                 
 
-                                                <div *ngIf="!appSettings.h264Enabled"
+                                                <div *ngIf="!appSettings.h264Enabled && !appSettings.h265Enabled"
                                                     class="form-group text-left" style="margin-left:0px;">
                                                         <i style="font-size: 20px;color:#DD0330"
-                                                            class="fa fa-exclamation-circle"></i> H.264 is not enabled. Please enable H.264 for DASH Streaming
+                                                            class="fa fa-exclamation-circle"></i> H.264 or H.265 is not enabled. Please enable H.264 or H.265 for DASH Streaming
                                                 </div>
 
                                                 <div *ngIf=!isEnterpriseEdition class="form-group text-left" style="margin-left:0px;">
@@ -1589,7 +1611,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div *ngIf="appSettings.h264Enabled && isEnterpriseEdition" class="card-content text-left">
+                                                <div *ngIf="(appSettings.h264Enabled || appSettings.h265Enabled) && isEnterpriseEdition" class="card-content text-left">
 
                                                         <div class="form-group">
                                                             <div class="col-sm-12 col-md-12 text-left">
@@ -1887,12 +1909,12 @@
                                                 </div>
                                                 <div class="card-content text-left">
                                                     <div class="form-group">
-                                                        <div *ngIf="!appSettings.h264Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
+                                                        <div *ngIf="!appSettings.h264Enabled && !appSettings.h265Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
                                                             <i
                                                                 class="fa fa-exclamation-circle"></i>
-                                                                H.264 is not enabled. Please enable H.264 for MP4 Recording
+                                                                H.264 or H.265 is not enabled. Please enable H.264 or H.265 for MP4 Recording
                                                         </div>
-                                                        <div *ngIf="appSettings.h264Enabled">
+                                                        <div *ngIf="appSettings.h264Enabled || appSettings.h265Enabled">
                                                             <div class="col-xs-12">
                                                                 <div class="checkbox">
                                                                     <input
@@ -1908,12 +1930,12 @@
                                                             </div>
                                                         </div>
 
-                                                        <div *ngIf="!appSettings.vp8Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
+                                                        <div *ngIf="!appSettings.vp8Enabled && !appSettings.av1Enabled" class="col-xs-12 card-content category text-left" style="font-size:16px" >
                                                             <i 
                                                                 class="fa fa-exclamation-circle"></i> 
-                                                                VP8 is not enabled. Please enable VP8 for WebM Recording
+                                                                VP8 or AV1 is not enabled. Please enable VP8 or AV1 for WebM Recording
                                                         </div>
-                                                        <div *ngIf="appSettings.vp8Enabled">
+                                                        <div *ngIf="appSettings.vp8Enabled || appSettings.av1Enabled">
                                                             <div class="col-xs-12">
                                                                 <div class="checkbox">
                                                                     <input
