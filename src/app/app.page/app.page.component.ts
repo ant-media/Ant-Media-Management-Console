@@ -1356,41 +1356,45 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     dropDownChanged(event: any, i: number) {
 
+        if (event == 0) {
+            this.encoderSettings[i].videoBitrate = 0;
+            this.encoderSettings[i].audioBitrate = 0;
+        }
         if (event == 2880) {
             this.encoderSettings[i].videoBitrate = 8000;
-            this.encoderSettings[i].audioBitrate = 320;
+            this.encoderSettings[i].audioBitrate = 0;
         }
         if (event == 2160) {
             this.encoderSettings[i].videoBitrate = 6000;
-            this.encoderSettings[i].audioBitrate = 256;
+            this.encoderSettings[i].audioBitrate = 0;
         }
         if (event == 1080) {
             this.encoderSettings[i].videoBitrate = 2500;
-            this.encoderSettings[i].audioBitrate = 256;
+            this.encoderSettings[i].audioBitrate = 0;
         }
         if (event == 720) {
             this.encoderSettings[i].videoBitrate = 2000;
-            this.encoderSettings[i].audioBitrate = 128;
+            this.encoderSettings[i].audioBitrate = 0;
         }
         if (event == 640) {
             this.encoderSettings[i].videoBitrate = 1800;
-            this.encoderSettings[i].audioBitrate = 96;
+            this.encoderSettings[i].audioBitrate = 0;
         }
         if (event == 540) {
             this.encoderSettings[i].videoBitrate = 1500;
-            this.encoderSettings[i].audioBitrate = 96;
+            this.encoderSettings[i].audioBitrate = 0;
         }
         if (event == 480) {
             this.encoderSettings[i].videoBitrate = 1000;
-            this.encoderSettings[i].audioBitrate = 96;
+            this.encoderSettings[i].audioBitrate = 0;
         }
         if (event == 360) {
             this.encoderSettings[i].videoBitrate = 800;
-            this.encoderSettings[i].audioBitrate = 64;
+            this.encoderSettings[i].audioBitrate = 0;
         }
         if (event == 240) {
             this.encoderSettings[i].videoBitrate = 500;
-            this.encoderSettings[i].audioBitrate = 32;
+            this.encoderSettings[i].audioBitrate = 0;
         }
 
 
