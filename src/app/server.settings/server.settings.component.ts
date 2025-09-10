@@ -710,7 +710,7 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
         console.log("create user called 3");
         this.newUserCreating = true;
 
-        User tempUser = this.User;
+        let tempUser: User = this.User;
         tempUser.password = MD5(this.User.password)
         
         this.restService.createUser(tempUser)
