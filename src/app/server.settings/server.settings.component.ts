@@ -17,6 +17,7 @@ import {UserEditComponent} from './dialog/user.edit.dialog.component';
 import {SslErrorComponent} from './dialog/server.settings.ssl.error.dialog.component';
 
 import {LOCAL_STORAGE_EMAIL_KEY, LOCAL_STORAGE_ROLE_KEY, APP_NAME_USER_TYPE} from '../rest/auth.service';
+import {MD5} from "../rest/auth.service";
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -708,8 +709,11 @@ export class ServerSettingsComponent implements  OnDestroy, OnInit, AfterViewIni
 
         console.log("create user called 3");
         this.newUserCreating = true;
+
+        User tempUser = this.User;
+        tempUser.password = MD5(this.User.password)
         
-        this.restService.createUser(this.User)
+        this.restService.createUser(tempUser)
             .subscribe(data => {
                 console.log("data :" + JSON.stringify(data));
                 if (data["success"] == true) {
