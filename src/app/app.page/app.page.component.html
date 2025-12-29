@@ -1984,19 +1984,13 @@
                                                                         <div class="col-sm-12 text-left col-md-12">
                                                                             <label class="col-sm-12 col-md-3 control-label"
                                                                                 style="min-width: 160px; "
-                                                                                i18n="@@s3RegionName">Region Name*</label>
+                                                                                i18n="@@s3RegionName">Region Name</label>
                                                                             <div class="col-sm-12 text-left col-md-10">
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3RegionName="ngModel"
                                                                                     [(ngModel)]="appSettings.s3RegionName"
-                                                                                    class="form-control" name="s3RegionName" required
-                                                                                    type="text"
-                                                                                    required/>
-                                                                                <small
-                                                                                    [hidden]="s3RegionName.valid || !f.submitted"
-                                                                                    class="text-danger">
-                                                                                    S3 Region Name is Required.
-                                                                                </small>
+                                                                                    class="form-control" name="s3RegionName" 
+                                                                                    type="text"/>
                                                                             </div>
                                                                         </div>
             

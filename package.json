@@ -45,7 +45,7 @@
     "chartist-plugin-zoom": "0.6.0",
     "chartjs-plugin-zoom": "0.7.7",
     "copy-webpack-plugin": "6.0.3",
-    "datatables": "1.10.18",
+    "datatables.net": "1.10.25",
     "datatables.net-bs": "1.11.5",
     "datatables.net-responsive": "^2.5.1",
     "easy-pie-chart": "2.1.7",
