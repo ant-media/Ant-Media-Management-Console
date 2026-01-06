@@ -233,7 +233,7 @@ export class OverviewComponent implements OnInit {
             this.systemMemoryTotal  = Number(data["systemMemoryInfo"]["totalMemory"]);
             this.systemMemoryInUse = Number(data["systemMemoryInfo"]["inUseMemory"]);
             var availableMemory =  Number(data["systemMemoryInfo"]["availableMemory"]);
-            if (availableMemory != 0) {
+            if (availableMemory != 0 && this.systemMemoryTotal > availableMemory) {
                 this.systemMemoryInUse = this.systemMemoryTotal - availableMemory;
             }
             
