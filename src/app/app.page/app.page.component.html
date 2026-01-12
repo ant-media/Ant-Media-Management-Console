@@ -1660,11 +1660,12 @@
                                                                         id="lLDashEnabled" name="lLDashEnabled"
                                                                         type="checkbox">
 
-                                                                    <label for="lLDashEnabled"
-                                                                        i18n="@@lLDashEnabled">
+                                                                    <label for="lLDashEnabled" i18n="@@lLDashEnabled">
                                                                         Enable Low Latency DASH Streaming(CMAF)
+                                                                        <a matTooltip="Minimizes delay for DASH players. This configures the stream to allow players to begin playback before video segments are fully finished, lowering live latency down on supported players.">
+                                                                            <i style="font-size: 20px;" class="fa fa-info-circle"></i>
+                                                                        </a>
                                                                     </label>
-
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1677,15 +1678,13 @@
                                                                         id="lLHLSEnabled" name="lLHLSEnabled"
                                                                         type="checkbox">
 
-                                                                    <label for="lLHLSEnabled"
-                                                                        i18n="@@lLHLSEnabled">
+                                                                    <label for="lLHLSEnabled" i18n="@@lLHLSEnabled">
                                                                         Enable Low Latency HLS Streaming(CMAF)
+                                                                        <a matTooltip="Generates an LL-HLS playlist using the same CMAF segments created for DASH. This allows you to deliver low-latency streaming to iOS and Safari devices without re-encoding or doubling your storage usage.">
+                                                                            <i style="font-size: 20px;" class="fa fa-info-circle"></i>
+                                                                        </a>
                                                                     </label>
 
-                                                                </div>
-                                                                <div class="category text-left" style="margin-top:10px">
-                                                                    <i class="fa fa-info-circle" style="font-size: 20px;color:#DD0330"></i>
-                                                                    This is a paid feature that requires a plugin. Enabling it without purchasing may cause streaming issues.
                                                                 </div>
                                                             </div>
                                                         </div>
