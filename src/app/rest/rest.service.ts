@@ -662,6 +662,9 @@ export class RestService {
     }
 
     checkStreamUrl(url : string) : boolean{
+        if(url.startsWith("custom:")){
+            return true;
+        }
 
         var streamUrlControl = false;
 
