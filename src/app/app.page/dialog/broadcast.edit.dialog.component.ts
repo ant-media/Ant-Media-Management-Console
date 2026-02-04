@@ -26,7 +26,7 @@ export class BroadcastEditComponent {
     public videoServiceEndPoints: VideoServiceEndpoint[];
     public streamNameEmpty = false;
     public endpointList: Endpoint[];
-    public genericRTMPEndpointCount = 0;
+    public genericReStreamEndpointCount = 0;
     public endpoint:Endpoint;
     public streamUrlDialogValid = true;
 
@@ -44,7 +44,7 @@ export class BroadcastEditComponent {
         // Detect How many generic Endpoint added.
         for (var i  in this.endpointList) {
             if (this.endpointList[i].type == "generic") {
-                this.genericRTMPEndpointCount++;
+                this.genericReStreamEndpointCount++;
             }
         }
 
@@ -126,11 +126,11 @@ export class BroadcastEditComponent {
 
             if (data["success"]) {
 
-                if (this.genericRTMPEndpointCount != 0) {
+                if (this.genericReStreamEndpointCount != 0) {
                     for (var i  in this.endpointList) {
                         if (this.endpointList[i].type == "generic") {
-                            this.endpoint.rtmpUrl = this.endpointList[i].rtmpUrl;
-                            this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, this.endpoint).subscribe(data2 => {
+                            this.endpoint.endpointUrl = this.endpointList[i].endpointUrl;
+                            this.restService.addReStreamEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, this.endpoint).subscribe(data2 => {
                                 if (!data2["success"]) {
                                     data["success"] = false;
                                 }

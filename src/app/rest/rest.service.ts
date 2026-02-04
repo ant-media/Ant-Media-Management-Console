@@ -337,16 +337,16 @@ export class RestService {
         return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/vods/bulk/', options);
     }
 
-    public deleteRTMPEndpointV2(appName: string, id:number, endpointServiceId:string) {
-        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/rtmp-endpoint&endpointServiceId='+endpointServiceId, {});
+    public deleteReStreamEndpointV2(appName: string, id:number, endpointServiceId:string) {
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint&endpointServiceId='+endpointServiceId, {});
     }
 
-    public deleteRTMPEndpointV1(appName: string, id:number, rtmpUrl:string) {
+    public deleteReStreamEndpointV1(appName: string, id:number, reStreamUrl:string) {
         return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint&rtmpUrl='+rtmpUrl, {});
     }
 
-    public addRTMPEndpoint(appName: string,id:number, endpoint:Endpoint) {
-        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/rtmp-endpoint',
+    public addReStreamEndpoint(appName: string,id:number, endpoint:Endpoint) {
+        return this.http.post(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint',
             endpoint);
     }
 

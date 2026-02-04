@@ -43,7 +43,7 @@ import {UploadVodDialogComponent} from './dialog/upload-vod-dialog';
 import {BroadcastEditComponent} from './dialog/broadcast.edit.dialog.component';
 import {SocialMediaStatsComponent} from './dialog/social.media.stats.component';
 import {WebRTCClientStatsComponent} from './dialog/webrtcstats/webrtc.client.stats.component';
-import {RtmpEndpointEditDialogComponent} from './dialog/rtmp.endpoint.edit.dialog.component';
+import {ReStreamEndpointEditDialogComponent} from './dialog/restream.endpoint.edit.dialog.component';
 import {PlaylistEditComponent} from "./dialog/playlist.edit.dialog.component";
 
 export const AppPageRoutes: Routes = [
@@ -67,7 +67,7 @@ export const AppPageRoutes: Routes = [
                     DetectedObjectListDialog,
                     SocialMediaStatsComponent,
                     WebRTCClientStatsComponent,
-                    RtmpEndpointEditDialogComponent,
+                    ReStreamEndpointEditDialogComponent,
                     PlaylistEditComponent,
                 ],
 
@@ -78,7 +78,7 @@ export const AppPageRoutes: Routes = [
                         DetectedObjectListDialog,
                         SocialMediaStatsComponent,
                         WebRTCClientStatsComponent,
-                        RtmpEndpointEditDialogComponent,
+                        ReStreamEndpointEditDialogComponent,
                         PlaylistEditComponent
                     ],
     bootstrap: [AppPageComponent],

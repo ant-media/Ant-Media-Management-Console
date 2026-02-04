@@ -1,7 +1,7 @@
 export class Endpoint {
     type: string;
     endpointServiceId: string;
-    rtmpUrl: string;
+    endpointUrl: string;
 }
 export declare interface UserInf {
 

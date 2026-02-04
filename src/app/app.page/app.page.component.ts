@@ -41,7 +41,7 @@ import { UploadVodDialogComponent } from './dialog/upload-vod-dialog';
 import { BroadcastEditComponent } from './dialog/broadcast.edit.dialog.component';
 import { SocialMediaStatsComponent } from './dialog/social.media.stats.component';
 import { WebRTCClientStatsComponent } from './dialog/webrtcstats/webrtc.client.stats.component';
-import { RtmpEndpointEditDialogComponent } from './dialog/rtmp.endpoint.edit.dialog.component';
+import { ReStreamEndpointEditDialogComponent } from './dialog/restream.endpoint.edit.dialog.component';
 import { PlaylistEditComponent } from './dialog/playlist.edit.dialog.component';
 import { Observable } from "rxjs";
 import "rxjs/add/observable/of";
@@ -2877,7 +2877,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    openRTMPEndpointDialog(stream: BroadcastInfo): void {
+    openReStreamEndpointDialog(stream: BroadcastInfo): void {
 
         if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId || stream.name != this.liveStreamEditing.name) {
             this.liveStreamEditing = new LiveBroadcast();
@@ -2888,7 +2888,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         if (this.liveStreamEditing) {
-            let dialogRef = this.dialog.open(RtmpEndpointEditDialogComponent, {
+            let dialogRef = this.dialog.open(ReStreamEndpointEditDialogComponent, {
 
                 height: '300px',
                 maxHeight: '500px',
