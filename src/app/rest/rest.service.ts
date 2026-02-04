@@ -342,7 +342,7 @@ export class RestService {
     }
 
     public deleteReStreamEndpointV1(appName: string, id:number, reStreamUrl:string) {
-        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint&rtmpUrl='+rtmpUrl, {});
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/'+id+ '/endpoint&rtmpUrl='+reStreamUrl, {});
     }
 
     public addReStreamEndpoint(appName: string,id:number, endpoint:Endpoint) {
