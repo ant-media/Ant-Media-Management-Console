@@ -1,14 +1,14 @@
         <div class="card-content" style="padding-top:0px">
 
             <h4 class="card-title text-left" i18n="@@addReStreamEndpointCardTitle">
-                Add ReStreaming Endpoint
+                Add ReStreaming Endpoint (RTMP/SRT)
             </h4>
 
-            <input  [(ngModel)]="reStreamEndpointName" type="text" name="reStreamEndpointName" i18n-placeholder="@@rtmp_endpoint_name_place_holder" placeholder="ReStreaming Endpoint Name"
+            <input  [(ngModel)]="reStreamEndpointName" type="text" name="reStreamEndpointName" i18n-placeholder="@@rtmp_endpoint_name_place_holder" placeholder="Endpoint URL"
                    class="form-control">
 
             <div class="form-group" style="margin-top: 20px;">
-                <button type="button" class="btn btn-default" i18n="@@addReStreamEndpointAddButton" (click)="addReStreamEndpoint(reStreamEndpointName)">Add ReStreaming Endpoint</button>
+                <button type="button" class="btn btn-default" i18n="@@addReStreamEndpointAddButton" (click)="addReStreamEndpoint(reStreamEndpointName)">Add Endpoint</button>
             </div>
 
             <div *ngIf=!this.isEmptyEndpoint  class="text-left" >
