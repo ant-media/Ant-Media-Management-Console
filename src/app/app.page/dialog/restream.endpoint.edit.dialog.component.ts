@@ -8,20 +8,20 @@ declare var $: any;
 
 @Component({
     selector: 'rtmp-endpoint-edit-dialog',
-    templateUrl: 'rtmp.endpoint.edit.dialog.component.html',
+    templateUrl: 'restream.endpoint.edit.dialog.component.html',
 })
 
-export class RtmpEndpointEditDialogComponent {
+export class ReStreamEndpointEditDialogComponent {
 
     loading = false;
     public shareEndpoint: boolean[];
     public endpointList: Endpoint[];
     public isEmptyEndpoint: boolean = true;
-    public rtmpEndpointName: any;
+    public reStreamEndpointName: any;
     public endpoint: Endpoint;
 
     constructor(
-        public dialogRef: MatDialogRef<RtmpEndpointEditDialogComponent>, public restService: RestService,
+        public dialogRef: MatDialogRef<ReStreamEndpointEditDialogComponent>, public restService: RestService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
         this.shareEndpoint = [];
 
@@ -41,27 +41,27 @@ export class RtmpEndpointEditDialogComponent {
         }
     }
 
-    addRtmpEndpoint(rtmpUrl: string) {
+    addReStreamEndpoint(endpointUrl: string) {
 
         let resultMessage = "";
 
         // Check Generic Endpoint Already Added
 
         for (var i in this.endpointList) {
-            if (this.endpointList[i].rtmpUrl == rtmpUrl) {
-                rtmpUrl = "";
-                resultMessage = "RTMP URL Already added";
+            if (this.endpointList[i].endpointUrl == endpointUrl) {
+                endpointUrl = "";
+                resultMessage = "URL Already added";
             }
         }
-        this.endpoint.rtmpUrl = rtmpUrl;
+        this.endpoint.endpointUrl = endpointUrl;
 
-        this.restService.addRTMPEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, this.endpoint).subscribe(data => {
+        this.restService.addReStreamEndpoint(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, this.endpoint).subscribe(data => {
 
             if (data["success"]) {
 
-                resultMessage = "RTMP URL Added Successfully";
+                resultMessage = "URL Added Successfully";
 
-                this.rtmpEndpointName = "";
+                this.reStreamEndpointName = "";
 
                 this.endpointList = this.endpointList || [];
 
@@ -89,7 +89,7 @@ export class RtmpEndpointEditDialogComponent {
 
             }
             else {
-                resultMessage ="RTMP Endpoint is not be saved";
+                resultMessage ="ReStreaming Endpoint is not be saved";
                 $.notify({
                     icon: "ti-alert",
                     message: resultMessage
@@ -106,20 +106,20 @@ export class RtmpEndpointEditDialogComponent {
         }, error => { show403Error(error); });
     }
 
-    removeRTMPEndpoint(endpoint: Endpoint, index: number) {
+    removeReStreamEndpoint(endpoint: Endpoint, index: number) {
         //Check service Id is null
         if (endpoint.endpointServiceId != null) {
-            this.restService.deleteRTMPEndpointV2(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, endpoint.endpointServiceId).subscribe(data => {
+            this.restService.deleteReStreamEndpointV2(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, endpoint.endpointServiceId).subscribe(data => {
                 this.endpointDeleteProcess(endpoint,index,data);
             }, error => { show403Error(error); });
         } else {
-            this.restService.deleteRTMPEndpointV1(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, endpoint.rtmpUrl).subscribe(data => {
+            this.restService.deleteReStreamEndpointV1(this.dialogRef.componentInstance.data.appName, this.dialogRef.componentInstance.data.streamId, endpoint.endpointUrl).subscribe(data => {
                 this.endpointDeleteProcess(endpoint,index,data);
             }, error => { show403Error(error); });
         }
     }
 
-    cancelRTMPEndpoint(): void {
+    cancelReStreamEndpoint(): void {
         this.dialogRef.close();
     }
 
@@ -128,7 +128,7 @@ export class RtmpEndpointEditDialogComponent {
             this.endpointList.splice(index, 1);
             $.notify({
                 icon: "ti-save",
-                message: "RTMP Endpoint is deleted"
+                message: "ReStreaming Endpoint is deleted"
             }, {
                 type: "success",
                 delay: 900,
@@ -152,7 +152,7 @@ export class RtmpEndpointEditDialogComponent {
         } else {
             $.notify({
                 icon: "ti-alert",
-                message: "RTMP Endpoint is not deleted."
+                message: "ReStreaming Endpoint is not deleted."
             }, {
                 type: "warning",
                 delay: 900,
