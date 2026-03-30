@@ -4,6 +4,7 @@ import { RestService, show403Error } from '../rest/rest.service';
 import { isScopeSystem, LOCAL_STORAGE_SCOPE_KEY, APP_NAME_USER_TYPE } from 'app/rest/auth.service';
 
 declare var $: any;
+declare var swal: any;
 //Metadata
 export interface RouteInfo {
     path: string;
@@ -76,6 +77,21 @@ export class SidebarComponent implements AfterViewInit {
             return false;
         }
         return true;
+    }
+
+    openCalendlyLink() {
+        swal({
+            title: 'Get a Free Consultancy',
+            text: 'You will be redirected to Calendly to schedule a free consultancy session. Do you want to continue?',
+            type: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#51cbce',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, continue',
+            cancelButtonText: 'Cancel'
+        }).then(() => {
+            window.open('https://calendly.com/antmedia', '_blank');
+        });
     }
 
     ngOnInit() {

@@ -41,7 +41,7 @@ import { UploadVodDialogComponent } from './dialog/upload-vod-dialog';
 import { BroadcastEditComponent } from './dialog/broadcast.edit.dialog.component';
 import { SocialMediaStatsComponent } from './dialog/social.media.stats.component';
 import { WebRTCClientStatsComponent } from './dialog/webrtcstats/webrtc.client.stats.component';
-import { RtmpEndpointEditDialogComponent } from './dialog/rtmp.endpoint.edit.dialog.component';
+import { ReStreamEndpointEditDialogComponent } from './dialog/restream.endpoint.edit.dialog.component';
 import { PlaylistEditComponent } from './dialog/playlist.edit.dialog.component';
 import { Observable } from "rxjs";
 import "rxjs/add/observable/of";
@@ -940,12 +940,19 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             animation: false,
             showCloseButton: true,
             onOpen: () => {
+
+                // Prepend subfolder to streamId if configured (and not VOD - dose not contain dot)
+                var streamIdForPlayer = streamId;
+                if (this.appSettings && this.appSettings.subFolder && this.appSettings.subFolder.trim() !== '' && !streamId.includes(".")) {
+                    streamIdForPlayer = this.appSettings.subFolder + '/' + streamId;
+                }
+
                 //the error in this callback does not show up in browser console.
                 if (hasSubTracks) {
                     //play with multirack player
                     var iframe = $('#' + objectId);
-                   
-                    iframe.prop('src', HTTP_SERVER_ROOT  + 'multitrack-play.html?id=' + streamId + '&app='+this.appName+'&token='+tokenId);
+
+                    iframe.prop('src', HTTP_SERVER_ROOT  + 'multitrack-play.html?id=' + streamIdForPlayer + '&app='+this.appName+'&token='+tokenId);
                      //multitrack-play.html is deployed in the solution in the enterprise edition CI pipeline
                      //Even if it's not a good solution, it helps us play the multitrack streams.  
 
@@ -959,7 +966,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
 
                     embeddedPlayer = new WebPlayer({
-                        streamId: streamId,
+                        streamId: streamIdForPlayer,
                         httpBaseURL: httpBaseUrlForStream,
                         token: tokenId,
                         playOrder: playOrderLocal,
@@ -2675,7 +2682,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }, error => { show403Error(error); });
 
     }
-
+    playWithProtocol(streamId: string , protocol: string){
+         const playUrl = HTTP_SERVER_ROOT + this.appName + "/play.html?id=" + streamId + "&playOrder=" + protocol;
+         window.open(playUrl);
+    }
     copyLiveEmbedCode(streamUrl: string): void {
 
         //if (this.isEnterpriseEdition) {
@@ -2867,7 +2877,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    openRTMPEndpointDialog(stream: BroadcastInfo): void {
+    openReStreamEndpointDialog(stream: BroadcastInfo): void {
 
         if (this.liveStreamEditing == null || stream.streamId != this.liveStreamEditing.streamId || stream.name != this.liveStreamEditing.name) {
             this.liveStreamEditing = new LiveBroadcast();
@@ -2878,7 +2888,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         if (this.liveStreamEditing) {
-            let dialogRef = this.dialog.open(RtmpEndpointEditDialogComponent, {
+            let dialogRef = this.dialog.open(ReStreamEndpointEditDialogComponent, {
 
                 height: '300px',
                 maxHeight: '500px',

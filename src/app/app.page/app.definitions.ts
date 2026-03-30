@@ -1,7 +1,7 @@
 export class Endpoint {
     type: string;
     endpointServiceId: string;
-    rtmpUrl: string;
+    endpointUrl: string;
 }
 export declare interface UserInf {
 
@@ -255,6 +255,7 @@ export class AppSettings {
                 public apnKeyId: string,
                 public apnPrivateKey: string,
                 public apnsServer: string,
+                public subFolder: string,
 
     ) {}
 }

@@ -837,13 +837,33 @@
                                                                         </a>
                                                                     </li>
 
-                                                                    <!-- Edit RTMP Endpoints -->
+                                                                    <!-- Edit ReStream Endpoints -->
 
                                                                     <li *ngIf="row.type!='VoD'">
                                                                         <a class="dropdown-link"
-                                                                            (click)="openRTMPEndpointDialog(row)">
-                                                                            <ng-container i18n="@@editRTMPEndpoint">Edit
-                                                                                RTMP Endpoints</ng-container>
+                                                                            (click)="openReStreamEndpointDialog(row)">
+                                                                            <ng-container i18n="@@editReStreamEndpoint">
+                                                                                Edit ReStreaming Endpoints</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <!-- Play With WebRTC -->
+
+                                                                    <li>
+                                                                        <a class="dropdown-link"
+                                                                            (click)="playWithProtocol(row.streamId,'webrtc')">
+                                                                            <ng-container i18n="@@playWithProtocol">
+                                                                                Play With WebRTC</ng-container>
+                                                                        </a>
+                                                                    </li>
+
+                                                                    <!-- Play With HLS -->
+
+                                                                    <li>
+                                                                        <a class="dropdown-link"
+                                                                            (click)="playWithProtocol(row.streamId,'hls')">
+                                                                            <ng-container i18n="@@playWithProtocol">
+                                                                                Play With HLS</ng-container>
                                                                         </a>
                                                                     </li>
 
@@ -1982,19 +2002,13 @@
                                                                         <div class="col-sm-12 text-left col-md-12">
                                                                             <label class="col-sm-12 col-md-3 control-label"
                                                                                 style="min-width: 160px; "
-                                                                                i18n="@@s3RegionName">Region Name*</label>
+                                                                                i18n="@@s3RegionName">Region Name</label>
                                                                             <div class="col-sm-12 text-left col-md-10">
                                                                                 <input style="min-width: 125px;"
                                                                                     #s3RegionName="ngModel"
                                                                                     [(ngModel)]="appSettings.s3RegionName"
-                                                                                    class="form-control" name="s3RegionName" required
-                                                                                    type="text"
-                                                                                    required/>
-                                                                                <small
-                                                                                    [hidden]="s3RegionName.valid || !f.submitted"
-                                                                                    class="text-danger">
-                                                                                    S3 Region Name is Required.
-                                                                                </small>
+                                                                                    class="form-control" name="s3RegionName" 
+                                                                                    type="text"/>
                                                                             </div>
                                                                         </div>
             
