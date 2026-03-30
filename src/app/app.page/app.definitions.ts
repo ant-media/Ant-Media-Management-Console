@@ -1,7 +1,7 @@
 export class Endpoint {
     type: string;
     endpointServiceId: string;
-    rtmpUrl: string;
+    endpointUrl: string;
 }
 export declare interface UserInf {
 
@@ -222,6 +222,7 @@ export class AppSettings {
                 public remoteAllowedCIDR: string,
                 public h264Enabled: boolean,
                 public vp8Enabled: boolean,
+                public av1Enabled: boolean,
                 public dataChannelEnabled: boolean,
                 public dataChannelPlayerDistribution: string,
                 public listenerHookURL: string,
