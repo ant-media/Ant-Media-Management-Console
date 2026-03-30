@@ -2627,10 +2627,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
         //Check WebM settings is disabled
-        if (!this.appSettings.vp8Enabled && recordingType == "webm" && recordingStatus) {
+        if (!(this.appSettings.vp8Enabled || this.appSettings.av1Enabled) && recordingType == "webm" && recordingStatus) {
             $.notify({
                 icon: "ti-save",
-                message: "Firstly, please enable VP8 Encoder in App Settings"
+                message: "Firstly, please enable VP8 or AV1 Encoder in App Settings"
             }, {
                 type: "warning",
                 delay: 3000,
