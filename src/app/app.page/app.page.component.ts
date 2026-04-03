@@ -1532,13 +1532,15 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
 
-        this.appSettings.remoteAllowedCIDR = this.appSettings.remoteAllowedCIDR.trim();
+        this.appSettings.remoteAllowedCIDR = (this.appSettings.remoteAllowedCIDR || "").trim();
 
         if (this.appSettings.remoteAllowedCIDR == "") {
             this.appSettings.remoteAllowedCIDR = "127.0.0.1";
         }
 
         this.appSettings.acceptOnlyStreamsInDataStore = !this.acceptAllStreams;
+
+        this.appSettings.vodFolder = this.appSettings.vodFolder || "";
 
         if (this.appSettings.vodFolder.endsWith("/")) {
             this.appSettings.vodFolder = this.appSettings.vodFolder.substring(0, this.appSettings.vodFolder.length - 1);
