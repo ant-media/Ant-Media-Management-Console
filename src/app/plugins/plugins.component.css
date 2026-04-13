@@ -1,0 +1,243 @@
+.plugin-card {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    overflow: hidden;
+}
+
+.plugin-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.plugin-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.plugin-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    margin-right: 14px;
+    object-fit: cover;
+    border: 1px solid #f0f0f0;
+}
+
+.plugin-icon-placeholder {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    margin-right: 14px;
+    background: linear-gradient(135deg, #fce4e8 0%, #f9f0f1 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #DD0330;
+}
+
+.plugin-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.plugin-name {
+    margin: 0 0 2px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.plugin-meta {
+    font-size: 12px;
+    color: #999;
+}
+
+.plugin-description {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    min-height: 40px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.plugin-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+
+.plugin-badges .badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.3px;
+}
+
+.badge-category {
+    background-color: #f0f0f0;
+    color: #555;
+}
+
+.badge-restart {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+}
+
+.status-active {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #28a745;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+}
+
+.status-installing {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #17a2b8;
+}
+
+.status-failed {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #dc3545;
+}
+
+.card-footer {
+    background: #fafafa;
+    border-top: 1px solid #f0f0f0;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.btn-install {
+    background-color: #DD0330;
+    border-color: #DD0330;
+    color: #fff;
+    border-radius: 20px;
+    padding: 6px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-install:hover {
+    background-color: #b8022a;
+    border-color: #b8022a;
+    color: #fff;
+}
+
+.btn-install:disabled {
+    opacity: 0.6;
+}
+
+.btn-uninstall {
+    border: 1px solid #DD0330;
+    color: #DD0330;
+    background: transparent;
+    border-radius: 20px;
+    padding: 6px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-uninstall:hover {
+    background-color: #DD0330;
+    color: #fff;
+}
+
+.btn-uninstall:disabled {
+    opacity: 0.6;
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    margin-top: 8px;
+}
+
+.error-alert {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #c53030;
+}
+
+.empty-state {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.empty-state i {
+    font-size: 56px;
+    color: #ddd;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.empty-state p {
+    color: #999;
+    font-size: 14px;
+}
+
+.loading-state {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.loading-state i {
+    color: #DD0330;
+}
+
+.loading-state p {
+    color: #999;
+    margin-top: 12px;
+}
+
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-header h4 {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.page-header p {
+    color: #999;
+    font-size: 14px;
+    margin: 0;
+}
