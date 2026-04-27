@@ -461,6 +461,20 @@ export class RestService {
     public getServerSettings(): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/server-settings/" );
     }
+
+    public getInstalledPlugins(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/plugins');
+    }
+
+    public installPluginFromUrl(pluginId: string, downloadUrl: string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + '/plugins/install-from-url',
+            { id: pluginId, downloadUrl: downloadUrl });
+    }
+
+    public uninstallPlugin(pluginId: string): Observable<Object> {
+        return this.http.delete(REST_SERVICE_ROOT + '/plugins/' + pluginId);
+    }
+
     public getSslSettings(): Observable<Object>{
         return this.http.get(REST_SERVICE_ROOT + "/ssl-settings/" );
     }

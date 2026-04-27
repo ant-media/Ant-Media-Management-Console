@@ -152,6 +152,13 @@
                 <p i18n="@@dashboardMenuItem">Logs</p>
             </a>
         </li>
+
+        <li routerLinkActive="active" *ngIf="scope == 'system'">
+            <a routerLink="/plugins">
+                <i class="ti-plug"></i>
+                <p i18n="@@pluginsMenuItem">Plugins</p>
+            </a>
+        </li>
         
         <li>
             <a (click)="openCalendlyLink()" style="cursor: pointer;">

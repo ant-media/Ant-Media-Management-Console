@@ -1,0 +1,148 @@
+<div class="main-content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header page-header">
+                        <h4 class="card-title" i18n>Plugins</h4>
+                        <p class="card-category" i18n>Install and manage server plugins</p>
+                    </div>
+                    <div class="card-body">
+
+                        <div *ngIf="loading" class="loading-state">
+                            <i class="fa fa-spinner fa-spin fa-2x"></i>
+                            <p>Loading plugins...</p>
+                        </div>
+
+                        <div *ngIf="!loading">
+
+                            <div *ngIf="mergedPlugins.length === 0 && customPlugins.length === 0" class="empty-state">
+                                <i class="ti-package"></i>
+                                <p i18n>No plugins available. Check the plugin registry URL in server settings.</p>
+                            </div>
+
+                            <div class="plugin-grid" *ngIf="mergedPlugins.length > 0">
+                                <div class="plugin-grid-item" *ngFor="let plugin of mergedPlugins">
+                                    <div class="card plugin-card">
+                                        <div class="card-body">
+                                            <div class="plugin-header">
+                                                <img *ngIf="plugin.iconUrl" [src]="plugin.iconUrl"
+                                                     class="plugin-icon" alt="">
+                                                <div *ngIf="!plugin.iconUrl" class="plugin-icon-placeholder">
+                                                    <i class="ti-plug"></i>
+                                                </div>
+                                                <div class="plugin-info">
+                                                    <h5 class="plugin-name">{{ plugin.name }}</h5>
+                                                    <span class="plugin-meta">
+                                                        v{{ plugin.pluginVersion }} &middot; {{ plugin.author }}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <p class="plugin-description">{{ plugin.description }}</p>
+
+                                            <a *ngIf="plugin.detailsUrl"
+                                               [href]="plugin.detailsUrl"
+                                               target="_blank"
+                                               rel="noopener noreferrer"
+                                               class="plugin-details-link">
+                                                Learn more <i class="fa fa-external-link"></i>
+                                            </a>
+
+                                            <div class="plugin-badges">
+                                                <span *ngIf="plugin.category" class="badge badge-category">
+                                                    {{ plugin.category }}
+                                                </span>
+                                                <span *ngIf="plugin.requiresRestart && !plugin.installed"
+                                                      class="badge badge-restart">
+                                                    Requires Restart
+                                                </span>
+                                                <span *ngIf="plugin.installed" class="badge"
+                                                      [ngClass]="getStatusClass(plugin)">
+                                                    {{ getStatusLabel(plugin) }}
+                                                </span>
+                                            </div>
+
+                                            <div *ngIf="plugin.installed && plugin.installedRecord?.lastError"
+                                                 class="error-alert">
+                                                {{ plugin.installedRecord.lastError }}
+                                            </div>
+                                        </div>
+
+                                        <div class="card-footer">
+                                            <button *ngIf="!plugin.installed"
+                                                    class="btn btn-sm btn-install"
+                                                    [disabled]="installing[plugin.id]"
+                                                    (click)="installPlugin(plugin)">
+                                                <i class="fa fa-download" *ngIf="!installing[plugin.id]"></i>
+                                                <i class="fa fa-spinner fa-spin" *ngIf="installing[plugin.id]"></i>
+                                                {{ installing[plugin.id] ? 'Installing...' : 'Install' }}
+                                            </button>
+
+                                            <button *ngIf="plugin.installed"
+                                                    class="btn btn-sm btn-uninstall"
+                                                    [disabled]="uninstalling[plugin.id]"
+                                                    (click)="uninstallPlugin(plugin)">
+                                                <i class="fa fa-trash-o" *ngIf="!uninstalling[plugin.id]"></i>
+                                                <i class="fa fa-spinner fa-spin" *ngIf="uninstalling[plugin.id]"></i>
+                                                {{ uninstalling[plugin.id] ? 'Removing...' : 'Uninstall' }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div *ngIf="customPlugins.length > 0" style="margin-top: 16px;">
+                                <div class="section-title">Custom Plugins</div>
+
+                                <div class="plugin-grid">
+                                    <div class="plugin-grid-item" *ngFor="let plugin of customPlugins">
+                                        <div class="card plugin-card">
+                                            <div class="card-body">
+                                                <div class="plugin-header">
+                                                    <div class="plugin-icon-placeholder">
+                                                        <i class="ti-plug"></i>
+                                                    </div>
+                                                    <div class="plugin-info">
+                                                        <h5 class="plugin-name">{{ plugin.name || plugin.pluginId }}</h5>
+                                                        <span class="plugin-meta" *ngIf="plugin.version">
+                                                            v{{ plugin.version }}
+                                                            <span *ngIf="plugin.author"> &middot; {{ plugin.author }}</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <p class="plugin-description" *ngIf="plugin.description">
+                                                    {{ plugin.description }}
+                                                </p>
+
+                                                <div class="plugin-badges">
+                                                    <span class="badge" [ngClass]="getCustomStatusClass(plugin)">
+                                                        {{ getCustomStatusLabel(plugin) }}
+                                                    </span>
+                                                </div>
+
+                                                <div *ngIf="plugin.lastError" class="error-alert">
+                                                    {{ plugin.lastError }}
+                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <button class="btn btn-sm btn-uninstall"
+                                                        (click)="uninstallCustomPlugin(plugin)">
+                                                    <i class="fa fa-trash-o"></i> Uninstall
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
