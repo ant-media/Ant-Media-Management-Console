@@ -29,7 +29,7 @@ export class PluginsComponent implements OnInit {
         this.loading = true;
 
         this.restService.getServerSettings().subscribe((settings: any) => {
-            let registryUrl = settings.pluginRegistryUrl || 'http://localhost:8888/catalog.json';
+            let registryUrl = settings.pluginRegistryUrl || 'https://antmedia-plugins.s3.eu-west-2.amazonaws.com/catalog.json';
 
             // Use native fetch for the catalog — Angular's HttpClient adds withCredentials
             // via the AuthInterceptor, which breaks CORS for external URLs.

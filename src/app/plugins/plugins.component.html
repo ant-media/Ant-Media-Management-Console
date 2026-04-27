@@ -22,8 +22,8 @@
                                 <p i18n>No plugins available. Check the plugin registry URL in server settings.</p>
                             </div>
 
-                            <div class="row" *ngIf="mergedPlugins.length > 0">
-                                <div class="col-md-6 col-lg-4" *ngFor="let plugin of mergedPlugins">
+                            <div class="plugin-grid" *ngIf="mergedPlugins.length > 0">
+                                <div class="plugin-grid-item" *ngFor="let plugin of mergedPlugins">
                                     <div class="card plugin-card">
                                         <div class="card-body">
                                             <div class="plugin-header">
@@ -41,6 +41,14 @@
                                             </div>
 
                                             <p class="plugin-description">{{ plugin.description }}</p>
+
+                                            <a *ngIf="plugin.detailsUrl"
+                                               [href]="plugin.detailsUrl"
+                                               target="_blank"
+                                               rel="noopener noreferrer"
+                                               class="plugin-details-link">
+                                                Learn more <i class="fa fa-external-link"></i>
+                                            </a>
 
                                             <div class="plugin-badges">
                                                 <span *ngIf="plugin.category" class="badge badge-category">
@@ -88,8 +96,8 @@
                             <div *ngIf="customPlugins.length > 0" style="margin-top: 16px;">
                                 <div class="section-title">Custom Plugins</div>
 
-                                <div class="row">
-                                    <div class="col-md-6 col-lg-4" *ngFor="let plugin of customPlugins">
+                                <div class="plugin-grid">
+                                    <div class="plugin-grid-item" *ngFor="let plugin of customPlugins">
                                         <div class="card plugin-card">
                                             <div class="card-body">
                                                 <div class="plugin-header">
