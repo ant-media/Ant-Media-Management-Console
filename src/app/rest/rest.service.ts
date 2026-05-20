@@ -306,21 +306,15 @@ export class RestService {
 
     public deleteBroadcasts(appName: string, streamIds:string [], REMOTE_REST_SERVICE_ROOT:string): Observable<Object> {
         let REST_SERVICE_ADDRESS;
+        const ids = streamIds.map(streamId => encodeURIComponent(streamId)).join(",");
         if(REMOTE_REST_SERVICE_ROOT == null){
-            REST_SERVICE_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/bulk';
+            REST_SERVICE_ADDRESS = REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/broadcasts/&ids=' + ids;
         }
         else{
-            REST_SERVICE_ADDRESS = REMOTE_REST_SERVICE_ROOT + "/" + appName + '/rest/v2/broadcasts/bulk';
+            REST_SERVICE_ADDRESS = REMOTE_REST_SERVICE_ROOT + "/" + appName + '/rest/v2/broadcasts/?ids=' + ids;
         }
-
-        const options = {
-            headers: new HttpHeaders({
-              'Content-Type': 'application/json',
-            }),
-            body: streamIds,
-          };
         
-        return this.http.delete(REST_SERVICE_ADDRESS, options);
+        return this.http.delete(REST_SERVICE_ADDRESS, {});
     }
 
     public deleteVoDFile(appName: string, vodName:string,id:number, type:string) {
