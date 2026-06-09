@@ -5,7 +5,7 @@ import {AppSettings, ServerSettings} from "../app.page/app.definitions";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
-import {HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Endpoint,PlaylistItem} from "../app.page/app.definitions";
 import { filter } from 'rxjs-compat/operator/filter';
 import {SidebarComponent} from "../sidebar/sidebar.component";
@@ -322,13 +322,8 @@ export class RestService {
     }
 
     public deleteVoDFiles(appName: string, vodIds:string[]): Observable<Object>  {
-        const options = {
-            headers: new HttpHeaders({
-              'Content-Type': 'application/json',
-            }),
-            body: vodIds,
-          };
-        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/vods/bulk/', options);
+        const ids = vodIds.map(vodId => encodeURIComponent(vodId)).join(",");
+        return this.http.delete(REST_SERVICE_ROOT + "/request?_path=" +  appName + '/rest/v2/vods/&ids=' + ids, {});
     }
 
     public deleteReStreamEndpointV2(appName: string, id:number, endpointServiceId:string) {
