@@ -207,7 +207,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     ];
 
     public displayedColumnsStreams = ['select', 'name', 'status', 'viewerCount', 'extradata', 'actions'];
-    public displayedColumnsVod = ['select', 'name', 'type', 'date', 'actions'];
+    public displayedColumnsVod = ['select', 'name', 'type', 'duration', 'fileSize', 'date', 'actions'];
     public displayedColumnsUserVod = ['name', 'date', 'actions'];
 
     public dataSource: MatTableDataSource<BroadcastInfo>;
@@ -2756,6 +2756,20 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         else {
             return "00:00:00";
         }
+    }
+
+    formatFileSize(bytes: number): string {
+        if (!bytes || bytes <= 0) {
+            return '-';
+        }
+        const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        let size = bytes;
+        let unitIndex = 0;
+        while (size >= 1024 && unitIndex < units.length - 1) {
+            size /= 1024;
+            unitIndex++;
+        }
+        return `${size.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
     }
 
     getPlayListCurrentTime(playListBroadcast: LiveBroadcast): string {
