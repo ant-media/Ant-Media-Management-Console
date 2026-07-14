@@ -3,7 +3,6 @@ import { Locale } from "../../locale/locale";
 import { RestService, User,show403Error } from '../../rest/rest.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {ServerSettingsComponent} from "..//server.settings.component";
-import {MD5} from "../../rest/auth.service";
 
 declare var $: any;
 declare var swal: any;
@@ -107,10 +106,6 @@ export class UserEditComponent implements OnInit {
         if (!this.restService.checkStreamName(this.userEditing.email)){
             this.userNameEmpty = true;
             return;
-        }
-        console.log("user pass word " + this.userEditing.newPassword);
-        if (this.userEditing.newPassword != "" && this.userEditing.newPassword != undefined) {
-            this.userEditing.newPassword = MD5(this.userEditing.newPassword);
         }
         this.userUpdating = true;
 
