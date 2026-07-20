@@ -5,12 +5,17 @@ import {User, show403Error} from '../../rest/rest.service';
 import {SupportRestService} from "../../rest/support.service";
 import {RestService} from '../../rest/rest.service';
 import {isScopeSystem, LOCAL_STORAGE_EMAIL_KEY, LOCAL_STORAGE_ROLE_KEY, LOCAL_STORAGE_SCOPE_KEY} from "../../rest/auth.service";
+import {environment} from '../../../environments/environment';
 declare var $:any;
+
+// Handoff to the new panel: it reads this on boot to resolve identity, then drops it.
+const REBORN_HANDOFF_KEY = 'ams.legacy.auth.handoff';
 
 @Component({
     moduleId:module.id,
     selector: 'login-cmp',
-    templateUrl: './login.component.html'
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css']
 })
 
 export class LoginComponent implements OnInit{
@@ -28,6 +33,8 @@ export class LoginComponent implements OnInit{
     public firstUserIsCreating:boolean;
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
+    public rebornSwitcher = environment.rebornSwitcher;
+    public selectedPanel: 'classic' | 'reborn' = 'classic';
 
     constructor(private element : ElementRef, private supportRestService:SupportRestService, private auth: AuthService, private router: Router, private restService: RestService) 
 	{
@@ -73,8 +80,14 @@ export class LoginComponent implements OnInit{
     }
 
     logout() {
-        // localStorage.setItem("authenticated", null);
-        localStorage.clear();
+        if (this.rebornSwitcher) {
+            // Targeted clear: localStorage.clear() would also wipe the new panel's keys,
+            // the handoff, and the shared {app}jwtToken entries on the same origin.
+            ["authenticated", LOCAL_STORAGE_EMAIL_KEY, APP_NAME_USER_TYPE, "hostAddress"]
+                .forEach(key => localStorage.removeItem(key));
+        } else {
+            localStorage.clear();
+        }
         this.restService.logout().subscribe(data  => {
             if (data["success"] == true) {
                 console.log("logout success");
@@ -111,6 +124,17 @@ export class LoginComponent implements OnInit{
                 localStorage.setItem(LOCAL_STORAGE_EMAIL_KEY, this.email);
     
                 const message = data["message"];
+
+                if (this.rebornSwitcher) {
+                    // The new panel parses `message` itself. Written on every login so a
+                    // bookmarked /reborn-panel/ still resolves an identity.
+                    localStorage.setItem(REBORN_HANDOFF_KEY, JSON.stringify({ email: this.email, message }));
+                    if (this.selectedPanel === 'reborn') {
+                        window.location.href = '/reborn-panel/';
+                        return;
+                    }
+                }
+
                 let scope = "";
     
                 console.log(message);
