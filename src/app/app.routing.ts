@@ -34,6 +34,10 @@ export const AppRoutes: Routes = [{
             loadChildren: './cluster/cluster.module#ClusterModule',
             canActivate: [AuthService]
         },{
+            path: 'plugins',
+            loadChildren: './plugins/plugins.module#PluginsModule',
+            canActivate: [AuthService]
+        },{
             path: 'support',
             loadChildren: './support/support.module#SupportModule',
             canActivate: [AuthService]
