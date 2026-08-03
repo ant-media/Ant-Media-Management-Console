@@ -93,9 +93,14 @@ export class PluginsComponent implements OnInit {
                 installedMap.delete(installed.pluginId || installed.name);
             }
 
+            // A plugin uninstalled since the last restart keeps a record so the operator can see
+            // a restart is still owed. Its files are gone, so it counts as not installed —
+            // otherwise the card would offer Uninstall for something already removed.
+            let removedPendingRestart = !!installed && installed.state === 'UNINSTALLED_PENDING_RESTART';
+
             return {
                 ...entry,
-                installed: !!installed,
+                installed: !!installed && !removedPendingRestart,
                 installedRecord: installed,
                 state: installed ? installed.state : null
             };
@@ -108,22 +113,24 @@ export class PluginsComponent implements OnInit {
         });
     }
 
+    // Keyed off state rather than the installed flag, so a plugin that is removed-pending-restart
+    // still shows its badge even though it no longer counts as installed.
     getStatusLabel(plugin: any): string {
-        if (!plugin.installed) return '';
         switch (plugin.state) {
             case 'ACTIVE': return 'Active';
             case 'INSTALLED_PENDING_RESTART': return 'Restart Required';
+            case 'UNINSTALLED_PENDING_RESTART': return 'Removed — Restart Required';
             case 'INSTALLING': return 'Installing...';
             case 'FAILED': return 'Failed';
-            default: return plugin.state || 'Unknown';
+            default: return plugin.state || '';
         }
     }
 
     getStatusClass(plugin: any): string {
-        if (!plugin.installed) return '';
         switch (plugin.state) {
             case 'ACTIVE': return 'status-active';
             case 'INSTALLED_PENDING_RESTART': return 'status-pending';
+            case 'UNINSTALLED_PENDING_RESTART': return 'status-pending';
             case 'INSTALLING': return 'status-installing';
             case 'FAILED': return 'status-failed';
             default: return '';

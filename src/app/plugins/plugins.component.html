@@ -54,17 +54,17 @@
                                                 <span *ngIf="plugin.category" class="badge badge-category">
                                                     {{ plugin.category }}
                                                 </span>
-                                                <span *ngIf="plugin.requiresRestart && !plugin.installed"
+                                                <span *ngIf="plugin.requiresRestart && !plugin.state"
                                                       class="badge badge-restart">
                                                     Requires Restart
                                                 </span>
-                                                <span *ngIf="plugin.installed" class="badge"
+                                                <span *ngIf="plugin.state" class="badge"
                                                       [ngClass]="getStatusClass(plugin)">
                                                     {{ getStatusLabel(plugin) }}
                                                 </span>
                                             </div>
 
-                                            <div *ngIf="plugin.installed && plugin.installedRecord?.lastError"
+                                            <div *ngIf="plugin.installedRecord?.lastError"
                                                  class="error-alert">
                                                 {{ plugin.installedRecord.lastError }}
                                             </div>
@@ -128,10 +128,15 @@
                                                 </div>
                                             </div>
                                             <div class="card-footer">
-                                                <button class="btn btn-sm btn-uninstall"
+                                                <button *ngIf="plugin.state !== 'UNINSTALLED_PENDING_RESTART'"
+                                                        class="btn btn-sm btn-uninstall"
                                                         (click)="uninstallCustomPlugin(plugin)">
                                                     <i class="fa fa-trash-o"></i> Uninstall
                                                 </button>
+                                                <span *ngIf="plugin.state === 'UNINSTALLED_PENDING_RESTART'"
+                                                      class="plugin-meta">
+                                                    Restart the server to complete removal
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
