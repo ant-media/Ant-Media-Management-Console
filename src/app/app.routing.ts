@@ -50,10 +50,6 @@ export const AppRoutes: Routes = [{
             loadChildren: './tables/tables.module#TablesModule',
             canActivate: [AuthService]
         },{
-            path: 'maps',
-            loadChildren: './maps/maps.module#MapsModule',
-            canActivate: [AuthService]
-        },{
             path: 'charts',
             loadChildren: './charts/charts.module#ChartsModule',
             canActivate: [AuthService]
