@@ -32,6 +32,10 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-md-offset-4 col-sm-offset-3" *ngIf="!firstLogin">
+                        <div class="panel-switch" *ngIf="rebornSwitcher">
+                            <span class="panel-switch-opt panel-switch-on">Classic</span>
+                            <a class="panel-switch-opt panel-switch-new" href="/reborn-panel/">New UI <span class="panel-switch-tag">BETA</span></a>
+                        </div>
                         <form (ngSubmit)="loginUser()">
                             <div class="card" data-background="color" data-color="blue">
                                 <div class="card-header">
@@ -71,29 +75,8 @@
                                 </div>
                             </div>
                         </form>
-                        <div class="reborn-chooser" *ngIf="rebornSwitcher">
-                            <div class="reborn-card" [class.reborn-selected]="selectedPanel === 'classic'"
-                                 (click)="selectedPanel = 'classic'">
-                                <div class="reborn-wire">
-                                    <span class="reborn-wire-side"></span>
-                                    <span class="reborn-wire-main"></span>
-                                </div>
-                                <div class="reborn-card-label">Classic</div>
-                                <div class="reborn-card-desc">The current admin panel</div>
-                            </div>
-                            <div class="reborn-card" [class.reborn-selected]="selectedPanel === 'reborn'"
-                                 (click)="selectedPanel = 'reborn'">
-                                <span class="reborn-badge">BETA</span>
-                                <div class="reborn-wire reborn-wire-top">
-                                    <span class="reborn-wire-bar"></span>
-                                    <span class="reborn-wire-main"></span>
-                                </div>
-                                <div class="reborn-card-label">Modern</div>
-                                <div class="reborn-card-desc">A sleek redesign packed with new features. Still in beta.</div>
-                            </div>
-                        </div>
                     </div>
-
+                    
                     <div class="col-md-4 col-sm-6 col-md-offset-4 col-sm-offset-3" *ngIf="firstLogin">
                             <form #registerForm="ngForm" novalidate (ngSubmit)="createFirstAccount(registerForm.valid)">
                                     <div class="card" data-background="color" data-color="blue">

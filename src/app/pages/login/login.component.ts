@@ -8,9 +8,6 @@ import {isScopeSystem, LOCAL_STORAGE_EMAIL_KEY, LOCAL_STORAGE_ROLE_KEY, LOCAL_ST
 import {environment} from '../../../environments/environment';
 declare var $:any;
 
-// Handoff to the new panel: it reads this on boot to resolve identity, then drops it.
-const REBORN_HANDOFF_KEY = 'ams.legacy.auth.handoff';
-
 @Component({
     moduleId:module.id,
     selector: 'login-cmp',
@@ -34,7 +31,6 @@ export class LoginComponent implements OnInit{
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
     public rebornSwitcher = environment.rebornSwitcher;
-    public selectedPanel: 'classic' | 'reborn' = 'classic';
 
     constructor(private element : ElementRef, private supportRestService:SupportRestService, private auth: AuthService, private router: Router, private restService: RestService) 
 	{
@@ -81,8 +77,8 @@ export class LoginComponent implements OnInit{
 
     logout() {
         if (this.rebornSwitcher) {
-            // Targeted clear: localStorage.clear() would also wipe the new panel's keys,
-            // the handoff, and the shared {app}jwtToken entries on the same origin.
+            // The origin is shared with the reborn panel, so clear only our own keys;
+            // localStorage.clear() would take its preferences and the {app}jwtToken entries too.
             ["authenticated", LOCAL_STORAGE_EMAIL_KEY, APP_NAME_USER_TYPE, "hostAddress"]
                 .forEach(key => localStorage.removeItem(key));
         } else {
@@ -124,17 +120,6 @@ export class LoginComponent implements OnInit{
                 localStorage.setItem(LOCAL_STORAGE_EMAIL_KEY, this.email);
     
                 const message = data["message"];
-
-                if (this.rebornSwitcher) {
-                    // The new panel parses `message` itself. Written on every login so a
-                    // bookmarked /reborn-panel/ still resolves an identity.
-                    localStorage.setItem(REBORN_HANDOFF_KEY, JSON.stringify({ email: this.email, message }));
-                    if (this.selectedPanel === 'reborn') {
-                        window.location.href = '/reborn-panel/';
-                        return;
-                    }
-                }
-
                 let scope = "";
     
                 console.log(message);
