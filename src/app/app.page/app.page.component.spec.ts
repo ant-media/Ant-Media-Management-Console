@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ExpectedConditions } from 'protractor';
 import {ClusterRestService} from "../rest/cluster.service";
+import {Locale} from "../locale/locale";
 
 
 describe('AppComponent', () => {
@@ -108,6 +109,7 @@ describe('AppComponent', () => {
     component.isEnterpriseEdition = true;
     component.liveBroadcast = new LiveBroadcast();
     component.liveBroadcast.streamUrl = 'Camera A';
+    spyOn(Locale, 'getLocaleInterface').and.returnValue({new_broadcast_created: 'Broadcast created'} as any);
     spyOn(component, 'getAppLiveStreams');
     spyOn(component, 'getAppLiveStreamsNumber');
 
