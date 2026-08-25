@@ -16,6 +16,8 @@ import { ExpectedConditions } from 'protractor';
 import {ClusterRestService} from "../rest/cluster.service";
 import {Locale} from "../locale/locale";
 
+declare var $: any;
+
 
 describe('AppComponent', () => {
 
@@ -110,6 +112,7 @@ describe('AppComponent', () => {
     component.liveBroadcast = new LiveBroadcast();
     component.liveBroadcast.streamUrl = 'Camera A';
     spyOn(Locale, 'getLocaleInterface').and.returnValue({new_broadcast_created: 'Broadcast created'} as any);
+    spyOn($, 'notify');
     spyOn(component, 'getAppLiveStreams');
     spyOn(component, 'getAppLiveStreamsNumber');
 
