@@ -143,11 +143,13 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public checkAuthStatusTimerId: any;
     public newLiveStreamActive: boolean;
     public newIPCameraActive: boolean;
+    public newNDIStreamActive: boolean;
     public newStreamSourceActive: boolean;
     public newPlaylistActive: boolean;
     public liveBroadcast: LiveBroadcast;
     public newLiveStreamCreating = false;
     public newIPCameraAdding = false;
+    public newNDIStreamAdding = false;
     public newStreamSourceAdding = false;
     public newStreamSourceWarn = false;
     public newPlaylistAdding = false;
@@ -164,6 +166,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     public camera: Camera;
     public onvifURLs: String[];
+    public ndiSourceNames: string[] = [];
+    public ndiSourcesLoading = false;
     public newOnvifURLs: String[];
     public broadcastList: CameraInfoTable;
     public noCamWarning = false;
@@ -1617,6 +1621,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.shareEndpoint = [];
         this.newLiveStreamActive = true;
         this.newIPCameraActive = false;
+        this.newNDIStreamActive = false;
         this.newStreamSourceActive = false;
         this.streamNameEmpty = false;
         this.newPlaylistActive = false;
@@ -1627,16 +1632,91 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.shareEndpoint = [];
         this.newLiveStreamActive = false;
         this.newIPCameraActive = true;
+        this.newNDIStreamActive = false;
         this.newStreamSourceActive = false;
         this.streamNameEmpty = false;
         this.newPlaylistActive = false;
         this.liveBroadcast = new LiveBroadcast();
     }
 
+    newNDIStream(): void {
+        if (!this.isEnterpriseEdition) {
+            return;
+        }
+        this.shareEndpoint = [];
+        this.newLiveStreamActive = false;
+        this.newIPCameraActive = false;
+        this.newNDIStreamActive = true;
+        this.newStreamSourceActive = false;
+        this.newPlaylistActive = false;
+        this.liveBroadcast = new LiveBroadcast();
+        this.loadNDIStreams();
+    }
+
+    loadNDIStreams(): void {
+        this.ndiSourcesLoading = true;
+        this.restService.getNDIStreams(this.appName).subscribe(data => {
+            this.ndiSourceNames = Array.isArray(data) ? data as string[] : [];
+            this.ndiSourcesLoading = false;
+        }, error => {
+            this.ndiSourceNames = [];
+            this.ndiSourcesLoading = false;
+            show403Error(error);
+        });
+    }
+
+    addNDIStream(isValid: boolean): void {
+        if (!isValid || !this.isEnterpriseEdition) {
+            return;
+        }
+        this.newNDIStreamAdding = true;
+        this.liveBroadcast.type = "NDI";
+        this.liveBroadcast.name = this.liveBroadcast.streamUrl;
+        this.restService.createLiveStream(this.appName, this.liveBroadcast, null, "").subscribe(data => {
+            this.newNDIStreamAdding = false;
+            if (data["success"] == true || data["streamId"] != null) {
+                this.newNDIStreamActive = false;
+                $.notify({
+                    icon: "ti-save",
+                    message: Locale.getLocaleInterface().new_broadcast_created
+                }, {
+                    type: "success",
+                    delay: 1000,
+                    placement: { from: 'top', align: 'right' }
+                });
+                this.getAppLiveStreams(this.streamListOffset, this.pageSize);
+                this.getAppLiveStreamsNumber();
+            }
+            else {
+                $.notify({
+                    icon: "ti-alert",
+                    message: "Failed. Error is " + data["message"]
+                }, {
+                    type: "danger",
+                    delay: 2000,
+                    placement: { from: 'top', align: 'right' }
+                });
+            }
+        }, error => {
+            this.newNDIStreamAdding = false;
+            if (!show403Error(error)) {
+                $.notify({
+                    icon: "ti-alert",
+                    message: error.error && error.error["message"] ? error.error["message"] : "Unknown problem. Reach to technical support(support@antmedia.io)"
+                }, {
+                    type: "warning",
+                    delay: 2000,
+                    placement: { from: 'top', align: 'right' }
+                });
+            }
+        });
+    }
+
     newStreamSource(): void {
         this.shareEndpoint = [];
         this.newLiveStreamActive = false;
         this.newIPCameraActive = false;
+        this.newNDIStreamActive = false;
         this.newStreamSourceActive = true;
         this.streamNameEmpty = false;
         this.newPlaylistActive = false;
@@ -1646,6 +1726,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     newPlaylist(): void {
         this.newLiveStreamActive = false;
         this.newIPCameraActive = false;
+        this.newNDIStreamActive = false;
         this.newStreamSourceActive = false;
         this.newPlaylistActive = true;
         this.streamNameEmpty = false;
@@ -2585,6 +2666,10 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     cancelNewIPCamera(): void {
         this.newIPCameraActive = false;
+    }
+
+    cancelNewNDIStream(): void {
+        this.newNDIStreamActive = false;
     }
 
     cancelStreamSource(): void {
