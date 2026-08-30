@@ -32,6 +32,10 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-md-offset-4 col-sm-offset-3" *ngIf="!firstLogin">
+                        <div class="panel-switch" *ngIf="rebornSwitcher">
+                            <span class="panel-switch-opt panel-switch-on">Classic</span>
+                            <a class="panel-switch-opt panel-switch-new" href="/reborn-panel/">New UI <span class="panel-switch-tag">BETA</span></a>
+                        </div>
                         <form (ngSubmit)="loginUser()">
                             <div class="card" data-background="color" data-color="blue">
                                 <div class="card-header">
