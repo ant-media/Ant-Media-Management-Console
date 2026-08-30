@@ -5,7 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AuthInterceptor, RestService,} from '../rest/rest.service';
+import { AuthInterceptor, LiveBroadcast, RestService,} from '../rest/rest.service';
 import { HttpClientModule } from '@angular/common/http'; 
 import { AuthService, } from '../rest/auth.service';
 import { DatePipe, HashLocationStrategy, LocationStrategy } from '@angular/common';
@@ -14,6 +14,9 @@ import { Router } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ExpectedConditions } from 'protractor';
 import {ClusterRestService} from "../rest/cluster.service";
+import {Locale} from "../locale/locale";
+
+declare var $: any;
 
 
 describe('AppComponent', () => {
@@ -24,7 +27,8 @@ describe('AppComponent', () => {
 
 
 
-  const restServiceSpy = jasmine.createSpyObj('RestService', ['isEnterpriseEdition', 'getApplications']);
+  const restServiceSpy = jasmine.createSpyObj('RestService',
+    ['isEnterpriseEdition', 'getApplications', 'getNDIStreams', 'createLiveStream']);
   restServiceSpy.isEnterpriseEdition.and.returnValue(new Observable(observer => 
     {
       let data = [];
@@ -37,6 +41,14 @@ describe('AppComponent', () => {
         data["applications"] = ["LiveApp", "WebRTCAppEE"];
         observer.next(data);  
       }));  
+  restServiceSpy.getNDIStreams.and.returnValue(new Observable(observer => {
+    observer.next(['Camera A', 'Camera B']);
+    observer.complete();
+  }));
+  restServiceSpy.createLiveStream.and.returnValue(new Observable(observer => {
+    observer.next({success: true});
+    observer.complete();
+  }));
 
 
   beforeEach(async(() => {
@@ -69,6 +81,10 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     //localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, "LiveApp");
+    restServiceSpy.createLiveStream.and.returnValue(new Observable(observer => {
+      observer.next({success: true});
+      observer.complete();
+    }));
     fixture = TestBed.createComponent(AppPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -83,6 +99,76 @@ describe('AppComponent', () => {
      expect(component.shareEndpoint).toBeDefined();
 
   }));
+
+  it('loads discovered NDI sources when opening the NDI form', () => {
+    component.isEnterpriseEdition = true;
+
+    component.newNDIStream();
+
+    expect(restServiceSpy.getNDIStreams).toHaveBeenCalledWith(component.appName);
+    expect(component.ndiSourceNames).toEqual(['Camera A', 'Camera B']);
+    expect(component.newNDIStreamActive).toBeTrue();
+    expect(component.ndiSourcesLoading).toBeFalse();
+  });
+
+  it('creates an NDI broadcast using the source name as its name', () => {
+    component.isEnterpriseEdition = true;
+    component.liveBroadcast = new LiveBroadcast();
+    component.liveBroadcast.streamUrl = 'Camera A';
+    spyOn(Locale, 'getLocaleInterface').and.returnValue({new_broadcast_created: 'Broadcast created'} as any);
+    spyOn($, 'notify');
+    spyOn(component, 'getAppLiveStreams');
+    spyOn(component, 'getAppLiveStreamsNumber');
+
+    component.addNDIStream(true);
+
+    const submittedBroadcast = restServiceSpy.createLiveStream.calls.mostRecent().args[1] as LiveBroadcast;
+    expect(submittedBroadcast.type).toBe('NDI');
+    expect(submittedBroadcast.name).toBe('Camera A');
+    expect(component.newNDIStreamActive).toBeFalse();
+  });
+
+  it('creates an NDI broadcast using a custom source name', () => {
+    component.isEnterpriseEdition = true;
+    component.liveBroadcast = new LiveBroadcast();
+    component.liveBroadcast.streamUrl = component.customNDISourceOption;
+    component.customNDISourceName = 'Custom NDI Camera';
+    component.customNDIStreamName = 'Studio Program Feed';
+    spyOn(Locale, 'getLocaleInterface').and.returnValue({new_broadcast_created: 'Broadcast created'} as any);
+    spyOn($, 'notify');
+    spyOn(component, 'getAppLiveStreams');
+    spyOn(component, 'getAppLiveStreamsNumber');
+
+    component.addNDIStream(true);
+
+    const submittedBroadcast = restServiceSpy.createLiveStream.calls.mostRecent().args[1] as LiveBroadcast;
+    expect(submittedBroadcast.type).toBe('NDI');
+    expect(submittedBroadcast.streamUrl).toBe('Custom NDI Camera');
+    expect(submittedBroadcast.name).toBe('Studio Program Feed');
+  });
+
+  it('shows a warning when an NDI broadcast is saved but cannot start yet', () => {
+    component.isEnterpriseEdition = true;
+    component.liveBroadcast = new LiveBroadcast();
+    component.liveBroadcast.streamUrl = 'Offline NDI Camera';
+    restServiceSpy.createLiveStream.and.returnValue(new Observable(observer => {
+      observer.next({success: true, message: 'NDI source is saved but it is not available.'});
+      observer.complete();
+    }));
+    spyOn($, 'notify');
+    spyOn(component, 'getAppLiveStreams');
+    spyOn(component, 'getAppLiveStreamsNumber');
+
+    component.addNDIStream(true);
+
+    expect($.notify).toHaveBeenCalledWith(jasmine.objectContaining({
+      icon: 'ti-alert',
+      message: 'NDI source is saved but it is not available.'
+    }), jasmine.objectContaining({
+      type: 'warning'
+    }));
+    expect(component.newNDIStreamActive).toBeFalse();
+  });
   
   
 });
