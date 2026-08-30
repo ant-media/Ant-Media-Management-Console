@@ -168,6 +168,9 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
     public onvifURLs: String[];
     public ndiSourceNames: string[] = [];
     public ndiSourcesLoading = false;
+    public customNDISourceOption = "__custom_ndi_source__";
+    public customNDISourceName = "";
+    public customNDIStreamName = "";
     public newOnvifURLs: String[];
     public broadcastList: CameraInfoTable;
     public noCamWarning = false;
@@ -1650,6 +1653,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.newStreamSourceActive = false;
         this.newPlaylistActive = false;
         this.liveBroadcast = new LiveBroadcast();
+        this.customNDISourceName = "";
+        this.customNDIStreamName = "";
         this.loadNDIStreams();
     }
 
@@ -1671,17 +1676,23 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.newNDIStreamAdding = true;
         this.liveBroadcast.type = "NDI";
-        this.liveBroadcast.name = this.liveBroadcast.streamUrl;
+        if (this.liveBroadcast.streamUrl == this.customNDISourceOption) {
+            this.liveBroadcast.streamUrl = this.customNDISourceName.trim();
+            this.liveBroadcast.name = this.customNDIStreamName.trim();
+        }
+        else {
+            this.liveBroadcast.name = this.liveBroadcast.streamUrl;
+        }
         this.restService.createLiveStream(this.appName, this.liveBroadcast, null, "").subscribe(data => {
             this.newNDIStreamAdding = false;
             if (data["success"] == true || data["streamId"] != null) {
                 this.newNDIStreamActive = false;
                 $.notify({
-                    icon: "ti-save",
-                    message: Locale.getLocaleInterface().new_broadcast_created
+                    icon: data["message"] ? "ti-alert" : "ti-save",
+                    message: data["message"] ? data["message"] : Locale.getLocaleInterface().new_broadcast_created
                 }, {
-                    type: "success",
-                    delay: 1000,
+                    type: data["message"] ? "warning" : "success",
+                    delay: data["message"] ? 2000 : 1000,
                     placement: { from: 'top', align: 'right' }
                 });
                 this.getAppLiveStreams(this.streamListOffset, this.pageSize);
@@ -2670,6 +2681,8 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     cancelNewNDIStream(): void {
         this.newNDIStreamActive = false;
+        this.customNDISourceName = "";
+        this.customNDIStreamName = "";
     }
 
     cancelStreamSource(): void {

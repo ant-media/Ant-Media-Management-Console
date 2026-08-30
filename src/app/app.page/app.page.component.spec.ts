@@ -81,6 +81,10 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     //localStorage.setItem(LOCAL_STORAGE_SCOPE_KEY, "LiveApp");
+    restServiceSpy.createLiveStream.and.returnValue(new Observable(observer => {
+      observer.next({success: true});
+      observer.complete();
+    }));
     fixture = TestBed.createComponent(AppPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -121,6 +125,48 @@ describe('AppComponent', () => {
     const submittedBroadcast = restServiceSpy.createLiveStream.calls.mostRecent().args[1] as LiveBroadcast;
     expect(submittedBroadcast.type).toBe('NDI');
     expect(submittedBroadcast.name).toBe('Camera A');
+    expect(component.newNDIStreamActive).toBeFalse();
+  });
+
+  it('creates an NDI broadcast using a custom source name', () => {
+    component.isEnterpriseEdition = true;
+    component.liveBroadcast = new LiveBroadcast();
+    component.liveBroadcast.streamUrl = component.customNDISourceOption;
+    component.customNDISourceName = 'Custom NDI Camera';
+    component.customNDIStreamName = 'Studio Program Feed';
+    spyOn(Locale, 'getLocaleInterface').and.returnValue({new_broadcast_created: 'Broadcast created'} as any);
+    spyOn($, 'notify');
+    spyOn(component, 'getAppLiveStreams');
+    spyOn(component, 'getAppLiveStreamsNumber');
+
+    component.addNDIStream(true);
+
+    const submittedBroadcast = restServiceSpy.createLiveStream.calls.mostRecent().args[1] as LiveBroadcast;
+    expect(submittedBroadcast.type).toBe('NDI');
+    expect(submittedBroadcast.streamUrl).toBe('Custom NDI Camera');
+    expect(submittedBroadcast.name).toBe('Studio Program Feed');
+  });
+
+  it('shows a warning when an NDI broadcast is saved but cannot start yet', () => {
+    component.isEnterpriseEdition = true;
+    component.liveBroadcast = new LiveBroadcast();
+    component.liveBroadcast.streamUrl = 'Offline NDI Camera';
+    restServiceSpy.createLiveStream.and.returnValue(new Observable(observer => {
+      observer.next({success: true, message: 'NDI source is saved but it is not available.'});
+      observer.complete();
+    }));
+    spyOn($, 'notify');
+    spyOn(component, 'getAppLiveStreams');
+    spyOn(component, 'getAppLiveStreamsNumber');
+
+    component.addNDIStream(true);
+
+    expect($.notify).toHaveBeenCalledWith(jasmine.objectContaining({
+      icon: 'ti-alert',
+      message: 'NDI source is saved but it is not available.'
+    }), jasmine.objectContaining({
+      type: 'warning'
+    }));
     expect(component.newNDIStreamActive).toBeFalse();
   });
   
