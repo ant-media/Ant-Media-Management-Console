@@ -247,11 +247,15 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + id);
     }
 
+    public getNDIStreams(appName: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/ndi-streams");
+    }
+
     public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, REMOTE_REST_SERVICE_ROOT: string, socialNetworks:string): Observable<Object> {
         var autoStart = false;
         let REST_SERVICE_ADDRESS;
 
-        if (liveBroadcast.type == "ipCamera" || liveBroadcast.type == "streamSource") {
+        if (liveBroadcast.type == "ipCamera" || liveBroadcast.type == "streamSource" || liveBroadcast.type == "NDI") {
             //if auto start/stop is enabled, dont auto start
             autoStart = !liveBroadcast.autoStartStopEnabled;
         }
