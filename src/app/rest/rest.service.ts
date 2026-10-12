@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import {AppSettings, ServerSettings} from "../app.page/app.definitions";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
-import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
 import {Endpoint,PlaylistItem} from "../app.page/app.definitions";
 import { filter } from 'rxjs-compat/operator/filter';
 import {SidebarComponent} from "../sidebar/sidebar.component";
@@ -134,8 +135,24 @@ export class AuthInterceptor implements HttpInterceptor{
                 withCredentials: true
             });
         }
-        return next.handle(req);
+        return next.handle(req).pipe(tap(event => {
+            //Date header is not exposed on cross-origin responses, so only same-origin responses update the offset
+            if (event instanceof HttpResponse) {
+                let serverDate = event.headers.get('Date');
+                if (serverDate) {
+                    serverClockOffsetMs = Date.parse(serverDate) - Date.now();
+                }
+            }
+        }));
     }
+}
+
+//server clock minus browser clock. Server rejects JWT whose iat is in its future
+let serverClockOffsetMs = 0;
+
+export function signAppJwt(jwtSecretKey: string): string {
+    let jwt = require('jsonwebtoken');
+    return jwt.sign({ sub: "token", iat: Math.floor((Date.now() + serverClockOffsetMs) / 1000) }, jwtSecretKey);
 }
 
 @Injectable()

@@ -14,7 +14,7 @@ import {
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { HTTP_SERVER_ROOT, LiveBroadcast, RestService , show403Error, REST_SERVICE_ROOT} from '../rest/rest.service';
+import { HTTP_SERVER_ROOT, LiveBroadcast, RestService , show403Error, REST_SERVICE_ROOT, signAppJwt} from '../rest/rest.service';
 import { APP_NAME_USER_TYPE, AuthService } from '../rest/auth.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { Locale } from "../locale/locale";
@@ -1412,8 +1412,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.appSettings = <AppSettings>data;
             this.settingsJson = JSON.stringify(data, null, 2); //JSON.stringify(data);
             if (this.appSettings.jwtControlEnabled) {
-                let jwt = require('jsonwebtoken');
-                let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
+                let currentAppJWTToken = signAppJwt(this.appSettings.jwtSecretKey);
 
                 localStorage.setItem(this.appName + 'jwtToken', currentAppJWTToken);
                 localStorage.setItem(this.appName + 'jwtControlEnabled', this.appSettings.jwtControlEnabled + "");
@@ -1507,8 +1506,7 @@ export class AppPageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         if (this.appSettings.jwtControlEnabled) {
-            let jwt = require('jsonwebtoken');
-            let currentAppJWTToken = jwt.sign({ sub: "token" }, this.appSettings.jwtSecretKey);
+            let currentAppJWTToken = signAppJwt(this.appSettings.jwtSecretKey);
 
             localStorage.setItem(this.appName + 'jwtToken', currentAppJWTToken);
             localStorage.setItem(this.appName + 'jwtControlEnabled', this.appSettings.jwtControlEnabled + "");
