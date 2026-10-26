@@ -247,11 +247,15 @@ export class RestService {
         return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/" + id);
     }
 
+    public getNDIStreams(appName: string): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + "/request?_path=" + appName + "/rest/v2/broadcasts/ndi-streams");
+    }
+
     public createLiveStream(appName: string, liveBroadcast: LiveBroadcast, REMOTE_REST_SERVICE_ROOT: string, socialNetworks:string): Observable<Object> {
         var autoStart = false;
         let REST_SERVICE_ADDRESS;
 
-        if (liveBroadcast.type == "ipCamera" || liveBroadcast.type == "streamSource") {
+        if (liveBroadcast.type == "ipCamera" || liveBroadcast.type == "streamSource" || liveBroadcast.type == "NDI") {
             //if auto start/stop is enabled, dont auto start
             autoStart = !liveBroadcast.autoStartStopEnabled;
         }
@@ -450,6 +454,20 @@ export class RestService {
     public getServerSettings(): Observable<Object> {
         return this.http.get(REST_SERVICE_ROOT + "/server-settings/" );
     }
+
+    public getInstalledPlugins(): Observable<Object> {
+        return this.http.get(REST_SERVICE_ROOT + '/plugins');
+    }
+
+    public installPluginFromUrl(pluginId: string, downloadUrl: string): Observable<Object> {
+        return this.http.post(REST_SERVICE_ROOT + '/plugins/install-from-url',
+            { id: pluginId, downloadUrl: downloadUrl });
+    }
+
+    public uninstallPlugin(pluginId: string): Observable<Object> {
+        return this.http.delete(REST_SERVICE_ROOT + '/plugins/' + pluginId);
+    }
+
     public getSslSettings(): Observable<Object>{
         return this.http.get(REST_SERVICE_ROOT + "/ssl-settings/" );
     }

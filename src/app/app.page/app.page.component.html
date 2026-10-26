@@ -51,6 +51,10 @@
                                             <li>
                                                 <a (click)="newIPCamera()" role="button">IP Camera</a>
                                             </li>
+                                            <li [class.disabled]="!isEnterpriseEdition">
+                                                <a (click)="newNDIStream()" role="button"
+                                                    [attr.aria-disabled]="!isEnterpriseEdition">NDI Stream</a>
+                                            </li>
                                             <li>
                                                 <a (click)="newStreamSource()" role="button">Stream Source</a>
                                             </li>
@@ -147,6 +151,69 @@
 
                                         </div>
 
+                                    </form>
+                                </div>
+
+                                <div class="card" *ngIf="newNDIStreamActive">
+                                    <form method="post" #ndiForm="ngForm" validate (ngSubmit)="addNDIStream(ndiForm.valid)">
+                                        <div class="card-header">
+                                            <h4 class="card-title text-left">New NDI Stream</h4>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="form-group text-left">
+                                                <label>NDI Source*</label>
+                                                <button (click)="loadNDIStreams()"
+                                                    class="btn btn-success btn-simple btn-magnify btn-xs"
+                                                    [disabled]="ndiSourcesLoading" type="button">Reload</button>
+                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw"
+                                                    *ngIf="ndiSourcesLoading" aria-hidden="true"></i>
+                                                <select required name="ndiSourceName" class="form-control"
+                                                    [(ngModel)]="liveBroadcast.streamUrl" #ndiSourceName="ngModel">
+                                                    <option value="" disabled>Select an NDI source</option>
+                                                    <option *ngFor="let sourceName of ndiSourceNames" [value]="sourceName">
+                                                        {{sourceName}}
+                                                    </option>
+                                                    <option [value]="customNDISourceOption">Custom...</option>
+                                                </select>
+                                                <small [hidden]="ndiSourceName.valid || (!ndiForm.submitted)"
+                                                    class="text-danger">NDI Source is required.</small>
+                                            </div>
+                                            <div class="form-group text-left" *ngIf="liveBroadcast.streamUrl == customNDISourceOption">
+                                                <label>Custom NDI Source Name*</label>
+                                                <input type="text" required minlength="1" name="customNDISourceName"
+                                                    placeholder="Exact NDI source name"
+                                                    class="form-control" [(ngModel)]="customNDISourceName"
+                                                    #customNDISourceNameInput="ngModel">
+                                                <small [hidden]="customNDISourceNameInput.valid || (!ndiForm.submitted)"
+                                                    class="text-danger">Custom NDI Source Name is required.</small>
+                                            </div>
+                                            <div class="form-group text-left" *ngIf="liveBroadcast.streamUrl == customNDISourceOption">
+                                                <label>Stream Name*</label>
+                                                <input type="text" required minlength="1" name="customNDIStreamName"
+                                                    placeholder="Name shown in the stream list"
+                                                    class="form-control" [(ngModel)]="customNDIStreamName"
+                                                    #customNDIStreamNameInput="ngModel">
+                                                <small [hidden]="customNDIStreamNameInput.valid || (!ndiForm.submitted)"
+                                                    class="text-danger">Stream Name is required.</small>
+                                            </div>
+                                            <div class="form-group text-left">
+                                                <label>Stream Id</label>
+                                                <input type="text" minlength="4" name="streamId"
+                                                    placeholder="Unique Id of the stream. If you do not enter a value, It will be generated automatically"
+                                                    class="form-control" [(ngModel)]="liveBroadcast.streamId"
+                                                    #ndiStreamId="ngModel">
+                                                <small [hidden]="ndiStreamId.valid || (!ndiForm.submitted)"
+                                                    class="text-danger">Stream Id should be at least 4 characters.</small>
+                                            </div>
+                                            <div class="form-group text-center">
+                                                <button type="submit" [disabled]="newNDIStreamAdding"
+                                                    class="btn btn-fill btn-success">
+                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw"
+                                                        *ngIf="newNDIStreamAdding" aria-hidden="true"></i>Add</button>
+                                                <button type="button" class="btn btn-simple"
+                                                    (click)="cancelNewNDIStream()">Cancel</button>
+                                            </div>
+                                        </div>
                                     </form>
                                 </div>
 
@@ -818,7 +885,7 @@
                                                                     <!-- Start button IP Camera & Stream Source -->
 
                                                                     <li
-                                                                        *ngIf="(row.type=='streamSource' || row.type=='ipCamera' || row.type=='playlist') && row.status!='broadcasting' && row.status!='preparing'">
+                                                                        *ngIf="(row.type=='streamSource' || row.type=='ipCamera' || row.type=='playlist' || row.type=='NDI') && row.status!='broadcasting' && row.status!='preparing'">
                                                                         <a class="dropdown-link"
                                                                             (click)="startStreams(row.streamId)">
                                                                             <ng-container i18n="@@startBroadcast">Start
@@ -829,7 +896,7 @@
                                                                     <!-- Stop button IP Camera & Stream Source-->
 
                                                                     <li
-                                                                        *ngIf="(row.type=='streamSource' || row.type=='ipCamera' || row.type=='playlist') && (row.status=='broadcasting' || row.status=='preparing')">
+                                                                        *ngIf="(row.type=='streamSource' || row.type=='ipCamera' || row.type=='playlist' || row.type=='NDI') && (row.status=='broadcasting' || row.status=='preparing')">
                                                                         <a class="dropdown-link"
                                                                             (click)="stopStreams(row.streamId)">
                                                                             <ng-container i18n="@@stopBroadcast">Stop

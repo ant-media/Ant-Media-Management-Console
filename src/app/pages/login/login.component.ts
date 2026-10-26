@@ -5,12 +5,14 @@ import {User, show403Error} from '../../rest/rest.service';
 import {SupportRestService} from "../../rest/support.service";
 import {RestService} from '../../rest/rest.service';
 import {isScopeSystem, LOCAL_STORAGE_EMAIL_KEY, LOCAL_STORAGE_ROLE_KEY, LOCAL_STORAGE_SCOPE_KEY} from "../../rest/auth.service";
+import {environment} from '../../../environments/environment';
 declare var $:any;
 
 @Component({
     moduleId:module.id,
     selector: 'login-cmp',
-    templateUrl: './login.component.html'
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css']
 })
 
 export class LoginComponent implements OnInit{
@@ -28,6 +30,7 @@ export class LoginComponent implements OnInit{
     public firstUserIsCreating:boolean;
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
+    public rebornSwitcher = environment.rebornSwitcher;
 
     constructor(private element : ElementRef, private supportRestService:SupportRestService, private auth: AuthService, private router: Router, private restService: RestService) 
 	{
@@ -73,8 +76,14 @@ export class LoginComponent implements OnInit{
     }
 
     logout() {
-        // localStorage.setItem("authenticated", null);
-        localStorage.clear();
+        if (this.rebornSwitcher) {
+            // The origin is shared with the reborn panel, so clear only our own keys;
+            // localStorage.clear() would take its preferences and the {app}jwtToken entries too.
+            ["authenticated", LOCAL_STORAGE_EMAIL_KEY, APP_NAME_USER_TYPE, "hostAddress"]
+                .forEach(key => localStorage.removeItem(key));
+        } else {
+            localStorage.clear();
+        }
         this.restService.logout().subscribe(data  => {
             if (data["success"] == true) {
                 console.log("logout success");

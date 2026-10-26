@@ -1,0 +1,76 @@
+/* Panel door switch above the login card. Only rendered when environment.rebornSwitcher is on.
+   Sits on the dark page filter, so it is styled against that, not against the card. */
+.panel-switch {
+  display: flex;
+  width: max-content;
+  margin: 0 auto 18px;
+  padding: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+.panel-switch-opt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.75);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+a.panel-switch-opt:hover,
+a.panel-switch-opt:focus {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  text-decoration: none;
+}
+
+.panel-switch-on {
+  background: #fff;
+  color: #33353c;
+}
+
+.panel-switch-tag {
+  padding: 1px 5px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* One-off nudge toward the new panel: three soft rings radiating off that segment, then
+   silence. Absolutely positioned so it never becomes a flex item and never shifts layout. */
+.panel-switch-new {
+  position: relative;
+}
+
+.panel-switch-new::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  /* Starts after the login card has finished animating in, so they do not compete. */
+  animation: panel-switch-echo 1.3s ease-out 0.9s 3;
+}
+
+@keyframes panel-switch-echo {
+  from { opacity: 0.5; transform: scale(1); }
+  to   { opacity: 0;   transform: scale(1.35); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel-switch-new::before { animation: none; }
+}
