@@ -31,6 +31,7 @@ export class LoginComponent implements OnInit{
     public showYouCanLogin:boolean;
     public showFailedToCreateUserAccount:boolean;
     public rebornSwitcher = environment.rebornSwitcher;
+    public newPanelUrl = environment.newPanelUrl;
 
     constructor(private element : ElementRef, private supportRestService:SupportRestService, private auth: AuthService, private router: Router, private restService: RestService) 
 	{

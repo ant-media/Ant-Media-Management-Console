@@ -36,15 +36,6 @@ a.panel-switch-opt:focus {
   color: #33353c;
 }
 
-.panel-switch-tag {
-  padding: 1px 5px;
-  background: rgba(255, 255, 255, 0.22);
-  border-radius: 3px;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
 /* One-off nudge toward the new panel: three soft rings radiating off that segment, then
    silence. Absolutely positioned so it never becomes a flex item and never shifts layout. */
 .panel-switch-new {
