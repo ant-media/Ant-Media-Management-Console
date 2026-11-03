@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  rebornSwitcher: false
+  rebornSwitcher: false,
+  newPanelUrl: null
 };

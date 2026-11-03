@@ -256,7 +256,7 @@ export class AuthService implements CanActivate {
 
                             }
                         }).then(() => {
-                            window.location.href = "/#/serverSettings";
+                            window.location.href = "#/serverSettings";
 
                         }).catch(function () {
 
